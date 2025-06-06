@@ -1,4 +1,21 @@
 from .client import VaizClient
-from .models import CreateTaskRequest, TaskResponse, TaskFollower, EditTaskRequest
+from .models import (
+    TaskFollower,
+    TaskPriority,
+    CustomField,
+    CreateTaskRequest,
+    EditTaskRequest,
+    Task,
+    TaskResponse,
+)
 
-__all__ = ["VaizClient", "CreateTaskRequest", "TaskResponse", "TaskFollower", "EditTaskRequest"]
+__all__ = [
+    'VaizClient',
+    'TaskFollower',
+    'TaskPriority',
+    'CustomField',
+    'CreateTaskRequest',
+    'EditTaskRequest',
+    'Task',
+    'TaskResponse',
+]
