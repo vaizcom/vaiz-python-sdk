@@ -1,0 +1,16 @@
+[project]
+name = "vaiz-sdk"
+version = "0.1.0"
+description = "Official SDK for interacting with the Vaiz API"
+authors = [{ name = "Your Name", email = "your@email.com" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.31.0",
+    "pydantic>=2.0",    # для моделей и валидации
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
