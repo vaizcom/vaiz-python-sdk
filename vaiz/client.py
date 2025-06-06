@@ -25,4 +25,6 @@ class VaizClient:
         if not response.ok:
             print(f"Error response: {response.text}")  # Debug print
         response.raise_for_status()
-        return TaskResponse(**response.json())
+        response_data = response.json()
+        print(f"Response data: {response_data}")  # Debug print
+        return TaskResponse(**response_data)

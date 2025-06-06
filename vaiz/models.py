@@ -1,6 +1,6 @@
 # vaiz/models.py
 from pydantic import BaseModel, RootModel, Field
-from typing import List, Optional, Dict, Literal
+from typing import List, Optional, Dict, Literal, Any
 
 
 class TaskFollower(RootModel):
@@ -12,25 +12,28 @@ class CreateTaskRequest(BaseModel):
     group: str
     board: str
     project: str
-    creator: str
-    followers: TaskFollower
+    parentTask: Optional[str] = None
+    types: List[str] = []
     priority: int = 1
-    hrid: Optional[str]
     completed: bool = False
     assignees: List[str] = []
     subtasks: List[str] = []
     milestones: List[str] = []
-    customFields: List[str] = []
-    types: List[str] = []
+    dueStart: Optional[str] = None
+    dueEnd: Optional[str] = None
     rightConnectors: List[str] = []
     leftConnectors: List[str] = []
-    document: Optional[str] = None
+    customFields: List[str] = []
 
 
-class TaskResponse(BaseModel):
+class Task(BaseModel):
     id: str
     name: str
     project: str
     board: str
     completed: bool
-    # тут можно продолжать — в зависимости от того, что вернёт API
+
+
+class TaskResponse(BaseModel):
+    payload: Dict[str, Any]
+    type: str

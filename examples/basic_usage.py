@@ -1,5 +1,5 @@
 from vaiz import VaizClient
-from vaiz.models import CreateTaskRequest, TaskFollower
+from vaiz.models import CreateTaskRequest
 import os
 from dotenv import load_dotenv
 
@@ -16,19 +16,26 @@ SPACE_ID = os.getenv("VAIZ_SPACE_ID")  # Replace with your actual space ID
 client = VaizClient(api_key=API_KEY, space_id=SPACE_ID)
 
 task = CreateTaskRequest(
-    name="Test task",
+    name="Test task 123",
     group="649bea169d17e4070e0337f8",
     board="649bea169d17e4070e0337f7",
     project="649bea169d17e4070e0337f3",
-    creator="6396e0b66aad7061fa174ea8",
-    followers=TaskFollower(root={"6396e0b66aad7061fa174ea8": "creator"}),
-    hrid="PLG-24",
-    document="6842dd9c140fff609525ae74"
+    priority=1,
+    completed=False,
+    types=["649bea169d17e4070e0337fa"],
+    assignees=[],
+    subtasks=[],
+    milestones=[],
+    customFields=[],
+    rightConnectors=[],
+    leftConnectors=[]
 )
 
 try:
-    created = client.create_task(task)
-    print("Task created successfully:", created)
+    response = client.create_task(task)
+    print("Task created successfully!")
+    print(f"Response type: {response.type}")
+    print(f"Task data: {response.payload}")
 except Exception as e:
     print(f"Error creating task: {e}")
     if hasattr(e, 'response') and e.response is not None:
