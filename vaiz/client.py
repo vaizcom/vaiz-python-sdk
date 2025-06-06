@@ -1,7 +1,7 @@
 # vaiz/client.py
 from typing import Dict, Any
 import requests
-from vaiz.models import CreateTaskRequest, TaskResponse
+from vaiz.models import CreateTaskRequest, TaskResponse, EditTaskRequest
 
 
 class VaizClient:
@@ -19,6 +19,18 @@ class VaizClient:
 
     def create_task(self, task: CreateTaskRequest) -> TaskResponse:
         url = f"{self.base_url}/createTask"
+        json_data = task.dict(by_alias=True)
+        print(f"Request payload: {json_data}")  # Debug print
+        response = self.session.post(url, json=json_data)
+        if not response.ok:
+            print(f"Error response: {response.text}")  # Debug print
+        response.raise_for_status()
+        response_data = response.json()
+        print(f"Response data: {response_data}")  # Debug print
+        return TaskResponse(**response_data)
+
+    def edit_task(self, task: EditTaskRequest) -> TaskResponse:
+        url = f"{self.base_url}/editTask"
         json_data = task.dict(by_alias=True)
         print(f"Request payload: {json_data}")  # Debug print
         response = self.session.post(url, json=json_data)
