@@ -78,28 +78,50 @@ response = client.get_task("task_id")
 task_data = response.payload
 ```
 
-## Testing
+## Development
 
-### Setup
+### Project Structure
+
+```
+vaiz-python-sdk/
+├── vaiz/                  # Main package directory
+│   ├── __init__.py       # Package initialization
+│   ├── client.py         # Main client implementation
+│   └── models.py         # Data models
+├── tests/                # Test directory
+│   ├── __init__.py
+│   ├── test_client.py    # Client tests
+│   └── test_config.py    # Test configuration
+├── examples/             # Example usage
+│   ├── __init__.py
+│   ├── config.py         # Example configuration
+│   ├── create_task.py    # Task creation example
+│   ├── edit_task.py      # Task editing example
+│   └── get_task.py       # Task retrieval example
+├── README.md             # This file
+└── requirements.txt      # Project dependencies
+```
+
+### Testing
+
+#### Setup
 
 1. Install test dependencies:
 
 ```bash
-pip install pytest pytest-mock
+pip install pytest pytest-mock python-dotenv
 ```
 
-2. Create a test configuration file (e.g., `test_config.py`) with your test credentials:
+2. Create a `.env` file in the project root with your test credentials:
 
-```python
-TEST_API_KEY = "your_test_api_key"
-TEST_SPACE_ID = "your_test_space_id"
-TEST_BOARD_ID = "your_test_board_id"
-TEST_GROUP_ID = "your_test_group_id"
-TEST_PROJECT_ID = "your_test_project_id"
-TEST_ASSIGNEE_ID = "your_test_assignee_id"
+```env
+VAIZ_API_KEY=your_test_api_key
+VAIZ_SPACE_ID=your_test_space_id
 ```
 
-### Running Tests
+The test configuration (`tests/test_config.py`) will automatically load these credentials.
+
+#### Running Tests
 
 Run all tests:
 
@@ -119,22 +141,23 @@ Run with verbose output:
 pytest -v
 ```
 
-### Writing Tests
+#### Writing Tests
 
 When writing tests for the SDK:
 
-1. Use pytest fixtures for common setup
-2. Mock external API calls using `pytest-mock`
-3. Test both success and error cases
-4. Include proper assertions for response data
-
-Example test structure:
+1. Use the test configuration from `tests/test_config.py`:
 
 ```python
-import pytest
-from vaiz import VaizClient
-from vaiz.models import CreateTaskRequest
+from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID
 
+def test_create_task(mocker):
+    client = get_test_client()
+    # Your test code here
+```
+
+2. Mock external API calls using `pytest-mock`:
+
+```python
 def test_create_task(mocker):
     # Mock the API response
     mock_response = mocker.Mock()
@@ -144,13 +167,27 @@ def test_create_task(mocker):
     }
     mocker.patch('requests.post', return_value=mock_response)
 
-    # Create client and test
-    client = VaizClient(api_key="test_key", space_id="test_space")
-    task = CreateTaskRequest(name="Test Task")
-    response = client.create_task(task)
+    # Test implementation
+    client = get_test_client()
+    # ... rest of the test
+```
 
-    assert response.type == "success"
-    assert response.payload["task"]["_id"] == "test_task_id"
+3. Test both success and error cases
+4. Include proper assertions for response data
+
+### Examples
+
+The `examples/` directory contains working examples of SDK usage:
+
+- `create_task.py`: Demonstrates task creation
+- `edit_task.py`: Shows how to edit existing tasks
+- `get_task.py`: Illustrates task retrieval
+- `config.py`: Example configuration setup
+
+To run an example:
+
+```bash
+python -m examples.create_task
 ```
 
 ## Contributing

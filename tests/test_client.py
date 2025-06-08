@@ -1,22 +1,22 @@
 import pytest
-from examples.config import get_client, BOARD_ID, GROUP_ID, PROJECT_ID, ASSIGNEE_ID
+from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
 from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority
 
 @pytest.fixture(scope="module")
 def client():
-    return get_client()
+    return get_test_client()
 
 @pytest.fixture(scope="module")
 def task_id(client):
     task = CreateTaskRequest(
         name="Integration Test Task",
-        group=GROUP_ID,
-        board=BOARD_ID,
-        project=PROJECT_ID,
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
         priority=TaskPriority.High,
         completed=False,
         types=["649bea169d17e4070e0337fa"],
-        assignees=[ASSIGNEE_ID],
+        assignees=[TEST_ASSIGNEE_ID],
         subtasks=[],
         milestones=[],
         rightConnectors=[],
@@ -33,7 +33,7 @@ def test_edit_task(client, task_id):
     edit_task = EditTaskRequest(
         taskId=task_id,
         name="Integration Test Task Updated",
-        assignees=[ASSIGNEE_ID]
+        assignees=[TEST_ASSIGNEE_ID]
     )
     response = client.edit_task(edit_task)
     assert response.type == "EditTask"
