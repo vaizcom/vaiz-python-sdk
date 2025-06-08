@@ -126,20 +126,22 @@ The test configuration (`tests/test_config.py`) will automatically load these cr
 Run all tests:
 
 ```bash
-pytest
+PYTHONPATH=. pytest
 ```
 
 Run specific test file:
 
 ```bash
-pytest tests/test_client.py
+PYTHONPATH=. pytest tests/test_client.py
 ```
 
 Run with verbose output:
 
 ```bash
-pytest -v
+PYTHONPATH=. pytest -v
 ```
+
+Note: Setting `PYTHONPATH=.` is required to ensure Python can find the package modules during testing.
 
 #### Writing Tests
 
