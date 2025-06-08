@@ -26,8 +26,8 @@ if not API_KEY:
     raise ValueError("Please set VAIZ_API_KEY environment variable or create a .env file with VAIZ_API_KEY=your_api_key")
 
 SPACE_ID = os.getenv("VAIZ_SPACE_ID")  # Replace with your actual space ID
-BOARD_ID = "68455cc8e48da05d905c4168"
-GROUP_ID = "68455cc8e48da05d905c4169"
+BOARD_ID = "68455de3e48da05d905c51e1"
+GROUP_ID = "68455de3e48da05d905c51e2"
 PROJECT_ID = "676d6758c6ea65cbc1f06d81"
 ASSIGNEE_ID = "676d6758c6ea65cbc1f06d70"
 
@@ -40,8 +40,8 @@ task = CreateTaskRequest(
     project=PROJECT_ID,
     priority=TaskPriority.High,
     completed=True,
-    # types=["649bea169d17e4070e0337fa"],
-    assignees=[ASSIGNEE_ID],
+    types=["649bea169d17e4070e0337fa"],
+    # assignees=[ASSIGNEE_ID],
     subtasks=[],
     milestones=[],
     # customFields=[CustomField(
@@ -66,7 +66,7 @@ try:
     edit_task = EditTaskRequest(
         taskId=task_id,
         name="Updated task name",
-        # assignees=[ASSIGNEE_ID],
+        assignees=[ASSIGNEE_ID],
         # customFields=[CustomField(
         #     id='684308de140fff60952cd4ac',
         #     value='713037655235784d52416368'
