@@ -1,3 +1,17 @@
+"""
+Basic usage example of the Vaiz Python SDK.
+
+This example demonstrates how to:
+1. Initialize the Vaiz client
+2. Create a new task
+3. Edit an existing task
+
+The SDK is organized into modules:
+- vaiz.client: Main client interface
+- vaiz.api.base: Base API client with common functionality
+- vaiz.api.tasks: Task-specific API operations
+"""
+
 from vaiz import VaizClient
 from vaiz.models import CreateTaskRequest, TaskPriority, CustomField, EditTaskRequest
 import os
@@ -12,24 +26,28 @@ if not API_KEY:
     raise ValueError("Please set VAIZ_API_KEY environment variable or create a .env file with VAIZ_API_KEY=your_api_key")
 
 SPACE_ID = os.getenv("VAIZ_SPACE_ID")  # Replace with your actual space ID
+BOARD_ID = "68455cc8e48da05d905c4168"
+GROUP_ID = "68455cc8e48da05d905c4169"
+PROJECT_ID = "676d6758c6ea65cbc1f06d81"
+ASSIGNEE_ID = "676d6758c6ea65cbc1f06d70"
 
-client = VaizClient(api_key=API_KEY, space_id=SPACE_ID)
+client = VaizClient(api_key=API_KEY, space_id=SPACE_ID, verify_ssl=False, base_url="https://api.vaiz.local:10000/v4")
 
 task = CreateTaskRequest(
     name="Test task 123",
-    group="649bea169d17e4070e0337f8",
-    board="649bea169d17e4070e0337f7",
-    project="649bea169d17e4070e0337f3",
+    group=GROUP_ID,
+    board=BOARD_ID,
+    project=PROJECT_ID,
     priority=TaskPriority.High,
     completed=True,
-    types=["649bea169d17e4070e0337fa"],
-    assignees=["6396e0b66aad7061fa174ea8"],
+    # types=["649bea169d17e4070e0337fa"],
+    assignees=[ASSIGNEE_ID],
     subtasks=[],
     milestones=[],
-    customFields=[CustomField(
-        id='684308de140fff60952cd4ac',
-        value=['723565327a2d39495a613449','713037655235784d52416368']
-    )],
+    # customFields=[CustomField(
+    #     id='684308de140fff60952cd4ac',
+    #     value=['723565327a2d39495a613449','713037655235784d52416368']
+    # )],
     rightConnectors=[],
     leftConnectors=[]
 )
@@ -48,11 +66,11 @@ try:
     edit_task = EditTaskRequest(
         taskId=task_id,
         name="Updated task name",
-        assignees=["6396e0b66aad7061fa174ea8"],
-        customFields=[CustomField(
-            id='684308de140fff60952cd4ac',
-            value='713037655235784d52416368'
-        )]
+        # assignees=[ASSIGNEE_ID],
+        # customFields=[CustomField(
+        #     id='684308de140fff60952cd4ac',
+        #     value='713037655235784d52416368'
+        # )]
     )
 
     try:

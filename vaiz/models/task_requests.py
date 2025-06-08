@@ -21,6 +21,11 @@ class CreateTaskRequest(BaseModel):
     leftConnectors: List[str] = []
     customFields: List[CustomField] = []
 
+    def model_dump(self, **kwargs):
+        # Remove None values from the dict
+        data = super().model_dump(**kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
 
 class EditTaskRequest(BaseModel):
     taskId: str
@@ -38,7 +43,7 @@ class EditTaskRequest(BaseModel):
     leftConnectors: Optional[List[str]] = None
     customFields: Optional[List[CustomField]] = None
 
-    def dict(self, **kwargs):
+    def model_dump(self, **kwargs):
         # Remove None values from the dict
-        data = super().dict(**kwargs)
+        data = super().model_dump(**kwargs)
         return {k: v for k, v in data.items() if v is not None} 
