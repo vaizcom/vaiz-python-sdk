@@ -1,8 +1,8 @@
 import pytest
-from vaiz.models import BoardsResponse, Board
-from tests.test_config import get_test_client
+from vaiz.models import BoardsResponse, Board, BoardResponse
+from tests.test_config import get_test_client, TEST_BOARD_ID
 
-def test_get_boards_real():
+def test_get_boards():
     client = get_test_client()
     response = client.get_boards()
     assert isinstance(response, BoardsResponse)
@@ -14,4 +14,13 @@ def test_get_boards_real():
         board = boards[0]
         assert isinstance(board, Board)
         assert isinstance(board.id, str)
-        assert isinstance(board.name, str) 
+        assert isinstance(board.name, str)
+
+def test_get_board():
+    client = get_test_client()
+    response = client.get_board(TEST_BOARD_ID)
+    assert isinstance(response, BoardResponse)
+    assert isinstance(response.payload["board"], Board)
+    board = response.payload["board"]
+    assert board.id == TEST_BOARD_ID
+    assert isinstance(board.name, str) 

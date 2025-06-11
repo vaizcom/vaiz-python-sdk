@@ -47,4 +47,9 @@ class BoardsPayload(BaseModel):
 
 class BoardsResponse(BaseModel):
     type: str
-    payload: BoardsPayload 
+    payload: BoardsPayload
+
+
+class BoardResponse(BaseModel):
+    type: str
+    payload: Dict[str, Board] = Field(..., alias="payload") 

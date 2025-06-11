@@ -40,6 +40,13 @@ client = VaizClient(
 response = client.get_boards()
 ```
 
+#### Get a Single Board
+
+```python
+response = client.get_board("board_id")
+board = response.payload["board"]
+```
+
 ### Working with Tasks
 
 #### Create a Task
