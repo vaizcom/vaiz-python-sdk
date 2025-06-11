@@ -7,6 +7,9 @@ from .models import (
     EditTaskRequest,
     Task,
     TaskResponse,
+    BoardResponse,
+    BoardsResponse,
+    ProfileResponse,
 )
 
 __all__ = [
@@ -18,4 +21,7 @@ __all__ = [
     'EditTaskRequest',
     'Task',
     'TaskResponse',
+    'BoardResponse',
+    'BoardsResponse',
+    'ProfileResponse',
 ]

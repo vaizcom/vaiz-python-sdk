@@ -49,7 +49,15 @@ class BoardsResponse(BaseModel):
     type: str
     payload: BoardsPayload
 
+    @property
+    def boards(self) -> List[Board]:
+        return self.payload.boards
+
 
 class BoardResponse(BaseModel):
     type: str
-    payload: Dict[str, Board] = Field(..., alias="payload") 
+    payload: Dict[str, Board] = Field(..., alias="payload")
+
+    @property
+    def board(self) -> Board:
+        return self.payload["board"] 

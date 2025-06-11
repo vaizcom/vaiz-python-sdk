@@ -33,4 +33,8 @@ class Profile(BaseModel):
 
 class ProfileResponse(BaseModel):
     type: str
-    payload: Dict[str, Profile] = Field(..., alias="payload") 
+    payload: Dict[str, Profile] = Field(..., alias="payload")
+
+    @property
+    def profile(self) -> Profile:
+        return self.payload["profile"] 

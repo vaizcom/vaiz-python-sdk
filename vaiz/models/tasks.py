@@ -47,6 +47,10 @@ class TaskResponse(BaseModel):
     payload: Dict[str, Any]
     type: str
 
+    @property
+    def task(self) -> Task:
+        return self.payload["task"]
+
 
 class CreateTaskRequest(BaseModel):
     name: str
