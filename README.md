@@ -47,6 +47,15 @@ response = client.get_board("board_id")
 board = response.payload["board"]
 ```
 
+### Working with Profile
+
+#### Get User Profile
+
+```python
+response = client.get_profile()
+profile = response.payload["profile"]
+```
+
 ### Working with Tasks
 
 #### Create a Task

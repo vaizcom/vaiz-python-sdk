@@ -1,6 +1,7 @@
 from .base import TaskFollower, TaskPriority, CustomField
 from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest
 from vaiz.models.boards import Board, BoardsResponse, BoardResponse
+from vaiz.models.profile import Profile, ProfileResponse
 
 __all__ = [
     'TaskFollower',
@@ -12,5 +13,7 @@ __all__ = [
     'TaskResponse',
     'Board',
     'BoardsResponse',
-    'BoardResponse'
+    'BoardResponse',
+    'Profile',
+    'ProfileResponse'
 ] 
