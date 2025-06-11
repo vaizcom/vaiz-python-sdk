@@ -12,6 +12,7 @@ from .models import (
     ProfileResponse,
     Project,
     ProjectsResponse,
+    ProjectResponse,
 )
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     'ProfileResponse',
     'Project',
     'ProjectsResponse',
+    'ProjectResponse',
 ]

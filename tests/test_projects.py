@@ -22,4 +22,24 @@ def test_get_projects(client):
         assert hasattr(project, "creator")
         assert hasattr(project, "space")
         assert hasattr(project, "created_at")
-        assert hasattr(project, "updated_at") 
+        assert hasattr(project, "updated_at")
+
+
+def test_get_project(client):
+    # First get all projects to have a valid project ID
+    projects_response = client.get_projects()
+    assert projects_response.projects, "No projects available for testing"
+    
+    project_id = projects_response.projects[0].id
+    response = client.get_project(project_id)
+    
+    assert response.type == "GetProject"
+    assert response.project.id == project_id
+    assert hasattr(response.project, "name")
+    assert hasattr(response.project, "color")
+    assert hasattr(response.project, "slug")
+    assert hasattr(response.project, "icon")
+    assert hasattr(response.project, "creator")
+    assert hasattr(response.project, "space")
+    assert hasattr(response.project, "created_at")
+    assert hasattr(response.project, "updated_at") 

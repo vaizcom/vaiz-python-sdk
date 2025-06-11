@@ -29,4 +29,17 @@ class ProjectsResponse(BaseModel):
 
     @property
     def projects(self) -> List[Project]:
-        return self.payload.projects 
+        return self.payload.projects
+
+
+class ProjectPayload(BaseModel):
+    project: Project
+
+
+class ProjectResponse(BaseModel):
+    type: str
+    payload: ProjectPayload
+
+    @property
+    def project(self) -> Project:
+        return self.payload.project 
