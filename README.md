@@ -32,6 +32,14 @@ client = VaizClient(
 )
 ```
 
+### Working with Boards
+
+#### Get All Boards
+
+```python
+response = client.get_boards()
+```
+
 ### Working with Tasks
 
 #### Create a Task
@@ -54,7 +62,6 @@ task = CreateTaskRequest(
 )
 
 response = client.create_task(task)
-task_id = response.payload['task']['_id']
 ```
 
 #### Edit a Task
@@ -75,31 +82,23 @@ response = client.edit_task(edit_task)
 
 ```python
 response = client.get_task("task_id")
-task_data = response.payload
 ```
 
 ## Development
 
-### Project Structure
+### Setting Up Development Environment
 
+1. Create and activate a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
 ```
-vaiz-python-sdk/
-├── vaiz/                  # Main package directory
-│   ├── __init__.py       # Package initialization
-│   ├── client.py         # Main client implementation
-│   └── models.py         # Data models
-├── tests/                # Test directory
-│   ├── __init__.py
-│   ├── test_client.py    # Client tests
-│   └── test_config.py    # Test configuration
-├── examples/             # Example usage
-│   ├── __init__.py
-│   ├── config.py         # Example configuration
-│   ├── create_task.py    # Task creation example
-│   ├── edit_task.py      # Task editing example
-│   └── get_task.py       # Task retrieval example
-├── README.md             # This file
-└── requirements.txt      # Project dependencies
+
+2. Install the package in development mode:
+
+```bash
+pip install -e .
 ```
 
 ### Testing
@@ -179,17 +178,10 @@ def test_create_task(mocker):
 
 ### Examples
 
-The `examples/` directory contains working examples of SDK usage:
-
-- `create_task.py`: Demonstrates task creation
-- `edit_task.py`: Shows how to edit existing tasks
-- `get_task.py`: Illustrates task retrieval
-- `config.py`: Example configuration setup
-
-To run an example:
+The `examples/` directory contains working examples of SDK usage. You can run any example using the following command:
 
 ```bash
-python -m examples.create_task
+python -m examples.<example_file_name>
 ```
 
 ## Contributing
