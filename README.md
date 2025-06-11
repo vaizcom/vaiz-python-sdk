@@ -32,6 +32,14 @@ client = VaizClient(
 )
 ```
 
+### Working with Projects
+
+#### Get All Projects
+
+```python
+response = client.get_projects()
+```
+
 ### Working with Boards
 
 #### Get All Boards
