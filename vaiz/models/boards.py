@@ -1,5 +1,18 @@
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from pydantic import BaseModel, Field
+from datetime import datetime
+from enum import Enum
+
+
+class CustomFieldType(str, Enum):
+    """Types of custom fields available in the board."""
+    TEXT = "Text"
+    NUMBER = "Number"
+    CHECKBOX = "Checkbox"
+    DATE = "Date"
+    MEMBER = "Member"
+    TASK_RELATIONS = "TaskRelations"
+    SELECT = "Select"
 
 
 class BoardGroup(BaseModel):
@@ -17,8 +30,19 @@ class BoardType(BaseModel):
 
 
 class BoardCustomField(BaseModel):
+    """
+    Represents a custom field in a board.
+    
+    Attributes:
+        name (str): The name of the custom field
+        type (CustomFieldType): The type of the custom field
+        id (str): The unique identifier of the custom field
+        description (Optional[str]): Optional description of the custom field
+        options (Optional[List[Any]]): List of options for Select type fields
+        hidden (Optional[bool]): Whether the field is hidden from view
+    """
     name: str
-    type: str
+    type: CustomFieldType
     id: str = Field(..., alias="_id")
     description: Optional[str] = None
     options: Optional[List[Any]] = None

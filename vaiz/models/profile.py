@@ -9,8 +9,8 @@ class ProfileEmail(BaseModel):
 
 
 class ProfileColor(BaseModel):
-    color: str  # Hex color string
-    isDark: bool = False
+    color: Optional[str] = None  # Hex color string
+    isDark: Optional[bool] = None
 
 
 class Profile(BaseModel):

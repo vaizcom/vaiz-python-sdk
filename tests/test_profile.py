@@ -28,6 +28,8 @@ def test_get_profile():
     assert isinstance(profile.avatarMode, int)
     assert isinstance(profile.incompleteSteps, list)
     assert isinstance(profile.memberId, str)
-    assert isinstance(profile.color.color, str)
-    assert is_valid_hex_color(profile.color.color)
-    assert isinstance(profile.color.isDark, bool) 
+    if profile.color.color is not None:
+        assert isinstance(profile.color.color, str)
+        assert is_valid_hex_color(profile.color.color)
+    if profile.color.isDark is not None:
+        assert isinstance(profile.color.isDark, bool) 
