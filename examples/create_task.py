@@ -16,7 +16,7 @@ def create_task():
         project=PROJECT_ID,
         priority=TaskPriority.High,
         completed=True,
-        types=["649bea169d17e4070e0337fa"],
+        types=[],
         subtasks=[],
         milestones=[],
         rightConnectors=[],
