@@ -1,5 +1,12 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models import BoardsResponse, BoardResponse, CreateBoardTypeRequest, CreateBoardTypeResponse
+from vaiz.models import (
+    BoardsResponse, 
+    BoardResponse, 
+    CreateBoardTypeRequest, 
+    CreateBoardTypeResponse,
+    EditBoardTypeRequest,
+    EditBoardTypeResponse
+)
 
 
 class BoardsAPIClient(BaseAPIClient):
@@ -37,4 +44,17 @@ class BoardsAPIClient(BaseAPIClient):
             CreateBoardTypeResponse: The created board type information
         """
         response_data = self._make_request("createBoardType", method="POST", json_data=request.model_dump())
-        return CreateBoardTypeResponse(**response_data) 
+        return CreateBoardTypeResponse(**response_data)
+
+    def edit_board_type(self, request: EditBoardTypeRequest) -> EditBoardTypeResponse:
+        """
+        Edit an existing board type.
+        
+        Args:
+            request (EditBoardTypeRequest): The board type edit request
+            
+        Returns:
+            EditBoardTypeResponse: The updated board type information
+        """
+        response_data = self._make_request("editBoardType", method="POST", json_data=request.model_dump())
+        return EditBoardTypeResponse(**response_data) 

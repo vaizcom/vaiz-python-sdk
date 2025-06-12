@@ -13,6 +13,7 @@ class BoardType(BaseModel):
     color: str
     id: str = Field(..., alias="_id")
     description: Optional[str] = None
+    hidden: Optional[bool] = None
 
 
 class BoardCustomField(BaseModel):
@@ -69,6 +70,10 @@ class CreateBoardTypeRequest(BaseModel):
     icon: str
     color: str
 
+    def model_dump(self, **kwargs):
+        data = super().model_dump(**kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
 
 class CreateBoardTypePayload(BaseModel):
     boardId: str
@@ -78,6 +83,34 @@ class CreateBoardTypePayload(BaseModel):
 class CreateBoardTypeResponse(BaseModel):
     type: str
     payload: CreateBoardTypePayload
+
+    @property
+    def board_type(self) -> BoardType:
+        return self.payload.boardType
+
+
+class EditBoardTypeRequest(BaseModel):
+    boardTypeId: str
+    boardId: str
+    label: Optional[str] = None
+    icon: Optional[str] = None
+    color: Optional[str] = None
+    description: Optional[str] = None
+    hidden: Optional[bool] = None
+
+    def model_dump(self, **kwargs):
+        data = super().model_dump(**kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class EditBoardTypePayload(BaseModel):
+    boardId: str
+    boardType: BoardType
+
+
+class EditBoardTypeResponse(BaseModel):
+    type: str
+    payload: EditBoardTypePayload
 
     @property
     def board_type(self) -> BoardType:

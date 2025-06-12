@@ -71,6 +71,25 @@ response = client.create_board_type(request)
 board_type = response.board_type
 ```
 
+#### Edit a Board Type
+
+```python
+from vaiz.models import EditBoardTypeRequest
+
+request = EditBoardTypeRequest(
+    boardTypeId="board_type_id",
+    boardId="board_id",
+    label="Updated Type",
+    icon="Cursor",
+    color="silver",
+    description="Updated description",
+    hidden=True
+)
+
+response = client.edit_board_type(request)
+board_type = response.board_type
+```
+
 ### Working with Profile
 
 #### Get User Profile
