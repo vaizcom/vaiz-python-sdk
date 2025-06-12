@@ -18,7 +18,7 @@ class Task(BaseModel):
     project: str
     parentTask: Optional[str] = None
     types: List[str] = []
-    priority: int
+    priority: TaskPriority
     hrid: str
     followers: Dict[str, str]
     archiver: Optional[str] = None
