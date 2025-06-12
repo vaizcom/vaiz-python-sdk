@@ -22,7 +22,7 @@ def test_get_boards():
     assert hasattr(response.payload, 'boards')
     boards = response.payload.boards
     assert isinstance(boards, list)
-    # Проверим хотя бы одну доску, если есть
+    # Check at least one board if exists
     if boards:
         board = boards[0]
         assert isinstance(board, Board)
@@ -61,7 +61,7 @@ def test_edit_board_type(board_type_id):
     assert response.board_type.hidden is True
     assert response.board_type.id == board_type_id
 
-    # Дополнительная проверка: label обновился в системе
+    # Additional check: label has been updated in the system
     board = client.get_board(TEST_BOARD_ID).payload["board"]
     found = False
     for t in (board.types_list or []):
