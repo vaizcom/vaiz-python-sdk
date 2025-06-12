@@ -1,6 +1,7 @@
 import pytest
 from vaiz.models import BoardsResponse, Board, BoardResponse
 from tests.test_config import get_test_client, TEST_BOARD_ID
+from vaiz.models import CreateBoardTypeRequest
 
 def test_get_boards():
     client = get_test_client()
@@ -23,4 +24,19 @@ def test_get_board():
     assert isinstance(response.payload["board"], Board)
     board = response.payload["board"]
     assert board.id == TEST_BOARD_ID
-    assert isinstance(board.name, str) 
+    assert isinstance(board.name, str)
+
+def test_create_board_type():
+    client = get_test_client()
+    request = CreateBoardTypeRequest(
+        boardId=TEST_BOARD_ID,
+        label="Test Type",
+        icon="Cursor",
+        color="silver"
+    )
+    response = client.create_board_type(request)
+    assert response.type == "CreateBoardType"
+    assert response.board_type.label == "Test Type"
+    assert response.board_type.icon == "Cursor"
+    assert response.board_type.color == "silver"
+    assert isinstance(response.board_type.id, str) 

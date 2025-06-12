@@ -60,4 +60,25 @@ class BoardResponse(BaseModel):
 
     @property
     def board(self) -> Board:
-        return self.payload["board"] 
+        return self.payload["board"]
+
+
+class CreateBoardTypeRequest(BaseModel):
+    boardId: str
+    label: str
+    icon: str
+    color: str
+
+
+class CreateBoardTypePayload(BaseModel):
+    boardId: str
+    boardType: BoardType
+
+
+class CreateBoardTypeResponse(BaseModel):
+    type: str
+    payload: CreateBoardTypePayload
+
+    @property
+    def board_type(self) -> BoardType:
+        return self.payload.boardType 

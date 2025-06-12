@@ -55,6 +55,22 @@ response = client.get_board("board_id")
 board = response.payload["board"]
 ```
 
+#### Create a Board Type
+
+```python
+from vaiz.models import CreateBoardTypeRequest
+
+request = CreateBoardTypeRequest(
+    boardId="board_id",
+    label="New Type",
+    icon="Cursor",
+    color="silver"
+)
+
+response = client.create_board_type(request)
+board_type = response.board_type
+```
+
 ### Working with Profile
 
 #### Get User Profile

@@ -20,10 +20,10 @@ if not TEST_SPACE_ID:
     raise ValueError("Please set VAIZ_SPACE_ID environment variable or create a .env file with VAIZ_SPACE_ID=your_space_id")
 
 # Test configuration constants
-TEST_BOARD_ID = "68455de3e48da05d905c51e1"
-TEST_GROUP_ID = "68455de3e48da05d905c51e2"
-TEST_PROJECT_ID = "676d6758c6ea65cbc1f06d81"
-TEST_ASSIGNEE_ID = "676d6758c6ea65cbc1f06d70"
+TEST_PROJECT_ID = os.getenv("VAIZ_PROJECT_ID")
+TEST_BOARD_ID = os.getenv("VAIZ_BOARD_ID")
+TEST_GROUP_ID = os.getenv("VAIZ_GROUP_ID")
+TEST_ASSIGNEE_ID = os.getenv("VAIZ_ASSIGNEE_ID")
 
 def get_test_client():
     """Initialize and return a VaizClient instance for testing."""
