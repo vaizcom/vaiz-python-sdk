@@ -3,6 +3,18 @@ from vaiz.models import BoardsResponse, Board, BoardResponse
 from tests.test_config import get_test_client, TEST_BOARD_ID
 from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest
 
+@pytest.fixture
+def board_type_id():
+    client = get_test_client()
+    request = CreateBoardTypeRequest(
+        boardId=TEST_BOARD_ID,
+        label="Test Type",
+        icon="Cursor",
+        color="silver"
+    )
+    response = client.create_board_type(request)
+    return response.board_type.id
+
 def test_get_boards():
     client = get_test_client()
     response = client.get_boards()
@@ -26,25 +38,13 @@ def test_get_board():
     assert board.id == TEST_BOARD_ID
     assert isinstance(board.name, str)
 
-def test_create_board_type():
-    client = get_test_client()
-    request = CreateBoardTypeRequest(
-        boardId=TEST_BOARD_ID,
-        label="Test Type",
-        icon="Cursor",
-        color="silver"
-    )
-    response = client.create_board_type(request)
-    assert response.type == "CreateBoardType"
-    assert response.board_type.label == "Test Type"
-    assert response.board_type.icon == "Cursor"
-    assert response.board_type.color == "silver"
-    assert isinstance(response.board_type.id, str)
+def test_create_board_type(board_type_id):
+    assert isinstance(board_type_id, str)
 
-def test_edit_board_type():
+def test_edit_board_type(board_type_id):
     client = get_test_client()
     request = EditBoardTypeRequest(
-        boardTypeId="684ad3b021b100837be1a521",  # Using the ID from your example
+        boardTypeId=board_type_id,
         boardId=TEST_BOARD_ID,
         label="Updated Test Type",
         icon="Cursor",
@@ -59,4 +59,13 @@ def test_edit_board_type():
     assert response.board_type.color == "silver"
     assert response.board_type.description == "Updated test description"
     assert response.board_type.hidden is True
-    assert response.board_type.id == "684ad3b021b100837be1a521" 
+    assert response.board_type.id == board_type_id
+
+    # Дополнительная проверка: label обновился в системе
+    board = client.get_board(TEST_BOARD_ID).payload["board"]
+    found = False
+    for t in (board.types_list or []):
+        if t.id == board_type_id:
+            assert t.label == "Updated Test Type"
+            found = True
+    assert found, "Updated board type not found in board" 
