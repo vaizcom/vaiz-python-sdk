@@ -1,6 +1,13 @@
 import pytest
+import re
 from vaiz.models import ProfileResponse, Profile
 from tests.test_config import get_test_client
+
+
+def is_valid_hex_color(color: str) -> bool:
+    """Check if the string is a valid hex color."""
+    hex_pattern = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+    return bool(re.match(hex_pattern, color))
 
 
 def test_get_profile():
@@ -20,4 +27,7 @@ def test_get_profile():
     assert isinstance(profile.emails[0].primary, bool)
     assert isinstance(profile.avatarMode, int)
     assert isinstance(profile.incompleteSteps, list)
-    assert isinstance(profile.memberId, str) 
+    assert isinstance(profile.memberId, str)
+    assert isinstance(profile.color.color, str)
+    assert is_valid_hex_color(profile.color.color)
+    assert isinstance(profile.color.isDark, bool) 
