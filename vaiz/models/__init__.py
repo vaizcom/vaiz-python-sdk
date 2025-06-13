@@ -16,6 +16,7 @@ from vaiz.models.boards import (
 )
 from vaiz.models.profile import Profile, ProfileResponse
 from vaiz.models.projects import Project, ProjectsResponse, ProjectResponse
+from vaiz.models.upload import UploadedFile, UploadFileResponse
 
 __all__ = [
     'TaskFollower',
@@ -41,5 +42,7 @@ __all__ = [
     'ProfileResponse',
     'Project',
     'ProjectsResponse',
-    'ProjectResponse'
+    'ProjectResponse',
+    'UploadedFile',
+    'UploadFileResponse'
 ] 

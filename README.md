@@ -199,6 +199,16 @@ response = client.edit_task(edit_task)
 response = client.get_task("task_id")
 ```
 
+### Working with Files
+
+#### Upload a File
+
+```python
+response = client.upload_file("/path/to/file.pdf", file_type="Pdf")
+file = response.file
+print(file.url)
+```
+
 ## Development
 
 ### Setting Up Development Environment
