@@ -1,7 +1,7 @@
 import pytest
 from vaiz.models import BoardsResponse, Board, BoardResponse
 from tests.test_config import get_test_client, TEST_BOARD_ID
-from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoardCustomFieldRequest, CustomFieldType
+from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoardCustomFieldRequest, EditBoardCustomFieldRequest, CustomFieldType
 
 @pytest.fixture
 def board_type_id():
@@ -95,4 +95,44 @@ def test_create_board_custom_field():
             assert cf.name == "Test Date Field"
             assert cf.type == CustomFieldType.DATE
             found = True
-    assert found, "Created custom field not found in board" 
+    assert found, "Created custom field not found in board"
+
+def test_edit_board_custom_field():
+    client = get_test_client()
+    
+    # First create a custom field
+    create_request = CreateBoardCustomFieldRequest(
+        name="Test Field",
+        type=CustomFieldType.TEXT,
+        boardId=TEST_BOARD_ID,
+        hidden=False,
+        description="Test description"
+    )
+    create_response = client.create_board_custom_field(create_request)
+    field_id = create_response.custom_field.id
+    
+    # Then edit it
+    edit_request = EditBoardCustomFieldRequest(
+        fieldId=field_id,
+        boardId=TEST_BOARD_ID,
+        hidden=True,
+        description="Updated test description"
+    )
+    edit_response = client.edit_board_custom_field(edit_request)
+    
+    assert edit_response.type == "EditBoardCustomField"
+    assert edit_response.custom_field.id == field_id
+    assert edit_response.custom_field.name == "Test Field"
+    assert edit_response.custom_field.type == CustomFieldType.TEXT
+    assert edit_response.custom_field.hidden is True
+    assert edit_response.custom_field.description == "Updated test description"
+    
+    # Additional check: field has been updated in the board
+    board = client.get_board(TEST_BOARD_ID).payload["board"]
+    found = False
+    for cf in (board.custom_fields or []):
+        if cf.id == field_id:
+            assert cf.hidden is True
+            assert cf.description == "Updated test description"
+            found = True
+    assert found, "Updated custom field not found in board" 

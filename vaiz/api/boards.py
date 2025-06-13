@@ -7,7 +7,9 @@ from vaiz.models import (
     EditBoardTypeRequest,
     EditBoardTypeResponse,
     CreateBoardCustomFieldRequest,
-    CreateBoardCustomFieldResponse
+    CreateBoardCustomFieldResponse,
+    EditBoardCustomFieldRequest,
+    EditBoardCustomFieldResponse
 )
 
 
@@ -72,4 +74,17 @@ class BoardsAPIClient(BaseAPIClient):
             CreateBoardCustomFieldResponse: The created custom field information
         """
         response_data = self._make_request("createBoardCustomField", method="POST", json_data=request.model_dump())
-        return CreateBoardCustomFieldResponse(**response_data) 
+        return CreateBoardCustomFieldResponse(**response_data)
+
+    def edit_board_custom_field(self, request: EditBoardCustomFieldRequest) -> EditBoardCustomFieldResponse:
+        """
+        Edit an existing custom field in a board.
+        
+        Args:
+            request (EditBoardCustomFieldRequest): The custom field edit request
+            
+        Returns:
+            EditBoardCustomFieldResponse: The updated custom field information
+        """
+        response_data = self._make_request("editBoardCustomField", method="POST", json_data=request.model_dump())
+        return EditBoardCustomFieldResponse(**response_data) 

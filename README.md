@@ -112,6 +112,29 @@ custom_field = response.custom_field
 print(f"Created custom field: {custom_field.name} (ID: {custom_field.id})")
 ```
 
+#### Edit a Board Custom Field
+
+```python
+from vaiz import VaizClient, EditBoardCustomFieldRequest
+
+client = VaizClient(api_key="your-api-key", space_id="your-space-id")
+
+# Edit an existing custom field
+request = EditBoardCustomFieldRequest(
+    fieldId="your-field-id",
+    boardId="your-board-id",
+    hidden=True,
+    description="Updated field description"
+)
+
+response = client.edit_board_custom_field(request)
+custom_field = response.custom_field
+
+print(f"Updated custom field: {custom_field.name} (ID: {custom_field.id})")
+print(f"Hidden: {custom_field.hidden}")
+print(f"Description: {custom_field.description}")
+```
+
 Available custom field types:
 
 - `CustomFieldType.TEXT` - Text field

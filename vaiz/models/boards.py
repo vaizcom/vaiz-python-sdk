@@ -164,4 +164,29 @@ class CreateBoardCustomFieldResponse(BaseModel):
 
     @property
     def custom_field(self) -> BoardCustomField:
+        return self.payload.customField
+
+
+class EditBoardCustomFieldRequest(BaseModel):
+    fieldId: str
+    boardId: str
+    hidden: Optional[bool] = None
+    description: Optional[str] = None
+    options: Optional[List[Any]] = None
+
+    def model_dump(self, **kwargs):
+        data = super().model_dump(**kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class EditBoardCustomFieldPayload(BaseModel):
+    customField: BoardCustomField
+
+
+class EditBoardCustomFieldResponse(BaseModel):
+    type: str
+    payload: EditBoardCustomFieldPayload
+
+    @property
+    def custom_field(self) -> BoardCustomField:
         return self.payload.customField 
