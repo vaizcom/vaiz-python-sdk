@@ -29,6 +29,7 @@ client = VaizClient(
     space_id="your_space_id",
     verify_ssl=False,  # Set to True in production
     base_url="https://api.vaiz.local:10000/v4"  # Use appropriate base URL for your environment
+    verbose=True  # Optional: set to True to enable debug output (request/response)
 )
 ```
 
