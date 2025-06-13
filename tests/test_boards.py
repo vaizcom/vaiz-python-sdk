@@ -1,7 +1,7 @@
 import pytest
 from vaiz.models import BoardsResponse, Board, BoardResponse
 from tests.test_config import get_test_client, TEST_BOARD_ID
-from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest
+from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoardCustomFieldRequest, CustomFieldType
 
 @pytest.fixture
 def board_type_id():
@@ -68,4 +68,31 @@ def test_edit_board_type(board_type_id):
         if t.id == board_type_id:
             assert t.label == "Updated Test Type"
             found = True
-    assert found, "Updated board type not found in board" 
+    assert found, "Updated board type not found in board"
+
+def test_create_board_custom_field():
+    client = get_test_client()
+    request = CreateBoardCustomFieldRequest(
+        name="Test Date Field",
+        type=CustomFieldType.DATE,
+        boardId=TEST_BOARD_ID,
+        description="Test date field description",
+        hidden=False
+    )
+    response = client.create_board_custom_field(request)
+    assert response.type == "CreateBoardCustomField"
+    assert response.custom_field.name == "Test Date Field"
+    assert response.custom_field.type == CustomFieldType.DATE
+    assert response.custom_field.description == "Test date field description"
+    assert response.custom_field.hidden is False
+    assert response.custom_field.id is not None
+
+    # Additional check: custom field has been added to the board
+    board = client.get_board(TEST_BOARD_ID).payload["board"]
+    found = False
+    for cf in (board.custom_fields or []):
+        if cf.id == response.custom_field.id:
+            assert cf.name == "Test Date Field"
+            assert cf.type == CustomFieldType.DATE
+            found = True
+    assert found, "Created custom field not found in board" 

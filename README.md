@@ -90,6 +90,38 @@ response = client.edit_board_type(request)
 board_type = response.board_type
 ```
 
+#### Create a Board Custom Field
+
+```python
+from vaiz import VaizClient, CreateBoardCustomFieldRequest, CustomFieldType
+
+client = VaizClient(api_key="your-api-key", space_id="your-space-id")
+
+# Create a new custom field
+request = CreateBoardCustomFieldRequest(
+    name="Date",
+    type=CustomFieldType.DATE,
+    boardId="your-board-id",
+    description="Date field for tracking deadlines",
+    hidden=False
+)
+
+response = client.create_board_custom_field(request)
+custom_field = response.custom_field
+
+print(f"Created custom field: {custom_field.name} (ID: {custom_field.id})")
+```
+
+Available custom field types:
+
+- `CustomFieldType.TEXT` - Text field
+- `CustomFieldType.NUMBER` - Number field
+- `CustomFieldType.CHECKBOX` - Checkbox field
+- `CustomFieldType.DATE` - Date field
+- `CustomFieldType.MEMBER` - Member field
+- `CustomFieldType.TASK_RELATIONS` - Task relations field
+- `CustomFieldType.SELECT` - Select field
+
 ### Working with Profile
 
 #### Get User Profile

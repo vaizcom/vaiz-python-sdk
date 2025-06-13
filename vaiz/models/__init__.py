@@ -7,7 +7,10 @@ from vaiz.models.boards import (
     CreateBoardTypeRequest, 
     CreateBoardTypeResponse,
     EditBoardTypeRequest,
-    EditBoardTypeResponse
+    EditBoardTypeResponse,
+    CreateBoardCustomFieldRequest,
+    CreateBoardCustomFieldResponse,
+    CustomFieldType
 )
 from vaiz.models.profile import Profile, ProfileResponse
 from vaiz.models.projects import Project, ProjectsResponse, ProjectResponse
@@ -27,6 +30,9 @@ __all__ = [
     'CreateBoardTypeResponse',
     'EditBoardTypeRequest',
     'EditBoardTypeResponse',
+    'CreateBoardCustomFieldRequest',
+    'CreateBoardCustomFieldResponse',
+    'CustomFieldType',
     'Profile',
     'ProfileResponse',
     'Project',
