@@ -69,18 +69,18 @@ class VaizHTTPError(VaizSDKError):
         self.response_text = response_text
 
 class BaseAPIClient:
-    def __init__(self, api_key: str, space_id: str, base_url: str = "https://api.vaiz.com/v4", verify_ssl: bool = True, verbose: bool = False):
+    def __init__(self, api_key: str, space_id: str, base_url: str = "https://api.vaiz.com/v4", verify_ssl: bool = True, verbose: bool = False, app_version: str = "1.69.0"):
         self.api_key = api_key
         self.space_id = space_id
         self.base_url = base_url
         self.verify_ssl = verify_ssl
         self.verbose = verbose
+        self.app_version = app_version
         self.session = requests.Session()
         self.session.headers.update({
             "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
             "current-space-id": self.space_id,
-            "app-version": "1.68.1",
+            "app-version": self.app_version,
         })
 
     def _parse_error(self, response_data: Dict[str, Any]) -> APIError:

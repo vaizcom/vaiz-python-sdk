@@ -21,10 +21,7 @@ class UploadAPIClient(BaseAPIClient):
                 "file": (os.path.basename(file_path), f),
                 "type": (None, file_type),
             }
-            # Remove Content-Type header for multipart
-            headers = self.session.headers.copy()
-            headers.pop("Content-Type", None)
-            response = self.session.post(url, files=files, headers=headers, verify=self.verify_ssl)
+            response = self.session.post(url, files=files, verify=self.verify_ssl)
         response.raise_for_status()
         response_data = response.json()
         return UploadFileResponse(**response_data) 

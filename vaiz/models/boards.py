@@ -13,6 +13,7 @@ class CustomFieldType(str, Enum):
     MEMBER = "Member"
     TASK_RELATIONS = "TaskRelations"
     SELECT = "Select"
+    URL = "Url"
 
 
 class BoardGroup(BaseModel):
