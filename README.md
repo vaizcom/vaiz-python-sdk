@@ -304,37 +304,26 @@ Note: Setting `PYTHONPATH=.` is required to ensure Python can find the package m
 
 #### Writing Tests
 
+Tests in this project are designed to run against a real API and database, which requires a valid `VAIZ_API_KEY` and `VAIZ_SPACE_ID` to be configured in your `.env` file. The tests do not use mocks for API calls; instead, they interact with the live environment specified in your configuration.
+
 When writing tests for the SDK:
 
-1. Use the test configuration from `tests/test_config.py`:
+1. Use the test configuration from `tests/test_config.py` to get a pre-configured client:
 
 ```python
-from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID
+from tests.test_config import get_test_client, TEST_BOARD_ID
 
-def test_create_task(mocker):
+def test_get_board():
     client = get_test_client()
-    # Your test code here
+    response = client.get_board(TEST_BOARD_ID)
+    # ... assertions to verify the response
 ```
 
-2. Mock external API calls using `pytest-mock`:
+2. Structure your tests to perform real operations and validate the responses from the API. For example, a test might create a resource, then retrieve it to ensure it was created correctly.
 
-```python
-def test_create_task(mocker):
-    # Mock the API response
-    mock_response = mocker.Mock()
-    mock_response.json.return_value = {
-        "type": "success",
-        "payload": {"task": {"_id": "test_task_id"}}
-    }
-    mocker.patch('requests.post', return_value=mock_response)
+3. Include proper assertions to verify the state and data of the responses.
 
-    # Test implementation
-    client = get_test_client()
-    # ... rest of the test
-```
-
-3. Test both success and error cases
-4. Include proper assertions for response data
+4. Be mindful that tests will create, modify, or delete real data in the configured Vaiz space.
 
 ### Examples
 
