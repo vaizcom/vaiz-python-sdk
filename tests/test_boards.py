@@ -1,7 +1,7 @@
 import pytest
 from vaiz.models import BoardsResponse, Board, BoardResponse
 from tests.test_config import get_test_client, TEST_BOARD_ID
-from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoardCustomFieldRequest, EditBoardCustomFieldRequest, CustomFieldType
+from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoardCustomFieldRequest, EditBoardCustomFieldRequest, CustomFieldType, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse
 
 @pytest.fixture
 def board_type_id():
@@ -135,4 +135,65 @@ def test_edit_board_custom_field():
             assert cf.hidden is True
             assert cf.description == "Updated test description"
             found = True
-    assert found, "Updated custom field not found in board" 
+    assert found, "Updated custom field not found in board"
+
+def test_create_board_group():
+    client = get_test_client()
+    request = CreateBoardGroupRequest(
+        name="Test Board Group",
+        boardId=TEST_BOARD_ID,
+        description="A group for testing"
+    )
+    response = client.create_board_group(request)
+    assert isinstance(response, CreateBoardGroupResponse)
+    assert response.type == "CreateBoardGroup"
+
+    board_groups = response.board_groups
+    assert isinstance(board_groups, list)
+
+    # Check if the new group is in the list
+    new_group = next((g for g in board_groups if g.name == "Test Board Group"), None)
+    assert new_group is not None
+    assert new_group.description == "A group for testing"
+
+    # Also check if it's in the board's groups list
+    board = client.get_board(TEST_BOARD_ID).payload["board"]
+    found = False
+    for group in (board.groups or []):
+        if group.id == new_group.id:
+            assert group.name == "Test Board Group"
+            found = True
+    assert found, "Created board group not found in board"
+
+def test_edit_board_group():
+    client = get_test_client()
+
+    # First, create a group to get an ID
+    create_request = CreateBoardGroupRequest(
+        name="Group to be Edited",
+        boardId=TEST_BOARD_ID
+    )
+    create_response = client.create_board_group(create_request)
+    group_to_edit = next((g for g in create_response.board_groups if g.name == "Group to be Edited"), None)
+    assert group_to_edit is not None, "Failed to create group for editing"
+    
+    # Now, edit the group
+    edit_request = EditBoardGroupRequest(
+        boardGroupId=group_to_edit.id,
+        boardId=TEST_BOARD_ID,
+        name="Edited Group",
+        description="This group was edited",
+        limit=50,
+        hidden=False
+    )
+    edit_response = client.edit_board_group(edit_request)
+
+    assert isinstance(edit_response, EditBoardGroupResponse)
+    assert edit_response.type == "EditBoardGroup"
+    
+    edited_group = next((g for g in edit_response.board_groups if g.id == group_to_edit.id), None)
+    assert edited_group is not None, "Edited group not found in response"
+    assert edited_group.name == "Edited Group"
+    assert edited_group.description == "This group was edited"
+    assert edited_group.limit == 50
+    assert edited_group.hidden is True 

@@ -19,6 +19,9 @@ class CustomFieldType(str, Enum):
 class BoardGroup(BaseModel):
     name: str
     id: str = Field(..., alias="_id")
+    description: Optional[str] = None
+    limit: Optional[int] = None
+    hidden: Optional[bool] = None
 
 
 class BoardType(BaseModel):
@@ -190,4 +193,53 @@ class EditBoardCustomFieldResponse(BaseModel):
 
     @property
     def custom_field(self) -> BoardCustomField:
-        return self.payload.customField 
+        return self.payload.customField
+
+
+class CreateBoardGroupRequest(BaseModel):
+    name: str
+    boardId: str
+    description: Optional[str] = None
+
+    def model_dump(self, **kwargs):
+        data = super().model_dump(**kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class CreateBoardGroupPayload(BaseModel):
+    boardGroups: List[BoardGroup]
+
+
+class CreateBoardGroupResponse(BaseModel):
+    type: str
+    payload: CreateBoardGroupPayload
+
+    @property
+    def board_groups(self) -> List[BoardGroup]:
+        return self.payload.boardGroups
+
+
+class EditBoardGroupRequest(BaseModel):
+    boardGroupId: str
+    boardId: str
+    name: Optional[str] = None
+    description: Optional[str] = None
+    limit: Optional[int] = None
+    hidden: Optional[bool] = None
+
+    def model_dump(self, **kwargs):
+        kwargs.setdefault('exclude_none', True)
+        return super().model_dump(**kwargs)
+
+
+class EditBoardGroupPayload(BaseModel):
+    boardGroups: List[BoardGroup]
+
+
+class EditBoardGroupResponse(BaseModel):
+    type: str
+    payload: EditBoardGroupPayload
+
+    @property
+    def board_groups(self) -> List[BoardGroup]:
+        return self.payload.boardGroups 

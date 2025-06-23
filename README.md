@@ -136,6 +136,41 @@ print(f"Hidden: {custom_field.hidden}")
 print(f"Description: {custom_field.description}")
 ```
 
+#### Create a Board Group
+
+```python
+from vaiz.models import CreateBoardGroupRequest
+
+request = CreateBoardGroupRequest(
+    name="New Group",
+    boardId="your-board-id",
+    description="This is a new group."
+)
+
+response = client.create_board_group(request)
+board_groups = response.board_groups
+print(f"Board groups: {[g.name for g in board_groups]}")
+```
+
+#### Edit a Board Group
+
+```python
+from vaiz.models import EditBoardGroupRequest
+
+request = EditBoardGroupRequest(
+    boardGroupId="your-group-id",
+    boardId="your-board-id",
+    name="Updated Group Name",
+    description="This is an updated description.",
+    limit=20,
+    hidden=False
+)
+
+response = client.edit_board_group(request)
+board_groups = response.board_groups
+print(f"Updated board groups: {[g.name for g in board_groups]}")
+```
+
 Available custom field types:
 
 - `CustomFieldType.TEXT` - Text field

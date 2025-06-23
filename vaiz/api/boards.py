@@ -9,7 +9,11 @@ from vaiz.models import (
     CreateBoardCustomFieldRequest,
     CreateBoardCustomFieldResponse,
     EditBoardCustomFieldRequest,
-    EditBoardCustomFieldResponse
+    EditBoardCustomFieldResponse,
+    CreateBoardGroupRequest,
+    CreateBoardGroupResponse,
+    EditBoardGroupRequest,
+    EditBoardGroupResponse,
 )
 
 
@@ -87,4 +91,30 @@ class BoardsAPIClient(BaseAPIClient):
             EditBoardCustomFieldResponse: The updated custom field information
         """
         response_data = self._make_request("editBoardCustomField", method="POST", json_data=request.model_dump())
-        return EditBoardCustomFieldResponse(**response_data) 
+        return EditBoardCustomFieldResponse(**response_data)
+
+    def create_board_group(self, request: CreateBoardGroupRequest) -> CreateBoardGroupResponse:
+        """
+        Create a new group in a board.
+
+        Args:
+            request (CreateBoardGroupRequest): The board group creation request
+
+        Returns:
+            CreateBoardGroupResponse: The list of board groups including the new one.
+        """
+        response_data = self._make_request("createBoardGroup", method="POST", json_data=request.model_dump())
+        return CreateBoardGroupResponse(**response_data)
+
+    def edit_board_group(self, request: EditBoardGroupRequest) -> EditBoardGroupResponse:
+        """
+        Edit a group in a board.
+
+        Args:
+            request (EditBoardGroupRequest): The board group edit request
+
+        Returns:
+            EditBoardGroupResponse: The list of board groups after editing.
+        """
+        response_data = self._make_request("editBoardGroup", method="POST", json_data=request.model_dump())
+        return EditBoardGroupResponse(**response_data) 

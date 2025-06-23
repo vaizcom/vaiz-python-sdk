@@ -12,7 +12,12 @@ from vaiz.models.boards import (
     CreateBoardCustomFieldResponse,
     EditBoardCustomFieldRequest,
     EditBoardCustomFieldResponse,
-    CustomFieldType
+    CustomFieldType,
+    CreateBoardGroupRequest,
+    CreateBoardGroupResponse,
+    BoardGroup,
+    EditBoardGroupRequest,
+    EditBoardGroupResponse,
 )
 from vaiz.models.profile import Profile, ProfileResponse
 from vaiz.models.projects import Project, ProjectsResponse, ProjectResponse
@@ -38,6 +43,11 @@ __all__ = [
     'EditBoardCustomFieldRequest',
     'EditBoardCustomFieldResponse',
     'CustomFieldType',
+    'CreateBoardGroupRequest',
+    'CreateBoardGroupResponse',
+    'BoardGroup',
+    'EditBoardGroupRequest',
+    'EditBoardGroupResponse',
     'Profile',
     'ProfileResponse',
     'Project',
