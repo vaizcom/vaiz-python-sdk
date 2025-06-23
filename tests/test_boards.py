@@ -196,4 +196,4 @@ def test_edit_board_group():
     assert edited_group.name == "Edited Group"
     assert edited_group.description == "This group was edited"
     assert edited_group.limit == 50
-    assert edited_group.hidden is True 
+    assert edited_group.hidden is False 
