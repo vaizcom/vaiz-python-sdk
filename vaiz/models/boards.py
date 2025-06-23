@@ -1,7 +1,8 @@
-from typing import List, Optional, Dict, Any, Union
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
-from datetime import datetime
 from enum import Enum
+
+from .enums import EIcon, EColor
 
 
 class CustomFieldType(str, Enum):
@@ -26,8 +27,8 @@ class BoardGroup(BaseModel):
 
 class BoardType(BaseModel):
     label: str
-    icon: str
-    color: str
+    icon: EIcon
+    color: EColor
     id: str = Field(..., alias="_id")
     description: Optional[str] = None
     hidden: Optional[bool] = None
@@ -95,8 +96,8 @@ class BoardResponse(BaseModel):
 class CreateBoardTypeRequest(BaseModel):
     boardId: str
     label: str
-    icon: str
-    color: str
+    icon: EIcon
+    color: EColor
 
     def model_dump(self, **kwargs):
         data = super().model_dump(**kwargs)
@@ -121,8 +122,8 @@ class EditBoardTypeRequest(BaseModel):
     boardTypeId: str
     boardId: str
     label: Optional[str] = None
-    icon: Optional[str] = None
-    color: Optional[str] = None
+    icon: Optional[EIcon] = None
+    color: Optional[EColor] = None
     description: Optional[str] = None
     hidden: Optional[bool] = None
 

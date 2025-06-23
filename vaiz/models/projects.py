@@ -1,14 +1,15 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
-from datetime import datetime
+
+from .enums import EIcon, EColor
 
 
 class Project(BaseModel):
     id: str = Field(..., alias="_id")
     name: str
-    color: str
+    color: EColor
     slug: str
-    icon: str
+    icon: EIcon
     creator: str
     archiver: Optional[str] = None
     archived_at: Optional[str] = Field(None, alias="archivedAt")

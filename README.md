@@ -33,6 +33,28 @@ client = VaizClient(
 )
 ```
 
+### Enums
+
+The SDK provides enums for icons and colors to ensure you are using valid values.
+
+#### `EIcon`
+
+```python
+from vaiz.models.enums import EIcon
+
+# Example usage
+icon = EIcon.Cursor
+```
+
+#### `EColor`
+
+```python
+from vaiz.models.enums import EColor
+
+# Example usage
+color = EColor.Silver
+```
+
 ### Working with Projects
 
 #### Get All Projects
@@ -60,12 +82,13 @@ board = response.payload["board"]
 
 ```python
 from vaiz.models import CreateBoardTypeRequest
+from vaiz.models.enums import EIcon, EColor
 
 request = CreateBoardTypeRequest(
     boardId="board_id",
     label="New Type",
-    icon="Cursor",
-    color="silver"
+    icon=EIcon.Cursor,
+    color=EColor.Silver
 )
 
 response = client.create_board_type(request)
@@ -76,13 +99,14 @@ board_type = response.board_type
 
 ```python
 from vaiz.models import EditBoardTypeRequest
+from vaiz.models.enums import EIcon, EColor
 
 request = EditBoardTypeRequest(
     boardTypeId="board_type_id",
     boardId="board_id",
     label="Updated Type",
-    icon="Cursor",
-    color="silver",
+    icon=EIcon.Cursor,
+    color=EColor.Silver,
     description="Updated description",
     hidden=True
 )
@@ -171,7 +195,7 @@ board_groups = response.board_groups
 print(f"Updated board groups: {[g.name for g in board_groups]}")
 ```
 
-Available custom field types:
+#### Available custom field types:
 
 - `CustomFieldType.TEXT` - Text field
 - `CustomFieldType.NUMBER` - Number field
@@ -180,6 +204,7 @@ Available custom field types:
 - `CustomFieldType.MEMBER` - Member field
 - `CustomFieldType.TASK_RELATIONS` - Task relations field
 - `CustomFieldType.SELECT` - Select field
+- `CustomFieldType.URL` - Url field
 
 ### Working with Profile
 
