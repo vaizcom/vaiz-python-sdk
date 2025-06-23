@@ -32,5 +32,4 @@ def get_test_client():
         space_id=TEST_SPACE_ID,
         verify_ssl=False,
         base_url="https://api.vaiz.local:10000/v4",
-        app_version="1.69.0"
     ) 

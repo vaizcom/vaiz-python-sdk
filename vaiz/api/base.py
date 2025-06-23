@@ -2,6 +2,8 @@ import requests
 from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 
+from vaiz import __version__
+
 @dataclass
 class ErrorMeta:
     description: Optional[str] = None
@@ -69,13 +71,13 @@ class VaizHTTPError(VaizSDKError):
         self.response_text = response_text
 
 class BaseAPIClient:
-    def __init__(self, api_key: str, space_id: str, base_url: str = "https://api.vaiz.com/v4", verify_ssl: bool = True, verbose: bool = False, app_version: str = "1.69.0"):
+    def __init__(self, api_key: str, space_id: str, base_url: str = "https://api.vaiz.com/v4", verify_ssl: bool = True, verbose: bool = False):
         self.api_key = api_key
         self.space_id = space_id
         self.base_url = base_url
         self.verify_ssl = verify_ssl
         self.verbose = verbose
-        self.app_version = app_version
+        self.app_version = f"python-sdk-{__version__}"
         self.session = requests.Session()
         self.session.headers.update({
             "Authorization": f"Bearer {self.api_key}",

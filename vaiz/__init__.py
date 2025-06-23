@@ -1,3 +1,10 @@
+from importlib import metadata
+
+try:
+    __version__ = metadata.version("vaiz-sdk")
+except metadata.PackageNotFoundError:
+    __version__ = "0.0.0"
+
 from .client import VaizClient
 from .models import (
     TaskFollower,
