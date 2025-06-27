@@ -15,7 +15,7 @@ def task_id(client):
         board=TEST_BOARD_ID,
         project=TEST_PROJECT_ID,
         priority=TaskPriority.High,
-        completed=False,
+        completed=True,
         types=[],
         assignees=[TEST_ASSIGNEE_ID],
         subtasks=[],

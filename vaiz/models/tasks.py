@@ -8,10 +8,19 @@ from .enums import EUploadFileType
 class TaskFile(BaseModel):
     url: str
     name: str
-    dimension: List[int] = [0, 0]
     ext: str
     _id: str
     type: EUploadFileType
+    # Optional fields that may come from different file types
+    dimension: Optional[List[int]] = None
+    size: Optional[int] = None
+    dominant_color: Optional[Dict[str, Any]] = None
+    mime: Optional[str] = None
+    original_name: Optional[str] = None
+    date: Optional[str] = None
+    owner: Optional[str] = None
+    access_kind: Optional[str] = None
+    access_kind_id: Optional[str] = None
 
 
 class TaskCustomField(BaseModel):
@@ -59,7 +68,7 @@ class TaskResponse(BaseModel):
 
     @property
     def task(self) -> Task:
-        return self.payload["task"]
+        return Task(**self.payload["task"])
 
 
 class CreateTaskRequest(BaseModel):
@@ -109,4 +118,9 @@ class EditTaskRequest(BaseModel):
     def model_dump(self, **kwargs):
         # Remove None values from the dict
         data = super().model_dump(**kwargs)
-        return {k: v for k, v in data.items() if v is not None} 
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class TaskUploadFile(BaseModel):
+    path: str
+    type: EUploadFileType 

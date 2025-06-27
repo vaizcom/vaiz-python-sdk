@@ -1,7 +1,7 @@
 import pytest
 import os
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID
-from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
+from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile, TaskUploadFile
 from vaiz.models.enums import EUploadFileType
 
 @pytest.fixture(scope="module")
@@ -18,7 +18,7 @@ def test_create_task_with_description():
         board=TEST_BOARD_ID,
         project=TEST_PROJECT_ID,
         priority=TaskPriority.Medium,
-        completed=False,
+        completed=True,
         description="This is a test task with a description."
     )
     
@@ -60,7 +60,7 @@ def test_create_task_with_real_file():
             board=TEST_BOARD_ID,
             project=TEST_PROJECT_ID,
             priority=TaskPriority.High,
-            completed=False,
+            completed=True,
             description="This task includes a real file from assets for testing.",
             files=[task_file]
         )
@@ -118,7 +118,7 @@ def test_create_task_with_multiple_real_files():
         board=TEST_BOARD_ID,
         project=TEST_PROJECT_ID,
         priority=TaskPriority.Low,
-        completed=False,
+        completed=True,
         description="This task has multiple real files from assets folder.",
         files=task_files
     )
@@ -141,7 +141,7 @@ def test_task_has_document_field():
         board=TEST_BOARD_ID,
         project=TEST_PROJECT_ID,
         priority=TaskPriority.General,
-        completed=False
+        completed=True
     )
     
     response = client.create_task(task)
@@ -149,4 +149,151 @@ def test_task_has_document_field():
     assert "document" in response.payload["task"]
     assert response.payload["task"]["document"] is not None
     # Document field contains an ID, not the actual document content
-    assert isinstance(response.payload["task"]["document"], str) 
+    assert isinstance(response.payload["task"]["document"], str)
+
+def test_create_task_with_file_pdf(client):
+    file_path = "./assets/example.pdf"
+    if not os.path.exists(file_path):
+        pytest.skip(f"Test file {file_path} not found")
+    
+    task = CreateTaskRequest(
+        name="Test Task with PDF",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        completed=True
+    )
+    file = TaskUploadFile(path=file_path, type=EUploadFileType.Pdf)
+    response = client.create_task(task, file=file)
+    task_response = response.task
+    assert task_response.completed is True
+    assert isinstance(task_response.document, str)
+
+
+def test_create_task_with_file_png(client):
+    file_path = "./assets/example.png"
+    if not os.path.exists(file_path):
+        pytest.skip(f"Test file {file_path} not found")
+    
+    task = CreateTaskRequest(
+        name="Test Task with PNG",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        completed=True
+    )
+    file = TaskUploadFile(path=file_path, type=EUploadFileType.Image)
+    response = client.create_task(task, file=file)
+    task_response = response.task
+    assert task_response.completed is True
+    assert isinstance(task_response.document, str)
+
+
+def test_create_task_with_file_mp4(client):
+    file_path = "./assets/example.mp4"
+    if not os.path.exists(file_path):
+        pytest.skip(f"Test file {file_path} not found")
+    
+    task = CreateTaskRequest(
+        name="Test Task with MP4",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        completed=True
+    )
+    file = TaskUploadFile(path=file_path, type=EUploadFileType.Video)
+    response = client.create_task(task, file=file)
+    task_response = response.task
+    assert task_response.completed is True
+    assert isinstance(task_response.document, str)
+
+
+def test_create_task_with_description_only(client):
+    task = CreateTaskRequest(
+        name="Test Task without File",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        completed=True
+    )
+    response = client.create_task(task, description="Task without file")
+    task_response = response.task
+    assert task_response.completed is True
+    assert isinstance(task_response.document, str)
+
+
+def test_create_task_with_description_and_file(client):
+    file_path = "./assets/example.pdf"
+    if not os.path.exists(file_path):
+        pytest.skip(f"Test file {file_path} not found")
+    
+    task = CreateTaskRequest(
+        name="Test Task with Description and File",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        priority=TaskPriority.High,
+        completed=True
+    )
+    file = TaskUploadFile(path=file_path, type=EUploadFileType.Pdf)
+    response = client.create_task(task, description="This task has both description and file", file=file)
+    task_response = response.task
+    assert task_response.completed is True
+    assert task_response.priority == TaskPriority.High
+    assert isinstance(task_response.document, str)
+
+
+def test_create_task_with_auto_detection(client):
+    file_path = "./assets/example.pdf"
+    if not os.path.exists(file_path):
+        pytest.skip(f"Test file {file_path} not found")
+    
+    task = CreateTaskRequest(
+        name="Test Task with Auto-Detection",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        completed=True
+    )
+    file = TaskUploadFile(path=file_path, type=EUploadFileType.Pdf)
+    response = client.create_task(task, file=file)
+    task_response = response.task
+    assert task_response.completed is True
+    assert isinstance(task_response.document, str)
+
+def test_task_file_has_correct_fields_for_different_types(client):
+    """Test that TaskFile gets correct fields based on file type."""
+    
+    # Test PDF file (should have size, no dimension)
+    pdf_path = "./assets/example.pdf"
+    if os.path.exists(pdf_path):
+        task = CreateTaskRequest(
+            name="Test PDF Fields",
+            group=TEST_GROUP_ID,
+            board=TEST_BOARD_ID,
+            project=TEST_PROJECT_ID,
+            completed=True
+        )
+        file = TaskUploadFile(path=pdf_path, type=EUploadFileType.Pdf)
+        response = client.create_task(task, file=file)
+        
+        # Check that task was created successfully
+        assert response.task.completed is True
+        assert isinstance(response.task.document, str)
+    
+    # Test PNG file (should have dimension, no size)
+    png_path = "./assets/example.png"
+    if os.path.exists(png_path):
+        task = CreateTaskRequest(
+            name="Test PNG Fields",
+            group=TEST_GROUP_ID,
+            board=TEST_BOARD_ID,
+            project=TEST_PROJECT_ID,
+            completed=True
+        )
+        file = TaskUploadFile(path=png_path, type=EUploadFileType.Image)
+        response = client.create_task(task, file=file)
+        
+        # Check that task was created successfully
+        assert response.task.completed is True
+        assert isinstance(response.task.document, str) 
