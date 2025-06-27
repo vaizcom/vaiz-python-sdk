@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from .base import TaskPriority, CustomField
@@ -6,10 +6,10 @@ from .enums import EUploadFileType
 
 
 class TaskFile(BaseModel):
+    id: str = Field(..., alias="_id")
     url: str
     name: str
     ext: str
-    _id: str
     type: EUploadFileType
     # Optional fields that may come from different file types
     dimension: Optional[List[int]] = None
@@ -22,6 +22,8 @@ class TaskFile(BaseModel):
     access_kind: Optional[str] = None
     access_kind_id: Optional[str] = None
 
+    model_config = ConfigDict(populate_by_name=True)
+
 
 class TaskCustomField(BaseModel):
     id: str
@@ -30,7 +32,7 @@ class TaskCustomField(BaseModel):
 
 
 class Task(BaseModel):
-    _id: str
+    id: str = Field(..., alias="_id")
     name: str
     group: str
     board: str
@@ -61,6 +63,8 @@ class Task(BaseModel):
     editor: Optional[str] = None
     milestone: Optional[str] = None
 
+    model_config = ConfigDict(populate_by_name=True)
+
 
 class TaskResponse(BaseModel):
     payload: Dict[str, Any]
@@ -68,7 +72,11 @@ class TaskResponse(BaseModel):
 
     @property
     def task(self) -> Task:
-        return Task(**self.payload["task"])
+        task_data = self.payload["task"]
+        # Ensure the task data has the correct field mapping
+        if "_id" in task_data and "id" not in task_data:
+            task_data["id"] = task_data["_id"]
+        return Task(**task_data)
 
 
 class CreateTaskRequest(BaseModel):
@@ -123,4 +131,46 @@ class EditTaskRequest(BaseModel):
 
 class TaskUploadFile(BaseModel):
     path: str
-    type: EUploadFileType 
+    type: Optional[EUploadFileType] = None
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        # Auto-detect type if not provided
+        if self.type is None:
+            self.type = self._detect_file_type(self.path)
+    
+    def _detect_file_type(self, file_path: str) -> EUploadFileType:
+        """
+        Auto-detect file type based on file extension.
+        
+        Args:
+            file_path (str): Path to the file
+            
+        Returns:
+            EUploadFileType: Detected file type
+        """
+        import os
+        ext = os.path.splitext(file_path)[1].lower()
+        
+        # Image files
+        if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']:
+            return EUploadFileType.Image
+        
+        # Video files
+        elif ext in ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm']:
+            return EUploadFileType.Video
+        
+        # Audio files
+        elif ext in ['.mp3', '.wav', '.flac', '.aac', '.ogg']:
+            return EUploadFileType.Audio
+        
+        # Document files
+        elif ext in ['.pdf', '.doc', '.docx', '.txt', '.rtf']:
+            return EUploadFileType.Pdf
+        
+        # Archive files
+        elif ext in ['.zip', '.rar', '.7z', '.tar', '.gz']:
+            return EUploadFileType.Archive
+        
+        # Default to PDF for unknown extensions
+        return EUploadFileType.Pdf 

@@ -1,7 +1,7 @@
 from vaiz import VaizClient
 from vaiz.models import CreateBoardTypeRequest
 from vaiz.api.base import VaizHTTPError, VaizSDKError
-from config import get_client
+from .config import get_client
 
 
 def main():

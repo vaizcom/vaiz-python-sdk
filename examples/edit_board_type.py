@@ -1,17 +1,19 @@
 from vaiz import VaizClient
 from vaiz.models import EditBoardTypeRequest
-from config import get_client
+from .config import BOARD_ID,get_client
 
 
 def main():
     # Get client from config
     client = get_client()
 
+    board_response = client.get_board(BOARD_ID)
+    board = board_response.payload["board"]
+
     # Edit board type request
     request = EditBoardTypeRequest(
-        boardTypeId="684ad3b021b100837be1a521",  # Replace with your board type ID
-        boardId="67f8d680db3b257778cfcf83",  # Replace with your board ID
-        label="Updated Type",
+        boardTypeId=board.types_list[0].id, 
+        boardId=BOARD_ID, 
         icon="Cursor",
         color="silver",
         description="Updated description",

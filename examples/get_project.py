@@ -34,7 +34,7 @@ def get_project(project_id: str):
 
 if __name__ == "__main__":
     # Get a project ID from get_projects.py first
-    from get_projects import get_projects
+    from .get_projects import get_projects
     project_ids = get_projects()
     if project_ids:
         get_project(project_ids[0]) 

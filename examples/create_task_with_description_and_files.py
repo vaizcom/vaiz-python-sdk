@@ -41,7 +41,7 @@ def create_task_with_description_and_files():
         name=uploaded_file.name,
         dimension=uploaded_file.dimension,
         ext=uploaded_file.ext,
-        _id=uploaded_file.id,
+        id=uploaded_file.id,
         type=uploaded_file.type
     )
     
@@ -60,12 +60,12 @@ def create_task_with_description_and_files():
         response = client.create_task(task)
         print("Task with description and files created successfully!")
         print(f"Response type: {response.type}")
-        print(f"Task ID: {response.payload['task']['_id']}")
+        print(f"Task ID: {response.task.id}")
         print(f"Task name: {response.payload['task']['name']}")
         print(f"Document ID: {response.payload['task']['document']}")
         print("Note: API accepts description and files but doesn't return them in response.")
         print("Description and files are stored and can be accessed via separate API calls.")
-        return response.payload['task']['_id']
+        return response.task.id
     except Exception as e:
         print(f"Error creating task with description and files: {e}")
         if hasattr(e, 'response') and e.response is not None:
@@ -95,7 +95,7 @@ def create_task_with_multiple_files():
                 name=uploaded_file.name,
                 dimension=uploaded_file.dimension,
                 ext=uploaded_file.ext,
-                _id=uploaded_file.id,
+                id=uploaded_file.id,
                 type=uploaded_file.type
             )
             task_files.append(task_file)
@@ -125,14 +125,14 @@ def create_task_with_multiple_files():
     try:
         response = client.create_task(task)
         print("Task with multiple files created successfully!")
-        print(f"Task ID: {response.payload['task']['_id']}")
+        print(f"Task ID: {response.task.id}")
         print(f"Document ID: {response.payload['task']['document']}")
         print(f"Files attached: {len(task_files)}")
         for i, file in enumerate(task_files):
             print(f"  - File {i+1}: {file.name} ({file.type.value})")
         print("Note: API accepts multiple files but doesn't return them in response.")
         print("Files are stored and can be accessed via separate API calls.")
-        return response.payload['task']['_id']
+        return response.task.id
     except Exception as e:
         print(f"Error creating task with multiple files: {e}")
         return None
@@ -154,11 +154,11 @@ def create_task_with_description_only():
     try:
         response = client.create_task(task)
         print("Task with description only created successfully!")
-        print(f"Task ID: {response.payload['task']['_id']}")
+        print(f"Task ID: {response.task.id}")
         print(f"Document ID: {response.payload['task']['document']}")
         print("Note: API accepts description but doesn't return it in response.")
         print("Description is stored in a separate document and can be accessed via separate API calls.")
-        return response.payload['task']['_id']
+        return response.task.id
     except Exception as e:
         print(f"Error creating task with description only: {e}")
         return None

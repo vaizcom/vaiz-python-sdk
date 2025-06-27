@@ -7,7 +7,7 @@ from vaiz.models.enums import EUploadFileType
 
 def upload_file_example():
     client = get_client()
-    file_path = "./example.pdf"  # Replace with path to your file
+    file_path = "./assets/example.pdf"  # Replace with path to your file
     file_type = EUploadFileType.Pdf
     try:
         response = client.upload_file(file_path, file_type=file_type)

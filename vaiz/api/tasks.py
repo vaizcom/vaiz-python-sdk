@@ -23,7 +23,7 @@ class TasksAPIClient(BaseAPIClient):
         Args:
             task (CreateTaskRequest): The task creation request containing all necessary task information
             description (Optional[str]): Task description to set
-            file (Optional[TaskUploadFile]): File info with 'path' and 'type'
+            file (Optional[TaskUploadFile]): File info with 'path' and optional 'type' (auto-detected if not provided)
             
         Returns:
             TaskResponse: The created task information
@@ -58,7 +58,7 @@ class TasksAPIClient(BaseAPIClient):
                 url=uploaded_file.url,
                 name=uploaded_file.name,
                 ext=uploaded_file.ext,
-                _id=uploaded_file.id,
+                id=uploaded_file.id,
                 type=uploaded_file.type,
                 # Pass all available fields from UploadedFile
                 dimension=uploaded_file.dimension,
@@ -68,41 +68,6 @@ class TasksAPIClient(BaseAPIClient):
         
         response_data = self._make_request("createTask", json_data=task.model_dump(by_alias=True))
         return TaskResponse(**response_data)
-
-    def _detect_file_type(self, file_path: str) -> EUploadFileType:
-        """
-        Auto-detect file type based on file extension.
-        
-        Args:
-            file_path (str): Path to the file
-            
-        Returns:
-            EUploadFileType: Detected file type
-        """
-        ext = os.path.splitext(file_path)[1].lower()
-        
-        # Image files
-        if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']:
-            return EUploadFileType.Image
-        
-        # Video files
-        elif ext in ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm']:
-            return EUploadFileType.Video
-        
-        # Audio files
-        elif ext in ['.mp3', '.wav', '.flac', '.aac', '.ogg']:
-            return EUploadFileType.Audio
-        
-        # Document files
-        elif ext in ['.pdf', '.doc', '.docx', '.txt', '.rtf']:
-            return EUploadFileType.Pdf
-        
-        # Archive files
-        elif ext in ['.zip', '.rar', '.7z', '.tar', '.gz']:
-            return EUploadFileType.Archive
-        
-        # Default to PDF for unknown extensions
-        return EUploadFileType.Pdf
 
     def edit_task(self, task: EditTaskRequest) -> TaskResponse:
         """

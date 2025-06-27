@@ -27,7 +27,8 @@ class VaizSDKError(Exception):
             error_details.append(f"Error code: {api_error.code}")
             error_details.append(f"Original type: {api_error.original_type}")
             if api_error.fields:
-                error_details.append(f"Affected fields: {', '.join(api_error.fields)}")
+                field_strs = [f["name"] if isinstance(f, dict) and "name" in f else str(f) for f in api_error.fields]
+                error_details.append(f"Affected fields: {', '.join(field_strs)}")
             if api_error.meta and api_error.meta.description:
                 error_details.append(f"Details: {api_error.meta.description}")
         

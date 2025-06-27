@@ -17,7 +17,7 @@ def get_projects():
         
         for project in projects:
             print(f"\nProject: {project.name}")
-            print(f"ID: {project._id}")
+            print(f"ID: {project.id}")
             print(f"Color: {project.color}")
             print(f"Slug: {project.slug}")
             print(f"Icon: {project.icon}")
@@ -28,7 +28,7 @@ def get_projects():
             print(f"Created At: {project.created_at}")
             print(f"Updated At: {project.updated_at}")
         
-        return [project._id for project in projects]
+        return [project.id for project in projects]
     except Exception as e:
         print(f"Error retrieving projects: {e}")
         if hasattr(e, 'response') and e.response is not None:

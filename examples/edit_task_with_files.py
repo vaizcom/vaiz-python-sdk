@@ -25,7 +25,7 @@ def edit_task_with_files():
     
     try:
         create_response = client.create_task(simple_task)
-        task_id = create_response.payload['task']['_id']
+        task_id = create_response.task.id
         print(f"Task created with ID: {task_id}")
     except Exception as e:
         print(f"Error creating initial task: {e}")
@@ -60,7 +60,7 @@ def edit_task_with_files():
         name=uploaded_file.name,
         dimension=uploaded_file.dimension,
         ext=uploaded_file.ext,
-        _id=uploaded_file.id,
+        id=uploaded_file.id,
         type=uploaded_file.type
     )
     
@@ -74,10 +74,10 @@ def edit_task_with_files():
     try:
         response = client.edit_task(edit_task)
         print("Task updated successfully!")
-        print(f"Updated task name: {response.payload['task']['name']}")
-        print(f"Document ID: {response.payload['task']['document']}")
+        print(f"Updated task name: {response.task.name}")
+        print(f"Document ID: {response.task.document}")
         print("Note: API accepts description and files but doesn't return them in response.")
-        return response.payload['task']['_id']
+        return response.task.id
     except Exception as e:
         print(f"Error updating task: {e}")
         if hasattr(e, 'response') and e.response is not None:
@@ -101,7 +101,7 @@ def edit_task_add_multiple_files():
     
     try:
         create_response = client.create_task(simple_task)
-        task_id = create_response.payload['task']['_id']
+        task_id = create_response.task.id
         print(f"Task created with ID: {task_id}")
     except Exception as e:
         print(f"Error creating initial task: {e}")
@@ -127,7 +127,7 @@ def edit_task_add_multiple_files():
                 name=uploaded_file.name,
                 dimension=uploaded_file.dimension,
                 ext=uploaded_file.ext,
-                _id=uploaded_file.id,
+                id=uploaded_file.id,
                 type=uploaded_file.type
             )
             task_files.append(task_file)
@@ -154,13 +154,13 @@ def edit_task_add_multiple_files():
     try:
         response = client.edit_task(edit_task)
         print("Task updated with multiple files successfully!")
-        print(f"Updated task name: {response.payload['task']['name']}")
-        print(f"Document ID: {response.payload['task']['document']}")
+        print(f"Updated task name: {response.task.name}")
+        print(f"Document ID: {response.task.document}")
         print(f"Files attached: {len(task_files)}")
         for i, file in enumerate(task_files):
             print(f"  - File {i+1}: {file.name} ({file.type.value})")
         print("Note: API accepts multiple files but doesn't return them in response.")
-        return response.payload['task']['_id']
+        return response.task.id
     except Exception as e:
         print(f"Error updating task with multiple files: {e}")
         return None
@@ -182,7 +182,7 @@ def edit_task_update_description_only():
     
     try:
         create_response = client.create_task(simple_task)
-        task_id = create_response.payload['task']['_id']
+        task_id = create_response.task.id
         print(f"Task created with ID: {task_id}")
     except Exception as e:
         print(f"Error creating initial task: {e}")
@@ -199,10 +199,10 @@ def edit_task_update_description_only():
     try:
         response = client.edit_task(edit_task)
         print("Task description updated successfully!")
-        print(f"Task name: {response.payload['task']['name']}")
-        print(f"Document ID: {response.payload['task']['document']}")
+        print(f"Task name: {response.task.name}")
+        print(f"Document ID: {response.task.document}")
         print("Note: API accepts description but doesn't return it in response.")
-        return response.payload['task']['_id']
+        return response.task.id
     except Exception as e:
         print(f"Error updating task description: {e}")
         return None
