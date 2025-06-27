@@ -7,7 +7,7 @@ from vaiz.models.enums import EUploadFileType
 
 def upload_file_example():
     client = get_client()
-    file_path = "./example.pdf"  # Замените на путь к вашему файлу
+    file_path = "./example.pdf"  # Replace with path to your file
     file_type = EUploadFileType.Pdf
     try:
         response = client.upload_file(file_path, file_type=file_type)
@@ -24,11 +24,11 @@ def upload_file_example():
 
 def upload_different_file_types_example():
     """
-    Пример загрузки файлов разных типов с использованием enum
+    Example of uploading different file types using enum
     """
     client = get_client()
     
-    # Примеры использования разных типов файлов
+    # Examples of using different file types
     file_types = [
         ("./image.jpg", EUploadFileType.Image),
         ("./document.pdf", EUploadFileType.Pdf),
@@ -37,16 +37,16 @@ def upload_different_file_types_example():
     ]
     
     for file_path, file_type in file_types:
-        print(f"\nЗагрузка файла типа: {file_type.value}")
+        print(f"\nUploading file type: {file_type.value}")
         try:
             response = client.upload_file(file_path, file_type=file_type)
-            print(f"Файл {file_path} успешно загружен как {response.file.type}")
+            print(f"File {file_path} successfully uploaded as {response.file.type}")
         except FileNotFoundError:
-            print(f"Файл {file_path} не найден")
+            print(f"File {file_path} not found")
         except Exception as e:
-            print(f"Ошибка при загрузке {file_path}: {e}")
+            print(f"Error uploading {file_path}: {e}")
 
 if __name__ == "__main__":
     upload_file_example()
-    # Раскомментируйте для демонстрации разных типов файлов
+    # Uncomment to demonstrate different file types
     # upload_different_file_types_example() 
