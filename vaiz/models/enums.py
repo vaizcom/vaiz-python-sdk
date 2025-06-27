@@ -259,4 +259,14 @@ class EColor(str, Enum):
     Ice = 'ice'
     IceBg = 'ice-bg'
     Rebecca = 'rebecca'
-    RebeccaBg = 'rebecca-bg' 
+    RebeccaBg = 'rebecca-bg'
+
+
+class EUploadFileType(str, Enum):
+    """
+    Enum for upload file types.
+    """
+    Image = 'Image'
+    File = 'File'
+    Video = 'Video'
+    Pdf = 'Pdf' 

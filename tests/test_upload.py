@@ -1,5 +1,6 @@
 import pytest
 from tests.test_config import get_test_client
+from vaiz.models.enums import EUploadFileType
 
 @pytest.fixture(scope="module")
 def client():
@@ -9,7 +10,7 @@ def test_upload_file(client, tmp_path):
     file_path = tmp_path / "test_upload.pdf"
     file_path.write_bytes(b"%PDF-1.4 test file content")
     try:
-        response = client.upload_file(str(file_path), file_type="Pdf")
+        response = client.upload_file(str(file_path), file_type=EUploadFileType.Pdf)
     except Exception as e:
         if hasattr(e, 'response') and e.response is not None:
             print("SERVER RESPONSE:", e.response.text)
@@ -18,6 +19,6 @@ def test_upload_file(client, tmp_path):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "test_upload.pdf"
-    assert file.type == "Pdf"
+    assert file.type == EUploadFileType.Pdf
     assert file.mime == "application/pdf"
     assert file.size > 0 

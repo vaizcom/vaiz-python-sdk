@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
+from vaiz.models.enums import EUploadFileType
 
 class UploadedFile(BaseModel):
     dominant_color: Optional[Dict[str, Any]] = Field(default_factory=dict, alias="dominantColor")
@@ -13,7 +14,7 @@ class UploadedFile(BaseModel):
     original_name: str = Field(..., alias="originalName")
     mime: str
     size: int
-    type: str
+    type: EUploadFileType
     access_kind: str = Field(..., alias="accessKind")
     access_kind_id: str = Field(..., alias="accessKindId")
 

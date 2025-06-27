@@ -22,6 +22,7 @@ from vaiz.models.boards import (
 from vaiz.models.profile import Profile, ProfileResponse
 from vaiz.models.projects import Project, ProjectsResponse, ProjectResponse
 from vaiz.models.upload import UploadedFile, UploadFileResponse
+from vaiz.models.enums import EUploadFileType
 
 __all__ = [
     'TaskFollower',
@@ -54,5 +55,6 @@ __all__ = [
     'ProjectsResponse',
     'ProjectResponse',
     'UploadedFile',
-    'UploadFileResponse'
+    'UploadFileResponse',
+    'EUploadFileType'
 ] 

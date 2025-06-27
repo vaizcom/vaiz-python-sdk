@@ -264,9 +264,27 @@ response = client.get_task("task_id")
 #### Upload a File
 
 ```python
-response = client.upload_file("/path/to/file.pdf", file_type="Pdf")
+from vaiz.models.enums import EUploadFileType
+
+# Upload a PDF file
+response = client.upload_file("/path/to/file.pdf", file_type=EUploadFileType.Pdf)
+
 file = response.file
 print(file.url)
+```
+
+#### Available File Types
+
+The SDK provides an enum for file types to ensure you are using valid values:
+
+```python
+from vaiz.models.enums import EUploadFileType
+
+# Available file types:
+# EUploadFileType.Image  - For image files (jpg, png, gif, etc.)
+# EUploadFileType.File   - For generic files
+# EUploadFileType.Video  - For video files (mp4, avi, mov, etc.)
+# EUploadFileType.Pdf    - For PDF documents
 ```
 
 ## Development
