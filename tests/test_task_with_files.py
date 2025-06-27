@@ -1,4 +1,5 @@
 import pytest
+import os
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID
 from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
 from vaiz.models.enums import EUploadFileType
@@ -30,68 +31,102 @@ def test_create_task_with_description():
     assert "document" in response.payload["task"]
     assert response.payload["task"]["document"] is not None
 
-def test_create_task_with_mock_files():
-    """Test creating a task with mock files."""
+def test_create_task_with_real_file():
+    """Test creating a task with a real file from assets."""
     client = get_test_client()
     
-    # Create mock file data
-    mock_file = TaskFile(
-        url="http://example.com/test.pdf",
-        name="test.pdf",
-        dimension=[0, 0],
-        ext="pdf",
-        _id="mock_file_id_123",
-        type=EUploadFileType.Pdf
-    )
+    # Upload a real file from assets
+    file_path = "./assets/example.pdf"
+    if not os.path.exists(file_path):
+        pytest.skip(f"Test file {file_path} not found")
     
-    task = CreateTaskRequest(
-        name="Test Task with Files",
-        group=TEST_GROUP_ID,
-        board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
-        priority=TaskPriority.High,
-        completed=False,
-        description="This task includes mock files for testing.",
-        files=[mock_file]
-    )
-    
-    response = client.create_task(task)
-    
-    assert response.type == "CreateTask"
-    assert response.payload["task"]["name"] == "Test Task with Files"
-    # API accepts files but doesn't return them in response
-    # Files are stored but not included in the task response
-    assert "document" in response.payload["task"]
-    assert response.payload["task"]["document"] is not None
+    try:
+        upload_response = client.upload_file(file_path, file_type=EUploadFileType.Pdf)
+        uploaded_file = upload_response.file
+        
+        # Create TaskFile object from uploaded file
+        task_file = TaskFile(
+            url=uploaded_file.url,
+            name=uploaded_file.name,
+            dimension=uploaded_file.dimension,
+            ext=uploaded_file.ext,
+            _id=uploaded_file.id,
+            type=uploaded_file.type
+        )
+        
+        task = CreateTaskRequest(
+            name="Test Task with Real File",
+            group=TEST_GROUP_ID,
+            board=TEST_BOARD_ID,
+            project=TEST_PROJECT_ID,
+            priority=TaskPriority.High,
+            completed=False,
+            description="This task includes a real file from assets for testing.",
+            files=[task_file]
+        )
+        
+        response = client.create_task(task)
+        
+        assert response.type == "CreateTask"
+        assert response.payload["task"]["name"] == "Test Task with Real File"
+        # API accepts files but doesn't return them in response
+        # Files are stored but not included in the task response
+        assert "document" in response.payload["task"]
+        assert response.payload["task"]["document"] is not None
+        
+    except Exception as e:
+        pytest.fail(f"Failed to upload file or create task: {e}")
 
-def test_create_task_with_description_and_files():
-    """Test creating a task with both description and files."""
+def test_create_task_with_multiple_real_files():
+    """Test creating a task with multiple real files from assets."""
     client = get_test_client()
     
-    # Create mock file data
-    mock_file = TaskFile(
-        url="http://example.com/document.pdf",
-        name="document.pdf",
-        dimension=[0, 0],
-        ext="pdf",
-        _id="mock_file_id_456",
-        type=EUploadFileType.Pdf
-    )
+    # Upload multiple real files from assets
+    files_to_upload = [
+        ("./assets/example.pdf", EUploadFileType.Pdf),
+        ("./assets/example.png", EUploadFileType.Image),
+        ("./assets/example.mp4", EUploadFileType.Video)
+    ]
+    
+    task_files = []
+    for file_path, file_type in files_to_upload:
+        if not os.path.exists(file_path):
+            pytest.skip(f"Test file {file_path} not found")
+        
+        try:
+            upload_response = client.upload_file(file_path, file_type=file_type)
+            uploaded_file = upload_response.file
+            
+            task_file = TaskFile(
+                url=uploaded_file.url,
+                name=uploaded_file.name,
+                dimension=uploaded_file.dimension,
+                ext=uploaded_file.ext,
+                _id=uploaded_file.id,
+                type=uploaded_file.type
+            )
+            task_files.append(task_file)
+        except Exception as e:
+            pytest.fail(f"Failed to upload {file_path}: {e}")
+    
+    if not task_files:
+        pytest.skip("No files were uploaded successfully")
     
     task = CreateTaskRequest(
-        name="Test Task with Description and Files",
+        name="Test Task with Multiple Real Files",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
         project=TEST_PROJECT_ID,
         priority=TaskPriority.Low,
         completed=False,
-        description="This task has both a description and attached files.",
-        files=[mock_file]
+        description="This task has multiple real files from assets folder.",
+        files=task_files
     )
     
     response = client.create_task(task)
+    
     assert response.type == "CreateTask"
-    assert response.payload["task"]["name"] == "Test Task with Description and Files"
+    assert response.payload["task"]["name"] == "Test Task with Multiple Real Files"
     # API accepts both description and files but doesn't return them in response
     assert "document" in response.payload["task"]
     assert response.payload["task"]["document"] is not None

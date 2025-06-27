@@ -274,6 +274,14 @@ task = CreateTaskRequest(
 response = client.create_task(task)
 ```
 
+**Note:** The examples in the `examples/` folder use real files from the `assets/` directory:
+
+- `assets/example.pdf` - PDF document
+- `assets/example.png` - PNG image
+- `assets/example.mp4` - MP4 video
+
+These files are used in tests and examples to demonstrate real file upload functionality.
+
 #### Create a Task with Multiple Files
 
 ```python
@@ -283,7 +291,7 @@ from vaiz.models.enums import EUploadFileType
 # Upload multiple files
 files_to_upload = [
     ("/path/to/document.pdf", EUploadFileType.Pdf),
-    ("/path/to/image.jpg", EUploadFileType.Image),
+    ("/path/to/image.png", EUploadFileType.Image),
     ("/path/to/video.mp4", EUploadFileType.Video)
 ]
 
@@ -498,11 +506,13 @@ def test_get_board():
 
 ### Examples
 
-The `examples/` directory contains working examples of SDK usage. You can run any example using the following command:
+The SDK includes comprehensive examples demonstrating various API operations:
 
-```bash
-python -m examples.<example_file_name>
-```
+- **Task Management**: Create and edit tasks with descriptions and file attachments
+- **File Upload**: Upload real files from the `assets/` folder (example.pdf, example.png, example.mp4)
+- **Board Operations**: Create, edit, and manage boards with custom fields and groups
+- **Project Management**: Retrieve project information and board lists
+- **Profile Management**: Get user profile information
 
 ## Contributing
 

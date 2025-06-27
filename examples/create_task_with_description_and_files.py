@@ -6,14 +6,16 @@ This example shows the complete workflow: upload file first, then create task wi
 from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
 from vaiz.models.enums import EUploadFileType
 from .config import get_client, BOARD_ID, GROUP_ID, PROJECT_ID
+import os
 
 def create_task_with_description_and_files():
     """Create a new task with description and files using the Vaiz SDK."""
     client = get_client()
     
-    # Step 1: Upload a file first
-    print("Step 1: Uploading file...")
-    file_path = "./example.pdf"  # Replace with path to your file
+    # Step 1: Upload a real file from assets folder
+    print("Step 1: Uploading real file from assets...")
+    file_path = "./assets/example.pdf"  # Using real PDF file
+    
     try:
         upload_response = client.upload_file(file_path, file_type=EUploadFileType.Pdf)
         uploaded_file = upload_response.file
@@ -22,17 +24,10 @@ def create_task_with_description_and_files():
         print(f"File URL: {uploaded_file.url}")
         print(f"File name: {uploaded_file.name}")
         print(f"File type: {uploaded_file.type}")
+        print(f"File size: {uploaded_file.size} bytes")
     except FileNotFoundError:
-        print(f"File {file_path} not found. Using mock file data for demonstration.")
-        # Mock file data for demonstration
-        uploaded_file = type('MockFile', (), {
-            'id': 'mock_file_id_123',
-            'url': 'http://example.com/mock_file.pdf',
-            'name': 'mock_file.pdf',
-            'type': EUploadFileType.Pdf,
-            'ext': 'pdf',
-            'dimension': [0, 0]
-        })()
+        print(f"File {file_path} not found. Please ensure the assets folder contains example.pdf")
+        return None
     except Exception as e:
         print(f"Error uploading file: {e}")
         return None
@@ -51,13 +46,13 @@ def create_task_with_description_and_files():
     )
     
     task = CreateTaskRequest(
-        name="Task with Description and Files",
+        name="Task with Description and Real File",
         group=GROUP_ID,
         board=BOARD_ID,
         project=PROJECT_ID,
         priority=TaskPriority.High,
         completed=False,
-        description="This is a task with a detailed description and attached files. The task includes important documentation and resources.",
+        description="This is a task with a detailed description and attached real file from assets folder. The task includes important documentation and resources.",
         files=[task_file]
     )
 
@@ -78,58 +73,52 @@ def create_task_with_description_and_files():
         return None
 
 def create_task_with_multiple_files():
-    """Create a task with multiple files of different types."""
+    """Create a task with multiple real files of different types."""
     client = get_client()
     
-    # Mock files for demonstration (in real usage, you would upload actual files)
-    mock_files = [
-        {
-            'id': 'file_1_123',
-            'url': 'http://example.com/document.pdf',
-            'name': 'document.pdf',
-            'type': EUploadFileType.Pdf,
-            'ext': 'pdf',
-            'dimension': [0, 0]
-        },
-        {
-            'id': 'file_2_456',
-            'url': 'http://example.com/image.jpg',
-            'name': 'image.jpg',
-            'type': EUploadFileType.Image,
-            'ext': 'jpg',
-            'dimension': [1920, 1080]
-        },
-        {
-            'id': 'file_3_789',
-            'url': 'http://example.com/video.mp4',
-            'name': 'video.mp4',
-            'type': EUploadFileType.Video,
-            'ext': 'mp4',
-            'dimension': [1920, 1080]
-        }
+    # Real files from assets folder
+    files_to_upload = [
+        ("./assets/example.pdf", EUploadFileType.Pdf),
+        ("./assets/example.png", EUploadFileType.Image),
+        ("./assets/example.mp4", EUploadFileType.Video)
     ]
     
-    # Convert mock files to TaskFile objects
-    task_files = [
-        TaskFile(
-            url=file['url'],
-            name=file['name'],
-            dimension=file['dimension'],
-            ext=file['ext'],
-            _id=file['id'],
-            type=file['type']
-        )
-        for file in mock_files
-    ]
+    task_files = []
+    for file_path, file_type in files_to_upload:
+        print(f"\nUploading {os.path.basename(file_path)}...")
+        try:
+            upload_response = client.upload_file(file_path, file_type=file_type)
+            uploaded_file = upload_response.file
+            
+            task_file = TaskFile(
+                url=uploaded_file.url,
+                name=uploaded_file.name,
+                dimension=uploaded_file.dimension,
+                ext=uploaded_file.ext,
+                _id=uploaded_file.id,
+                type=uploaded_file.type
+            )
+            task_files.append(task_file)
+            print(f"✓ {uploaded_file.name} uploaded successfully (ID: {uploaded_file.id})")
+        except FileNotFoundError:
+            print(f"✗ File {file_path} not found. Skipping...")
+        except Exception as e:
+            print(f"✗ Error uploading {file_path}: {e}")
+    
+    if not task_files:
+        print("No files were uploaded successfully. Cannot create task with files.")
+        return None
+    
+    print(f"\nCreating task with {len(task_files)} files...")
     
     task = CreateTaskRequest(
-        name="Task with Multiple Files",
+        name="Task with Multiple Real Files",
         group=GROUP_ID,
         board=BOARD_ID,
         project=PROJECT_ID,
         priority=TaskPriority.Medium,
         completed=False,
-        description="This task contains multiple file attachments: PDF document, image, and video.",
+        description="This task contains multiple real file attachments from assets folder: PDF document, PNG image, and MP4 video.",
         files=task_files
     )
 
@@ -138,6 +127,9 @@ def create_task_with_multiple_files():
         print("Task with multiple files created successfully!")
         print(f"Task ID: {response.payload['task']['_id']}")
         print(f"Document ID: {response.payload['task']['document']}")
+        print(f"Files attached: {len(task_files)}")
+        for i, file in enumerate(task_files):
+            print(f"  - File {i+1}: {file.name} ({file.type.value})")
         print("Note: API accepts multiple files but doesn't return them in response.")
         print("Files are stored and can be accessed via separate API calls.")
         return response.payload['task']['_id']
@@ -172,15 +164,19 @@ def create_task_with_description_only():
         return None
 
 if __name__ == "__main__":
-    print("Creating task with description and files...")
+    print("="*60)
+    print("CREATING TASKS WITH REAL FILES FROM ASSETS")
+    print("="*60)
+    
+    print("\n1. Creating task with description and real PDF file...")
     create_task_with_description_and_files()
     
     print("\n" + "="*50 + "\n")
     
-    print("Creating task with multiple files...")
+    print("2. Creating task with multiple real files (PDF, PNG, MP4)...")
     create_task_with_multiple_files()
     
     print("\n" + "="*50 + "\n")
     
-    print("Creating task with description only...")
+    print("3. Creating task with description only...")
     create_task_with_description_only() 
