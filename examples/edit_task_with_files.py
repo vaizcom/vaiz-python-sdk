@@ -20,7 +20,7 @@ def edit_task_with_files():
         board=BOARD_ID,
         project=PROJECT_ID,
         priority=TaskPriority.Medium,
-        completed=False
+        completed=True
     )
     
     try:
@@ -96,7 +96,7 @@ def edit_task_add_multiple_files():
         board=BOARD_ID,
         project=PROJECT_ID,
         priority=TaskPriority.High,
-        completed=False
+        completed=True
     )
     
     try:
@@ -177,7 +177,7 @@ def edit_task_update_description_only():
         board=BOARD_ID,
         project=PROJECT_ID,
         priority=TaskPriority.Low,
-        completed=False
+        completed=True
     )
     
     try:

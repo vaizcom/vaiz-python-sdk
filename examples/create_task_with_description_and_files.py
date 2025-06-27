@@ -51,8 +51,8 @@ def create_task_with_description_and_files():
         board=BOARD_ID,
         project=PROJECT_ID,
         priority=TaskPriority.High,
-        completed=False,
-        description="This is a task with a detailed description and attached real file from assets folder. The task includes important documentation and resources.",
+        completed=True,
+        description="This is a detailed description of the task with a real PDF file attached.",
         files=[task_file]
     )
 
@@ -117,7 +117,7 @@ def create_task_with_multiple_files():
         board=BOARD_ID,
         project=PROJECT_ID,
         priority=TaskPriority.Medium,
-        completed=False,
+        completed=True,
         description="This task contains multiple real file attachments from assets folder: PDF document, PNG image, and MP4 video.",
         files=task_files
     )
