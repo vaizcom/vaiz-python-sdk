@@ -2,6 +2,16 @@ from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from .base import TaskPriority, CustomField
+from .enums import EUploadFileType
+
+
+class TaskFile(BaseModel):
+    url: str
+    name: str
+    dimension: List[int] = [0, 0]
+    ext: str
+    _id: str
+    type: EUploadFileType
 
 
 class TaskCustomField(BaseModel):
@@ -69,6 +79,8 @@ class CreateTaskRequest(BaseModel):
     rightConnectors: List[str] = []
     leftConnectors: List[str] = []
     customFields: List[CustomField] = []
+    description: Optional[str] = None
+    files: List[TaskFile] = []
 
     def model_dump(self, **kwargs):
         # Remove None values from the dict
@@ -91,6 +103,8 @@ class EditTaskRequest(BaseModel):
     rightConnectors: Optional[List[str]] = None
     leftConnectors: Optional[List[str]] = None
     customFields: Optional[List[CustomField]] = None
+    description: Optional[str] = None
+    files: Optional[List[TaskFile]] = None
 
     def model_dump(self, **kwargs):
         # Remove None values from the dict

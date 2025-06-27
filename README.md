@@ -239,6 +239,87 @@ task = CreateTaskRequest(
 response = client.create_task(task)
 ```
 
+#### Create a Task with Description and Files
+
+```python
+from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
+from vaiz.models.enums import EUploadFileType
+
+# First, upload a file
+upload_response = client.upload_file("/path/to/file.pdf", file_type=EUploadFileType.Pdf)
+uploaded_file = upload_response.file
+
+# Create TaskFile object from uploaded file
+task_file = TaskFile(
+    url=uploaded_file.url,
+    name=uploaded_file.name,
+    dimension=uploaded_file.dimension,
+    ext=uploaded_file.ext,
+    _id=uploaded_file.id,
+    type=uploaded_file.type
+)
+
+# Create task with description and files
+task = CreateTaskRequest(
+    name="Task with Files",
+    group="group_id",
+    board="board_id",
+    project="project_id",
+    priority=TaskPriority.High,
+    completed=False,
+    description="This task includes a detailed description and attached files for reference.",
+    files=[task_file]
+)
+
+response = client.create_task(task)
+```
+
+#### Create a Task with Multiple Files
+
+```python
+from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
+from vaiz.models.enums import EUploadFileType
+
+# Upload multiple files
+files_to_upload = [
+    ("/path/to/document.pdf", EUploadFileType.Pdf),
+    ("/path/to/image.jpg", EUploadFileType.Image),
+    ("/path/to/video.mp4", EUploadFileType.Video)
+]
+
+task_files = []
+for file_path, file_type in files_to_upload:
+    try:
+        upload_response = client.upload_file(file_path, file_type=file_type)
+        uploaded_file = upload_response.file
+
+        task_file = TaskFile(
+            url=uploaded_file.url,
+            name=uploaded_file.name,
+            dimension=uploaded_file.dimension,
+            ext=uploaded_file.ext,
+            _id=uploaded_file.id,
+            type=uploaded_file.type
+        )
+        task_files.append(task_file)
+    except Exception as e:
+        print(f"Error uploading {file_path}: {e}")
+
+# Create task with multiple files
+task = CreateTaskRequest(
+    name="Task with Multiple Files",
+    group="group_id",
+    board="board_id",
+    project="project_id",
+    priority=TaskPriority.Medium,
+    completed=False,
+    description="This task contains multiple file attachments of different types.",
+    files=task_files
+)
+
+response = client.create_task(task)
+```
+
 #### Edit a Task
 
 ```python
@@ -248,6 +329,53 @@ edit_task = EditTaskRequest(
     taskId="task_id",
     name="Updated Task Name",
     assignees=["assignee_id"]
+)
+
+response = client.edit_task(edit_task)
+```
+
+#### Edit a Task to Add Description and Files
+
+**Note: This functionality is not yet supported by the API. The examples below demonstrate the intended usage when the API supports these features.**
+
+```python
+from vaiz.models import EditTaskRequest, TaskFile
+from vaiz.models.enums import EUploadFileType
+
+# First, upload a file
+upload_response = client.upload_file("/path/to/file.pdf", file_type=EUploadFileType.Pdf)
+uploaded_file = upload_response.file
+
+# Create TaskFile object from uploaded file
+task_file = TaskFile(
+    url=uploaded_file.url,
+    name=uploaded_file.name,
+    dimension=uploaded_file.dimension,
+    ext=uploaded_file.ext,
+    _id=uploaded_file.id,
+    type=uploaded_file.type
+)
+
+# Edit task to add description and files
+edit_task = EditTaskRequest(
+    taskId="task_id",
+    name="Updated Task with Files",
+    description="This task has been updated to include a description and attached files.",
+    files=[task_file]
+)
+
+response = client.edit_task(edit_task)
+```
+
+#### Edit a Task to Update Description Only
+
+**Note: This functionality is not yet supported by the API. The examples below demonstrate the intended usage when the API supports these features.**
+
+```python
+from vaiz.models import EditTaskRequest
+
+edit_task = EditTaskRequest(
+    taskId="task_id",
 )
 
 response = client.edit_task(edit_task)
