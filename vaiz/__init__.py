@@ -24,6 +24,8 @@ from .models import (
     Project,
     ProjectsResponse,
     ProjectResponse,
+    Milestone,
+    MilestonesResponse,
     UploadedFile,
     UploadFileResponse,
 )
@@ -47,6 +49,8 @@ __all__ = [
     'Project',
     'ProjectsResponse',
     'ProjectResponse',
+    'Milestone',
+    'MilestonesResponse',
     'UploadedFile',
     'UploadFileResponse',
 ]

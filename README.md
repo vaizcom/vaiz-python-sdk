@@ -71,6 +71,20 @@ color = EColor.Silver
 response = client.get_projects()
 ```
 
+### Working with Milestones
+
+#### Get All Milestones
+
+```python
+response = client.get_milestones()
+milestones = response.milestones
+
+for milestone in milestones:
+    print(f"Milestone: {milestone.name}")
+    print(f"Progress: {milestone.completed}/{milestone.total}")
+    print(f"Due Date: {milestone.due_end}")
+```
+
 ### Working with Boards
 
 #### Get All Boards

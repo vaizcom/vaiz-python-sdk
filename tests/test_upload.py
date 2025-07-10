@@ -72,7 +72,7 @@ def test_upload_video_file(client):
 
 def test_upload_file_with_default_type(client):
     """Test uploading a file with default file type (Pdf)."""
-    file_path = "./assets/dummy.pdf"
+    file_path = "./assets/example.pdf"
     if not os.path.exists(file_path):
         pytest.skip(f"Test file {file_path} not found")
     
@@ -86,7 +86,7 @@ def test_upload_file_with_default_type(client):
     assert response.type == "UploadFile"
     file = response.file
     assert file.url.startswith("http")
-    assert file.name == "dummy.pdf"
+    assert file.name == "example.pdf"
     assert file.type == EUploadFileType.Pdf  # Default type
     assert file.mime == "application/pdf"
     assert file.size > 0
