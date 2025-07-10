@@ -1,5 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .tasks import Task
 
 
 class CreateMilestoneRequest(BaseModel):
@@ -98,4 +101,33 @@ class EditMilestoneResponse(BaseModel):
 
     @property
     def milestone(self) -> Milestone:
-        return self.payload.milestone 
+        return self.payload.milestone
+
+
+class ToggleMilestoneRequest(BaseModel):
+    task_id: str = Field(..., alias="taskId")
+    milestone_ids: List[str] = Field(..., alias="milestoneIds")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):
+        return super().model_dump(by_alias=True, **kwargs)
+
+
+class ToggleMilestonePayload(BaseModel):
+    task: Dict[str, Any]  # Using Dict to avoid circular import issues
+
+
+class ToggleMilestoneResponse(BaseModel):
+    type: str
+    payload: ToggleMilestonePayload
+
+    @property
+    def task(self) -> "Task":
+        # Import here to avoid circular import
+        from .tasks import Task
+        task_data = self.payload.task
+        # Ensure the task data has the correct field mapping
+        if "_id" in task_data and "id" not in task_data:
+            task_data["id"] = task_data["_id"]
+        return Task(**task_data) 

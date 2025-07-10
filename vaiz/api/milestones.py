@@ -1,5 +1,5 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models import MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse
+from vaiz.models import MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
 
 
 class MilestonesAPIClient(BaseAPIClient):
@@ -50,4 +50,17 @@ class MilestonesAPIClient(BaseAPIClient):
             EditMilestoneResponse: The updated milestone information
         """
         response_data = self._make_request("editMilestone", method="POST", json_data=request.model_dump())
-        return EditMilestoneResponse(**response_data) 
+        return EditMilestoneResponse(**response_data)
+
+    def toggle_milestone(self, request: ToggleMilestoneRequest) -> ToggleMilestoneResponse:
+        """
+        Toggle milestone assignment for a task (attach/detach task to/from milestones).
+        
+        Args:
+            request (ToggleMilestoneRequest): The milestone toggle request containing task ID and milestone IDs
+            
+        Returns:
+            ToggleMilestoneResponse: The updated task information with milestone assignments
+        """
+        response_data = self._make_request("toggleMilestone", method="POST", json_data=request.model_dump())
+        return ToggleMilestoneResponse(**response_data) 

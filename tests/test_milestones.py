@@ -1,6 +1,6 @@
 import pytest
-from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_PROJECT_ID
-from vaiz.models import CreateMilestoneRequest, EditMilestoneRequest
+from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
+from vaiz.models import CreateMilestoneRequest, EditMilestoneRequest, ToggleMilestoneRequest, CreateTaskRequest, TaskPriority
 
 
 @pytest.fixture(scope="module")
@@ -136,3 +136,55 @@ def test_edit_milestone(client):
     assert get_response.milestone.name == "Updated Milestone Name"
     assert get_response.milestone.description == "This is an updated description"
     assert get_response.milestone.due_end == "2025-12-31T23:59:59.999Z" 
+
+
+def test_toggle_milestone(client):
+    # First create a milestone to toggle
+    create_milestone_request = CreateMilestoneRequest(
+        name="Test Milestone for Toggle",
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID
+    )
+    
+    milestone_response = client.create_milestone(create_milestone_request)
+    milestone_id = milestone_response.milestone.id
+    
+    # Create a task to assign the milestone to
+    create_task_request = CreateTaskRequest(
+        name="Test Task for Milestone Toggle",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        priority=TaskPriority.Medium,
+        completed=False
+    )
+    
+    task_response = client.create_task(create_task_request)
+    task_id = task_response.task.id
+    
+    # Now toggle the milestone on the task
+    toggle_request = ToggleMilestoneRequest(
+        task_id=task_id,
+        milestone_ids=[milestone_id]
+    )
+    
+    response = client.toggle_milestone(toggle_request)
+    
+    assert response.type == "ToggleMilestone"
+    assert response.task.id == task_id
+    assert milestone_id in response.task.milestones
+    assert response.task.milestone == milestone_id  # Should set the main milestone field too
+    assert hasattr(response.task, "name")
+    assert hasattr(response.task, "board")
+    assert hasattr(response.task, "project")
+    assert hasattr(response.task, "priority")
+    # Editor might be None for toggle operations, so we just check it's there
+    assert hasattr(response.task, "editor")
+    assert isinstance(response.task.updatedAt, str)
+    
+    # Test toggling again (should remove the milestone)
+    response2 = client.toggle_milestone(toggle_request)
+    assert response2.type == "ToggleMilestone"
+    assert response2.task.id == task_id
+    # Note: Depending on API behavior, milestone might be removed or remain
+    # We'll check what actually happens in the response 

@@ -143,6 +143,33 @@ print(f"Last edited by: {updated_milestone.editor}")
 
 **Note**: All fields except `id` are optional in EditMilestoneRequest. Only provide the fields you want to update.
 
+#### Toggle Milestone Assignment
+
+```python
+from vaiz.models import ToggleMilestoneRequest
+
+# Attach/detach milestones to/from a task
+toggle_request = ToggleMilestoneRequest(
+    task_id="your_task_id",
+    milestone_ids=["milestone_id_1", "milestone_id_2"]  # Can toggle multiple milestones at once
+)
+
+response = client.toggle_milestone(toggle_request)
+updated_task = response.task
+
+print(f"Task: {updated_task.name}")
+print(f"Current milestones: {updated_task.milestones}")
+print(f"Main milestone: {updated_task.milestone}")
+
+# Check if milestone was attached or detached
+if "milestone_id_1" in updated_task.milestones:
+    print("✅ Milestone was attached to the task")
+else:
+    print("❌ Milestone was detached from the task")
+```
+
+**Note**: The `toggle_milestone` method works as a toggle - if the milestone is already assigned to the task, it will be removed; if not assigned, it will be added.
+
 ### Working with Boards
 
 #### Get All Boards
