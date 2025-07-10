@@ -2,6 +2,14 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict
 
 
+class CreateMilestoneRequest(BaseModel):
+    name: str
+    board: str
+    project: str
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class Milestone(BaseModel):
     id: str = Field(..., alias="_id")
     name: str
@@ -35,4 +43,17 @@ class MilestonesResponse(BaseModel):
 
     @property
     def milestones(self) -> List[Milestone]:
-        return self.payload.milestones 
+        return self.payload.milestones
+
+
+class CreateMilestonePayload(BaseModel):
+    milestone: Milestone
+
+
+class CreateMilestoneResponse(BaseModel):
+    type: str
+    payload: CreateMilestonePayload
+
+    @property
+    def milestone(self) -> Milestone:
+        return self.payload.milestone 

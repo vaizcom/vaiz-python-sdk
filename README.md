@@ -85,6 +85,25 @@ for milestone in milestones:
     print(f"Due Date: {milestone.due_end}")
 ```
 
+#### Create a Milestone
+
+```python
+from vaiz.models import CreateMilestoneRequest
+
+milestone = CreateMilestoneRequest(
+    name="New Milestone",
+    board="board_id",
+    project="project_id"
+)
+
+response = client.create_milestone(milestone)
+created_milestone = response.milestone
+print(f"Created milestone: {created_milestone.name}")
+print(f"Milestone ID: {created_milestone.id}")
+```
+
+**Note**: When creating a milestone, you can only set the name, board, and project. Additional fields like description and due dates should be set using the edit milestone method (to be implemented).
+
 ### Working with Boards
 
 #### Get All Boards
