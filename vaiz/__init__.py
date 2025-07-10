@@ -28,6 +28,7 @@ from .models import (
     MilestonesResponse,
     CreateMilestoneRequest,
     CreateMilestoneResponse,
+    GetMilestoneResponse,
     UploadedFile,
     UploadFileResponse,
 )
@@ -55,6 +56,7 @@ __all__ = [
     'MilestonesResponse',
     'CreateMilestoneRequest',
     'CreateMilestoneResponse',
+    'GetMilestoneResponse',
     'UploadedFile',
     'UploadFileResponse',
 ]

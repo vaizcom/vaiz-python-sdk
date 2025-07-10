@@ -85,6 +85,21 @@ for milestone in milestones:
     print(f"Due Date: {milestone.due_end}")
 ```
 
+#### Get a Single Milestone
+
+```python
+milestone_id = "your_milestone_id"
+response = client.get_milestone(milestone_id)
+milestone = response.milestone
+
+print(f"Milestone: {milestone.name}")
+print(f"Description: {milestone.description}")
+print(f"Progress: {milestone.completed}/{milestone.total}")
+print(f"Due Date: {milestone.due_end}")
+print(f"Created by: {milestone.creator}")
+print(f"Last edited by: {milestone.editor}")
+```
+
 #### Create a Milestone
 
 ```python

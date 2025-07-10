@@ -62,4 +62,39 @@ def test_create_milestone(client):
     assert isinstance(response.milestone.creator, str)
     assert isinstance(response.milestone.created_at, str)
     assert isinstance(response.milestone.updated_at, str)
+    assert isinstance(response.milestone.followers, dict)
+
+
+def test_get_milestone(client):
+    # First get all milestones to have a valid milestone ID
+    milestones_response = client.get_milestones()
+    assert milestones_response.milestones, "No milestones available for testing"
+    
+    milestone_id = milestones_response.milestones[0].id
+    response = client.get_milestone(milestone_id)
+    
+    assert response.type == "GetMilestone"
+    assert response.milestone.id == milestone_id
+    assert hasattr(response.milestone, "name")
+    assert hasattr(response.milestone, "description")
+    assert hasattr(response.milestone, "due_start")
+    assert hasattr(response.milestone, "due_end")
+    assert hasattr(response.milestone, "archiver")
+    assert hasattr(response.milestone, "archived_at")
+    assert hasattr(response.milestone, "project")
+    assert hasattr(response.milestone, "followers")
+    assert hasattr(response.milestone, "board")
+    assert hasattr(response.milestone, "document")
+    assert hasattr(response.milestone, "total")
+    assert hasattr(response.milestone, "completed")
+    assert hasattr(response.milestone, "created_at")
+    assert hasattr(response.milestone, "updated_at")
+    assert hasattr(response.milestone, "deleter")
+    assert hasattr(response.milestone, "deleted_at")
+    assert hasattr(response.milestone, "creator")
+    assert hasattr(response.milestone, "editor")
+    
+    # Test the types of important fields
+    assert isinstance(response.milestone.total, int)
+    assert isinstance(response.milestone.completed, int)
     assert isinstance(response.milestone.followers, dict) 

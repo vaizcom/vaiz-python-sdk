@@ -1,5 +1,5 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models import MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse
+from vaiz.models import MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse
 
 
 class MilestonesAPIClient(BaseAPIClient):
@@ -12,6 +12,19 @@ class MilestonesAPIClient(BaseAPIClient):
         """
         response_data = self._make_request("getMilestones", method="POST", json_data={})
         return MilestonesResponse(**response_data)
+
+    def get_milestone(self, milestone_id: str) -> GetMilestoneResponse:
+        """
+        Get a single milestone by its ID.
+        
+        Args:
+            milestone_id (str): The ID of the milestone to retrieve
+            
+        Returns:
+            GetMilestoneResponse: The milestone information
+        """
+        response_data = self._make_request("getMilestone", method="POST", json_data={"_id": milestone_id})
+        return GetMilestoneResponse(**response_data)
 
     def create_milestone(self, request: CreateMilestoneRequest) -> CreateMilestoneResponse:
         """

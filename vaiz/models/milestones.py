@@ -29,6 +29,7 @@ class Milestone(BaseModel):
     deleter: Optional[str] = None
     deleted_at: Optional[str] = Field(None, alias="deletedAt")
     creator: str
+    editor: Optional[str] = None
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -53,6 +54,19 @@ class CreateMilestonePayload(BaseModel):
 class CreateMilestoneResponse(BaseModel):
     type: str
     payload: CreateMilestonePayload
+
+    @property
+    def milestone(self) -> Milestone:
+        return self.payload.milestone
+
+
+class GetMilestonePayload(BaseModel):
+    milestone: Milestone
+
+
+class GetMilestoneResponse(BaseModel):
+    type: str
+    payload: GetMilestonePayload
 
     @property
     def milestone(self) -> Milestone:
