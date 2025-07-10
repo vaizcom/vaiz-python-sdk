@@ -70,4 +70,32 @@ class GetMilestoneResponse(BaseModel):
 
     @property
     def milestone(self) -> Milestone:
+        return self.payload.milestone
+
+
+class EditMilestoneRequest(BaseModel):
+    id: str = Field(..., alias="_id")
+    name: Optional[str] = None
+    description: Optional[str] = None
+    due_start: Optional[str] = Field(None, alias="dueStart")
+    due_end: Optional[str] = Field(None, alias="dueEnd")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):
+        # Remove None values from the dict and use alias
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class EditMilestonePayload(BaseModel):
+    milestone: Milestone
+
+
+class EditMilestoneResponse(BaseModel):
+    type: str
+    payload: EditMilestonePayload
+
+    @property
+    def milestone(self) -> Milestone:
         return self.payload.milestone 

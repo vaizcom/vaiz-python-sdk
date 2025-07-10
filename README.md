@@ -117,7 +117,31 @@ print(f"Created milestone: {created_milestone.name}")
 print(f"Milestone ID: {created_milestone.id}")
 ```
 
-**Note**: When creating a milestone, you can only set the name, board, and project. Additional fields like description and due dates should be set using the edit milestone method (to be implemented).
+**Note**: When creating a milestone, you can only set the name, board, and project. Additional fields like description and due dates should be set using the edit milestone method.
+
+#### Edit a Milestone
+
+```python
+from vaiz.models import EditMilestoneRequest
+
+# Edit an existing milestone
+edit_request = EditMilestoneRequest(
+    id="milestone_id",
+    name="Updated Milestone Name",  # Optional
+    description="Updated description",  # Optional
+    due_start=None,  # Optional
+    due_end="2025-12-31T23:59:59.999Z"  # Optional
+)
+
+response = client.edit_milestone(edit_request)
+updated_milestone = response.milestone
+print(f"Updated milestone: {updated_milestone.name}")
+print(f"Description: {updated_milestone.description}")
+print(f"Due date: {updated_milestone.due_end}")
+print(f"Last edited by: {updated_milestone.editor}")
+```
+
+**Note**: All fields except `id` are optional in EditMilestoneRequest. Only provide the fields you want to update.
 
 ### Working with Boards
 

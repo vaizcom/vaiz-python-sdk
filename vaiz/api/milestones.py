@@ -1,5 +1,5 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models import MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse
+from vaiz.models import MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse
 
 
 class MilestonesAPIClient(BaseAPIClient):
@@ -37,4 +37,17 @@ class MilestonesAPIClient(BaseAPIClient):
             CreateMilestoneResponse: The created milestone information
         """
         response_data = self._make_request("createMilestone", method="POST", json_data=request.model_dump())
-        return CreateMilestoneResponse(**response_data) 
+        return CreateMilestoneResponse(**response_data)
+
+    def edit_milestone(self, request: EditMilestoneRequest) -> EditMilestoneResponse:
+        """
+        Edit an existing milestone.
+        
+        Args:
+            request (EditMilestoneRequest): The milestone edit request
+            
+        Returns:
+            EditMilestoneResponse: The updated milestone information
+        """
+        response_data = self._make_request("editMilestone", method="POST", json_data=request.model_dump())
+        return EditMilestoneResponse(**response_data) 

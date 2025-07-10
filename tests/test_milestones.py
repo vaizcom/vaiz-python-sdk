@@ -1,6 +1,6 @@
 import pytest
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_PROJECT_ID
-from vaiz.models import CreateMilestoneRequest
+from vaiz.models import CreateMilestoneRequest, EditMilestoneRequest
 
 
 @pytest.fixture(scope="module")
@@ -98,3 +98,41 @@ def test_get_milestone(client):
     assert isinstance(response.milestone.total, int)
     assert isinstance(response.milestone.completed, int)
     assert isinstance(response.milestone.followers, dict) 
+
+
+def test_edit_milestone(client):
+    # First create a milestone to edit
+    create_request = CreateMilestoneRequest(
+        name="Test Milestone for Edit",
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID
+    )
+    
+    create_response = client.create_milestone(create_request)
+    milestone_id = create_response.milestone.id
+    
+    # Now edit the milestone
+    edit_request = EditMilestoneRequest(
+        id=milestone_id,
+        name="Updated Milestone Name",
+        description="This is an updated description",
+        due_end="2025-12-31T23:59:59.999Z"
+    )
+    
+    response = client.edit_milestone(edit_request)
+    
+    assert response.type == "EditMilestone"
+    assert response.milestone.id == milestone_id
+    assert response.milestone.name == "Updated Milestone Name"
+    assert response.milestone.description == "This is an updated description"
+    assert response.milestone.due_end == "2025-12-31T23:59:59.999Z"
+    assert response.milestone.board == TEST_BOARD_ID
+    assert response.milestone.project == TEST_PROJECT_ID
+    assert isinstance(response.milestone.editor, str)  # Should have an editor now
+    assert isinstance(response.milestone.updated_at, str)
+    
+    # Verify the changes were actually applied by getting the milestone again
+    get_response = client.get_milestone(milestone_id)
+    assert get_response.milestone.name == "Updated Milestone Name"
+    assert get_response.milestone.description == "This is an updated description"
+    assert get_response.milestone.due_end == "2025-12-31T23:59:59.999Z" 
