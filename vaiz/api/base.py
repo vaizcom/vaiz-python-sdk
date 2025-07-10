@@ -27,7 +27,7 @@ class VaizSDKError(Exception):
             error_details.append(f"Error code: {api_error.code}")
             error_details.append(f"Original type: {api_error.original_type}")
             if api_error.fields:
-                field_strs = [f["name"] if isinstance(f, dict) and "name" in f else str(f) for f in api_error.fields]
+                field_strs = [f.get("name", str(f)) if isinstance(f, dict) else str(f) for f in api_error.fields]
                 error_details.append(f"Affected fields: {', '.join(field_strs)}")
             if api_error.meta and api_error.meta.description:
                 error_details.append(f"Details: {api_error.meta.description}")
@@ -73,6 +73,16 @@ class VaizHTTPError(VaizSDKError):
 
 class BaseAPIClient:
     def __init__(self, api_key: str, space_id: str, base_url: str = "https://api.vaiz.com/v4", verify_ssl: bool = True, verbose: bool = False):
+        """
+        Initialize the API client.
+        
+        Args:
+            api_key: Your Vaiz API key
+            space_id: Your Vaiz space ID
+            base_url: Base URL for the API (defaults to production)
+            verify_ssl: Whether to verify SSL certificates (defaults to True for security)
+            verbose: Whether to enable debug output
+        """
         self.api_key = api_key
         self.space_id = space_id
         self.base_url = base_url
@@ -116,7 +126,7 @@ class BaseAPIClient:
         message = api_error.meta.description if api_error.meta and api_error.meta.description else api_error.code
         raise error_class(message, api_error)
 
-    def _make_request(self, endpoint: str, method: str = "POST", json_data: Dict[str, Any] = None) -> Dict[str, Any]:
+    def _make_request(self, endpoint: str, method: str = "POST", json_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         url = f"{self.base_url}/{endpoint}"
         if self.verbose:
             print(f"Request payload: {json_data}")  # Debug print

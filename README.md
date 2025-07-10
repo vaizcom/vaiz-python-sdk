@@ -24,12 +24,20 @@ VAIZ_SPACE_ID=your_space_id
 ```python
 from vaiz import VaizClient
 
+# For production use (verify_ssl=True by default)
+client = VaizClient(
+    api_key="your_api_key",
+    space_id="your_space_id"
+    # verify_ssl=True is the default value
+    # verbose=True  # Optional: set to True to enable debug output (request/response)
+)
+
+# For local development (when using self-signed certificates)
 client = VaizClient(
     api_key="your_api_key",
     space_id="your_space_id",
-    verify_ssl=False,  # Set to True in production
-    base_url="https://api.vaiz.local:10000/v4"  # Use appropriate base URL for your environment
-    verbose=True  # Optional: set to True to enable debug output (request/response)
+    verify_ssl=False,  # Only for local development
+    base_url="https://api.vaiz.local:10000/v4"  # Local development URL
 )
 ```
 
