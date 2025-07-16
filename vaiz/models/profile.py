@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List, Dict, Any
 
 
@@ -23,13 +23,15 @@ class Profile(BaseModel):
     avatarMode: int
     incompleteSteps: List[str]
     registeredDate: str
-    recoveryCodes: List[str]
+    recoveryCodes: List[Dict[str, str]]
     passwordChangedDate: str
     passwordHash: str
     memberId: str
     created_at: str = Field(..., alias="createdAt")
     updated_at: str = Field(..., alias="updatedAt")
     cData: Dict[str, Optional[str]]
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ProfileResponse(BaseModel):
