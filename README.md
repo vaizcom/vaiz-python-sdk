@@ -41,6 +41,54 @@ client = VaizClient(
 )
 ```
 
+### DateTime Support
+
+The Vaiz SDK provides **automatic datetime conversion** for all date/time fields. You can work with Python `datetime` objects instead of ISO strings:
+
+#### Features
+
+- **📥 Automatic Parsing**: ISO strings from API → Python `datetime` objects
+- **📤 Automatic Serialization**: Python `datetime` objects → ISO strings for API
+- **🔄 Bidirectional**: Works seamlessly in both directions
+- **✨ Developer Friendly**: Use native Python datetime operations
+
+#### Example
+
+```python
+from datetime import datetime
+from vaiz.models import CreateTaskRequest, TaskPriority
+
+# Create task with datetime objects (recommended)
+task = CreateTaskRequest(
+    name="Project Deadline",
+    group="group_id",
+    board="board_id",
+    project="project_id",
+    priority=TaskPriority.High,
+    dueStart=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
+    dueEnd=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
+)
+
+response = client.create_task(task)
+
+# Access as datetime objects
+print(f"Created: {response.task.createdAt}")     # datetime object
+print(f"Due: {response.task.dueEnd}")           # datetime object
+print(f"Year: {response.task.dueEnd.year}")     # 2025
+
+# Automatic API serialization happens behind the scenes
+# API receives: {"dueStart": "2025-02-01T09:00:00", "dueEnd": "2025-02-15T17:00:00"}
+```
+
+#### Supported Fields
+
+All date/time fields across the SDK support datetime conversion:
+
+- `created_at`, `updated_at`, `edited_at`, `deleted_at`
+- `archived_at`, `completed_at`
+- `due_start`, `due_end`, `dueStart`, `dueEnd`
+- `registeredDate`, `passwordChangedDate`
+
 ### Enums
 
 The SDK provides enums for icons and colors to ensure you are using valid values.
@@ -103,8 +151,10 @@ print(f"Last edited by: {milestone.editor}")
 #### Create a Milestone
 
 ```python
+from datetime import datetime
 from vaiz.models import CreateMilestoneRequest
 
+# Basic milestone
 milestone = CreateMilestoneRequest(
     name="New Milestone",
     board="board_id",
@@ -117,31 +167,59 @@ print(f"Created milestone: {created_milestone.name}")
 print(f"Milestone ID: {created_milestone.id}")
 ```
 
-**Note**: When creating a milestone, you can only set the name, board, and project. Additional fields like description and due dates should be set using the edit milestone method.
+#### Create a Milestone with DateTime Ranges
+
+You can create milestones with specific start and end dates using Python `datetime` objects:
+
+```python
+from datetime import datetime
+from vaiz.models import CreateMilestoneRequest
+
+# Milestone with datetime ranges (recommended approach)
+milestone_with_dates = CreateMilestoneRequest(
+    name="Q1 2025 Milestone",
+    description="First quarter milestone with specific dates",
+    board="board_id",
+    project="project_id",
+    due_start=datetime(2025, 3, 1, 9, 0, 0),      # March 1st, 9:00 AM
+    due_end=datetime(2025, 3, 31, 17, 0, 0),      # March 31st, 5:00 PM
+    color="#4CAF50"  # Green color
+)
+
+response = client.create_milestone(milestone_with_dates)
+milestone = response.milestone
+
+# Access datetime objects directly
+print(f"Due start: {milestone.due_start}")  # datetime object
+print(f"Due end: {milestone.due_end}")      # datetime object
+print(f"Created at: {milestone.created_at}")  # datetime object
+```
 
 #### Edit a Milestone
 
 ```python
+from datetime import datetime
 from vaiz.models import EditMilestoneRequest
 
-# Edit an existing milestone
+# Edit an existing milestone with datetime objects
 edit_request = EditMilestoneRequest(
-    id="milestone_id",
+    milestone_id="milestone_id",
     name="Updated Milestone Name",  # Optional
     description="Updated description",  # Optional
-    due_start=None,  # Optional
-    due_end="2025-12-31T23:59:59.999Z"  # Optional
+    due_start=datetime(2025, 6, 1, 9, 0, 0),      # June 1st, 9:00 AM (Optional)
+    due_end=datetime(2025, 12, 31, 23, 59, 59)    # December 31st, 11:59 PM (Optional)
 )
 
 response = client.edit_milestone(edit_request)
 updated_milestone = response.milestone
 print(f"Updated milestone: {updated_milestone.name}")
 print(f"Description: {updated_milestone.description}")
-print(f"Due date: {updated_milestone.due_end}")
+print(f"Due start: {updated_milestone.due_start}")  # datetime object
+print(f"Due end: {updated_milestone.due_end}")      # datetime object
 print(f"Last edited by: {updated_milestone.editor}")
 ```
 
-**Note**: All fields except `id` are optional in EditMilestoneRequest. Only provide the fields you want to update.
+**Note**: All fields except `milestone_id` are optional in EditMilestoneRequest. Only provide the fields you want to update. The SDK automatically converts `datetime` objects to ISO strings for the API.
 
 #### Toggle Milestone Assignment
 
@@ -327,8 +405,10 @@ profile = response.payload["profile"]
 #### Create a Task
 
 ```python
+from datetime import datetime
 from vaiz.models import CreateTaskRequest, TaskPriority
 
+# Basic task
 task = CreateTaskRequest(
     name="My Task",
     group="group_id",
@@ -344,6 +424,61 @@ task = CreateTaskRequest(
 )
 
 response = client.create_task(task)
+```
+
+#### Create a Task with DateTime Deadlines
+
+The SDK automatically converts Python `datetime` objects to ISO strings for the API and parses ISO strings back to `datetime` objects:
+
+```python
+from datetime import datetime
+from vaiz.models import CreateTaskRequest, TaskPriority
+
+# Task with datetime deadlines (recommended approach)
+task_with_dates = CreateTaskRequest(
+    name="Project Deadline Task",
+    description="Task with specific start and end dates",
+    group="group_id",
+    board="board_id",
+    project="project_id",
+    priority=TaskPriority.Medium,
+    completed=False,
+    dueStart=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
+    dueEnd=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
+)
+
+response = client.create_task(task_with_dates)
+
+# Access datetime objects directly
+print(f"Due start: {response.task.dueStart}")  # datetime object
+print(f"Created at: {response.task.createdAt}")  # datetime object
+```
+
+#### Edit a Task with DateTime Updates
+
+You can update task deadlines and other fields using datetime objects:
+
+```python
+from datetime import datetime
+from vaiz.models import EditTaskRequest, TaskPriority
+
+# Edit an existing task with new datetime deadlines
+edit_request = EditTaskRequest(
+    taskId="existing_task_id",
+    name="Updated Task with New Deadlines",
+    priority=TaskPriority.High,
+    completed=False,
+    assignees=["user_id"],
+    dueStart=datetime(2025, 4, 1, 9, 0, 0),    # April 1st, 9:00 AM
+    dueEnd=datetime(2025, 4, 30, 17, 0, 0)     # April 30th, 5:00 PM
+)
+
+response = client.edit_task(edit_request)
+
+# Access updated datetime objects
+updated_task = response.payload["task"]
+print(f"Updated due start: {updated_task['dueStart']}")  # ISO string from API
+print(f"Updated due end: {updated_task['dueEnd']}")      # ISO string from API
 ```
 
 #### Create a Task with Description and Files

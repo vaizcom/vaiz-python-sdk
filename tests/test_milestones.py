@@ -119,7 +119,7 @@ def test_edit_milestone(client):
         milestone_id=milestone_id,
         name="Updated Milestone Name",
         description="This is an updated description",
-        due_end="2025-12-31T23:59:59.999Z"
+        due_end=datetime(2025, 12, 31, 23, 59, 59, 999000)  # Using datetime object
     )
     
     response = client.edit_milestone(edit_request)

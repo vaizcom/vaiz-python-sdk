@@ -1,12 +1,13 @@
 """
-Module demonstrating milestone editing functionality.
+Module demonstrating milestone editing functionality with datetime objects.
 """
 
+from datetime import datetime
 from vaiz.models import EditMilestoneRequest
 from .config import get_client
 
 def edit_milestone(milestone_id: str = None):
-    """Edit an existing milestone using the Vaiz SDK."""
+    """Edit an existing milestone using the Vaiz SDK with datetime objects."""
     client = get_client()
     
     # If no milestone_id provided, get one from the list
@@ -26,26 +27,27 @@ def edit_milestone(milestone_id: str = None):
     print(f"Description: {before_response.milestone.description}")
     print(f"Due End: {before_response.milestone.due_end}")
     
-    # Edit the milestone
+    # Edit the milestone with datetime objects
     edit_request = EditMilestoneRequest(
-        id=milestone_id,
+        milestone_id=milestone_id,
         name="Updated Milestone Name (SDK Edit)",
-        description="This milestone was updated using the SDK edit functionality",
-        due_end="2025-12-31T23:59:59.999Z"
+        description="This milestone was updated using the SDK with datetime objects",
+        due_start=datetime(2025, 6, 1, 9, 0, 0),      # June 1st, 9:00 AM  
+        due_end=datetime(2025, 12, 31, 23, 59, 59)    # December 31st, 11:59 PM
     )
 
     try:
         response = client.edit_milestone(edit_request)
         milestone = response.milestone
         
-        print("\nMilestone edited successfully!")
+        print("\n✅ Milestone edited successfully!")
         print(f"Response type: {response.type}")
         print(f"\nAfter edit:")
         print(f"ID: {milestone.id}")
         print(f"Name: {milestone.name}")
         print(f"Description: {milestone.description}")
-        print(f"Due Start: {milestone.due_start}")
-        print(f"Due End: {milestone.due_end}")
+        print(f"Due Start: {milestone.due_start} ({type(milestone.due_start).__name__})")
+        print(f"Due End: {milestone.due_end} ({type(milestone.due_end).__name__})")
         print(f"Project: {milestone.project}")
         print(f"Board: {milestone.board}")
         print(f"Document: {milestone.document}")

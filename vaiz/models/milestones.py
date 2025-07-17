@@ -103,8 +103,9 @@ class EditMilestoneRequest(VaizBaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     def model_dump(self, **kwargs):
-        # Remove None values from the dict and use alias
-        data = super().model_dump(by_alias=True, **kwargs)
+        # Remove None values from the dict and use alias by default
+        kwargs.setdefault('by_alias', True)
+        data = super().model_dump(**kwargs)
         return {k: v for k, v in data.items() if v is not None}
 
 
