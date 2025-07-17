@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from pydantic import BaseModel, Field
 from enum import Enum
 from datetime import datetime
@@ -30,7 +30,7 @@ class BoardGroup(BaseModel):
 class BoardType(BaseModel):
     label: str
     icon: EIcon
-    color: EColor
+    color: Union[str, EColor]  # Allow both hex codes and enum values
     id: str = Field(..., alias="_id")
     description: Optional[str] = None
     hidden: Optional[bool] = None
