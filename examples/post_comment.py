@@ -119,6 +119,43 @@ def post_simple_text_comment():
         print(f"Error posting simple comment: {e}")
 
 
+def post_comment_reply():
+    """Post a reply to an existing comment."""
+    client = get_client()
+    
+    # Example document ID - replace with actual document ID
+    document_id = "68766185f2fdb46f0f91737d"
+    
+    try:
+        # First, create an original comment
+        original_response = client.post_comment(
+            document_id=document_id,
+            content="<p>Original comment that will receive a reply</p>"
+        )
+        
+        print("Original comment posted successfully!")
+        print(f"Original comment ID: {original_response.comment.id}")
+        print(f"Original content: {original_response.comment.content}")
+        
+        # Now create a reply to the original comment
+        reply_response = client.post_comment(
+            document_id=document_id,
+            content="<p>This is a <strong>reply</strong> to the original comment</p>",
+            reply_to=original_response.comment.id
+        )
+        
+        print("\nReply comment posted successfully!")
+        print(f"Reply comment ID: {reply_response.comment.id}")
+        print(f"Reply content: {reply_response.comment.content}")
+        print(f"Reply to comment ID: {reply_response.comment.reply_to}")
+        print(f"Is reply: {reply_response.comment.reply_to is not None}")
+        
+        return reply_response.comment.id
+        
+    except Exception as e:
+        print(f"Error posting comment reply: {e}")
+
+
 def main():
     """Run all comment posting examples."""
     print("=" * 60)
@@ -136,6 +173,10 @@ def main():
     print("\n3. Posting simple text comment...")
     print("-" * 40)
     post_simple_text_comment()
+    
+    print("\n4. Posting comment reply...")
+    print("-" * 40)
+    post_comment_reply()
 
 
 if __name__ == "__main__":

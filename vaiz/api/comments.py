@@ -10,7 +10,8 @@ class CommentsAPIClient(BaseAPIClient):
         self, 
         document_id: str, 
         content: str, 
-        file_ids: Optional[List[str]] = None
+        file_ids: Optional[List[str]] = None,
+        reply_to: Optional[str] = None
     ) -> PostCommentResponse:
         """
         Post a comment to a document.
@@ -19,6 +20,7 @@ class CommentsAPIClient(BaseAPIClient):
             document_id (str): The ID of the document to comment on
             content (str): The comment content (can include HTML)
             file_ids (Optional[List[str]]): List of file IDs to attach to the comment
+            reply_to (Optional[str]): ID of the comment to reply to (for threaded replies)
             
         Returns:
             PostCommentResponse: The created comment information
@@ -29,7 +31,8 @@ class CommentsAPIClient(BaseAPIClient):
         request = PostCommentRequest(
             document_id=document_id,
             content=content,
-            file_ids=file_ids or []
+            file_ids=file_ids or [],
+            reply_to=reply_to
         )
         
         response_data = self._make_request("postComment", json_data=request.model_dump())

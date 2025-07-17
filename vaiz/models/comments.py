@@ -21,6 +21,7 @@ class Comment(BaseModel):
     files: List[str] = []
     reactions: List[CommentReaction] = []
     has_removed_files: bool = Field(False, alias="hasRemovedFiles")
+    reply_to: Optional[str] = Field(None, alias="replyTo")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -30,6 +31,7 @@ class PostCommentRequest(BaseModel):
     content: str
     file_ids: List[str] = Field(default_factory=list, alias="fileIds")
     document_id: str = Field(..., alias="documentId")
+    reply_to: Optional[str] = Field(None, alias="replyTo")
 
     model_config = ConfigDict(populate_by_name=True)
 

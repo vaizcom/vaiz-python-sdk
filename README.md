@@ -659,6 +659,28 @@ comment = response.comment
 print(f"Comment files: {comment.files}")
 ```
 
+#### Post a Reply to a Comment
+
+```python
+# First, create an original comment
+original_response = client.post_comment(
+    document_id="your_document_id",
+    content="<p>Original comment</p>"
+)
+
+# Now post a reply to that comment
+reply_response = client.post_comment(
+    document_id="your_document_id",
+    content="<p>This is a reply to the original comment</p>",
+    reply_to=original_response.comment.id
+)
+
+reply_comment = reply_response.comment
+print(f"Reply ID: {reply_comment.id}")
+print(f"Replying to: {reply_comment.reply_to}")
+print(f"Is reply: {reply_comment.reply_to is not None}")
+```
+
 #### Working with Comment Models
 
 ```python
@@ -674,6 +696,16 @@ request = PostCommentRequest(
 # The request will be automatically serialized with correct field names
 data = request.model_dump()
 # Results in: {"documentId": "...", "content": "...", "fileIds": [...]}
+
+# Create a reply request
+reply_request = PostCommentRequest(
+    document_id="your_document_id",
+    content="<p>Reply to comment</p>",
+    reply_to="original_comment_id"
+)
+
+reply_data = reply_request.model_dump()
+# Results in: {"documentId": "...", "content": "...", "fileIds": [], "replyTo": "..."}
 ```
 
 ### Examples

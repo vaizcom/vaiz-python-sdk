@@ -72,9 +72,34 @@ def test_post_comment_request_empty_files():
     )
     
     assert request.file_ids == []
+    assert request.reply_to is None
     
     data = request.model_dump()
     assert data["fileIds"] == []
+    # reply_to should not be in the data when None due to model_dump filtering
+    assert "replyTo" not in data
+
+
+def test_post_comment_request_with_reply():
+    """Test PostCommentRequest with reply_to field."""
+    request = PostCommentRequest(
+        document_id="test_doc_id",
+        content="<p>Reply content</p>",
+        file_ids=["file1"],
+        reply_to="original_comment_id"
+    )
+    
+    assert request.document_id == "test_doc_id"
+    assert request.content == "<p>Reply content</p>"
+    assert request.file_ids == ["file1"]
+    assert request.reply_to == "original_comment_id"
+    
+    # Test model dump with aliases
+    data = request.model_dump()
+    assert data["documentId"] == "test_doc_id"
+    assert data["content"] == "<p>Reply content</p>"
+    assert data["fileIds"] == ["file1"]
+    assert data["replyTo"] == "original_comment_id"
 
 
 def test_post_comment_with_html(client, test_document_id):
@@ -142,6 +167,45 @@ def test_post_comment_with_empty_file_list(client, test_document_id):
     print(f"Posted comment with empty files ID: {comment.id}")
 
 
+def test_post_comment_reply(client, test_document_id):
+    """Test posting a reply to a comment."""
+    # First, create an original comment
+    original_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Original comment for reply test</p>"
+    )
+    
+    original_comment = original_response.comment
+    assert original_comment.id is not None
+    assert original_comment.reply_to is None  # Original comment has no reply_to
+    
+    print(f"Created original comment ID: {original_comment.id}")
+    
+    # Now create a reply to the original comment
+    reply_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>This is a <strong>reply</strong> to the original comment</p>",
+        reply_to=original_comment.id
+    )
+    
+    # Validate reply response
+    assert isinstance(reply_response, PostCommentResponse)
+    assert reply_response.type == "PostComment"
+    
+    reply_comment = reply_response.comment
+    assert isinstance(reply_comment, Comment)
+    assert reply_comment.id is not None
+    assert reply_comment.author_id is not None
+    assert reply_comment.document_id == test_document_id
+    assert reply_comment.content == "<p>This is a <strong>reply</strong> to the original comment</p>"
+    assert reply_comment.reply_to == original_comment.id  # This is the key assertion
+    assert reply_comment.created_at is not None
+    assert reply_comment.updated_at is not None
+    
+    print(f"Created reply comment ID: {reply_comment.id}")
+    print(f"Reply points to original comment: {reply_comment.reply_to}")
+
+
 def test_post_comment_invalid_document(client):
     """Test posting a comment to invalid document ID."""
     invalid_document_id = "invalid_document_id_123"
@@ -178,13 +242,41 @@ def test_comment_model_aliases():
     assert comment.files == []
     assert comment.reactions == []
     assert comment.has_removed_files is False
+    assert comment.reply_to is None  # No replyTo in original data
+
+
+def test_comment_model_with_reply():
+    """Test Comment model with reply_to field."""
+    comment_data = {
+        "_id": "reply123",
+        "authorId": "author123",
+        "documentId": "doc123",
+        "content": "<p>Reply content</p>",
+        "createdAt": "2025-01-01T00:00:00Z",
+        "updatedAt": "2025-01-01T00:00:00Z",
+        "files": [],
+        "reactions": [],
+        "hasRemovedFiles": False,
+        "replyTo": "original_comment_id"
+    }
+    
+    comment = Comment(**comment_data)
+    
+    assert comment.id == "reply123"
+    assert comment.author_id == "author123"
+    assert comment.document_id == "doc123"
+    assert comment.content == "<p>Reply content</p>"
+    assert comment.reply_to == "original_comment_id"
 
 
 if __name__ == "__main__":
     # Run specific tests for development
     test_post_comment_request_model()
     test_post_comment_request_empty_files()
-    print("Model tests passed!")
+    test_post_comment_request_with_reply()
+    test_comment_model_aliases()
+    test_comment_model_with_reply()
+    print("All model tests passed!")
     
     # Note: API tests now require fixtures, run with pytest instead:
     # pytest tests/test_comments.py -v 
