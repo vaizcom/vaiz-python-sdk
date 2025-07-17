@@ -657,11 +657,17 @@ print(f"Created at: {comment.created_at}")
 #### Post a Comment with File Attachments
 
 ```python
-# First upload files
-upload_response1 = client.upload_file("path/to/image.png")
-upload_response2 = client.upload_file("path/to/document.pdf")
+from vaiz.models.enums import EUploadFileType
 
-file_ids = [upload_response1.file.id, upload_response2.file.id]
+# First upload files with explicit type specification
+upload_response1 = client.upload_file("path/to/image.png", EUploadFileType.Image)  # Will display as image preview
+upload_response2 = client.upload_file("path/to/document.pdf", EUploadFileType.Pdf)  # Will display as PDF viewer
+upload_response3 = client.upload_file("path/to/video.mp4", EUploadFileType.Video)  # Will display as video player
+
+# You can also upload the same file as different types:
+upload_response4 = client.upload_file("path/to/image.png", EUploadFileType.File)  # Will display as downloadable file
+
+file_ids = [upload_response1.file.id, upload_response2.file.id, upload_response3.file.id]
 
 # Post comment with file attachments
 response = client.post_comment(
@@ -673,7 +679,33 @@ response = client.post_comment(
 comment = response.comment
 print(f"Attached files: {len(comment.files)}")
 for file in comment.files:
-    print(f"  - {file.original_name} ({file.size} bytes)")
+    print(f"  - {file.original_name} ({file.size} bytes) [Type: {file.type.value}]")
+```
+
+**File Type Options:**
+
+- `EUploadFileType.Image` - Displays as image preview/thumbnail
+- `EUploadFileType.Video` - Displays as video player with controls
+- `EUploadFileType.Pdf` - Displays as PDF viewer/preview
+- `EUploadFileType.File` - Displays as downloadable file attachment
+
+**Important:** You must explicitly specify the file type to control how it appears in the interface. The same file can be uploaded with different types for different display purposes.
+
+**Example - Same Image File, Different Display Types:**
+
+```python
+from vaiz.models.enums import EUploadFileType
+
+# Upload same image file with different types
+image_as_preview = client.upload_file("screenshot.png", EUploadFileType.Image)    # Shows preview thumbnail
+image_as_file = client.upload_file("screenshot.png", EUploadFileType.File)       # Shows download link
+
+# In comments, users will see:
+# - Image type: Preview thumbnail that can be clicked to view full size
+# - File type: File icon with filename for download only
+
+# Use Image type for: photos, diagrams, screenshots you want to display
+# Use File type for: images you want to share as downloadable assets
 ```
 
 #### Post a Reply to a Comment

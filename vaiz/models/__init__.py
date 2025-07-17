@@ -1,6 +1,6 @@
 from .base import TaskFollower, TaskPriority, CustomField
 from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField
-from .boards import BoardResponse, BoardsResponse, CreateBoardTypeRequest, CreateBoardTypeResponse, EditBoardTypeRequest, EditBoardTypeResponse, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse, CreateBoardCustomFieldRequest, CreateBoardCustomFieldResponse, EditBoardCustomFieldRequest, EditBoardCustomFieldResponse
+from .boards import Board, BoardResponse, BoardsResponse, CreateBoardTypeRequest, CreateBoardTypeResponse, EditBoardTypeRequest, EditBoardTypeResponse, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse, CreateBoardCustomFieldRequest, CreateBoardCustomFieldResponse, EditBoardCustomFieldRequest, EditBoardCustomFieldResponse
 from .profile import Profile, ProfileResponse
 from .projects import Project, ProjectsResponse, ProjectResponse
 from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
@@ -24,6 +24,7 @@ __all__ = [
     'TaskCustomField',
     
     # Board models
+    'Board',
     'BoardResponse',
     'BoardsResponse',
     'CreateBoardTypeRequest',

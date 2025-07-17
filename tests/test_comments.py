@@ -941,6 +941,7 @@ def test_delete_nonexistent_comment(client):
 def test_post_comment_with_single_file(client, test_document_id):
     """Test posting a comment with a single uploaded file."""
     import os
+    from vaiz.models.enums import EUploadFileType
     
     # Upload a single file first
     file_path = os.path.join("assets", "example.png")
@@ -949,9 +950,10 @@ def test_post_comment_with_single_file(client, test_document_id):
         return
     
     print(f"Uploading file: {file_path}")
-    upload_response = client.upload_file(file_path)
+    upload_response = client.upload_file(file_path, EUploadFileType.Image)
     file_id = upload_response.file.id
     print(f"Uploaded file ID: {file_id}")
+    print(f"File type: {upload_response.file.type.value}")
     
     # Create comment with the uploaded file
     comment_response = client.post_comment(
@@ -963,34 +965,38 @@ def test_post_comment_with_single_file(client, test_document_id):
     comment = comment_response.comment
     assert len(comment.files) == 1
     assert comment.files[0].id == file_id
+    assert comment.files[0].type.value == "Image"
     
     print(f"✅ Created comment with single file: {comment.id}")
     print(f"✅ Comment files: {[f.id for f in comment.files]}")
-    print(f"✅ File details: {comment.files[0].original_name} ({comment.files[0].size} bytes)")
+    print(f"✅ File details: {comment.files[0].original_name} ({comment.files[0].size} bytes, {comment.files[0].type.value})")
 
 
 def test_post_comment_with_multiple_files(client, test_document_id):
     """Test posting a comment with multiple uploaded files (image, video, document)."""
     import os
+    from vaiz.models.enums import EUploadFileType
     
     # Upload multiple different file types
     files_to_upload = [
-        ("assets/example.png", "Image"),
-        ("assets/example.mp4", "Video"), 
-        ("assets/example.pdf", "Document")
+        ("assets/example.png", "Image", EUploadFileType.Image),
+        ("assets/example.mp4", "Video", EUploadFileType.Video), 
+        ("assets/example.pdf", "Document", EUploadFileType.Pdf)
     ]
     
     uploaded_file_ids = []
     
-    for file_path, file_type in files_to_upload:
+    for file_path, file_type_name, file_type_enum in files_to_upload:
         if os.path.exists(file_path):
-            print(f"Uploading {file_type}: {file_path}")
-            upload_response = client.upload_file(file_path)
+            print(f"Uploading {file_type_name}: {file_path}")
+            upload_response = client.upload_file(file_path, file_type_enum)
             file_id = upload_response.file.id
             uploaded_file_ids.append(file_id)
-            print(f"Uploaded {file_type} ID: {file_id}")
+            print(f"Uploaded {file_type_name} ID: {file_id}")
+            print(f"File type: {upload_response.file.type.value}")
+            assert upload_response.file.type.value == file_type_enum.value
         else:
-            print(f"Skipping {file_type} - file not found: {file_path}")
+            print(f"Skipping {file_type_name} - file not found: {file_path}")
     
     if not uploaded_file_ids:
         print("No files uploaded, skipping test")
@@ -1012,7 +1018,7 @@ def test_post_comment_with_multiple_files(client, test_document_id):
     
     print(f"✅ Created comment with {len(uploaded_file_ids)} files: {comment.id}")
     print(f"✅ Comment files: {comment_file_ids}")
-    print(f"✅ File details: {[(f.original_name, f.size) for f in comment.files]}")
+    print(f"✅ File details: {[(f.original_name, f.size, f.type.value) for f in comment.files]}")
     
     # Return removed - pytest expects None from test functions
 
@@ -1020,6 +1026,7 @@ def test_post_comment_with_multiple_files(client, test_document_id):
 def test_edit_comment_add_files(client, test_document_id):
     """Test editing a comment to add files."""
     import os
+    from vaiz.models.enums import EUploadFileType
     
     # First create a comment without files
     original_response = client.post_comment(
@@ -1037,9 +1044,10 @@ def test_edit_comment_add_files(client, test_document_id):
         print(f"Skipping test - file not found: {file_path}")
         return
     
-    upload_response = client.upload_file(file_path)
+    upload_response = client.upload_file(file_path, EUploadFileType.Pdf)
     file_id = upload_response.file.id
     print(f"Uploaded file to add: {file_id}")
+    print(f"File type: {upload_response.file.type.value}")
     
     # Edit comment to add the file
     edit_response = client.edit_comment(
@@ -1052,28 +1060,32 @@ def test_edit_comment_add_files(client, test_document_id):
     edited_comment = edit_response.comment
     assert len(edited_comment.files) == 1
     assert edited_comment.files[0].id == file_id
+    assert edited_comment.files[0].type.value == "Pdf"
     assert edited_comment.edited_at is not None
     
     print(f"✅ Successfully added file to comment")
     print(f"✅ Comment files after edit: {[f.id for f in edited_comment.files]}")
-    print(f"✅ File details: {edited_comment.files[0].original_name}")
+    print(f"✅ File details: {edited_comment.files[0].original_name} ({edited_comment.files[0].type.value})")
     print(f"✅ Edited at: {edited_comment.edited_at}")
 
 
 def test_edit_comment_remove_files(client, test_document_id):
     """Test editing a comment to remove files."""
     import os
+    from vaiz.models.enums import EUploadFileType
     
     # Upload files first
     file_path1 = os.path.join("assets", "example.png")
     file_path2 = os.path.join("assets", "example.pdf")
     
     file_ids = []
-    for file_path in [file_path1, file_path2]:
+    file_types = [EUploadFileType.Image, EUploadFileType.Pdf]
+    
+    for file_path, file_type in zip([file_path1, file_path2], file_types):
         if os.path.exists(file_path):
-            upload_response = client.upload_file(file_path)
+            upload_response = client.upload_file(file_path, file_type)
             file_ids.append(upload_response.file.id)
-            print(f"Uploaded: {upload_response.file.id}")
+            print(f"Uploaded: {upload_response.file.id} ({upload_response.file.type.value})")
     
     if len(file_ids) < 2:
         print("Need at least 2 files for this test, skipping")
@@ -1115,16 +1127,20 @@ def test_edit_comment_remove_files(client, test_document_id):
 def test_edit_comment_reorder_files(client, test_document_id):
     """Test editing a comment to reorder files."""
     import os
+    from vaiz.models.enums import EUploadFileType
     
     # Upload multiple files
-    files_to_upload = ["assets/example.png", "assets/example.pdf"]
+    files_to_upload = [
+        ("assets/example.png", EUploadFileType.Image),
+        ("assets/example.pdf", EUploadFileType.Pdf)
+    ]
     file_ids = []
     
-    for file_path in files_to_upload:
+    for file_path, file_type in files_to_upload:
         if os.path.exists(file_path):
-            upload_response = client.upload_file(file_path)
+            upload_response = client.upload_file(file_path, file_type)
             file_ids.append(upload_response.file.id)
-            print(f"Uploaded: {upload_response.file.id}")
+            print(f"Uploaded: {upload_response.file.id} ({upload_response.file.type.value})")
     
     if len(file_ids) < 2:
         print("Need at least 2 files for reorder test, skipping")
@@ -1162,6 +1178,7 @@ def test_edit_comment_reorder_files(client, test_document_id):
 def test_comment_with_files_complete_lifecycle(client, test_document_id):
     """Test complete lifecycle of comment with files: create -> add -> reorder -> remove -> delete."""
     import os
+    from vaiz.models.enums import EUploadFileType
     
     print("\n=== COMPLETE FILE LIFECYCLE TEST ===")
     
@@ -1171,9 +1188,9 @@ def test_comment_with_files_complete_lifecycle(client, test_document_id):
         print("Skipping lifecycle test - no files available")
         return
     
-    upload1 = client.upload_file(file_path)
+    upload1 = client.upload_file(file_path, EUploadFileType.Image)
     file_id1 = upload1.file.id
-    print(f"1. Uploaded initial file: {file_id1}")
+    print(f"1. Uploaded initial file: {file_id1} ({upload1.file.type.value})")
     
     # 2. Create comment with one file
     comment_response = client.post_comment(
@@ -1187,9 +1204,9 @@ def test_comment_with_files_complete_lifecycle(client, test_document_id):
     # 3. Add another file if available
     file_path2 = os.path.join("assets", "example.pdf")
     if os.path.exists(file_path2):
-        upload2 = client.upload_file(file_path2)
+        upload2 = client.upload_file(file_path2, EUploadFileType.Pdf)
         file_id2 = upload2.file.id
-        print(f"3. Uploaded second file: {file_id2}")
+        print(f"3. Uploaded second file: {file_id2} ({upload2.file.type.value})")
         
         # Add the second file
         edit_response = client.edit_comment(
@@ -1202,21 +1219,25 @@ def test_comment_with_files_complete_lifecycle(client, test_document_id):
         
         # 4. Reorder files (reverse order)
         all_files = edit_response.comment.files
-        reversed_files = list(reversed(all_files))
+        reversed_file_ids = [f.id for f in reversed(all_files)]
         
         edit_response = client.edit_comment(
             comment_id=comment_id,
             content="<p><strong>REORDERED:</strong> Files in new order</p>",
-            order_file_ids=[file_id2, file_id1]  # Reverse order
+            order_file_ids=reversed_file_ids
         )
         print(f"5. Reordered files: {[f.id for f in edit_response.comment.files]}")
         
         # 5. Remove one file
+        current_file_ids = [f.id for f in edit_response.comment.files]
+        file_to_remove = current_file_ids[1]  # Middle file
+        remaining_files = [f for f in current_file_ids if f != file_to_remove]
+        
         edit_response = client.edit_comment(
             comment_id=comment_id,
             content="<p><strong>REMOVED:</strong> One file removed</p>",
-            remove_file_ids=[file_id1],
-            order_file_ids=[file_id2]
+            remove_file_ids=[file_to_remove],
+            order_file_ids=remaining_files
         )
         print(f"6. Removed file, remaining: {[f.id for f in edit_response.comment.files]}")
     
