@@ -19,6 +19,7 @@ from .edit_task_with_files import (
     edit_task_update_description_only
 )
 from .post_comment import post_comment_with_html, post_simple_text_comment, post_comment_reply, react_to_comment, add_popular_reactions, get_comments_example, edit_comment_example, edit_comment_with_files_example, delete_comment_example, complete_comment_lifecycle_example
+from .comment_files import upload_single_file_comment, upload_multiple_files_comment, edit_comment_add_files, edit_comment_manage_files, complete_file_workflow
 
 def main():
     """Run the complete example workflow."""
@@ -123,6 +124,31 @@ def main():
     print("17. Complete comment lifecycle (CRUD)...")
     print("-" * 40)
     complete_comment_lifecycle_example()
+    
+    print("\n" + "="*60)
+    print("18. Comment with single file attachment...")
+    print("-" * 40)
+    upload_single_file_comment()
+    
+    print("\n" + "="*60)
+    print("19. Comment with multiple file attachments...")
+    print("-" * 40)
+    upload_multiple_files_comment()
+    
+    print("\n" + "="*60)
+    print("20. Edit comment to add files...")
+    print("-" * 40)
+    edit_comment_add_files()
+    
+    print("\n" + "="*60)
+    print("21. Complex file management (add/reorder/remove)...")
+    print("-" * 40)
+    edit_comment_manage_files()
+    
+    print("\n" + "="*60)
+    print("22. Complete file workflow...")
+    print("-" * 40)
+    complete_file_workflow()
     
     print("\n" + "="*60)
     print("All examples completed!")

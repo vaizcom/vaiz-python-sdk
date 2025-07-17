@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+from .upload import UploadedFile
 
 
 class CommentReaction(BaseModel):
@@ -23,7 +24,7 @@ class Comment(BaseModel):
     updated_at: str = Field(..., alias="updatedAt")
     edited_at: Optional[str] = Field(None, alias="editedAt")
     deleted_at: Optional[str] = Field(None, alias="deletedAt")
-    files: List[str] = []
+    files: List[UploadedFile] = []
     reactions: List[CommentReaction] = []
     has_removed_files: bool = Field(False, alias="hasRemovedFiles")
     reply_to: Optional[str] = Field(None, alias="replyTo")

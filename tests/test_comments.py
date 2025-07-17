@@ -938,6 +938,295 @@ def test_delete_nonexistent_comment(client):
         client.delete_comment(comment_id="nonexistent_comment_id")
 
 
+def test_post_comment_with_single_file(client, test_document_id):
+    """Test posting a comment with a single uploaded file."""
+    import os
+    
+    # Upload a single file first
+    file_path = os.path.join("assets", "example.png")
+    if not os.path.exists(file_path):
+        print(f"Skipping test - file not found: {file_path}")
+        return
+    
+    print(f"Uploading file: {file_path}")
+    upload_response = client.upload_file(file_path)
+    file_id = upload_response.file.id
+    print(f"Uploaded file ID: {file_id}")
+    
+    # Create comment with the uploaded file
+    comment_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Comment with a single <strong>image</strong> file</p>",
+        file_ids=[file_id]
+    )
+    
+    comment = comment_response.comment
+    assert len(comment.files) == 1
+    assert comment.files[0].id == file_id
+    
+    print(f"✅ Created comment with single file: {comment.id}")
+    print(f"✅ Comment files: {[f.id for f in comment.files]}")
+    print(f"✅ File details: {comment.files[0].original_name} ({comment.files[0].size} bytes)")
+
+
+def test_post_comment_with_multiple_files(client, test_document_id):
+    """Test posting a comment with multiple uploaded files (image, video, document)."""
+    import os
+    
+    # Upload multiple different file types
+    files_to_upload = [
+        ("assets/example.png", "Image"),
+        ("assets/example.mp4", "Video"), 
+        ("assets/example.pdf", "Document")
+    ]
+    
+    uploaded_file_ids = []
+    
+    for file_path, file_type in files_to_upload:
+        if os.path.exists(file_path):
+            print(f"Uploading {file_type}: {file_path}")
+            upload_response = client.upload_file(file_path)
+            file_id = upload_response.file.id
+            uploaded_file_ids.append(file_id)
+            print(f"Uploaded {file_type} ID: {file_id}")
+        else:
+            print(f"Skipping {file_type} - file not found: {file_path}")
+    
+    if not uploaded_file_ids:
+        print("No files uploaded, skipping test")
+        return
+    
+    # Create comment with multiple files
+    comment_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Comment with <strong>multiple files</strong>: image, video, and document</p>",
+        file_ids=uploaded_file_ids
+    )
+    
+    comment = comment_response.comment
+    assert len(comment.files) == len(uploaded_file_ids)
+    
+    comment_file_ids = [f.id for f in comment.files]
+    for file_id in uploaded_file_ids:
+        assert file_id in comment_file_ids
+    
+    print(f"✅ Created comment with {len(uploaded_file_ids)} files: {comment.id}")
+    print(f"✅ Comment files: {comment_file_ids}")
+    print(f"✅ File details: {[(f.original_name, f.size) for f in comment.files]}")
+    
+    # Return removed - pytest expects None from test functions
+
+
+def test_edit_comment_add_files(client, test_document_id):
+    """Test editing a comment to add files."""
+    import os
+    
+    # First create a comment without files
+    original_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Original comment without files</p>"
+    )
+    
+    original_comment = original_response.comment
+    assert len(original_comment.files) == 0
+    print(f"Created comment without files: {original_comment.id}")
+    
+    # Upload a file to add
+    file_path = os.path.join("assets", "example.pdf")
+    if not os.path.exists(file_path):
+        print(f"Skipping test - file not found: {file_path}")
+        return
+    
+    upload_response = client.upload_file(file_path)
+    file_id = upload_response.file.id
+    print(f"Uploaded file to add: {file_id}")
+    
+    # Edit comment to add the file
+    edit_response = client.edit_comment(
+        comment_id=original_comment.id,
+        content="<p><strong>EDITED:</strong> Comment now has a file attached!</p>",
+        add_file_ids=[file_id],
+        order_file_ids=[file_id]  # Set the order
+    )
+    
+    edited_comment = edit_response.comment
+    assert len(edited_comment.files) == 1
+    assert edited_comment.files[0].id == file_id
+    assert edited_comment.edited_at is not None
+    
+    print(f"✅ Successfully added file to comment")
+    print(f"✅ Comment files after edit: {[f.id for f in edited_comment.files]}")
+    print(f"✅ File details: {edited_comment.files[0].original_name}")
+    print(f"✅ Edited at: {edited_comment.edited_at}")
+
+
+def test_edit_comment_remove_files(client, test_document_id):
+    """Test editing a comment to remove files."""
+    import os
+    
+    # Upload files first
+    file_path1 = os.path.join("assets", "example.png")
+    file_path2 = os.path.join("assets", "example.pdf")
+    
+    file_ids = []
+    for file_path in [file_path1, file_path2]:
+        if os.path.exists(file_path):
+            upload_response = client.upload_file(file_path)
+            file_ids.append(upload_response.file.id)
+            print(f"Uploaded: {upload_response.file.id}")
+    
+    if len(file_ids) < 2:
+        print("Need at least 2 files for this test, skipping")
+        return
+    
+    # Create comment with files
+    comment_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Comment with files that will be removed</p>",
+        file_ids=file_ids
+    )
+    
+    comment = comment_response.comment
+    assert len(comment.files) == len(file_ids)
+    print(f"Created comment with {len(file_ids)} files: {comment.id}")
+    
+    # Edit comment to remove one file
+    file_to_remove = file_ids[0]
+    file_to_keep = file_ids[1]
+    
+    edit_response = client.edit_comment(
+        comment_id=comment.id,
+        content="<p><strong>EDITED:</strong> Removed one file, kept another</p>",
+        remove_file_ids=[file_to_remove],
+        order_file_ids=[file_to_keep]  # Only the remaining file
+    )
+    
+    edited_comment = edit_response.comment
+    assert len(edited_comment.files) == 1
+    edited_file_ids = [f.id for f in edited_comment.files]
+    assert edited_comment.files[0].id == file_to_keep
+    assert file_to_remove not in edited_file_ids
+    
+    print(f"✅ Successfully removed file from comment")
+    print(f"✅ Removed file: {file_to_remove}")
+    print(f"✅ Remaining files: {edited_file_ids}")
+
+
+def test_edit_comment_reorder_files(client, test_document_id):
+    """Test editing a comment to reorder files."""
+    import os
+    
+    # Upload multiple files
+    files_to_upload = ["assets/example.png", "assets/example.pdf"]
+    file_ids = []
+    
+    for file_path in files_to_upload:
+        if os.path.exists(file_path):
+            upload_response = client.upload_file(file_path)
+            file_ids.append(upload_response.file.id)
+            print(f"Uploaded: {upload_response.file.id}")
+    
+    if len(file_ids) < 2:
+        print("Need at least 2 files for reorder test, skipping")
+        return
+    
+    # Create comment with files in original order
+    comment_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Comment with files in original order</p>",
+        file_ids=file_ids
+    )
+    
+    comment = comment_response.comment
+    original_order = [f.id for f in comment.files]
+    print(f"Original file order: {original_order}")
+    
+    # Edit comment to reverse the file order
+    reversed_order = list(reversed(file_ids))
+    
+    edit_response = client.edit_comment(
+        comment_id=comment.id,
+        content="<p><strong>EDITED:</strong> Files reordered!</p>",
+        order_file_ids=reversed_order
+    )
+    
+    edited_comment = edit_response.comment
+    edited_order = [f.id for f in edited_comment.files]
+    assert edited_order == reversed_order
+    assert edited_order != original_order
+    
+    print(f"✅ Successfully reordered files")
+    print(f"✅ New file order: {edited_order}")
+
+
+def test_comment_with_files_complete_lifecycle(client, test_document_id):
+    """Test complete lifecycle of comment with files: create -> add -> reorder -> remove -> delete."""
+    import os
+    
+    print("\n=== COMPLETE FILE LIFECYCLE TEST ===")
+    
+    # 1. Upload initial files
+    file_path = os.path.join("assets", "example.png")
+    if not os.path.exists(file_path):
+        print("Skipping lifecycle test - no files available")
+        return
+    
+    upload1 = client.upload_file(file_path)
+    file_id1 = upload1.file.id
+    print(f"1. Uploaded initial file: {file_id1}")
+    
+    # 2. Create comment with one file
+    comment_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Lifecycle test with files</p>",
+        file_ids=[file_id1]
+    )
+    comment_id = comment_response.comment.id
+    print(f"2. Created comment with 1 file: {comment_id}")
+    
+    # 3. Add another file if available
+    file_path2 = os.path.join("assets", "example.pdf")
+    if os.path.exists(file_path2):
+        upload2 = client.upload_file(file_path2)
+        file_id2 = upload2.file.id
+        print(f"3. Uploaded second file: {file_id2}")
+        
+        # Add the second file
+        edit_response = client.edit_comment(
+            comment_id=comment_id,
+            content="<p><strong>ADDED:</strong> Second file attached</p>",
+            add_file_ids=[file_id2],
+            order_file_ids=[file_id1, file_id2]
+        )
+        print(f"4. Added second file to comment")
+        
+        # 4. Reorder files (reverse order)
+        all_files = edit_response.comment.files
+        reversed_files = list(reversed(all_files))
+        
+        edit_response = client.edit_comment(
+            comment_id=comment_id,
+            content="<p><strong>REORDERED:</strong> Files in new order</p>",
+            order_file_ids=[file_id2, file_id1]  # Reverse order
+        )
+        print(f"5. Reordered files: {[f.id for f in edit_response.comment.files]}")
+        
+        # 5. Remove one file
+        edit_response = client.edit_comment(
+            comment_id=comment_id,
+            content="<p><strong>REMOVED:</strong> One file removed</p>",
+            remove_file_ids=[file_id1],
+            order_file_ids=[file_id2]
+        )
+        print(f"6. Removed file, remaining: {[f.id for f in edit_response.comment.files]}")
+    
+    # 6. Delete comment (files remain in system)
+    delete_response = client.delete_comment(comment_id=comment_id)
+    print(f"7. Deleted comment at: {delete_response.comment.deleted_at}")
+    
+    print("🎉 Complete file lifecycle test completed!")
+
+
 if __name__ == "__main__":
     # Run specific tests for development
     test_post_comment_request_model()

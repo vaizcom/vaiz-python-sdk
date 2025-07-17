@@ -657,19 +657,23 @@ print(f"Created at: {comment.created_at}")
 #### Post a Comment with File Attachments
 
 ```python
-# First upload files if needed
-upload_response = client.upload_file("/path/to/file.pdf")
-file_id = upload_response.file.id
+# First upload files
+upload_response1 = client.upload_file("path/to/image.png")
+upload_response2 = client.upload_file("path/to/document.pdf")
+
+file_ids = [upload_response1.file.id, upload_response2.file.id]
 
 # Post comment with file attachments
 response = client.post_comment(
     document_id="your_document_id",
-    content="<p>Comment with file attachment</p>",
-    file_ids=[file_id]
+    content="<p>Comment with <strong>multiple files</strong> attached</p>",
+    file_ids=file_ids
 )
 
 comment = response.comment
-print(f"Comment files: {comment.files}")
+print(f"Attached files: {len(comment.files)}")
+for file in comment.files:
+    print(f"  - {file.original_name} ({file.size} bytes)")
 ```
 
 #### Post a Reply to a Comment
@@ -798,34 +802,30 @@ edit_response = client.edit_comment(
     order_file_ids=["507f1f77bcf86cd799439011"],     # Reorder files
     remove_file_ids=["507f1f77bcf86cd799439012"]     # Remove files
 )
+
+# Access file information from edited comment
+for file in edit_response.comment.files:
+    print(f"File: {file.original_name} (ID: {file.id})")
 ```
+
+**File Operations:**
+
+- `add_file_ids`: Upload files first, then add their IDs to the comment
+- `order_file_ids`: Specify the desired order of all files in the comment
+- `remove_file_ids`: Remove specific files from the comment
+
+**Note:** Files are `UploadedFile` objects with properties like `id`, `original_name`, `size`, `url`, etc.
 
 #### Delete a Comment
 
 ```python
-# Delete a comment (soft delete)
+# Soft delete (content cleared but comment preserved in system)
 delete_response = client.delete_comment(comment_id="your_comment_id")
 
-print(f"Comment deleted at: {delete_response.comment.deleted_at}")
-print(f"Content after deletion: '{delete_response.comment.content}'")  # Will be empty
-
-# Deleted comments still appear in get_comments but are marked as deleted
-comments_response = client.get_comments(document_id="your_document_id")
-for comment in comments_response.comments:
-    if comment.deleted_at:
-        print(f"Deleted comment: {comment.id} at {comment.deleted_at}")
+deleted_comment = delete_response.comment
+print(f"Deleted at: {deleted_comment.deleted_at}")
+print(f"Content: '{deleted_comment.content}'")  # Empty string after deletion
 ```
-
-**Note:** Comments are soft-deleted, meaning they remain in the system but their content is cleared and they receive a `deleted_at` timestamp.
-
-#### Working with Comment Models
-
-The SDK provides a complete comment system with full CRUD operations:
-
-- **CREATE**: `post_comment()` - Create comments with HTML content, file attachments, and replies
-- **READ**: `get_comments()` - Retrieve all comments for a document with reactions and metadata
-- **UPDATE**: `edit_comment()` - Modify comment content and file attachments + `add_reaction()` for emoji reactions
-- **DELETE**: `delete_comment()` - Soft delete comments (preserves in system but clears content)
 
 All comment models support field aliases and automatic serialization:
 
@@ -875,7 +875,7 @@ The SDK includes comprehensive examples demonstrating various API operations:
 - **Task Management**: Create and edit tasks with descriptions and file attachments
 - **File Upload**: Upload real files from the `assets/` folder (example.pdf, example.png, example.mp4)
 - **Board Operations**: Create, edit, and manage boards with custom fields and groups
-- **Comment System**: Complete CRUD operations with HTML content, reactions, replies, and soft delete
+- **Comment System**: Complete CRUD operations with HTML content, reactions, replies, file attachments, and soft delete
 
 #### Testing and Development
 
