@@ -820,6 +820,15 @@ for comment in comments_response.comments:
 
 #### Working with Comment Models
 
+The SDK provides a complete comment system with full CRUD operations:
+
+- **CREATE**: `post_comment()` - Create comments with HTML content, file attachments, and replies
+- **READ**: `get_comments()` - Retrieve all comments for a document with reactions and metadata
+- **UPDATE**: `edit_comment()` - Modify comment content and file attachments + `add_reaction()` for emoji reactions
+- **DELETE**: `delete_comment()` - Soft delete comments (preserves in system but clears content)
+
+All comment models support field aliases and automatic serialization:
+
 ```python
 from vaiz.models import PostCommentRequest, ReactToCommentRequest
 
@@ -866,7 +875,7 @@ The SDK includes comprehensive examples demonstrating various API operations:
 - **Task Management**: Create and edit tasks with descriptions and file attachments
 - **File Upload**: Upload real files from the `assets/` folder (example.pdf, example.png, example.mp4)
 - **Board Operations**: Create, edit, and manage boards with custom fields and groups
-- **Comment System**: Full CRUD operations with HTML content, reactions, and replies
+- **Comment System**: Complete CRUD operations with HTML content, reactions, replies, and soft delete
 
 #### Testing and Development
 
