@@ -1,37 +1,51 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, TYPE_CHECKING, Any
+from datetime import datetime
+from .base import VaizBaseModel
 
 if TYPE_CHECKING:
     from .tasks import Task
 
 
-class CreateMilestoneRequest(BaseModel):
+class CreateMilestoneRequest(VaizBaseModel):
+    """Request model for creating a milestone."""
     name: str
+    description: Optional[str] = None
     board: str
     project: str
+    due_start: Optional[datetime] = Field(None, alias="dueStart")
+    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    tags: List[str] = []
+    color: str = "#3498db"  # Default blue color
 
-    model_config = ConfigDict(populate_by_name=True)
 
-
-class Milestone(BaseModel):
+class Milestone(VaizBaseModel):
+    """Represents a milestone in the system."""
     id: str = Field(..., alias="_id")
     name: str
-    description: str
-    due_start: Optional[str] = Field(None, alias="dueStart")
-    due_end: Optional[str] = Field(None, alias="dueEnd")
-    archiver: Optional[str] = None
-    archived_at: Optional[str] = Field(None, alias="archivedAt")
-    project: str
-    followers: Dict[str, str]
+    description: Optional[str] = None
     board: str
-    document: str
-    total: int
-    completed: int
-    created_at: str = Field(..., alias="createdAt")
-    updated_at: str = Field(..., alias="updatedAt")
-    deleter: Optional[str] = None
-    deleted_at: Optional[str] = Field(None, alias="deletedAt")
+    project: str
     creator: str
+    archiver: Optional[str] = None
+    due_start: Optional[datetime] = Field(None, alias="dueStart")
+    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    tags: List[str] = []
+    archived_at: Optional[datetime] = Field(None, alias="archivedAt")
+    is_archived: bool = Field(False, alias="isArchived")
+    is_active: bool = Field(True, alias="isActive")
+    is_completed: bool = Field(False, alias="isCompleted")
+    hrid: Optional[str] = None
+    color: Optional[str] = None
+    created_at: datetime = Field(..., alias="createdAt")
+    updated_at: datetime = Field(..., alias="updatedAt")
+    deleter: Optional[str] = None
+    deleted_at: Optional[datetime] = Field(None, alias="deletedAt")
+    # Additional fields found in API responses
+    followers: Optional[Dict[str, str]] = {}
+    document: Optional[str] = None
+    total: Optional[int] = 0
+    completed: Optional[int] = 0
     editor: Optional[str] = None
 
     model_config = ConfigDict(populate_by_name=True)
@@ -76,12 +90,15 @@ class GetMilestoneResponse(BaseModel):
         return self.payload.milestone
 
 
-class EditMilestoneRequest(BaseModel):
-    id: str = Field(..., alias="_id")
+class EditMilestoneRequest(VaizBaseModel):
+    """Request model for editing a milestone."""
+    milestone_id: str = Field(..., alias="_id")  # Use alias to send as "_id" to API
     name: Optional[str] = None
     description: Optional[str] = None
-    due_start: Optional[str] = Field(None, alias="dueStart")
-    due_end: Optional[str] = Field(None, alias="dueEnd")
+    due_start: Optional[datetime] = Field(None, alias="dueStart")
+    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    tags: Optional[List[str]] = None
+    color: Optional[str] = None
 
     model_config = ConfigDict(populate_by_name=True)
 

@@ -1,4 +1,4 @@
-from .base import TaskFollower, TaskPriority, CustomField
+from .base import TaskFollower, TaskPriority, CustomField, VaizBaseModel
 from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField
 from .boards import Board, BoardResponse, BoardsResponse, CustomFieldType, CreateBoardTypeRequest, CreateBoardTypeResponse, EditBoardTypeRequest, EditBoardTypeResponse, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse, CreateBoardCustomFieldRequest, CreateBoardCustomFieldResponse, EditBoardCustomFieldRequest, EditBoardCustomFieldResponse
 from .profile import Profile, ProfileResponse
@@ -10,6 +10,7 @@ from .enums import CommentReactionType, COMMENT_REACTION_METADATA
 
 __all__ = [
     # Base models
+    'VaizBaseModel',
     'TaskFollower',
     'TaskPriority',
     'CustomField',

@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Dict, Any, List, Optional
 from datetime import datetime
-from .base import TaskPriority, CustomField
+from .base import TaskPriority, CustomField, VaizBaseModel
 from .enums import EUploadFileType
 
 
-class TaskFile(BaseModel):
+class TaskFile(VaizBaseModel):
     id: str = Field(..., alias="_id")
     url: str
     name: str
@@ -17,7 +17,7 @@ class TaskFile(BaseModel):
     dominant_color: Optional[Dict[str, Any]] = None
     mime: Optional[str] = None
     original_name: Optional[str] = None
-    date: Optional[str] = None
+    date: Optional[datetime] = None
     owner: Optional[str] = None
     access_kind: Optional[str] = None
     access_kind_id: Optional[str] = None
@@ -31,7 +31,7 @@ class TaskCustomField(BaseModel):
     _id: str
 
 
-class Task(BaseModel):
+class Task(VaizBaseModel):
     id: str = Field(..., alias="_id")
     name: str
     group: str
@@ -47,18 +47,18 @@ class Task(BaseModel):
     assignees: List[str] = []
     subtasks: List[str] = []
     milestones: List[str] = []
-    dueStart: Optional[str] = None
-    dueEnd: Optional[str] = None
+    dueStart: Optional[datetime] = None
+    dueEnd: Optional[datetime] = None
     rightConnectors: List[str] = []
     leftConnectors: List[str] = []
-    archivedAt: Optional[str] = None
-    completedAt: Optional[str] = None
+    archivedAt: Optional[datetime] = None
+    completedAt: Optional[datetime] = None
     customFields: List[TaskCustomField] = []
     deleter: Optional[str] = None
-    deletedAt: Optional[str] = None
+    deletedAt: Optional[datetime] = None
     creator: str
-    createdAt: str
-    updatedAt: str
+    createdAt: datetime
+    updatedAt: datetime
     document: str
     editor: Optional[str] = None
     milestone: Optional[str] = None
@@ -79,11 +79,12 @@ class TaskResponse(BaseModel):
         return Task(**task_data)
 
 
-class CreateTaskRequest(BaseModel):
+class CreateTaskRequest(VaizBaseModel):
     name: str
     group: str
     board: str
     project: str
+    description: Optional[str] = None
     parentTask: Optional[str] = None
     types: List[str] = []
     priority: TaskPriority = TaskPriority.General
@@ -91,12 +92,11 @@ class CreateTaskRequest(BaseModel):
     assignees: List[str] = []
     subtasks: List[str] = []
     milestones: List[str] = []
-    dueStart: Optional[str] = None
-    dueEnd: Optional[str] = None
+    dueStart: Optional[datetime] = None
+    dueEnd: Optional[datetime] = None
     rightConnectors: List[str] = []
     leftConnectors: List[str] = []
     customFields: List[CustomField] = []
-    description: Optional[str] = None
     files: List[TaskFile] = []
 
     def model_dump(self, **kwargs):
@@ -105,7 +105,7 @@ class CreateTaskRequest(BaseModel):
         return {k: v for k, v in data.items() if v is not None}
 
 
-class EditTaskRequest(BaseModel):
+class EditTaskRequest(VaizBaseModel):
     taskId: str
     name: Optional[str] = None
     parentTask: Optional[str] = None
@@ -115,8 +115,8 @@ class EditTaskRequest(BaseModel):
     assignees: Optional[List[str]] = None
     subtasks: Optional[List[str]] = None
     milestones: Optional[List[str]] = None
-    dueStart: Optional[str] = None
-    dueEnd: Optional[str] = None
+    dueStart: Optional[datetime] = None
+    dueEnd: Optional[datetime] = None
     rightConnectors: Optional[List[str]] = None
     leftConnectors: Optional[List[str]] = None
     customFields: Optional[List[CustomField]] = None

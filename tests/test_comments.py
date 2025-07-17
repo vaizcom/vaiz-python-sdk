@@ -215,18 +215,22 @@ def test_comment_model_aliases():
         "reactions": [],
         "hasRemovedFiles": False
     }
-    
+
     comment = Comment(**comment_data)
-    
+
     assert comment.id == "comment123"
     assert comment.author_id == "author123"
     assert comment.document_id == "doc123"
     assert comment.content == "<p>Test</p>"
-    assert comment.created_at == "2025-01-01T00:00:00Z"
-    assert comment.updated_at == "2025-01-01T00:00:00Z"
+    # Now checking datetime objects instead of strings
+    assert comment.created_at.year == 2025
+    assert comment.created_at.month == 1
+    assert comment.created_at.day == 1
+    assert comment.updated_at.year == 2025
+    assert comment.updated_at.month == 1
+    assert comment.updated_at.day == 1
     assert comment.files == []
     assert comment.reactions == []
-    assert comment.has_removed_files is False
     assert comment.reply_to is None  # No replyTo in original data
 
 
@@ -690,7 +694,12 @@ def test_edit_comment_response_model():
     assert comment.author_id == "author1"
     assert comment.document_id == "doc1"
     assert comment.content == "<p>Updated comment</p>"
-    assert comment.edited_at == "2025-01-01T00:01:00Z"
+    # Check edited_at as datetime object
+    assert comment.edited_at.year == 2025
+    assert comment.edited_at.month == 1
+    assert comment.edited_at.day == 1
+    assert comment.edited_at.hour == 0
+    assert comment.edited_at.minute == 1
 
 
 def test_comment_model_with_edited_at():
@@ -710,7 +719,12 @@ def test_comment_model_with_edited_at():
     
     comment = Comment(**comment_data)
     
-    assert comment.edited_at == "2025-01-01T00:01:00Z"
+    # Check edited_at as datetime object  
+    assert comment.edited_at.year == 2025
+    assert comment.edited_at.month == 1
+    assert comment.edited_at.day == 1
+    assert comment.edited_at.hour == 0
+    assert comment.edited_at.minute == 1
 
 
 def test_edit_comment(client, test_document_id):
@@ -835,7 +849,12 @@ def test_delete_comment_response_model():
     assert comment.author_id == "author1"
     assert comment.document_id == "doc1"
     assert comment.content == ""  # Deleted comment has empty content
-    assert comment.deleted_at == "2025-01-01T00:02:00Z"
+    # Check deleted_at as datetime object
+    assert comment.deleted_at.year == 2025
+    assert comment.deleted_at.month == 1
+    assert comment.deleted_at.day == 1
+    assert comment.deleted_at.hour == 0
+    assert comment.deleted_at.minute == 2
 
 
 def test_comment_model_with_deleted_at():
@@ -855,7 +874,12 @@ def test_comment_model_with_deleted_at():
     
     comment = Comment(**comment_data)
     
-    assert comment.deleted_at == "2025-01-01T00:02:00Z"
+    # Check deleted_at as datetime object
+    assert comment.deleted_at.year == 2025
+    assert comment.deleted_at.month == 1
+    assert comment.deleted_at.day == 1
+    assert comment.deleted_at.hour == 0
+    assert comment.deleted_at.minute == 2
 
 
 def test_delete_comment(client, test_document_id):

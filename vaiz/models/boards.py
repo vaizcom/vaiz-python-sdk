@@ -1,8 +1,10 @@
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from enum import Enum
+from datetime import datetime
 
 from .enums import EIcon, EColor
+from .base import VaizBaseModel
 
 
 class CustomFieldType(str, Enum):
@@ -54,21 +56,21 @@ class BoardCustomField(BaseModel):
     hidden: Optional[bool] = None
 
 
-class Board(BaseModel):
+class Board(VaizBaseModel):
     id: str = Field(..., alias="_id")
     name: str
     project: Optional[str] = None
     creator: Optional[str] = None
     archiver: Optional[str] = None
-    archived_at: Optional[str] = Field(None, alias="archivedAt")
-    created_at: Optional[str] = Field(None, alias="createdAt")
+    archived_at: Optional[datetime] = Field(None, alias="archivedAt")
+    created_at: Optional[datetime] = Field(None, alias="createdAt")
     deleter: Optional[str] = None
-    deleted_at: Optional[str] = Field(None, alias="deletedAt")
+    deleted_at: Optional[datetime] = Field(None, alias="deletedAt")
     groups: Optional[List[BoardGroup]] = None
     types_list: Optional[List[BoardType]] = Field(None, alias="typesList")
     custom_fields: Optional[List[BoardCustomField]] = Field(None, alias="customFields")
     task_order_by_groups: Optional[Dict[str, List[str]]] = Field(None, alias="taskOrderByGroups")
-    updated_at: Optional[str] = Field(None, alias="updatedAt")
+    updated_at: Optional[datetime] = Field(None, alias="updatedAt")
 
 
 class BoardsPayload(BaseModel):

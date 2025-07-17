@@ -1,20 +1,22 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
+from datetime import datetime
 from vaiz.models.enums import EUploadFileType
+from .base import VaizBaseModel
 
-class UploadedFile(BaseModel):
+class UploadedFile(VaizBaseModel):
     dominant_color: Optional[Dict[str, Any]] = Field(default_factory=dict, alias="dominantColor")
     dimension: Optional[list] = Field(default_factory=list)
     id: str = Field(..., alias="_id")
-    date: str
+    date: datetime
     owner: str
     url: str
-    ext: str
     name: str
-    original_name: str = Field(..., alias="originalName")
-    mime: str
-    size: int
     type: EUploadFileType
+    ext: str
+    size: int
+    mime: str = Field(..., alias="mime")
+    original_name: str = Field(..., alias="originalName")
     access_kind: str = Field(..., alias="accessKind")
     access_kind_id: str = Field(..., alias="accessKindId")
 

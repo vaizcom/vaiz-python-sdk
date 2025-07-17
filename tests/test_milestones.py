@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
 from vaiz.models import CreateMilestoneRequest, EditMilestoneRequest, ToggleMilestoneRequest, CreateTaskRequest, TaskPriority
 
@@ -60,8 +61,10 @@ def test_create_milestone(client):
     assert isinstance(response.milestone.id, str)
     assert isinstance(response.milestone.document, str)
     assert isinstance(response.milestone.creator, str)
-    assert isinstance(response.milestone.created_at, str)
-    assert isinstance(response.milestone.updated_at, str)
+    # Check that created_at is now a datetime object after our changes
+    assert isinstance(response.milestone.created_at, datetime)
+    # Check that updated_at is now a datetime object after our changes  
+    assert isinstance(response.milestone.updated_at, datetime)
     assert isinstance(response.milestone.followers, dict)
 
 
@@ -113,7 +116,7 @@ def test_edit_milestone(client):
     
     # Now edit the milestone
     edit_request = EditMilestoneRequest(
-        id=milestone_id,
+        milestone_id=milestone_id,
         name="Updated Milestone Name",
         description="This is an updated description",
         due_end="2025-12-31T23:59:59.999Z"
@@ -125,17 +128,24 @@ def test_edit_milestone(client):
     assert response.milestone.id == milestone_id
     assert response.milestone.name == "Updated Milestone Name"
     assert response.milestone.description == "This is an updated description"
-    assert response.milestone.due_end == "2025-12-31T23:59:59.999Z"
+    # Check that due_end is now a datetime object and verify the date
+    assert response.milestone.due_end.year == 2025
+    assert response.milestone.due_end.month == 12
+    assert response.milestone.due_end.day == 31
     assert response.milestone.board == TEST_BOARD_ID
     assert response.milestone.project == TEST_PROJECT_ID
     assert isinstance(response.milestone.editor, str)  # Should have an editor now
-    assert isinstance(response.milestone.updated_at, str)
+    # Check that updated_at is now a datetime object after our changes
+    assert isinstance(response.milestone.updated_at, datetime)
     
     # Verify the changes were actually applied by getting the milestone again
     get_response = client.get_milestone(milestone_id)
     assert get_response.milestone.name == "Updated Milestone Name"
     assert get_response.milestone.description == "This is an updated description"
-    assert get_response.milestone.due_end == "2025-12-31T23:59:59.999Z" 
+    # Check that due_end is still a datetime object in the retrieved milestone
+    assert get_response.milestone.due_end.year == 2025
+    assert get_response.milestone.due_end.month == 12
+    assert get_response.milestone.due_end.day == 31 
 
 
 def test_toggle_milestone(client):
@@ -180,7 +190,8 @@ def test_toggle_milestone(client):
     assert hasattr(response.task, "priority")
     # Editor might be None for toggle operations, so we just check it's there
     assert hasattr(response.task, "editor")
-    assert isinstance(response.task.updatedAt, str)
+    # Check that updatedAt is now a datetime object after our changes
+    assert isinstance(response.task.updatedAt, datetime)
     
     # Test toggling again (should remove the milestone)
     response2 = client.toggle_milestone(toggle_request)

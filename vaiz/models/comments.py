@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Optional, List, Dict, Any, Union
 from .upload import UploadedFile
+from .base import VaizBaseModel
 
 
 class CommentReaction(BaseModel):
@@ -14,20 +15,20 @@ class CommentReaction(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
-class Comment(BaseModel):
-    """Model for comment."""
+class Comment(VaizBaseModel):
+    """Represents a comment in the system."""
     id: str = Field(..., alias="_id")
-    author_id: str = Field(..., alias="authorId")
     document_id: str = Field(..., alias="documentId")
+    author_id: str = Field(..., alias="authorId")
     content: str
-    created_at: str = Field(..., alias="createdAt")
-    updated_at: str = Field(..., alias="updatedAt")
-    edited_at: Optional[str] = Field(None, alias="editedAt")
-    deleted_at: Optional[str] = Field(None, alias="deletedAt")
     files: List[UploadedFile] = []
-    reactions: List[CommentReaction] = []
-    has_removed_files: bool = Field(False, alias="hasRemovedFiles")
+    reactions: List["CommentReaction"] = []
     reply_to: Optional[str] = Field(None, alias="replyTo")
+    created_at: datetime = Field(..., alias="createdAt")
+    updated_at: datetime = Field(..., alias="updatedAt")
+    edited_at: Optional[datetime] = Field(None, alias="editedAt")
+    deleted_at: Optional[datetime] = Field(None, alias="deletedAt")
+    has_removed_files: bool = Field(False, alias="hasRemovedFiles")
 
     model_config = ConfigDict(populate_by_name=True)
 

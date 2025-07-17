@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
+from datetime import datetime
+from .base import VaizBaseModel
 
 
 class ProfileEmail(BaseModel):
@@ -13,25 +15,24 @@ class ProfileColor(BaseModel):
     isDark: Optional[bool] = None
 
 
-class Profile(BaseModel):
+class Profile(VaizBaseModel):
+    """Represents the user profile."""
     id: str = Field(..., alias="_id")
-    fullName: str
-    nickName: str
+    fullName: Optional[str] = None
+    nickName: Optional[str] = None  
     email: str
-    emails: List[ProfileEmail]
+    emails: Optional[List[ProfileEmail]] = []
     color: ProfileColor = Field(default_factory=ProfileColor)
-    avatarMode: int
-    incompleteSteps: List[str]
-    registeredDate: str
-    recoveryCodes: List[Dict[str, str]]
-    passwordChangedDate: str
-    passwordHash: str
-    memberId: str
-    created_at: str = Field(..., alias="createdAt")
-    updated_at: str = Field(..., alias="updatedAt")
-    cData: Dict[str, Optional[str]]
-
-    model_config = ConfigDict(populate_by_name=True)
+    avatarMode: int  # This comes as integer from API
+    incompleteSteps: Optional[List[str]] = []
+    registeredDate: datetime
+    recoveryCodes: Optional[List[Dict[str, str]]] = []
+    passwordChangedDate: datetime
+    passwordHash: Optional[str] = None
+    memberId: Optional[str] = None
+    created_at: datetime = Field(..., alias="createdAt")
+    updated_at: datetime = Field(..., alias="updatedAt")
+    cData: Optional[Dict[str, Optional[str]]] = {}
 
 
 class ProfileResponse(BaseModel):

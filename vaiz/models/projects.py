@@ -1,23 +1,25 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
-
+from typing import Optional, List, Dict, Any
+from datetime import datetime
+from .base import VaizBaseModel
 from .enums import EIcon, EColor
 
 
-class Project(BaseModel):
+class Project(VaizBaseModel):
+    """Represents a project in the system."""
     id: str = Field(..., alias="_id")
     name: str
-    color: EColor
-    slug: str
-    icon: EIcon
+    description: Optional[str] = None
     creator: str
+    archived_at: Optional[datetime] = Field(None, alias="archivedAt")
     archiver: Optional[str] = None
-    archived_at: Optional[str] = Field(None, alias="archivedAt")
-    space: str
-    created_at: str = Field(..., alias="createdAt")
-    updated_at: str = Field(..., alias="updatedAt")
-
-    model_config = ConfigDict(populate_by_name=True)
+    created_at: datetime = Field(..., alias="createdAt")
+    updated_at: datetime = Field(..., alias="updatedAt")
+    team: List[str] = []
+    color: str
+    slug: Optional[str] = None
+    icon: Optional[EIcon] = None
+    space: Optional[str] = None
 
 
 class ProjectsPayload(BaseModel):
