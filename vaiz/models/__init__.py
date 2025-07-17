@@ -1,62 +1,53 @@
 from .base import TaskFollower, TaskPriority, CustomField
-from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile
-from vaiz.models.boards import (
-    Board, 
-    BoardsResponse, 
-    BoardResponse, 
-    CreateBoardTypeRequest, 
-    CreateBoardTypeResponse,
-    EditBoardTypeRequest,
-    EditBoardTypeResponse,
-    CreateBoardCustomFieldRequest,
-    CreateBoardCustomFieldResponse,
-    EditBoardCustomFieldRequest,
-    EditBoardCustomFieldResponse,
-    CustomFieldType,
-    CreateBoardGroupRequest,
-    CreateBoardGroupResponse,
-    BoardGroup,
-    EditBoardGroupRequest,
-    EditBoardGroupResponse,
-)
-from vaiz.models.profile import Profile, ProfileResponse
-from vaiz.models.projects import Project, ProjectsResponse, ProjectResponse
-from vaiz.models.milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
-from vaiz.models.upload import UploadedFile, UploadFileResponse
-from vaiz.models.enums import EUploadFileType
+from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField
+from .boards import BoardResponse, BoardsResponse, CreateBoardTypeRequest, CreateBoardTypeResponse, EditBoardTypeRequest, EditBoardTypeResponse, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse, CreateBoardCustomFieldRequest, CreateBoardCustomFieldResponse, EditBoardCustomFieldRequest, EditBoardCustomFieldResponse
+from .profile import Profile, ProfileResponse
+from .projects import Project, ProjectsResponse, ProjectResponse
+from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
+from .upload import UploadedFile, UploadFileResponse
+from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse
 
 __all__ = [
+    # Base models
     'TaskFollower',
     'TaskPriority',
     'CustomField',
-    'CreateTaskRequest',
-    'EditTaskRequest',
+    
+    # Task models
     'Task',
     'TaskResponse',
+    'CreateTaskRequest',
+    'EditTaskRequest',
     'TaskFile',
     'TaskUploadFile',
-    'Board',
-    'BoardsResponse',
+    'TaskCustomField',
+    
+    # Board models
     'BoardResponse',
+    'BoardsResponse',
     'CreateBoardTypeRequest',
     'CreateBoardTypeResponse',
     'EditBoardTypeRequest',
     'EditBoardTypeResponse',
+    'CreateBoardGroupRequest',
+    'CreateBoardGroupResponse',
+    'EditBoardGroupRequest',
+    'EditBoardGroupResponse',
     'CreateBoardCustomFieldRequest',
     'CreateBoardCustomFieldResponse',
     'EditBoardCustomFieldRequest',
     'EditBoardCustomFieldResponse',
-    'CustomFieldType',
-    'CreateBoardGroupRequest',
-    'CreateBoardGroupResponse',
-    'BoardGroup',
-    'EditBoardGroupRequest',
-    'EditBoardGroupResponse',
+    
+    # Profile models
     'Profile',
     'ProfileResponse',
+    
+    # Project models
     'Project',
     'ProjectsResponse',
     'ProjectResponse',
+    
+    # Milestone models
     'Milestone',
     'MilestonesResponse',
     'CreateMilestoneRequest',
@@ -66,7 +57,14 @@ __all__ = [
     'EditMilestoneResponse',
     'ToggleMilestoneRequest',
     'ToggleMilestoneResponse',
+    
+    # Upload models
     'UploadedFile',
     'UploadFileResponse',
-    'EUploadFileType'
+    
+    # Comment models
+    'Comment',
+    'CommentReaction',
+    'PostCommentRequest',
+    'PostCommentResponse',
 ] 

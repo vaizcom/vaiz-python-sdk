@@ -18,6 +18,7 @@ from .edit_task_with_files import (
     edit_task_add_multiple_files,
     edit_task_update_description_only
 )
+from .post_comment import post_comment_with_html, post_simple_text_comment
 
 def main():
     """Run the complete example workflow."""
@@ -76,6 +77,12 @@ def main():
     print("8. Editing tasks to update description only...")
     print("-" * 40)
     edit_task_update_description_only()
+    
+    print("\n" + "="*60)
+    print("9. Posting comments...")
+    print("-" * 40)
+    post_comment_with_html()
+    post_simple_text_comment()
     
     print("\n" + "="*60)
     print("All examples completed!")

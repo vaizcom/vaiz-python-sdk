@@ -20,6 +20,7 @@ from .models import (
     CreateBoardTypeResponse,
     EditBoardTypeRequest,
     EditBoardTypeResponse,
+    Profile,
     ProfileResponse,
     Project,
     ProjectsResponse,
@@ -35,6 +36,10 @@ from .models import (
     ToggleMilestoneResponse,
     UploadedFile,
     UploadFileResponse,
+    Comment,
+    CommentReaction,
+    PostCommentRequest,
+    PostCommentResponse,
 )
 
 __all__ = [
@@ -67,4 +72,8 @@ __all__ = [
     'ToggleMilestoneResponse',
     'UploadedFile',
     'UploadFileResponse',
+    'Comment',
+    'CommentReaction',
+    'PostCommentRequest',
+    'PostCommentResponse',
 ]

@@ -611,6 +611,71 @@ def test_get_board():
 
 4. Be mindful that tests will create, modify, or delete real data in the configured Vaiz space.
 
+### Working with Comments
+
+#### Post a Comment
+
+```python
+# Post a simple text comment
+response = client.post_comment(
+    document_id="your_document_id",
+    content="Simple text comment"
+)
+
+comment = response.comment
+print(f"Comment ID: {comment.id}")
+```
+
+#### Post a Comment with HTML Content
+
+```python
+# Post a comment with HTML formatting
+response = client.post_comment(
+    document_id="your_document_id",
+    content="<p>Comment with <em>italic</em> and <strong>bold</strong> text</p>"
+)
+
+comment = response.comment
+print(f"Comment content: {comment.content}")
+print(f"Author ID: {comment.author_id}")
+print(f"Created at: {comment.created_at}")
+```
+
+#### Post a Comment with File Attachments
+
+```python
+# First upload files if needed
+upload_response = client.upload_file("/path/to/file.pdf")
+file_id = upload_response.file.id
+
+# Post comment with file attachments
+response = client.post_comment(
+    document_id="your_document_id",
+    content="<p>Comment with file attachment</p>",
+    file_ids=[file_id]
+)
+
+comment = response.comment
+print(f"Comment files: {comment.files}")
+```
+
+#### Working with Comment Models
+
+```python
+from vaiz.models import PostCommentRequest
+
+# Create a comment request manually
+request = PostCommentRequest(
+    document_id="your_document_id",
+    content="<p>Manual comment request</p>",
+    file_ids=["file1", "file2"]
+)
+
+# The request will be automatically serialized with correct field names
+data = request.model_dump()
+# Results in: {"documentId": "...", "content": "...", "fileIds": [...]}
+```
+
 ### Examples
 
 The SDK includes comprehensive examples demonstrating various API operations:
@@ -620,6 +685,7 @@ The SDK includes comprehensive examples demonstrating various API operations:
 - **Board Operations**: Create, edit, and manage boards with custom fields and groups
 - **Project Management**: Retrieve project information and board lists
 - **Profile Management**: Get user profile information
+- **Comment Management**: Post comments with HTML content and file attachments
 
 ## Contributing
 

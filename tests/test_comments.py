@@ -1,0 +1,190 @@
+"""
+Test cases for comment functionality in the Vaiz SDK.
+Tests real API interactions for posting comments.
+"""
+
+import pytest
+from vaiz.models import PostCommentRequest, PostCommentResponse, Comment, CreateTaskRequest, TaskPriority
+from vaiz.api.base import VaizSDKError, VaizNotFoundError
+from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
+
+
+@pytest.fixture(scope="module")
+def client():
+    """Fixture that provides a test client."""
+    return get_test_client()
+
+
+@pytest.fixture(scope="module")
+def test_document_id(client):
+    """
+    Fixture that creates a test task and returns its document ID for comment testing.
+    This ensures we have a valid document to comment on.
+    """
+    task = CreateTaskRequest(
+        name="Test Task for Comments",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        priority=TaskPriority.High,
+        completed=False,
+        types=[],
+        assignees=[TEST_ASSIGNEE_ID] if TEST_ASSIGNEE_ID else [],
+        subtasks=[],
+        milestones=[],
+        rightConnectors=[],
+        leftConnectors=[]
+    )
+    response = client.create_task(task)
+    assert response.type == "CreateTask"
+    
+    # Extract document ID from the created task
+    task_data = response.task
+    document_id = task_data.document
+    print(f"Created test task with document ID: {document_id}")
+    return document_id
+
+
+def test_post_comment_request_model():
+    """Test PostCommentRequest model creation and serialization."""
+    request = PostCommentRequest(
+        document_id="test_doc_id",
+        content="<p>Test content</p>",
+        file_ids=["file1", "file2"]
+    )
+    
+    assert request.document_id == "test_doc_id"
+    assert request.content == "<p>Test content</p>"
+    assert request.file_ids == ["file1", "file2"]
+    
+    # Test model dump with aliases
+    data = request.model_dump()
+    assert data["documentId"] == "test_doc_id"
+    assert data["content"] == "<p>Test content</p>"
+    assert data["fileIds"] == ["file1", "file2"]
+
+
+def test_post_comment_request_empty_files():
+    """Test PostCommentRequest with empty file list."""
+    request = PostCommentRequest(
+        document_id="test_doc_id",
+        content="Simple text content"
+    )
+    
+    assert request.file_ids == []
+    
+    data = request.model_dump()
+    assert data["fileIds"] == []
+
+
+def test_post_comment_with_html(client, test_document_id):
+    """Test posting a comment with HTML content."""
+    response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Test <em>italic</em> comment from SDK test</p>",
+        file_ids=[]
+    )
+    
+    # Validate response structure
+    assert isinstance(response, PostCommentResponse)
+    assert response.type == "PostComment"
+    assert "comment" in response.payload
+    
+    # Validate comment data
+    comment = response.comment
+    assert isinstance(comment, Comment)
+    assert comment.id is not None
+    assert comment.author_id is not None
+    assert comment.document_id == test_document_id
+    assert comment.content == "<p>Test <em>italic</em> comment from SDK test</p>"
+    assert comment.created_at is not None
+    assert comment.updated_at is not None
+    assert isinstance(comment.files, list)
+    assert isinstance(comment.reactions, list)
+    assert isinstance(comment.has_removed_files, bool)
+    
+    print(f"Posted comment ID: {comment.id}")
+
+
+def test_post_simple_text_comment(client, test_document_id):
+    """Test posting a simple text comment."""
+    response = client.post_comment(
+        document_id=test_document_id,
+        content="Simple text comment from SDK test"
+    )
+    
+    # Validate response
+    assert isinstance(response, PostCommentResponse)
+    assert response.type == "PostComment"
+    
+    comment = response.comment
+    assert comment.content == "Simple text comment from SDK test"
+    assert comment.document_id == test_document_id
+    assert comment.files == []
+    
+    print(f"Posted simple comment ID: {comment.id}")
+
+
+def test_post_comment_with_empty_file_list(client, test_document_id):
+    """Test posting a comment with explicitly empty file list."""
+    response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Comment with <strong>bold</strong> text</p>",
+        file_ids=[]
+    )
+    
+    # Validate response
+    assert isinstance(response, PostCommentResponse)
+    comment = response.comment
+    assert comment.files == []
+    assert "<strong>bold</strong>" in comment.content
+    
+    print(f"Posted comment with empty files ID: {comment.id}")
+
+
+def test_post_comment_invalid_document(client):
+    """Test posting a comment to invalid document ID."""
+    invalid_document_id = "invalid_document_id_123"
+    
+    with pytest.raises(VaizSDKError):
+        client.post_comment(
+            document_id=invalid_document_id,
+            content="This should fail"
+        )
+
+
+def test_comment_model_aliases():
+    """Test Comment model field aliases."""
+    comment_data = {
+        "_id": "comment123",
+        "authorId": "author123",
+        "documentId": "doc123",
+        "content": "<p>Test</p>",
+        "createdAt": "2025-01-01T00:00:00Z",
+        "updatedAt": "2025-01-01T00:00:00Z",
+        "files": [],
+        "reactions": [],
+        "hasRemovedFiles": False
+    }
+    
+    comment = Comment(**comment_data)
+    
+    assert comment.id == "comment123"
+    assert comment.author_id == "author123"
+    assert comment.document_id == "doc123"
+    assert comment.content == "<p>Test</p>"
+    assert comment.created_at == "2025-01-01T00:00:00Z"
+    assert comment.updated_at == "2025-01-01T00:00:00Z"
+    assert comment.files == []
+    assert comment.reactions == []
+    assert comment.has_removed_files is False
+
+
+if __name__ == "__main__":
+    # Run specific tests for development
+    test_post_comment_request_model()
+    test_post_comment_request_empty_files()
+    print("Model tests passed!")
+    
+    # Note: API tests now require fixtures, run with pytest instead:
+    # pytest tests/test_comments.py -v 
