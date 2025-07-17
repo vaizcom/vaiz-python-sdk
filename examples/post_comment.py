@@ -420,6 +420,124 @@ def edit_comment_with_files_example():
         print(f"Error editing comment with files: {e}")
 
 
+def delete_comment_example():
+    """Delete a comment (soft delete)."""
+    client = get_client()
+    
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
+    
+    try:
+        # First, create a comment to delete
+        original_response = client.post_comment(
+            document_id=document_id,
+            content="<p>This comment will be <strong>deleted</strong> as an example</p>"
+        )
+        
+        print("Original comment created!")
+        print(f"Comment ID: {original_response.comment.id}")
+        print(f"Original content: {original_response.comment.content}")
+        print(f"Created at: {original_response.comment.created_at}")
+        
+        # Delete the comment
+        delete_response = client.delete_comment(comment_id=original_response.comment.id)
+        
+        deleted_comment = delete_response.comment
+        
+        print("\n--- Comment Deleted Successfully! ---")
+        print(f"Response type: {delete_response.type}")
+        print(f"Comment ID: {deleted_comment.id}")
+        print(f"Content after deletion: '{deleted_comment.content}'")  # Should be empty
+        print(f"Created at: {deleted_comment.created_at}")
+        print(f"Updated at: {deleted_comment.updated_at}")
+        print(f"Deleted at: {deleted_comment.deleted_at}")
+        
+        # Verify by getting all comments to see the deleted comment
+        comments_response = client.get_comments(document_id=document_id)
+        
+        # Find our deleted comment
+        our_deleted_comment = None
+        for comment in comments_response.comments:
+            if comment.id == deleted_comment.id:
+                our_deleted_comment = comment
+                break
+        
+        if our_deleted_comment:
+            print(f"\n✅ Verified: Deleted comment found in document list!")
+            print(f"✅ Content is empty: '{our_deleted_comment.content}'")
+            print(f"✅ Has deleted timestamp: {our_deleted_comment.deleted_at}")
+            print(f"✅ Soft delete confirmed - comment still exists but marked as deleted")
+        
+        return deleted_comment.id
+        
+    except Exception as e:
+        print(f"Error deleting comment: {e}")
+
+
+def complete_comment_lifecycle_example():
+    """Demonstrate complete comment lifecycle: Create -> Edit -> React -> Delete."""
+    client = get_client()
+    
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
+    
+    try:
+        print("=== COMPLETE COMMENT LIFECYCLE ===")
+        
+        # 1. CREATE
+        print("\n1. Creating comment...")
+        comment_response = client.post_comment(
+            document_id=document_id,
+            content="<p>Lifecycle test comment</p>"
+        )
+        comment_id = comment_response.comment.id
+        print(f"✅ Created comment: {comment_id}")
+        
+        # 2. EDIT
+        print("\n2. Editing comment...")
+        edit_response = client.edit_comment(
+            comment_id=comment_id,
+            content="<p><strong>EDITED:</strong> Lifecycle test comment</p>"
+        )
+        print(f"✅ Edited comment at: {edit_response.comment.edited_at}")
+        
+        # 3. REACT
+        print("\n3. Adding reaction...")
+        reaction_response = client.add_reaction(
+            comment_id=comment_id,
+            reaction=CommentReactionType.THUMBS_UP
+        )
+        print(f"✅ Added reaction: 👍")
+        
+        # 4. GET (to verify all changes)
+        print("\n4. Getting comments to verify...")
+        comments_response = client.get_comments(document_id=document_id)
+        
+        our_comment = None
+        for comment in comments_response.comments:
+            if comment.id == comment_id:
+                our_comment = comment
+                break
+        
+        if our_comment:
+            print(f"✅ Found comment with:")
+            print(f"   - Content: {our_comment.content}")
+            print(f"   - Edited at: {our_comment.edited_at}")
+            print(f"   - Reactions: {len(our_comment.reactions)}")
+        
+        # 5. DELETE
+        print("\n5. Deleting comment...")
+        delete_response = client.delete_comment(comment_id=comment_id)
+        print(f"✅ Deleted comment at: {delete_response.comment.deleted_at}")
+        print(f"✅ Content after deletion: '{delete_response.comment.content}'")
+        
+        print("\n🎉 Complete CRUD lifecycle demonstrated!")
+        print("CREATE ✅ READ ✅ UPDATE ✅ DELETE ✅")
+        
+    except Exception as e:
+        print(f"Error in lifecycle example: {e}")
+
+
 def main():
     """Run all comment posting examples."""
     print("=" * 60)
@@ -461,6 +579,14 @@ def main():
     print("\n9. Editing comment with file operations...")
     print("-" * 40)
     edit_comment_with_files_example()
+    
+    print("\n10. Deleting a comment...")
+    print("-" * 40)
+    delete_comment_example()
+    
+    print("\n11. Complete comment lifecycle (CRUD)...")
+    print("-" * 40)
+    complete_comment_lifecycle_example()
 
 
 if __name__ == "__main__":

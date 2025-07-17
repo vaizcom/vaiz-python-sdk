@@ -4,7 +4,7 @@ Tests real API interactions for posting comments.
 """
 
 import pytest
-from vaiz.models import PostCommentRequest, PostCommentResponse, Comment, CreateTaskRequest, TaskPriority, ReactToCommentRequest, ReactToCommentResponse, CommentReaction, CommentReactionType, COMMENT_REACTION_METADATA, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse
+from vaiz.models import PostCommentRequest, PostCommentResponse, Comment, CreateTaskRequest, TaskPriority, ReactToCommentRequest, ReactToCommentResponse, CommentReaction, CommentReactionType, COMMENT_REACTION_METADATA, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
 from vaiz.api.base import VaizSDKError, VaizNotFoundError
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
 
@@ -795,6 +795,149 @@ def test_edit_nonexistent_comment(client):
         )
 
 
+def test_delete_comment_request_model():
+    """Test DeleteCommentRequest model creation and serialization."""
+    request = DeleteCommentRequest(comment_id="comment123")
+    
+    assert request.comment_id == "comment123"
+    
+    # Test model dump with aliases
+    data = request.model_dump()
+    assert data["commentId"] == "comment123"
+
+
+def test_delete_comment_response_model():
+    """Test DeleteCommentResponse model."""
+    response_data = {
+        "payload": {
+            "comment": {
+                "_id": "comment1",
+                "authorId": "author1",
+                "documentId": "doc1",
+                "content": "",  # Deleted comment has empty content
+                "createdAt": "2025-01-01T00:00:00Z",
+                "updatedAt": "2025-01-01T00:02:00Z",
+                "deletedAt": "2025-01-01T00:02:00Z",  # Has deleted timestamp
+                "files": [],
+                "reactions": [],
+                "hasRemovedFiles": False
+            }
+        },
+        "type": "DeleteComment"
+    }
+    
+    response = DeleteCommentResponse(**response_data)
+    
+    assert response.type == "DeleteComment"
+    
+    comment = response.comment
+    assert comment.id == "comment1"
+    assert comment.author_id == "author1"
+    assert comment.document_id == "doc1"
+    assert comment.content == ""  # Deleted comment has empty content
+    assert comment.deleted_at == "2025-01-01T00:02:00Z"
+
+
+def test_comment_model_with_deleted_at():
+    """Test Comment model with deletedAt field."""
+    comment_data = {
+        "_id": "comment1",
+        "authorId": "author1", 
+        "documentId": "doc1",
+        "content": "",
+        "createdAt": "2025-01-01T00:00:00Z",
+        "updatedAt": "2025-01-01T00:02:00Z",
+        "deletedAt": "2025-01-01T00:02:00Z",
+        "files": [],
+        "reactions": [],
+        "hasRemovedFiles": False
+    }
+    
+    comment = Comment(**comment_data)
+    
+    assert comment.deleted_at == "2025-01-01T00:02:00Z"
+
+
+def test_delete_comment(client, test_document_id):
+    """Test deleting a comment."""
+    # First, create a comment to delete
+    original_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>This comment will be deleted</p>"
+    )
+    
+    original_comment = original_response.comment
+    print(f"Created comment ID: {original_comment.id}")
+    print(f"Original content: {original_comment.content}")
+    
+    # Delete the comment
+    delete_response = client.delete_comment(comment_id=original_comment.id)
+    
+    # Validate delete response
+    assert isinstance(delete_response, DeleteCommentResponse)
+    assert delete_response.type == "DeleteComment"
+    
+    deleted_comment = delete_response.comment
+    
+    # Check that comment was soft deleted
+    assert deleted_comment.id == original_comment.id
+    assert deleted_comment.content == ""  # Content becomes empty
+    assert deleted_comment.document_id == test_document_id
+    assert deleted_comment.author_id == original_comment.author_id
+    
+    # Check timestamps
+    assert deleted_comment.created_at == original_comment.created_at  # Created time should remain the same
+    assert deleted_comment.updated_at != original_comment.updated_at  # Updated time should change
+    assert deleted_comment.deleted_at is not None  # Should have deleted timestamp
+    
+    print(f"✅ Comment successfully deleted!")
+    print(f"✅ Content cleared: '{deleted_comment.content}'")
+    print(f"✅ Created at: {deleted_comment.created_at}")
+    print(f"✅ Updated at: {deleted_comment.updated_at}")
+    print(f"✅ Deleted at: {deleted_comment.deleted_at}")
+
+
+def test_delete_comment_and_verify_in_list(client, test_document_id):
+    """Test that deleted comment still appears in get_comments but is marked as deleted."""
+    # Create a comment
+    comment_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Comment to delete and verify</p>"
+    )
+    
+    comment_id = comment_response.comment.id
+    print(f"Created comment for deletion: {comment_id}")
+    
+    # Delete the comment
+    delete_response = client.delete_comment(comment_id=comment_id)
+    assert delete_response.comment.deleted_at is not None
+    print(f"Deleted comment at: {delete_response.comment.deleted_at}")
+    
+    # Get all comments and verify deleted comment is still there but marked as deleted
+    comments_response = client.get_comments(document_id=test_document_id)
+    
+    # Find our deleted comment in the list
+    deleted_comment_in_list = None
+    for comment in comments_response.comments:
+        if comment.id == comment_id:
+            deleted_comment_in_list = comment
+            break
+    
+    # Verify deleted comment properties
+    assert deleted_comment_in_list is not None
+    assert deleted_comment_in_list.content == ""  # Content should be empty
+    assert deleted_comment_in_list.deleted_at is not None  # Should have deleted timestamp
+    
+    print(f"✅ Deleted comment found in list with empty content")
+    print(f"✅ Deleted timestamp: {deleted_comment_in_list.deleted_at}")
+
+
+def test_delete_nonexistent_comment(client):
+    """Test deleting a comment that doesn't exist."""
+    with pytest.raises((VaizSDKError, VaizNotFoundError)):
+        client.delete_comment(comment_id="nonexistent_comment_id")
+
+
 if __name__ == "__main__":
     # Run specific tests for development
     test_post_comment_request_model()
@@ -812,6 +955,9 @@ if __name__ == "__main__":
     test_edit_comment_request_minimal()
     test_edit_comment_response_model()
     test_comment_model_with_edited_at()
+    test_delete_comment_request_model()
+    test_delete_comment_response_model()
+    test_comment_model_with_deleted_at()
     print("All model tests passed!")
     
     # Note: API tests now require fixtures, run with pytest instead:

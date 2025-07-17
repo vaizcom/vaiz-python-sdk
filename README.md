@@ -800,6 +800,24 @@ edit_response = client.edit_comment(
 )
 ```
 
+#### Delete a Comment
+
+```python
+# Delete a comment (soft delete)
+delete_response = client.delete_comment(comment_id="your_comment_id")
+
+print(f"Comment deleted at: {delete_response.comment.deleted_at}")
+print(f"Content after deletion: '{delete_response.comment.content}'")  # Will be empty
+
+# Deleted comments still appear in get_comments but are marked as deleted
+comments_response = client.get_comments(document_id="your_document_id")
+for comment in comments_response.comments:
+    if comment.deleted_at:
+        print(f"Deleted comment: {comment.id} at {comment.deleted_at}")
+```
+
+**Note:** Comments are soft-deleted, meaning they remain in the system but their content is cleared and they receive a `deleted_at` timestamp.
+
 #### Working with Comment Models
 
 ```python

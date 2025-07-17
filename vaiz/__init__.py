@@ -46,6 +46,8 @@ from .models import (
     GetCommentsResponse,
     EditCommentRequest,
     EditCommentResponse,
+    DeleteCommentRequest,
+    DeleteCommentResponse,
     CommentReactionType,
     COMMENT_REACTION_METADATA,
 )
@@ -90,6 +92,8 @@ __all__ = [
     'GetCommentsResponse',
     'EditCommentRequest',
     'EditCommentResponse',
+    'DeleteCommentRequest',
+    'DeleteCommentResponse',
     'CommentReactionType',
     'COMMENT_REACTION_METADATA',
 ]

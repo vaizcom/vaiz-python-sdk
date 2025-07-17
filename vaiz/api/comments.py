@@ -161,4 +161,22 @@ class CommentsAPIClient(BaseAPIClient):
         )
         
         response_data = self._make_request("editComment", json_data=request.model_dump())
-        return EditCommentResponse(**response_data) 
+        return EditCommentResponse(**response_data)
+    
+    def delete_comment(self, comment_id: str) -> DeleteCommentResponse:
+        """
+        Delete a comment (soft delete).
+        
+        Args:
+            comment_id (str): The ID of the comment to delete
+            
+        Returns:
+            DeleteCommentResponse: The deleted comment with deleted_at timestamp
+            
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        request = DeleteCommentRequest(comment_id=comment_id)
+        
+        response_data = self._make_request("deleteComment", json_data=request.model_dump())
+        return DeleteCommentResponse(**response_data) 

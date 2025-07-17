@@ -18,7 +18,7 @@ from .edit_task_with_files import (
     edit_task_add_multiple_files,
     edit_task_update_description_only
 )
-from .post_comment import post_comment_with_html, post_simple_text_comment, post_comment_reply, react_to_comment, add_popular_reactions, get_comments_example, edit_comment_example, edit_comment_with_files_example
+from .post_comment import post_comment_with_html, post_simple_text_comment, post_comment_reply, react_to_comment, add_popular_reactions, get_comments_example, edit_comment_example, edit_comment_with_files_example, delete_comment_example, complete_comment_lifecycle_example
 
 def main():
     """Run the complete example workflow."""
@@ -113,6 +113,16 @@ def main():
     print("15. Editing comment with file operations...")
     print("-" * 40)
     edit_comment_with_files_example()
+    
+    print("\n" + "="*60)
+    print("16. Deleting a comment...")
+    print("-" * 40)
+    delete_comment_example()
+    
+    print("\n" + "="*60)
+    print("17. Complete comment lifecycle (CRUD)...")
+    print("-" * 40)
+    complete_comment_lifecycle_example()
     
     print("\n" + "="*60)
     print("All examples completed!")
