@@ -72,3 +72,4 @@ site/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+!vaiz-js-sdk/dist/
