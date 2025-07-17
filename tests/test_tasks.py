@@ -59,7 +59,7 @@ def test_get_task(client, task_id):
     response = client.get_task(task_id)
     assert response.type == "GetTask"
     assert response.payload["task"]["_id"] == task_id
-    assert response.payload["task"]["name"] == "Integration Test Task Updated"
+    assert response.payload["task"]["name"] == "Integration Test Task Updated" 
     
     # Check that due dates are properly set  
     task_data = response.payload["task"]
