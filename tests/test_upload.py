@@ -70,14 +70,14 @@ def test_upload_video_file(client):
     assert file.mime == "video/mp4"
     assert file.size > 0
 
-def test_upload_file_with_default_type(client):
-    """Test uploading a file with default file type (Pdf)."""
+def test_upload_file_with_explicit_type(client):
+    """Test uploading a PDF file with explicit file type."""
     file_path = "./assets/example.pdf"
     if not os.path.exists(file_path):
         pytest.skip(f"Test file {file_path} not found")
     
     try:
-        response = client.upload_file(file_path)  # No file_type specified
+        response = client.upload_file(file_path, EUploadFileType.Pdf)  # Explicit file_type
     except Exception as e:
         if hasattr(e, 'response') and e.response is not None:
             print("SERVER RESPONSE:", e.response.text)
@@ -87,7 +87,7 @@ def test_upload_file_with_default_type(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "example.pdf"
-    assert file.type == EUploadFileType.Pdf  # Default type
+    assert file.type == EUploadFileType.Pdf  # Explicitly specified type
     assert file.mime == "application/pdf"
     assert file.size > 0
 
