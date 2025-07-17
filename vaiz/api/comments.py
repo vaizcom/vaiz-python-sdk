@@ -1,5 +1,5 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models.comments import PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse
+from vaiz.models.comments import PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
 from vaiz.models.enums import CommentReactionType, COMMENT_REACTION_METADATA
 from typing import List, Optional
 
@@ -126,4 +126,39 @@ class CommentsAPIClient(BaseAPIClient):
         request = GetCommentsRequest(document_id=document_id)
         
         response_data = self._make_request("getComments", json_data=request.model_dump())
-        return GetCommentsResponse(**response_data) 
+        return GetCommentsResponse(**response_data)
+    
+    def edit_comment(
+        self, 
+        comment_id: str, 
+        content: str, 
+        add_file_ids: Optional[List[str]] = None,
+        order_file_ids: Optional[List[str]] = None,
+        remove_file_ids: Optional[List[str]] = None
+    ) -> EditCommentResponse:
+        """
+        Edit an existing comment.
+        
+        Args:
+            comment_id (str): The ID of the comment to edit
+            content (str): The new content for the comment (HTML supported)
+            add_file_ids (Optional[List[str]]): File IDs to add to the comment
+            order_file_ids (Optional[List[str]]): File IDs in new order
+            remove_file_ids (Optional[List[str]]): File IDs to remove from the comment
+            
+        Returns:
+            EditCommentResponse: The updated comment
+            
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        request = EditCommentRequest(
+            content=content,
+            comment_id=comment_id,
+            add_file_ids=add_file_ids or [],
+            order_file_ids=order_file_ids or [],
+            remove_file_ids=remove_file_ids or []
+        )
+        
+        response_data = self._make_request("editComment", json_data=request.model_dump())
+        return EditCommentResponse(**response_data) 

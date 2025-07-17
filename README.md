@@ -613,6 +613,19 @@ def test_get_board():
 
 ### Working with Comments
 
+**Important:** Comments require a valid `document_id` from an existing task. You can get this from getting or creating a task:
+
+```python
+# First, create a task to get a document ID
+task_response = client.create_task(CreateTaskRequest(
+    name="My Task",
+    group="your_group_id",
+    board="your_board_id",
+    project="your_project_id"
+))
+document_id = task_response.task.document
+```
+
 #### Post a Comment
 
 ```python
@@ -765,6 +778,28 @@ for comment in comments_response.comments:
             print(f"Reaction: {reaction.native} - {len(reaction.member_ids)} member(s)")
 ```
 
+#### Edit a Comment
+
+```python
+# Edit comment content
+edit_response = client.edit_comment(
+    comment_id="your_comment_id",
+    content="<p><strong>Updated</strong> comment content</p>"
+)
+
+print(f"Comment edited at: {edit_response.comment.edited_at}")
+print(f"New content: {edit_response.comment.content}")
+
+# Edit comment with file operations
+edit_response = client.edit_comment(
+    comment_id="your_comment_id",
+    content="<p>Updated content</p>",
+    add_file_ids=["507f1f77bcf86cd799439011"],      # Add files (valid MongoDB IDs)
+    order_file_ids=["507f1f77bcf86cd799439011"],     # Reorder files
+    remove_file_ids=["507f1f77bcf86cd799439012"]     # Remove files
+)
+```
+
 #### Working with Comment Models
 
 ```python
@@ -813,6 +848,27 @@ The SDK includes comprehensive examples demonstrating various API operations:
 - **Task Management**: Create and edit tasks with descriptions and file attachments
 - **File Upload**: Upload real files from the `assets/` folder (example.pdf, example.png, example.mp4)
 - **Board Operations**: Create, edit, and manage boards with custom fields and groups
+- **Comment System**: Full CRUD operations with HTML content, reactions, and replies
+
+#### Testing and Development
+
+For testing or development purposes, the examples use dynamic document IDs via helper functions in `examples/test_helpers.py`:
+
+```python
+from examples.test_helpers import get_or_create_document_id
+
+# This will create a test task and return its document_id
+document_id = get_or_create_document_id()
+
+# Now you can use this document_id for comment operations
+response = client.post_comment(
+    document_id=document_id,
+    content="Test comment"
+)
+```
+
+This approach ensures that examples and tests work across different environments without hardcoded IDs.
+
 - **Project Management**: Retrieve project information and board lists
 - **Profile Management**: Get user profile information
 - **Comment Management**: Post comments with HTML content, file attachments, replies, and reactions

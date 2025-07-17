@@ -4,7 +4,7 @@ Tests real API interactions for posting comments.
 """
 
 import pytest
-from vaiz.models import PostCommentRequest, PostCommentResponse, Comment, CreateTaskRequest, TaskPriority, ReactToCommentRequest, ReactToCommentResponse, CommentReaction, CommentReactionType, COMMENT_REACTION_METADATA, GetCommentsRequest, GetCommentsResponse
+from vaiz.models import PostCommentRequest, PostCommentResponse, Comment, CreateTaskRequest, TaskPriority, ReactToCommentRequest, ReactToCommentResponse, CommentReaction, CommentReactionType, COMMENT_REACTION_METADATA, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse
 from vaiz.api.base import VaizSDKError, VaizNotFoundError
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
 
@@ -21,28 +21,13 @@ def test_document_id(client):
     Fixture that creates a test task and returns its document ID for comment testing.
     This ensures we have a valid document to comment on.
     """
-    task = CreateTaskRequest(
-        name="Test Task for Comments",
-        group=TEST_GROUP_ID,
-        board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
-        priority=TaskPriority.High,
-        completed=False,
-        types=[],
-        assignees=[TEST_ASSIGNEE_ID] if TEST_ASSIGNEE_ID else [],
-        subtasks=[],
-        milestones=[],
-        rightConnectors=[],
-        leftConnectors=[]
-    )
-    response = client.create_task(task)
-    assert response.type == "CreateTask"
+    # Import here to avoid circular imports
+    import sys
+    import os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'examples'))
+    from test_helpers import create_test_task_and_get_document_id
     
-    # Extract document ID from the created task
-    task_data = response.task
-    document_id = task_data.document
-    print(f"Created test task with document ID: {document_id}")
-    return document_id
+    return create_test_task_and_get_document_id("Test Task for Comments")
 
 
 def test_post_comment_request_model():
@@ -632,6 +617,184 @@ def test_get_comments(client, test_document_id):
     print(f"✅ Reply points to: {our_comment2.reply_to}")
 
 
+def test_edit_comment_request_model():
+    """Test EditCommentRequest model creation and serialization."""
+    request = EditCommentRequest(
+        content="<p>Updated content</p>",
+        comment_id="comment123",
+        add_file_ids=["file1", "file2"],
+        order_file_ids=["file1", "file2"],
+        remove_file_ids=["file3"]
+    )
+    
+    assert request.content == "<p>Updated content</p>"
+    assert request.comment_id == "comment123"
+    assert request.add_file_ids == ["file1", "file2"]
+    assert request.order_file_ids == ["file1", "file2"]
+    assert request.remove_file_ids == ["file3"]
+    
+    # Test model dump with aliases
+    data = request.model_dump()
+    assert data["content"] == "<p>Updated content</p>"
+    assert data["commentId"] == "comment123"
+    assert data["addFileIds"] == ["file1", "file2"]
+    assert data["orderFileIds"] == ["file1", "file2"]
+    assert data["removeFileIds"] == ["file3"]
+
+
+def test_edit_comment_request_minimal():
+    """Test EditCommentRequest model with minimal data."""
+    request = EditCommentRequest(
+        content="Simple text",
+        comment_id="comment456"
+    )
+    
+    assert request.content == "Simple text"
+    assert request.comment_id == "comment456"
+    assert request.add_file_ids == []
+    assert request.order_file_ids == []
+    assert request.remove_file_ids == []
+    
+    data = request.model_dump()
+    assert data["addFileIds"] == []
+    assert data["orderFileIds"] == []
+    assert data["removeFileIds"] == []
+
+
+def test_edit_comment_response_model():
+    """Test EditCommentResponse model."""
+    response_data = {
+        "payload": {
+            "comment": {
+                "_id": "comment1",
+                "authorId": "author1",
+                "documentId": "doc1",
+                "content": "<p>Updated comment</p>",
+                "createdAt": "2025-01-01T00:00:00Z",
+                "updatedAt": "2025-01-01T00:01:00Z",
+                "editedAt": "2025-01-01T00:01:00Z",
+                "files": [],
+                "reactions": [],
+                "hasRemovedFiles": False
+            }
+        },
+        "type": "EditComment"
+    }
+    
+    response = EditCommentResponse(**response_data)
+    
+    assert response.type == "EditComment"
+    
+    comment = response.comment
+    assert comment.id == "comment1"
+    assert comment.author_id == "author1"
+    assert comment.document_id == "doc1"
+    assert comment.content == "<p>Updated comment</p>"
+    assert comment.edited_at == "2025-01-01T00:01:00Z"
+
+
+def test_comment_model_with_edited_at():
+    """Test Comment model with editedAt field."""
+    comment_data = {
+        "_id": "comment1",
+        "authorId": "author1", 
+        "documentId": "doc1",
+        "content": "<p>Test comment</p>",
+        "createdAt": "2025-01-01T00:00:00Z",
+        "updatedAt": "2025-01-01T00:01:00Z",
+        "editedAt": "2025-01-01T00:01:00Z",
+        "files": [],
+        "reactions": [],
+        "hasRemovedFiles": False
+    }
+    
+    comment = Comment(**comment_data)
+    
+    assert comment.edited_at == "2025-01-01T00:01:00Z"
+
+
+def test_edit_comment(client, test_document_id):
+    """Test editing a comment."""
+    # First, create a comment to edit
+    original_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Original content that will be edited</p>"
+    )
+    
+    original_comment = original_response.comment
+    print(f"Created comment ID: {original_comment.id}")
+    print(f"Original content: {original_comment.content}")
+    
+    # Edit the comment
+    new_content = "<p><strong>Updated</strong> content with <em>formatting</em>!</p>"
+    edit_response = client.edit_comment(
+        comment_id=original_comment.id,
+        content=new_content
+    )
+    
+    # Validate edit response
+    assert isinstance(edit_response, EditCommentResponse)
+    assert edit_response.type == "EditComment"
+    
+    edited_comment = edit_response.comment
+    
+    # Check that content was updated
+    assert edited_comment.id == original_comment.id
+    assert edited_comment.content == new_content
+    assert edited_comment.document_id == test_document_id
+    assert edited_comment.author_id == original_comment.author_id
+    
+    # Check timestamps
+    assert edited_comment.created_at == original_comment.created_at  # Created time should remain the same
+    assert edited_comment.updated_at != original_comment.updated_at  # Updated time should change
+    assert edited_comment.edited_at is not None  # Should have edited timestamp
+    
+    print(f"✅ Comment successfully edited!")
+    print(f"✅ New content: {edited_comment.content}")
+    print(f"✅ Created at: {edited_comment.created_at}")
+    print(f"✅ Updated at: {edited_comment.updated_at}")
+    print(f"✅ Edited at: {edited_comment.edited_at}")
+
+
+def test_edit_comment_with_files(client, test_document_id):
+    """Test editing a comment with file operations (using empty arrays)."""
+    # Create a comment
+    original_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Comment for file editing test</p>"
+    )
+    
+    original_comment = original_response.comment
+    print(f"Created comment for file test: {original_comment.id}")
+    
+    # Edit with empty file operations (testing API structure without validation errors)
+    edit_response = client.edit_comment(
+        comment_id=original_comment.id,
+        content="<p>Updated content with file operations</p>",
+        add_file_ids=[],     # Empty array - no validation error
+        order_file_ids=[],   # Empty array - no validation error  
+        remove_file_ids=[]   # Empty array - no validation error
+    )
+    
+    edited_comment = edit_response.comment
+    
+    assert edited_comment.content == "<p>Updated content with file operations</p>"
+    assert edited_comment.edited_at is not None
+    
+    print(f"✅ Comment with file operations edited successfully!")
+    print(f"✅ Content: {edited_comment.content}")
+    print(f"✅ File arrays handled correctly (empty arrays)")
+
+
+def test_edit_nonexistent_comment(client):
+    """Test editing a comment that doesn't exist."""
+    with pytest.raises((VaizSDKError, VaizNotFoundError)):
+        client.edit_comment(
+            comment_id="nonexistent_comment_id",
+            content="<p>This should fail</p>"
+        )
+
+
 if __name__ == "__main__":
     # Run specific tests for development
     test_post_comment_request_model()
@@ -645,6 +808,10 @@ if __name__ == "__main__":
     test_comment_reaction_type_enum()
     test_get_comments_request_model()
     test_get_comments_response_model()
+    test_edit_comment_request_model()
+    test_edit_comment_request_minimal()
+    test_edit_comment_response_model()
+    test_comment_model_with_edited_at()
     print("All model tests passed!")
     
     # Note: API tests now require fixtures, run with pytest instead:

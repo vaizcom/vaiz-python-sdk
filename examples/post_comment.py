@@ -5,15 +5,26 @@ This example demonstrates how to create comments with HTML content and optional 
 
 from vaiz.models import PostCommentRequest, CommentReactionType
 from .config import get_client
+from .test_helpers import get_or_create_document_id
 from vaiz.api.base import VaizSDKError, VaizNotFoundError, VaizAuthError
+
+# Create a test task once and reuse the document ID for all examples
+EXAMPLE_DOCUMENT_ID = None
+
+def get_example_document_id():
+    """Get or create a document ID for examples."""
+    global EXAMPLE_DOCUMENT_ID
+    if EXAMPLE_DOCUMENT_ID is None:
+        EXAMPLE_DOCUMENT_ID = get_or_create_document_id()
+    return EXAMPLE_DOCUMENT_ID
 
 
 def post_comment_with_html():
     """Post a comment with HTML content to a document."""
     client = get_client()
     
-    # Example document ID - replace with actual document ID
-    document_id = "68766185f2fdb46f0f91737d"
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
     
     try:
         response = client.post_comment(
@@ -67,8 +78,8 @@ def post_comment_with_files():
     """Post a comment with file attachments to a document."""
     client = get_client()
     
-    # Example document ID - replace with actual document ID
-    document_id = "68766185f2fdb46f0f91737d"
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
     
     try:
         # First upload a file (optional)
@@ -100,8 +111,8 @@ def post_simple_text_comment():
     """Post a simple text comment to a document."""
     client = get_client()
     
-    # Example document ID - replace with actual document ID
-    document_id = "68766185f2fdb46f0f91737d"
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
     
     try:
         response = client.post_comment(
@@ -123,8 +134,8 @@ def post_comment_reply():
     """Post a reply to an existing comment."""
     client = get_client()
     
-    # Example document ID - replace with actual document ID
-    document_id = "68766185f2fdb46f0f91737d"
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
     
     try:
         # First, create an original comment
@@ -160,8 +171,8 @@ def react_to_comment():
     """Add reactions to a comment."""
     client = get_client()
     
-    # Example document ID - replace with actual document ID
-    document_id = "68766185f2fdb46f0f91737d"
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
     
     try:
         # First, create a comment to react to
@@ -218,8 +229,8 @@ def add_popular_reactions():
     """Add all popular emoji reactions to a comment using the simplified API."""
     client = get_client()
     
-    # Example document ID - replace with actual document ID
-    document_id = "68766185f2fdb46f0f91737d"
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
     
     try:
         # First, create a comment to react to
@@ -276,8 +287,8 @@ def get_comments_example():
     """Get all comments for a document."""
     client = get_client()
     
-    # Example document ID - replace with actual document ID
-    document_id = "68766185f2fdb46f0f91737d"
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
     
     try:
         # Get all comments for the document
@@ -320,6 +331,95 @@ def get_comments_example():
         print(f"Error getting comments: {e}")
 
 
+def edit_comment_example():
+    """Edit an existing comment."""
+    client = get_client()
+    
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
+    
+    try:
+        # First, create a comment to edit
+        original_response = client.post_comment(
+            document_id=document_id,
+            content="<p>This is the original comment that will be edited</p>"
+        )
+        
+        print("Original comment created!")
+        print(f"Comment ID: {original_response.comment.id}")
+        print(f"Original content: {original_response.comment.content}")
+        print(f"Created at: {original_response.comment.created_at}")
+        
+        # Edit the comment
+        edit_response = client.edit_comment(
+            comment_id=original_response.comment.id,
+            content="<p><strong>EDITED:</strong> This comment has been <em>updated</em> with new content! 🎉</p>"
+        )
+        
+        edited_comment = edit_response.comment
+        
+        print("\n--- Comment Edited Successfully! ---")
+        print(f"Response type: {edit_response.type}")
+        print(f"Comment ID: {edited_comment.id}")
+        print(f"New content: {edited_comment.content}")
+        print(f"Created at: {edited_comment.created_at}")
+        print(f"Updated at: {edited_comment.updated_at}")
+        print(f"Edited at: {edited_comment.edited_at}")
+        
+        # Verify the change by getting all comments
+        comments_response = client.get_comments(document_id=document_id)
+        
+        # Find our edited comment
+        our_comment = None
+        for comment in comments_response.comments:
+            if comment.id == edited_comment.id:
+                our_comment = comment
+                break
+        
+        if our_comment:
+            print(f"\n✅ Verified: Comment found in document with new content!")
+            print(f"✅ Content matches: {our_comment.content}")
+            print(f"✅ Has edited timestamp: {our_comment.edited_at}")
+        
+        return edited_comment.id
+        
+    except Exception as e:
+        print(f"Error editing comment: {e}")
+
+
+def edit_comment_with_files_example():
+    """Edit comment with file operations."""
+    client = get_client()
+    
+    # Get a valid document ID from test task
+    document_id = get_example_document_id()
+    
+    try:
+        # Create a comment
+        original_response = client.post_comment(
+            document_id=document_id,
+            content="<p>Comment that will have file operations</p>"
+        )
+        
+        print(f"Created comment for file operations: {original_response.comment.id}")
+        
+        # Edit with file operations (using empty arrays to avoid validation errors)
+        edit_response = client.edit_comment(
+            comment_id=original_response.comment.id,
+            content="<p><strong>Updated</strong> comment with file operations</p>",
+            add_file_ids=[],     # In real usage, add valid MongoDB file IDs here
+            order_file_ids=[],   # In real usage, specify file order here
+            remove_file_ids=[]   # In real usage, specify files to remove here
+        )
+        
+        print(f"✅ Comment edited with file operations!")
+        print(f"✅ New content: {edit_response.comment.content}")
+        print(f"✅ Edited at: {edit_response.comment.edited_at}")
+        
+    except Exception as e:
+        print(f"Error editing comment with files: {e}")
+
+
 def main():
     """Run all comment posting examples."""
     print("=" * 60)
@@ -353,6 +453,14 @@ def main():
     print("\n7. Getting all comments...")
     print("-" * 40)
     get_comments_example()
+    
+    print("\n8. Editing a comment...")
+    print("-" * 40)
+    edit_comment_example()
+    
+    print("\n9. Editing comment with file operations...")
+    print("-" * 40)
+    edit_comment_with_files_example()
 
 
 if __name__ == "__main__":

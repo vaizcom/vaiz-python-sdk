@@ -21,6 +21,8 @@ class Comment(BaseModel):
     content: str
     created_at: str = Field(..., alias="createdAt")
     updated_at: str = Field(..., alias="updatedAt")
+    edited_at: Optional[str] = Field(None, alias="editedAt")
+    deleted_at: Optional[str] = Field(None, alias="deletedAt")
     files: List[str] = []
     reactions: List[CommentReaction] = []
     has_removed_files: bool = Field(False, alias="hasRemovedFiles")
@@ -104,4 +106,54 @@ class GetCommentsResponse(BaseModel):
     @property
     def comments(self) -> List[Comment]:
         """Get the list of comments."""
-        return self.payload["comments"] 
+        return self.payload["comments"]
+
+
+class EditCommentRequest(BaseModel):
+    """Request model for editing a comment."""
+    content: str
+    comment_id: str = Field(..., alias="commentId")
+    add_file_ids: List[str] = Field(default_factory=list, alias="addFileIds")
+    order_file_ids: List[str] = Field(default_factory=list, alias="orderFileIds")
+    remove_file_ids: List[str] = Field(default_factory=list, alias="removeFileIds")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):
+        """Custom serialization for correct API request."""
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class EditCommentResponse(BaseModel):
+    """Response model for editing a comment."""
+    payload: Dict[str, Comment]
+    type: str
+
+    @property
+    def comment(self) -> Comment:
+        """Get the edited comment."""
+        return self.payload["comment"]
+
+
+class DeleteCommentRequest(BaseModel):
+    """Request model for deleting a comment."""
+    comment_id: str = Field(..., alias="commentId")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):
+        """Custom serialization for correct API request."""
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class DeleteCommentResponse(BaseModel):
+    """Response model for deleting a comment."""
+    payload: Dict[str, Comment]
+    type: str
+
+    @property
+    def comment(self) -> Comment:
+        """Get the deleted comment."""
+        return self.payload["comment"] 
