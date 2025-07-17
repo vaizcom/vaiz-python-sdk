@@ -4,7 +4,7 @@ Tests real API interactions for posting comments.
 """
 
 import pytest
-from vaiz.models import PostCommentRequest, PostCommentResponse, Comment, CreateTaskRequest, TaskPriority, ReactToCommentRequest, ReactToCommentResponse, CommentReaction, CommentReactionType, COMMENT_REACTION_METADATA
+from vaiz.models import PostCommentRequest, PostCommentResponse, Comment, CreateTaskRequest, TaskPriority, ReactToCommentRequest, ReactToCommentResponse, CommentReaction, CommentReactionType, COMMENT_REACTION_METADATA, GetCommentsRequest, GetCommentsResponse
 from vaiz.api.base import VaizSDKError, VaizNotFoundError
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
 
@@ -518,6 +518,120 @@ def test_add_all_popular_reactions(client, test_document_id):
     print(f"\n✅ All {len(expected_emojis)} popular reactions successfully added to comment {comment.id}!")
 
 
+def test_get_comments_request_model():
+    """Test GetCommentsRequest model creation and serialization."""
+    request = GetCommentsRequest(document_id="test_doc_123")
+    
+    assert request.document_id == "test_doc_123"
+    
+    # Test model dump with aliases
+    data = request.model_dump()
+    assert data["documentId"] == "test_doc_123"
+
+
+def test_get_comments_response_model():
+    """Test GetCommentsResponse model."""
+    response_data = {
+        "payload": {
+            "comments": [
+                {
+                    "_id": "comment1",
+                    "authorId": "author1",
+                    "documentId": "doc1",
+                    "content": "<p>Test comment</p>",
+                    "createdAt": "2025-01-01T00:00:00Z",
+                    "updatedAt": "2025-01-01T00:00:00Z",
+                    "files": [],
+                    "reactions": [],
+                    "hasRemovedFiles": False
+                }
+            ]
+        },
+        "type": "GetComments"
+    }
+    
+    response = GetCommentsResponse(**response_data)
+    
+    assert response.type == "GetComments"
+    assert len(response.comments) == 1
+    
+    comment = response.comments[0]
+    assert comment.id == "comment1"
+    assert comment.author_id == "author1"
+    assert comment.document_id == "doc1"
+    assert comment.content == "<p>Test comment</p>"
+
+
+def test_get_comments(client, test_document_id):
+    """Test getting comments for a document."""
+    # First, create a few comments to retrieve
+    comment1_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>First comment for get test</p>"
+    )
+    
+    comment2_response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Second comment for get test</p>",
+        reply_to=comment1_response.comment.id
+    )
+    
+    # Add a reaction to the first comment
+    client.add_reaction(
+        comment_id=comment1_response.comment.id,
+        reaction=CommentReactionType.THUMBS_UP
+    )
+    
+    print(f"Created comments: {comment1_response.comment.id}, {comment2_response.comment.id}")
+    
+    # Now get all comments for the document
+    comments_response = client.get_comments(document_id=test_document_id)
+    
+    # Validate response structure
+    assert isinstance(comments_response, GetCommentsResponse)
+    assert comments_response.type == "GetComments"
+    assert len(comments_response.comments) >= 2  # Should have at least our 2 comments
+    
+    # Find our comments in the response
+    our_comment1 = None
+    our_comment2 = None
+    
+    for comment in comments_response.comments:
+        if comment.id == comment1_response.comment.id:
+            our_comment1 = comment
+        elif comment.id == comment2_response.comment.id:
+            our_comment2 = comment
+    
+    # Validate first comment
+    assert our_comment1 is not None
+    assert our_comment1.content == "<p>First comment for get test</p>"
+    assert our_comment1.document_id == test_document_id
+    assert len(our_comment1.reactions) >= 1  # Should have our thumbs up reaction
+    assert our_comment1.reply_to is None  # Not a reply
+    
+    # Find thumbs up reaction
+    thumbs_up_reaction = None
+    for reaction in our_comment1.reactions:
+        if reaction.emoji_id == "1f44d":  # thumbs up unified code
+            thumbs_up_reaction = reaction
+            break
+    
+    assert thumbs_up_reaction is not None
+    assert thumbs_up_reaction.native == "👍"
+    
+    # Validate second comment (reply)
+    assert our_comment2 is not None
+    assert our_comment2.content == "<p>Second comment for get test</p>"
+    assert our_comment2.document_id == test_document_id
+    assert our_comment2.reply_to == comment1_response.comment.id  # Is a reply to first comment
+    
+    print(f"✅ Retrieved {len(comments_response.comments)} comments")
+    print(f"✅ Found our first comment: {our_comment1.content}")
+    print(f"✅ Found our reply comment: {our_comment2.content}")
+    print(f"✅ First comment has {len(our_comment1.reactions)} reaction(s)")
+    print(f"✅ Reply points to: {our_comment2.reply_to}")
+
+
 if __name__ == "__main__":
     # Run specific tests for development
     test_post_comment_request_model()
@@ -529,6 +643,8 @@ if __name__ == "__main__":
     test_comment_reaction_model()
     test_react_to_comment_response_model()
     test_comment_reaction_type_enum()
+    test_get_comments_request_model()
+    test_get_comments_response_model()
     print("All model tests passed!")
     
     # Note: API tests now require fixtures, run with pytest instead:

@@ -1,5 +1,5 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models.comments import PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse
+from vaiz.models.comments import PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse
 from vaiz.models.enums import CommentReactionType, COMMENT_REACTION_METADATA
 from typing import List, Optional
 
@@ -108,4 +108,22 @@ class CommentsAPIClient(BaseAPIClient):
             emoji_unified=metadata["unified"],
             emoji_keywords=metadata["keywords"],
             emoji_shortcodes=metadata["shortcodes"]
-        ) 
+        )
+    
+    def get_comments(self, document_id: str) -> GetCommentsResponse:
+        """
+        Get all comments for a document.
+        
+        Args:
+            document_id (str): The ID of the document to get comments for
+            
+        Returns:
+            GetCommentsResponse: The list of comments for the document
+            
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        request = GetCommentsRequest(document_id=document_id)
+        
+        response_data = self._make_request("getComments", json_data=request.model_dump())
+        return GetCommentsResponse(**response_data) 

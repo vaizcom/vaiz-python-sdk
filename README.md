@@ -712,7 +712,7 @@ for reaction in reaction_response.reactions:
     print(f"Members who reacted: {len(reaction.member_ids)}")
 ```
 
-#### Available Popular Reactions
+#### Available Reactions
 
 The SDK provides 7 popular emoji reactions based on emoji-picker-react standards:
 
@@ -739,6 +739,30 @@ reaction_response = client.react_to_comment(
     emoji_keywords=["affection", "valentines", "infatuation", "kiss"],
     emoji_shortcodes=":kissing_smiling_eyes:"
 )
+```
+
+#### Get Comments for a Document
+
+```python
+# Get all comments for a document
+comments_response = client.get_comments(document_id="your_document_id")
+
+print(f"Total comments: {len(comments_response.comments)}")
+
+# Iterate through comments
+for comment in comments_response.comments:
+    print(f"Comment: {comment.content}")
+    print(f"Author: {comment.author_id}")
+    print(f"Created: {comment.created_at}")
+
+    # Check if it's a reply
+    if comment.reply_to:
+        print(f"Reply to: {comment.reply_to}")
+
+    # Show reactions
+    if comment.reactions:
+        for reaction in comment.reactions:
+            print(f"Reaction: {reaction.native} - {len(reaction.member_ids)} member(s)")
 ```
 
 #### Working with Comment Models

@@ -272,6 +272,54 @@ def add_popular_reactions():
         print(f"Error adding popular reactions: {e}")
 
 
+def get_comments_example():
+    """Get all comments for a document."""
+    client = get_client()
+    
+    # Example document ID - replace with actual document ID
+    document_id = "68766185f2fdb46f0f91737d"
+    
+    try:
+        # Get all comments for the document
+        comments_response = client.get_comments(document_id=document_id)
+        
+        print("Comments retrieved successfully!")
+        print(f"Total comments: {len(comments_response.comments)}")
+        print(f"Response type: {comments_response.type}")
+        
+        # Display comments with details
+        for i, comment in enumerate(comments_response.comments, 1):
+            print(f"\n--- Comment {i} ---")
+            print(f"ID: {comment.id}")
+            print(f"Author: {comment.author_id}")
+            print(f"Created: {comment.created_at}")
+            print(f"Content: {comment.content}")
+            
+            # Show if it's a reply
+            if comment.reply_to:
+                print(f"Reply to: {comment.reply_to}")
+            
+            # Show reactions
+            if comment.reactions:
+                print(f"Reactions ({len(comment.reactions)}):")
+                for reaction in comment.reactions:
+                    print(f"  {reaction.native} ({reaction.emoji_id}) - {len(reaction.member_ids)} member(s)")
+            else:
+                print("No reactions")
+            
+            # Show files
+            if comment.files:
+                print(f"Files: {len(comment.files)}")
+            else:
+                print("No files")
+        
+        print(f"\n✅ Successfully retrieved {len(comments_response.comments)} comments!")
+        return len(comments_response.comments)
+        
+    except Exception as e:
+        print(f"Error getting comments: {e}")
+
+
 def main():
     """Run all comment posting examples."""
     print("=" * 60)
@@ -301,6 +349,10 @@ def main():
     print("\n6. Adding all popular reactions (simplified API)...")
     print("-" * 40)
     add_popular_reactions()
+    
+    print("\n7. Getting all comments...")
+    print("-" * 40)
+    get_comments_example()
 
 
 if __name__ == "__main__":

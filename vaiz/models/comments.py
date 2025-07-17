@@ -81,4 +81,27 @@ class ReactToCommentResponse(BaseModel):
     @property
     def reactions(self) -> List[CommentReaction]:
         """Get the list of reactions."""
-        return self.payload["reactions"] 
+        return self.payload["reactions"]
+
+
+class GetCommentsRequest(BaseModel):
+    """Request model for getting comments."""
+    document_id: str = Field(..., alias="documentId")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):
+        """Custom serialization for correct API request."""
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class GetCommentsResponse(BaseModel):
+    """Response model for getting comments."""
+    payload: Dict[str, List[Comment]]
+    type: str
+
+    @property
+    def comments(self) -> List[Comment]:
+        """Get the list of comments."""
+        return self.payload["comments"] 

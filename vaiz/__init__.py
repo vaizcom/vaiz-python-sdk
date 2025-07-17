@@ -42,6 +42,8 @@ from .models import (
     PostCommentResponse,
     ReactToCommentRequest,
     ReactToCommentResponse,
+    GetCommentsRequest,
+    GetCommentsResponse,
     CommentReactionType,
     COMMENT_REACTION_METADATA,
 )
@@ -82,6 +84,8 @@ __all__ = [
     'PostCommentResponse',
     'ReactToCommentRequest',
     'ReactToCommentResponse',
+    'GetCommentsRequest',
+    'GetCommentsResponse',
     'CommentReactionType',
     'COMMENT_REACTION_METADATA',
 ]
