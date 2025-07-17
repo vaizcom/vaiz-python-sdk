@@ -1,6 +1,30 @@
 # Vaiz SDK for Python
 
-Python SDK for accessing the Vaiz platform.
+Python SDK for accessing the Vaiz platform API.
+
+## 🚀 What's New in v0.4.0
+
+- **🔄 Automatic DateTime Conversion**: All date/time fields now automatically convert between Python `datetime` objects and ISO strings
+- **💬 Full Comment System**: Post, edit, delete comments with file attachments, replies, and emoji reactions
+- **🔧 Updated Examples**: All examples now demonstrate datetime best practices
+- **📖 Comprehensive Documentation**: New DateTime Support section with examples
+
+### Breaking Changes
+
+- Date fields now return `datetime` objects instead of strings (automatic parsing from API)
+- All models updated to inherit from `VaizBaseModel` for datetime support
+
+### Migration Guide
+
+Your existing code will continue to work! The SDK accepts both datetime objects and ISO strings:
+
+```python
+# Before (still works)
+due_end="2025-12-31T23:59:59Z"
+
+# After (recommended)
+due_end=datetime(2025, 12, 31, 23, 59, 59)
+```
 
 ## Installation
 
