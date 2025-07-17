@@ -18,7 +18,7 @@ from .edit_task_with_files import (
     edit_task_add_multiple_files,
     edit_task_update_description_only
 )
-from .post_comment import post_comment_with_html, post_simple_text_comment, post_comment_reply
+from .post_comment import post_comment_with_html, post_simple_text_comment, post_comment_reply, react_to_comment, add_popular_reactions
 
 def main():
     """Run the complete example workflow."""
@@ -88,6 +88,16 @@ def main():
     print("10. Posting comment replies...")
     print("-" * 40)
     post_comment_reply()
+    
+    print("\n" + "="*60)
+    print("11. Adding reactions to comments...")
+    print("-" * 40)
+    react_to_comment()
+    
+    print("\n" + "="*60)
+    print("12. Adding all popular reactions (simplified API)...")
+    print("-" * 40)
+    add_popular_reactions()
     
     print("\n" + "="*60)
     print("All examples completed!")

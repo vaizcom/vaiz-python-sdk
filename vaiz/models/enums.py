@@ -269,4 +269,76 @@ class EUploadFileType(str, Enum):
     Image = 'Image'
     File = 'File'
     Video = 'Video'
-    Pdf = 'Pdf' 
+    Pdf = 'Pdf'
+
+
+class CommentReactionType(Enum):
+    """Popular emoji reactions for comments."""
+    THUMBS_UP = "thumbs_up"
+    HEART = "heart"
+    LAUGHING = "joy"
+    WOW = "open_mouth"
+    CRYING = "cry"
+    ANGRY = "angry"
+    PARTY = "tada"
+
+
+# Metadata for comment reactions based on emoji-picker-react standards
+COMMENT_REACTION_METADATA = {
+    CommentReactionType.THUMBS_UP: {
+        "id": "1f44d",
+        "name": "Thumbs Up Sign",
+        "native": "👍",
+        "unified": "1f44d",
+        "keywords": ["thumbsup", "yes", "awesome", "good", "agree", "accept", "cool", "hand", "like"],
+        "shortcodes": ":thumbsup:",
+    },
+    CommentReactionType.HEART: {
+        "id": "2764-fe0f",
+        "name": "Red Heart",
+        "native": "❤️",
+        "unified": "2764-fe0f",
+        "keywords": ["love", "like", "affection", "valentines", "infatuation", "crush", "heart"],
+        "shortcodes": ":heart:",
+    },
+    CommentReactionType.LAUGHING: {
+        "id": "1f602",
+        "name": "Face with Tears of Joy",
+        "native": "😂",
+        "unified": "1f602",
+        "keywords": ["face", "tears", "joy", "laugh", "happy", "funny", "haha", "lol"],
+        "shortcodes": ":joy:",
+    },
+    CommentReactionType.WOW: {
+        "id": "1f62e",
+        "name": "Face with Open Mouth",
+        "native": "😮",
+        "unified": "1f62e",
+        "keywords": ["face", "surprise", "impressed", "wow", "whoa", "amazed", "gasp"],
+        "shortcodes": ":open_mouth:",
+    },
+    CommentReactionType.CRYING: {
+        "id": "1f622", 
+        "name": "Crying Face",
+        "native": "😢",
+        "unified": "1f622",
+        "keywords": ["face", "tears", "sad", "depressed", "upset", "cry"],
+        "shortcodes": ":cry:",
+    },
+    CommentReactionType.ANGRY: {
+        "id": "1f621",
+        "name": "Pouting Face", 
+        "native": "😡",
+        "unified": "1f621",
+        "keywords": ["mad", "face", "annoyed", "frustrated", "pouting", "angry"],
+        "shortcodes": ":rage:",
+    },
+    CommentReactionType.PARTY: {
+        "id": "1f389",
+        "name": "Party Popper",
+        "native": "🎉", 
+        "unified": "1f389",
+        "keywords": ["party", "congratulations", "birthday", "celebration", "tada"],
+        "shortcodes": ":tada:",
+    },
+} 

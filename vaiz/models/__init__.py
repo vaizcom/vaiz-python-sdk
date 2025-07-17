@@ -5,7 +5,8 @@ from .profile import Profile, ProfileResponse
 from .projects import Project, ProjectsResponse, ProjectResponse
 from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
 from .upload import UploadedFile, UploadFileResponse
-from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse
+from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse
+from .enums import CommentReactionType, COMMENT_REACTION_METADATA
 
 __all__ = [
     # Base models
@@ -67,4 +68,8 @@ __all__ = [
     'CommentReaction',
     'PostCommentRequest',
     'PostCommentResponse',
+    'ReactToCommentRequest',
+    'ReactToCommentResponse',
+    'CommentReactionType',
+    'COMMENT_REACTION_METADATA',
 ] 

@@ -681,10 +681,70 @@ print(f"Replying to: {reply_comment.reply_to}")
 print(f"Is reply: {reply_comment.reply_to is not None}")
 ```
 
+#### React to a Comment (Simplified API)
+
+```python
+from vaiz.models import CommentReactionType
+
+# First, create a comment to react to
+comment_response = client.post_comment(
+    document_id="your_document_id",
+    content="<p>This comment will get reactions!</p>"
+)
+
+# Add popular reactions using the simplified API
+reaction_response = client.add_reaction(
+    comment_id=comment_response.comment.id,
+    reaction=CommentReactionType.THUMBS_UP
+)
+
+# Add more reactions
+client.add_reaction(comment_response.comment.id, CommentReactionType.HEART)
+client.add_reaction(comment_response.comment.id, CommentReactionType.LAUGHING)
+client.add_reaction(comment_response.comment.id, CommentReactionType.WOW)
+client.add_reaction(comment_response.comment.id, CommentReactionType.CRYING)
+client.add_reaction(comment_response.comment.id, CommentReactionType.ANGRY)
+client.add_reaction(comment_response.comment.id, CommentReactionType.PARTY)
+
+# Access the reactions
+for reaction in reaction_response.reactions:
+    print(f"Reaction: {reaction.native} ({reaction.emoji_id})")
+    print(f"Members who reacted: {len(reaction.member_ids)}")
+```
+
+#### Available Popular Reactions
+
+The SDK provides 7 popular emoji reactions based on emoji-picker-react standards:
+
+- `CommentReactionType.THUMBS_UP` - 👍 Thumbs Up Sign
+- `CommentReactionType.HEART` - ❤️ Red Heart
+- `CommentReactionType.LAUGHING` - 😂 Face with Tears of Joy
+- `CommentReactionType.WOW` - 😮 Face with Open Mouth
+- `CommentReactionType.CRYING` - 😢 Crying Face
+- `CommentReactionType.ANGRY` - 😡 Pouting Face
+- `CommentReactionType.PARTY` - 🎉 Party Popper
+
+#### React to a Comment (Advanced API)
+
+For custom emoji reactions not in the popular list, use the advanced API:
+
+```python
+# Add a custom reaction
+reaction_response = client.react_to_comment(
+    comment_id=comment_response.comment.id,
+    emoji_id="kissing_smiling_eyes",
+    emoji_name="Kissing Face with Smiling Eyes",
+    emoji_native="😙",
+    emoji_unified="1f619",
+    emoji_keywords=["affection", "valentines", "infatuation", "kiss"],
+    emoji_shortcodes=":kissing_smiling_eyes:"
+)
+```
+
 #### Working with Comment Models
 
 ```python
-from vaiz.models import PostCommentRequest
+from vaiz.models import PostCommentRequest, ReactToCommentRequest
 
 # Create a comment request manually
 request = PostCommentRequest(
@@ -706,6 +766,20 @@ reply_request = PostCommentRequest(
 
 reply_data = reply_request.model_dump()
 # Results in: {"documentId": "...", "content": "...", "fileIds": [], "replyTo": "..."}
+
+# Create a reaction request
+reaction_request = ReactToCommentRequest(
+    comment_id="comment_id",
+    id="heart_eyes",
+    name="Smiling Face with Heart-Eyes",
+    native="😍",
+    unified="1f60d",
+    keywords=["love", "crush", "heart"],
+    shortcodes=":heart_eyes:"
+)
+
+reaction_data = reaction_request.model_dump()
+# Results in: {"commentId": "...", "id": "heart_eyes", "name": "...", "native": "😍", ...}
 ```
 
 ### Examples
@@ -717,7 +791,7 @@ The SDK includes comprehensive examples demonstrating various API operations:
 - **Board Operations**: Create, edit, and manage boards with custom fields and groups
 - **Project Management**: Retrieve project information and board lists
 - **Profile Management**: Get user profile information
-- **Comment Management**: Post comments with HTML content and file attachments
+- **Comment Management**: Post comments with HTML content, file attachments, replies, and reactions
 
 ## Contributing
 

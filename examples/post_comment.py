@@ -3,7 +3,7 @@ Example: Post a comment to a document using the Vaiz SDK.
 This example demonstrates how to create comments with HTML content and optional file attachments.
 """
 
-from vaiz.models import PostCommentRequest
+from vaiz.models import PostCommentRequest, CommentReactionType
 from .config import get_client
 from vaiz.api.base import VaizSDKError, VaizNotFoundError, VaizAuthError
 
@@ -156,6 +156,122 @@ def post_comment_reply():
         print(f"Error posting comment reply: {e}")
 
 
+def react_to_comment():
+    """Add reactions to a comment."""
+    client = get_client()
+    
+    # Example document ID - replace with actual document ID
+    document_id = "68766185f2fdb46f0f91737d"
+    
+    try:
+        # First, create a comment to react to
+        comment_response = client.post_comment(
+            document_id=document_id,
+            content="<p>This comment will receive some reactions! 🎉</p>"
+        )
+        
+        print("Comment posted successfully!")
+        print(f"Comment ID: {comment_response.comment.id}")
+        print(f"Content: {comment_response.comment.content}")
+        
+        # Add a kissing face reaction
+        reaction_response = client.react_to_comment(
+            comment_id=comment_response.comment.id,
+            emoji_id="kissing_smiling_eyes",
+            emoji_name="Kissing Face with Smiling Eyes",
+            emoji_native="😙",
+            emoji_unified="1f619",
+            emoji_keywords=["affection", "valentines", "infatuation", "kiss"],
+            emoji_shortcodes=":kissing_smiling_eyes:"
+        )
+        
+        print("\nReaction added successfully!")
+        print(f"Response type: {reaction_response.type}")
+        print(f"Number of reactions: {len(reaction_response.reactions)}")
+        
+        for reaction in reaction_response.reactions:
+            print(f"Reaction: {reaction.native} ({reaction.emoji_id})")
+            print(f"Reaction ID: {reaction.reaction_db_id}")
+            print(f"Members who reacted: {len(reaction.member_ids)}")
+        
+        # Add a heart eyes reaction
+        heart_reaction_response = client.react_to_comment(
+            comment_id=comment_response.comment.id,
+            emoji_id="heart_eyes",
+            emoji_name="Smiling Face with Heart-Eyes",
+            emoji_native="😍",
+            emoji_unified="1f60d",
+            emoji_keywords=["love", "crush", "heart", "affection"],
+            emoji_shortcodes=":heart_eyes:"
+        )
+        
+        print(f"\nSecond reaction added!")
+        print(f"Total reactions now: {len(heart_reaction_response.reactions)}")
+        
+        return comment_response.comment.id
+        
+    except Exception as e:
+        print(f"Error adding reaction: {e}")
+
+
+def add_popular_reactions():
+    """Add all popular emoji reactions to a comment using the simplified API."""
+    client = get_client()
+    
+    # Example document ID - replace with actual document ID
+    document_id = "68766185f2fdb46f0f91737d"
+    
+    try:
+        # First, create a comment to react to
+        comment_response = client.post_comment(
+            document_id=document_id,
+            content="<p>Let's test all the popular reactions! 🚀</p>"
+        )
+        
+        print("Comment posted successfully!")
+        print(f"Comment ID: {comment_response.comment.id}")
+        print(f"Content: {comment_response.comment.content}")
+        
+        reactions_added = []
+        
+        # Add all popular reactions using the simplified API
+        for reaction_type in CommentReactionType:
+            print(f"\nAdding {reaction_type.value} reaction...")
+            
+            reaction_response = client.add_reaction(
+                comment_id=comment_response.comment.id,
+                reaction=reaction_type
+            )
+            
+            # Find the reaction we just added
+            from vaiz.models import COMMENT_REACTION_METADATA
+            metadata = COMMENT_REACTION_METADATA[reaction_type]
+            
+            our_reaction = None
+            for reaction in reaction_response.reactions:
+                if reaction.emoji_id == metadata["id"]:
+                    our_reaction = reaction
+                    break
+            
+            if our_reaction:
+                reactions_added.append({
+                    "type": reaction_type.value,
+                    "emoji": our_reaction.native,
+                    "name": metadata["name"]
+                })
+                print(f"✅ Added: {our_reaction.native} {metadata['name']}")
+        
+        print(f"\n🎉 Successfully added {len(reactions_added)} reactions!")
+        print("Summary of reactions added:")
+        for i, reaction in enumerate(reactions_added, 1):
+            print(f"{i}. {reaction['emoji']} {reaction['name']} ({reaction['type']})")
+        
+        return comment_response.comment.id
+        
+    except Exception as e:
+        print(f"Error adding popular reactions: {e}")
+
+
 def main():
     """Run all comment posting examples."""
     print("=" * 60)
@@ -177,6 +293,14 @@ def main():
     print("\n4. Posting comment reply...")
     print("-" * 40)
     post_comment_reply()
+    
+    print("\n5. Adding reactions to comments...")
+    print("-" * 40)
+    react_to_comment()
+    
+    print("\n6. Adding all popular reactions (simplified API)...")
+    print("-" * 40)
+    add_popular_reactions()
 
 
 if __name__ == "__main__":
