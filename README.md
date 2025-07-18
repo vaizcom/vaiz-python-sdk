@@ -45,7 +45,7 @@ client = VaizClient(
     api_key="your_api_key",
     space_id="your_space_id",
     verify_ssl=False,  # Only for local development
-    base_url="https://api.vaiz.local:10000/v4"  # Local development URL
+    base_url=""  # Local development URL
 )
 ```
 
@@ -682,7 +682,7 @@ from vaiz import VaizClient
 from vaiz.models import GetHistoryRequest
 from vaiz.models.enums import EKind
 
-client = VaizClient(api_key="...", space_id="...", base_url="https://api.vaiz.local:10000/v4", verify_ssl=False)
+client = VaizClient(api_key="...", space_id="...")
 
 # Retrieve history by task ID
 task_id = "your_task_id"
