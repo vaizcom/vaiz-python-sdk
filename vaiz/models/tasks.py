@@ -160,17 +160,50 @@ class TaskUploadFile(BaseModel):
         elif ext in ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm']:
             return EUploadFileType.Video
         
-        # Audio files
-        elif ext in ['.mp3', '.wav', '.flac', '.aac', '.ogg']:
-            return EUploadFileType.Audio
-        
         # Document files
         elif ext in ['.pdf', '.doc', '.docx', '.txt', '.rtf']:
             return EUploadFileType.Pdf
         
-        # Archive files
-        elif ext in ['.zip', '.rar', '.7z', '.tar', '.gz']:
-            return EUploadFileType.Archive
-        
+        # Archive and audio files are not supported by EUploadFileType, so skip
         # Default to PDF for unknown extensions
         return EUploadFileType.Pdf 
+
+
+class GetHistoryRequest(VaizBaseModel):
+    kind: str
+    kindId: str
+    excludeKeys: Optional[List[str]] = None
+    lastLoadedDate: Optional[int] = 0
+
+class HistoryData(VaizBaseModel):
+    _id: str
+    hrid: Optional[str] = None
+    name: Optional[str] = None
+    # Additional fields may be present depending on key
+    taskPriority: Optional[int] = None
+    board: Optional[str] = None
+    members: Optional[List[str]] = None
+    project: Optional[str] = None
+    dueStart: Optional[str] = None
+    dueEnd: Optional[str] = None
+    # Accept arbitrary extra fields
+    class Config:
+        extra = "allow"
+
+class HistoryItem(VaizBaseModel):
+    _id: str
+    taskId: str
+    creatorId: str
+    createdAt: str
+    data: HistoryData
+    key: str
+    type: int
+    updatedAt: str
+    boardId: Optional[str] = None
+
+class GetHistoryPayload(VaizBaseModel):
+    histories: List[HistoryItem]
+
+class GetHistoryResponse(VaizBaseModel):
+    payload: GetHistoryPayload
+    type: str 

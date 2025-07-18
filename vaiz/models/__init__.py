@@ -1,5 +1,5 @@
 from .base import TaskFollower, TaskPriority, CustomField, VaizBaseModel
-from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField
+from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField, GetHistoryRequest, GetHistoryResponse, HistoryItem, HistoryData, GetHistoryPayload
 from .boards import Board, BoardResponse, BoardsResponse, CustomFieldType, CreateBoardTypeRequest, CreateBoardTypeResponse, EditBoardTypeRequest, EditBoardTypeResponse, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse, CreateBoardCustomFieldRequest, CreateBoardCustomFieldResponse, EditBoardCustomFieldRequest, EditBoardCustomFieldResponse
 from .profile import Profile, ProfileResponse
 from .projects import Project, ProjectsResponse, ProjectResponse
@@ -23,6 +23,11 @@ __all__ = [
     'TaskFile',
     'TaskUploadFile',
     'TaskCustomField',
+    'GetHistoryRequest',
+    'GetHistoryResponse',
+    'HistoryItem',
+    'HistoryData',
+    'GetHistoryPayload',
     
     # Board models
     'Board',
