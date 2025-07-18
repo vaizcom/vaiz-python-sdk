@@ -269,7 +269,7 @@ class EUploadFileType(str, Enum):
     Image = 'Image'
     File = 'File'
     Video = 'Video'
-    Pdf = 'Pdf'
+    Pdf = 'Pdf' 
 
 
 class CommentReactionType(Enum):
