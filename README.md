@@ -2,19 +2,11 @@
 
 Python SDK for accessing the Vaiz platform API.
 
-## 🚀 What's New
-
-### v0.4.2
-- **🕓 Task and Entity History**: New `get_history` method for retrieving the change history of tasks and other objects
+## 🚀 What's New in 0.4.x
+- **🕓 Task History**: New `get_history` method for retrieving the change history of tasks and other objects
 - **📦 New Models**: `GetHistoryRequest`, `GetHistoryResponse`, `HistoryItem`, `HistoryData`
 - **🧪 Usage Example**: see `examples/get_history.py`
 - **🛠️ Improvements**: alias fixes, environment variable handling, test stability
-
-### v0.4.1
-- **Improved datetime support** in all models
-- **Updated examples and tests** for new models
-
-### v0.4.0
 - **🔄 Automatic DateTime Conversion**: All date/time fields now automatically convert between Python `datetime` objects and ISO strings
 - **💬 Full Comment System**: Post, edit, delete comments with file attachments, replies, and emoji reactions
 - **🔧 Updated Examples**: All examples now demonstrate datetime best practices
