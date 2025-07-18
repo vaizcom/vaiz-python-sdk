@@ -2,28 +2,43 @@
 
 Python SDK for accessing the Vaiz platform API.
 
-## 🚀 What's New in v0.4.0
+## 🚀 What's New
 
+### v0.4.2
+- **🕓 Task and Entity History**: New `get_history` method for retrieving the change history of tasks and other objects
+- **📦 New Models**: `GetHistoryRequest`, `GetHistoryResponse`, `HistoryItem`, `HistoryData`
+- **🧪 Usage Example**: see `examples/get_history.py`
+- **🛠️ Improvements**: alias fixes, environment variable handling, test stability
+
+### v0.4.1
+- **Improved datetime support** in all models
+- **Updated examples and tests** for new models
+
+### v0.4.0
 - **🔄 Automatic DateTime Conversion**: All date/time fields now automatically convert between Python `datetime` objects and ISO strings
 - **💬 Full Comment System**: Post, edit, delete comments with file attachments, replies, and emoji reactions
 - **🔧 Updated Examples**: All examples now demonstrate datetime best practices
 - **📖 Comprehensive Documentation**: New DateTime Support section with examples
 
-### Breaking Changes
-
+#### Breaking Changes
 - Date fields now return `datetime` objects instead of strings (automatic parsing from API)
 - All models updated to inherit from `VaizBaseModel` for datetime support
 
-### Migration Guide
-
-Your existing code will continue to work! The SDK accepts both datetime objects and ISO strings:
+### Example: Retrieve Task History
 
 ```python
-# Before (still works)
-due_end="2025-12-31T23:59:59Z"
+from vaiz import VaizClient
+from vaiz.models import GetHistoryRequest
 
-# After (recommended)
-due_end=datetime(2025, 12, 31, 23, 59, 59)
+client = VaizClient(api_key="...", space_id="...", base_url="https://api.vaiz.local:10000/v4", verify_ssl=False)
+
+# Retrieve history by task ID
+task_id = "your_task_id"
+request = GetHistoryRequest(kind="Task", kindId=task_id)
+response = client.get_history(request)
+
+for history in response.payload.histories:
+    print(history.key, history.createdAt, history.data)
 ```
 
 ## Installation
