@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
-from .enums import EUploadFileType
+from .enums import EUploadFileType, EKind
 
 
 class TaskFile(VaizBaseModel):
@@ -170,7 +170,7 @@ class TaskUploadFile(BaseModel):
 
 
 class GetHistoryRequest(VaizBaseModel):
-    kind: str
+    kind: EKind
     kindId: str
     excludeKeys: Optional[List[str]] = None
     lastLoadedDate: Optional[int] = 0

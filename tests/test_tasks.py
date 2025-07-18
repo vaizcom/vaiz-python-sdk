@@ -2,6 +2,7 @@ import pytest
 from datetime import datetime
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
 from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority, TaskResponse, GetHistoryRequest, GetHistoryResponse, HistoryItem
+from vaiz.models.enums import EKind
 
 @pytest.fixture(scope="module")
 def client():
@@ -75,7 +76,7 @@ def test_get_task(client, task_id):
 def test_get_history(client, task_id):
     """Test the get_history API method for a task."""
     request = GetHistoryRequest(
-        kind="Task",
+        kind=EKind.Task,
         kindId=task_id,
         excludeKeys=["TASK_COMMENTED", "MILESTONE_COMMENTED", "DOCUMENT_COMMENTED"],
         lastLoadedDate=0

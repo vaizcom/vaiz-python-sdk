@@ -272,6 +272,15 @@ class EUploadFileType(str, Enum):
     Pdf = 'Pdf'
 
 
+class EKind(str, Enum):
+    Space = "Space"
+    Project = "Project"
+    Task = "Task"
+    Document = "Document"
+    Board = "Board"
+    Milestone = "Milestone"
+
+
 class CommentReactionType(Enum):
     """Popular emoji reactions for comments."""
     THUMBS_UP = "thumbs_up"

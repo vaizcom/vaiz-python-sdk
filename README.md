@@ -24,29 +24,6 @@ Python SDK for accessing the Vaiz platform API.
 - Date fields now return `datetime` objects instead of strings (automatic parsing from API)
 - All models updated to inherit from `VaizBaseModel` for datetime support
 
-### Example: Retrieve Task History
-
-```python
-from vaiz import VaizClient
-from vaiz.models import GetHistoryRequest
-
-client = VaizClient(api_key="...", space_id="...", base_url="https://api.vaiz.local:10000/v4", verify_ssl=False)
-
-# Retrieve history by task ID
-task_id = "your_task_id"
-request = GetHistoryRequest(kind="Task", kindId=task_id)
-response = client.get_history(request)
-
-for history in response.payload.histories:
-    print(history.key, history.createdAt, history.data)
-```
-
-## Installation
-
-```bash
-pip install vaiz-sdk
-```
-
 ## Usage
 
 ### Basic Setup
@@ -702,6 +679,26 @@ from vaiz.models.enums import EUploadFileType
 # EUploadFileType.File   - For generic files
 # EUploadFileType.Video  - For video files (mp4, avi, mov, etc.)
 # EUploadFileType.Pdf    - For PDF documents
+```
+
+### Retrieve Task or Entity History
+
+You can retrieve the full change history for a task (or other supported entity) using the `get_history` method. This returns a list of history events with all relevant metadata.
+
+```python
+from vaiz import VaizClient
+from vaiz.models import GetHistoryRequest
+from vaiz.models.enums import EKind
+
+client = VaizClient(api_key="...", space_id="...", base_url="https://api.vaiz.local:10000/v4", verify_ssl=False)
+
+# Retrieve history by task ID
+task_id = "your_task_id"
+request = GetHistoryRequest(kind=EKind.Task, kindId=task_id)
+response = client.get_history(request)
+
+for history in response.payload.histories:
+    print(history.key, history.createdAt, history.data)
 ```
 
 ## Development
