@@ -673,7 +673,7 @@ from vaiz.models.enums import EUploadFileType
 # EUploadFileType.Pdf    - For PDF documents
 ```
 
-### Retrieve Task or Entity History
+### Retrieve Task History
 
 You can retrieve the full change history for a task (or other supported entity) using the `get_history` method. This returns a list of history events with all relevant metadata.
 
