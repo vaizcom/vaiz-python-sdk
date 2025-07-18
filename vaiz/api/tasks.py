@@ -1,5 +1,5 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models import CreateTaskRequest, TaskResponse, EditTaskRequest, TaskFile, TaskUploadFile
+from vaiz.models import CreateTaskRequest, TaskResponse, EditTaskRequest, TaskFile, TaskUploadFile, GetHistoryRequest, GetHistoryResponse
 from vaiz.models.enums import EUploadFileType
 from typing import Optional, Dict, Any
 import os
@@ -94,3 +94,14 @@ class TasksAPIClient(BaseAPIClient):
         """
         response_data = self._make_request("getTask", json_data={"slug": slug})
         return TaskResponse(**response_data) 
+
+    def get_history(self, request: GetHistoryRequest) -> GetHistoryResponse:
+        """
+        Get the history for a task or other kind.
+        Args:
+            request (GetHistoryRequest): The request model for history retrieval.
+        Returns:
+            GetHistoryResponse: The response containing histories.
+        """
+        response_data = self._make_request("getHistory", json_data=request.model_dump(by_alias=True))
+        return GetHistoryResponse(**response_data) 
