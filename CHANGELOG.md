@@ -12,8 +12,6 @@
 
 ### Fixed
 
-- Fixed API serialization in board operations (now properly sends camelCase to API)
-- Fixed missing client fixture in board type creation test
 - Corrected field aliases for all models to ensure proper API communication
 
 ### Technical Details
