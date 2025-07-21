@@ -23,7 +23,7 @@
 - Enhanced VaizBaseModel inheritance for consistent field handling
 - Maintained 100% test coverage
 
-## [0.4.3] - 2024-06-XX
+## [0.4.3] - 2024-06-18
 
 ### Changed
 
@@ -34,7 +34,7 @@
 
 - Improved type safety for entity kind selection in history and related APIs.
 
-## [0.4.2] - 2024-06-XX
+## [0.4.2] - 2024-06-17
 
 ### Added
 
@@ -54,14 +54,14 @@
 - Fixed aliases and types for file and task models
 - Improved environment variable handling in examples
 
-## [0.4.1] - 2024-06-XX
+## [0.4.1] - 2024-06-16
 
 ### Changed
 
 - Improved datetime support in all models
 - Updated examples and tests for new models
 
-## [0.4.0] - 2024-06-XX
+## [0.4.0] - 2024-06-16
 
 ### Added
 
