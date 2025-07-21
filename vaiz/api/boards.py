@@ -51,7 +51,7 @@ class BoardsAPIClient(BaseAPIClient):
         Returns:
             CreateBoardTypeResponse: The created board type information
         """
-        response_data = self._make_request("createBoardType", method="POST", json_data=request.model_dump())
+        response_data = self._make_request("createBoardType", method="POST", json_data=request.model_dump(by_alias=True))
         return CreateBoardTypeResponse(**response_data)
 
     def edit_board_type(self, request: EditBoardTypeRequest) -> EditBoardTypeResponse:
@@ -64,7 +64,7 @@ class BoardsAPIClient(BaseAPIClient):
         Returns:
             EditBoardTypeResponse: The updated board type information
         """
-        response_data = self._make_request("editBoardType", method="POST", json_data=request.model_dump())
+        response_data = self._make_request("editBoardType", method="POST", json_data=request.model_dump(by_alias=True))
         return EditBoardTypeResponse(**response_data)
 
     def create_board_custom_field(self, request: CreateBoardCustomFieldRequest) -> CreateBoardCustomFieldResponse:
@@ -77,7 +77,7 @@ class BoardsAPIClient(BaseAPIClient):
         Returns:
             CreateBoardCustomFieldResponse: The created custom field information
         """
-        response_data = self._make_request("createBoardCustomField", method="POST", json_data=request.model_dump())
+        response_data = self._make_request("createBoardCustomField", method="POST", json_data=request.model_dump(by_alias=True))
         return CreateBoardCustomFieldResponse(**response_data)
 
     def edit_board_custom_field(self, request: EditBoardCustomFieldRequest) -> EditBoardCustomFieldResponse:
@@ -90,7 +90,7 @@ class BoardsAPIClient(BaseAPIClient):
         Returns:
             EditBoardCustomFieldResponse: The updated custom field information
         """
-        response_data = self._make_request("editBoardCustomField", method="POST", json_data=request.model_dump())
+        response_data = self._make_request("editBoardCustomField", method="POST", json_data=request.model_dump(by_alias=True))
         return EditBoardCustomFieldResponse(**response_data)
 
     def create_board_group(self, request: CreateBoardGroupRequest) -> CreateBoardGroupResponse:
@@ -103,7 +103,7 @@ class BoardsAPIClient(BaseAPIClient):
         Returns:
             CreateBoardGroupResponse: The list of board groups including the new one.
         """
-        response_data = self._make_request("createBoardGroup", method="POST", json_data=request.model_dump())
+        response_data = self._make_request("createBoardGroup", method="POST", json_data=request.model_dump(by_alias=True))
         return CreateBoardGroupResponse(**response_data)
 
     def edit_board_group(self, request: EditBoardGroupRequest) -> EditBoardGroupResponse:
@@ -116,5 +116,5 @@ class BoardsAPIClient(BaseAPIClient):
         Returns:
             EditBoardGroupResponse: The list of board groups after editing.
         """
-        response_data = self._make_request("editBoardGroup", method="POST", json_data=request.model_dump())
+        response_data = self._make_request("editBoardGroup", method="POST", json_data=request.model_dump(by_alias=True))
         return EditBoardGroupResponse(**response_data) 

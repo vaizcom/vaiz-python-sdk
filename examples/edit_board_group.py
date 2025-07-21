@@ -9,35 +9,30 @@ def edit_board_group():
     """Create and then edit a board group using the Vaiz SDK."""
     client = get_client()
     
-    # First, create a group to edit
+    # Create a board group first
     create_request = CreateBoardGroupRequest(
-        name="Group to Edit",
-        boardId=BOARD_ID,
+        name="Test Group to Edit",
+        board_id=BOARD_ID,
         description="This group will be edited."
     )
-    
+
+    create_response = client.create_board_group(create_request)
+    created_group = create_response.board_groups[0]
+    print(f"✅ Board group created: {created_group.name} (ID: {created_group.id})")
+
+    # Now edit the created group
+    edit_request = EditBoardGroupRequest(
+        board_group_id=created_group.id,
+        board_id=BOARD_ID,
+        name="Updated Group Name",
+        description="This is an updated description.",
+        limit=20,
+        hidden=False
+    )
+
     try:
-        create_response = client.create_board_group(create_request)
-        new_group = next((g for g in create_response.board_groups if g.name == "Group to Edit"), None)
-        
-        if not new_group:
-            print("Failed to create the group for editing.")
-            return
-
-        print(f"Group created with ID: {new_group.id}")
-
-        # Now, edit the created group
-        edit_request = EditBoardGroupRequest(
-            boardGroupId=new_group.id,
-            boardId=BOARD_ID,
-            name="Edited Group Name",
-            description="This group has been successfully edited.",
-            limit=15,
-            hidden=False
-        )
-
         edit_response = client.edit_board_group(edit_request)
-        edited_group = next((g for g in edit_response.board_groups if g.id == new_group.id), None)
+        edited_group = next((g for g in edit_response.board_groups if g.id == created_group.id), None)
         
         if edited_group:
             print("\nBoard group edited successfully!")

@@ -65,7 +65,7 @@ def edit_task_with_files():
     )
     
     edit_task = EditTaskRequest(
-        taskId=task_id,
+        task_id=task_id,
         name="Updated Task with Real File",
         description="This task has been updated to include a description and attached real file from assets folder. The file provides additional context and resources for completing the task.",
         files=[task_file]
@@ -145,7 +145,7 @@ def edit_task_add_multiple_files():
     print(f"\nStep 3: Editing task to add {len(task_files)} files...")
     
     edit_task = EditTaskRequest(
-        taskId=task_id,
+        task_id=task_id,
         name="Task with Multiple Real Attachments",
         description="This task now includes multiple real file attachments from assets folder: PDF document, PNG image, and MP4 video.",
         files=task_files
@@ -192,7 +192,7 @@ def edit_task_update_description_only():
     print("\nStep 2: Updating task description...")
     
     edit_task = EditTaskRequest(
-        taskId=task_id,
+        task_id=task_id,
         description="This task has been updated with a new description. The description provides important context and requirements for the task."
     )
 

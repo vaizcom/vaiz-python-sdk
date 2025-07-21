@@ -14,14 +14,14 @@ def task_id(client):
     if not all([TEST_GROUP_ID, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID]):
         pytest.skip("Test config values are missing. Please set VAIZ_GROUP_ID, VAIZ_BOARD_ID, VAIZ_PROJECT_ID, VAIZ_ASSIGNEE_ID.")
     task = CreateTaskRequest(
-        name="Integration Test Task",
-        group=str(TEST_GROUP_ID),
-        board=str(TEST_BOARD_ID),
-        project=str(TEST_PROJECT_ID),
+        name="Test Task with DateTime",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
         priority=TaskPriority.High,
-        completed=False,  # Changed to False so we can test completion later
-        dueStart=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
-        dueEnd=datetime(2025, 2, 15, 17, 0, 0),    # February 15th, 5:00 PM
+        completed=False,
+        due_start=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
+        due_end=datetime(2025, 2, 15, 17, 0, 0),    # February 15th, 5:00 PM
         types=[],
         assignees=[str(TEST_ASSIGNEE_ID)],
         subtasks=[],
@@ -42,16 +42,16 @@ def test_edit_task(client, task_id):
     if not TEST_ASSIGNEE_ID:
         pytest.skip("TEST_ASSIGNEE_ID is missing.")
     edit_task = EditTaskRequest(
-        taskId=task_id,
+        task_id=task_id,
+        name="Updated Test Task",
+        priority=TaskPriority.Medium,
         completed=True,
-        name="Integration Test Task Updated",
-        assignees=[str(TEST_ASSIGNEE_ID)],
-        dueStart=datetime(2025, 3, 1, 10, 0, 0),   # March 1st, 10:00 AM (updated)
-        dueEnd=datetime(2025, 3, 20, 16, 0, 0)     # March 20th, 4:00 PM (updated)
+        due_start=datetime(2025, 3, 1, 10, 0, 0),   # March 1st, 10:00 AM (updated)
+        due_end=datetime(2025, 3, 20, 16, 0, 0)     # March 20th, 4:00 PM (updated)
     )
     response = client.edit_task(edit_task)
     assert response.type == "EditTask"
-    assert response.payload["task"]["name"] == "Integration Test Task Updated"
+    assert response.payload["task"]["name"] == "Updated Test Task"
     
     # Verify the task now has the updated due dates
     task_data = response.payload["task"]
@@ -64,7 +64,7 @@ def test_get_task(client, task_id):
     response = client.get_task(task_id)
     assert response.type == "GetTask"
     assert response.payload["task"]["_id"] == task_id
-    assert response.payload["task"]["name"] == "Integration Test Task Updated"
+    assert response.payload["task"]["name"] == "Updated Test Task"
     
     # Check that due dates are properly set  
     task_data = response.payload["task"]

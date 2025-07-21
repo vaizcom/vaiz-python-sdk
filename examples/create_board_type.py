@@ -11,7 +11,7 @@ def main():
 
     # Create board type request with invalid board ID
     request = CreateBoardTypeRequest(
-        boardId="invalid_board_id",  # This will cause an error
+        board_id="invalid_board_id",  # This will cause an error
         label="New Type",
         icon="Cursor",
         color="silver"

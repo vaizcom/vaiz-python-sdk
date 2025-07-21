@@ -11,8 +11,8 @@ def edit_board_custom_field(field_id: str):
     
     try:
         request = EditBoardCustomFieldRequest(
-            fieldId=field_id,
-            boardId=BOARD_ID,
+            field_id=field_id,
+            board_id=BOARD_ID,
             hidden=True,
             description="Updated field description"
         )

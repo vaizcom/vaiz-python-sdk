@@ -11,10 +11,10 @@ def create_board_custom_field():
     
     try:
         request = CreateBoardCustomFieldRequest(
-            name="Date",
-            type=CustomFieldType.DATE,
-            boardId=BOARD_ID,
-            description="Date field for tracking deadlines",
+            name="Priority",
+            type=CustomFieldType.SELECT,
+            board_id=BOARD_ID,
+            description="Custom priority field",
             hidden=False
         )
         

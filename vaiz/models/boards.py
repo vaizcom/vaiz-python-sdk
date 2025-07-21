@@ -95,15 +95,11 @@ class BoardResponse(BaseModel):
         return self.payload["board"]
 
 
-class CreateBoardTypeRequest(BaseModel):
-    boardId: str
+class CreateBoardTypeRequest(VaizBaseModel):
+    board_id: str = Field(..., alias="boardId")
     label: str
     icon: EIcon
     color: EColor
-
-    def model_dump(self, **kwargs):
-        data = super().model_dump(**kwargs)
-        return {k: v for k, v in data.items() if v is not None}
 
 
 class CreateBoardTypePayload(BaseModel):
@@ -120,18 +116,14 @@ class CreateBoardTypeResponse(BaseModel):
         return self.payload.boardType
 
 
-class EditBoardTypeRequest(BaseModel):
-    boardTypeId: str
-    boardId: str
+class EditBoardTypeRequest(VaizBaseModel):
+    board_type_id: str = Field(..., alias="boardTypeId")
+    board_id: str = Field(..., alias="boardId")
     label: Optional[str] = None
     icon: Optional[EIcon] = None
     color: Optional[EColor] = None
     description: Optional[str] = None
     hidden: Optional[bool] = None
-
-    def model_dump(self, **kwargs):
-        data = super().model_dump(**kwargs)
-        return {k: v for k, v in data.items() if v is not None}
 
 
 class EditBoardTypePayload(BaseModel):
@@ -148,17 +140,13 @@ class EditBoardTypeResponse(BaseModel):
         return self.payload.boardType
 
 
-class CreateBoardCustomFieldRequest(BaseModel):
+class CreateBoardCustomFieldRequest(VaizBaseModel):
     name: str
     type: CustomFieldType
-    boardId: str
+    board_id: str = Field(..., alias="boardId")
     hidden: Optional[bool] = False
     description: Optional[str] = None
     options: Optional[List[Any]] = None
-
-    def model_dump(self, **kwargs):
-        data = super().model_dump(**kwargs)
-        return {k: v for k, v in data.items() if v is not None}
 
 
 class CreateBoardCustomFieldPayload(BaseModel):
@@ -174,16 +162,12 @@ class CreateBoardCustomFieldResponse(BaseModel):
         return self.payload.customField
 
 
-class EditBoardCustomFieldRequest(BaseModel):
-    fieldId: str
-    boardId: str
+class EditBoardCustomFieldRequest(VaizBaseModel):
+    field_id: str = Field(..., alias="fieldId")
+    board_id: str = Field(..., alias="boardId")
     hidden: Optional[bool] = None
     description: Optional[str] = None
     options: Optional[List[Any]] = None
-
-    def model_dump(self, **kwargs):
-        data = super().model_dump(**kwargs)
-        return {k: v for k, v in data.items() if v is not None}
 
 
 class EditBoardCustomFieldPayload(BaseModel):
@@ -199,14 +183,10 @@ class EditBoardCustomFieldResponse(BaseModel):
         return self.payload.customField
 
 
-class CreateBoardGroupRequest(BaseModel):
+class CreateBoardGroupRequest(VaizBaseModel):
     name: str
-    boardId: str
+    board_id: str = Field(..., alias="boardId")
     description: Optional[str] = None
-
-    def model_dump(self, **kwargs):
-        data = super().model_dump(**kwargs)
-        return {k: v for k, v in data.items() if v is not None}
 
 
 class CreateBoardGroupPayload(BaseModel):
@@ -222,17 +202,13 @@ class CreateBoardGroupResponse(BaseModel):
         return self.payload.boardGroups
 
 
-class EditBoardGroupRequest(BaseModel):
-    boardGroupId: str
-    boardId: str
+class EditBoardGroupRequest(VaizBaseModel):
+    board_group_id: str = Field(..., alias="boardGroupId")
+    board_id: str = Field(..., alias="boardId")
     name: Optional[str] = None
     description: Optional[str] = None
     limit: Optional[int] = None
     hidden: Optional[bool] = None
-
-    def model_dump(self, **kwargs):
-        kwargs.setdefault('exclude_none', True)
-        return super().model_dump(**kwargs)
 
 
 class EditBoardGroupPayload(BaseModel):

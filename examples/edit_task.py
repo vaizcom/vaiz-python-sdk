@@ -21,32 +21,32 @@ def edit_task(task_id):
     print(f"Due End: {task_data.get('dueEnd')}")
     print(f"Completed: {task_data.get('completed')}")
     
-    # Edit the task with datetime objects
+    # Create an EditTaskRequest with updated information, including new datetime deadlines
+    print("\n📝 Editing task...")
     edit_task = EditTaskRequest(
-        taskId=task_id,
+        task_id=task_id,
         name="Updated Task with New Deadlines",
         priority=TaskPriority.High,
         completed=False,
-        assignees=[ASSIGNEE_ID],
-        dueStart=datetime(2025, 4, 1, 9, 0, 0),    # April 1st, 9:00 AM
-        dueEnd=datetime(2025, 4, 30, 17, 0, 0)     # April 30th, 5:00 PM
+        assignees=[],
+        due_start=datetime(2025, 4, 1, 9, 0, 0),    # April 1st, 9:00 AM
+        due_end=datetime(2025, 4, 30, 17, 0, 0)     # April 30th, 5:00 PM
     )
-
+    
     try:
-        edit_response = client.edit_task(edit_task)
-        print("\n✅ Task updated successfully!")
-        print(f"Response type: {edit_response.type}")
+        response = client.edit_task(edit_task)
+        print("✅ Task edited successfully!")
+        print(f"Response type: {response.type}")
         
-        updated_task = edit_response.payload["task"] 
-        print(f"\nAfter edit:")
-        print(f"Name: {updated_task.get('name')}")
-        print(f"Priority: {updated_task.get('priority')}")
+        # Get the updated task data from response
+        updated_task = response.payload["task"]
+        print(f"Updated task name: {updated_task.get('name')}")
+        print(f"Updated priority: {updated_task.get('priority')}")
+        print(f"Updated assignees: {updated_task.get('assignees')}")
         print(f"Due Start: {updated_task.get('dueStart')}")
         print(f"Due End: {updated_task.get('dueEnd')}")
-        print(f"Completed: {updated_task.get('completed')}")
-        print(f"Assignees: {updated_task.get('assignees')}")
         
-        return edit_response
+        return response
     except Exception as e:
         print(f"Error updating task: {e}")
         if hasattr(e, 'response') and e.response is not None:

@@ -7,7 +7,7 @@ from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoar
 def board_type_id():
     client = get_test_client()
     request = CreateBoardTypeRequest(
-        boardId=TEST_BOARD_ID,
+        board_id=TEST_BOARD_ID,
         label="Test Type",
         icon="Cursor",
         color="silver"
@@ -38,14 +38,36 @@ def test_get_board():
     assert board.id == TEST_BOARD_ID
     assert isinstance(board.name, str)
 
-def test_create_board_type(board_type_id):
-    assert isinstance(board_type_id, str)
+def test_create_board_type():
+    """Test creating a board type."""
+    client = get_test_client()
+    request = CreateBoardTypeRequest(
+        board_id=TEST_BOARD_ID,
+        label="Test Type",
+        icon="Cursor",
+        color="silver"
+    )
+    response = client.create_board_type(request)
+    assert response.type == "CreateBoardType"
+    assert response.board_type.label == "Test Type"
+    assert response.board_type.icon == "Cursor"
+    assert response.board_type.color == "silver"
+    assert response.board_type.id is not None
+
+    # Additional check: label has been updated in the system
+    board = client.get_board(TEST_BOARD_ID).payload["board"]
+    found = False
+    for t in (board.types_list or []):
+        if t.id == response.board_type.id:
+            assert t.label == "Test Type"
+            found = True
+    assert found, "Created board type not found in board"
 
 def test_edit_board_type(board_type_id):
     client = get_test_client()
     request = EditBoardTypeRequest(
-        boardTypeId=board_type_id,
-        boardId=TEST_BOARD_ID,
+        board_type_id=board_type_id,
+        board_id=TEST_BOARD_ID,
         label="Updated Test Type",
         icon="Cursor",
         color="silver",
@@ -75,7 +97,7 @@ def test_create_board_custom_field():
     request = CreateBoardCustomFieldRequest(
         name="Test Date Field",
         type=CustomFieldType.DATE,
-        boardId=TEST_BOARD_ID,
+        board_id=TEST_BOARD_ID,
         description="Test date field description",
         hidden=False
     )
@@ -104,7 +126,7 @@ def test_edit_board_custom_field():
     create_request = CreateBoardCustomFieldRequest(
         name="Test Field",
         type=CustomFieldType.TEXT,
-        boardId=TEST_BOARD_ID,
+        board_id=TEST_BOARD_ID,
         hidden=False,
         description="Test description"
     )
@@ -113,8 +135,8 @@ def test_edit_board_custom_field():
     
     # Then edit it
     edit_request = EditBoardCustomFieldRequest(
-        fieldId=field_id,
-        boardId=TEST_BOARD_ID,
+        field_id=field_id,
+        board_id=TEST_BOARD_ID,
         hidden=True,
         description="Updated test description"
     )
@@ -141,7 +163,7 @@ def test_create_board_group():
     client = get_test_client()
     request = CreateBoardGroupRequest(
         name="Test Board Group",
-        boardId=TEST_BOARD_ID,
+        board_id=TEST_BOARD_ID,
         description="A group for testing"
     )
     response = client.create_board_group(request)
@@ -171,7 +193,7 @@ def test_edit_board_group():
     # First, create a group to get an ID
     create_request = CreateBoardGroupRequest(
         name="Group to be Edited",
-        boardId=TEST_BOARD_ID
+        board_id=TEST_BOARD_ID
     )
     create_response = client.create_board_group(create_request)
     group_to_edit = next((g for g in create_response.board_groups if g.name == "Group to be Edited"), None)
@@ -179,8 +201,8 @@ def test_edit_board_group():
     
     # Now, edit the group
     edit_request = EditBoardGroupRequest(
-        boardGroupId=group_to_edit.id,
-        boardId=TEST_BOARD_ID,
+        board_group_id=group_to_edit.id,
+        board_id=TEST_BOARD_ID,
         name="Edited Group",
         description="This group was edited",
         limit=50,

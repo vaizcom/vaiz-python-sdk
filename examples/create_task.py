@@ -30,7 +30,7 @@ def create_task():
         print("✅ Task created successfully!")
         print(f"Task ID: {response.task.id}")
         print(f"Task name: {response.task.name}")
-        print(f"Created at: {response.task.createdAt} ({type(response.task.createdAt).__name__})")
+        print(f"Created at: {response.task.created_at} ({type(response.task.created_at).__name__})")
         
         # Example 2: Task with datetime deadlines  
         print("\n📅 Creating task with datetime deadlines...")
@@ -42,14 +42,14 @@ def create_task():
             project=PROJECT_ID,
             priority=TaskPriority.Medium,
             completed=False,
-            dueStart=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
-            dueEnd=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
+            due_start=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
+            due_end=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
         )
         
         response2 = client.create_task(task_with_dates)
         print("✅ Task with deadlines created!")
-        print(f"Due start: {response2.task.dueStart} ({type(response2.task.dueStart).__name__})")
-        print(f"Due end: {response2.task.dueEnd} ({type(response2.task.dueEnd).__name__})")
+        print(f"Due start: {response2.task.due_start} ({type(response2.task.due_start).__name__})")
+        print(f"Due end: {response2.task.due_end} ({type(response2.task.due_end).__name__})")
         
         return response.task.id
     except Exception as e:

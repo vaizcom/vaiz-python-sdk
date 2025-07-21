@@ -190,8 +190,8 @@ def test_toggle_milestone(client):
     assert hasattr(response.task, "priority")
     # Editor might be None for toggle operations, so we just check it's there
     assert hasattr(response.task, "editor")
-    # Check that updatedAt is now a datetime object after our changes
-    assert isinstance(response.task.updatedAt, datetime)
+    # Check that updated_at is now a datetime object after our changes
+    assert isinstance(response.task.updated_at, datetime)
     
     # Test toggling again (should remove the milestone)
     response2 = client.toggle_milestone(toggle_request)

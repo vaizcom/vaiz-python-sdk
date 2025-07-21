@@ -36,8 +36,6 @@ from vaiz import VaizClient
 client = VaizClient(
     api_key="your_api_key",
     space_id="your_space_id"
-    # verify_ssl=True is the default value
-    # verbose=True  # Optional: set to True to enable debug output (request/response)
 )
 
 # For local development (when using self-signed certificates)
@@ -73,16 +71,16 @@ task = CreateTaskRequest(
     board="board_id",
     project="project_id",
     priority=TaskPriority.High,
-    dueStart=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
-    dueEnd=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
+    due_start=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
+    due_end=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
 )
 
 response = client.create_task(task)
 
 # Access as datetime objects
-print(f"Created: {response.task.createdAt}")     # datetime object
-print(f"Due: {response.task.dueEnd}")           # datetime object
-print(f"Year: {response.task.dueEnd.year}")     # 2025
+print(f"Created: {response.task.created_at}")    # datetime object
+print(f"Due: {response.task.due_end}")           # datetime object
+print(f"Year: {response.task.due_end.year}")     # 2025
 
 # Automatic API serialization happens behind the scenes
 # API receives: {"dueStart": "2025-02-01T09:00:00", "dueEnd": "2025-02-15T17:00:00"}
@@ -94,7 +92,7 @@ All date/time fields across the SDK support datetime conversion:
 
 - `created_at`, `updated_at`, `edited_at`, `deleted_at`
 - `archived_at`, `completed_at`
-- `due_start`, `due_end`, `dueStart`, `dueEnd`
+- `due_start`, `due_end`
 - `registeredDate`, `passwordChangedDate`
 
 ### Enums
@@ -278,7 +276,7 @@ from vaiz.models import CreateBoardTypeRequest
 from vaiz.models.enums import EIcon, EColor
 
 request = CreateBoardTypeRequest(
-    boardId="board_id",
+    board_id="board_id",
     label="New Type",
     icon=EIcon.Cursor,
     color=EColor.Silver
@@ -295,8 +293,8 @@ from vaiz.models import EditBoardTypeRequest
 from vaiz.models.enums import EIcon, EColor
 
 request = EditBoardTypeRequest(
-    boardTypeId="board_type_id",
-    boardId="board_id",
+    board_type_id="board_type_id",
+    board_id="board_id",
     label="Updated Type",
     icon=EIcon.Cursor,
     color=EColor.Silver,
@@ -319,7 +317,7 @@ client = VaizClient(api_key="your-api-key", space_id="your-space-id")
 request = CreateBoardCustomFieldRequest(
     name="Date",
     type=CustomFieldType.DATE,
-    boardId="your-board-id",
+    board_id="your-board-id",
     description="Date field for tracking deadlines",
     hidden=False
 )
@@ -339,8 +337,8 @@ client = VaizClient(api_key="your-api-key", space_id="your-space-id")
 
 # Edit an existing custom field
 request = EditBoardCustomFieldRequest(
-    fieldId="your-field-id",
-    boardId="your-board-id",
+    field_id="your-field-id",
+    board_id="your-board-id",
     hidden=True,
     description="Updated field description"
 )
@@ -360,7 +358,7 @@ from vaiz.models import CreateBoardGroupRequest
 
 request = CreateBoardGroupRequest(
     name="New Group",
-    boardId="your-board-id",
+    board_id="your-board-id",
     description="This is a new group."
 )
 
@@ -375,8 +373,8 @@ print(f"Board groups: {[g.name for g in board_groups]}")
 from vaiz.models import EditBoardGroupRequest
 
 request = EditBoardGroupRequest(
-    boardGroupId="your-group-id",
-    boardId="your-board-id",
+    board_group_id="your-group-id",
+    board_id="your-board-id",
     name="Updated Group Name",
     description="This is an updated description.",
     limit=20,
@@ -451,15 +449,15 @@ task_with_dates = CreateTaskRequest(
     project="project_id",
     priority=TaskPriority.Medium,
     completed=False,
-    dueStart=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
-    dueEnd=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
+    due_start=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
+    due_end=datetime(2025, 2, 15, 17, 0, 0)     # February 15th, 5:00 PM
 )
 
 response = client.create_task(task_with_dates)
 
 # Access datetime objects directly
-print(f"Due start: {response.task.dueStart}")  # datetime object
-print(f"Created at: {response.task.createdAt}")  # datetime object
+print(f"Due start: {response.task.due_start}")  # datetime object
+print(f"Created at: {response.task.created_at}")  # datetime object
 ```
 
 #### Edit a Task with DateTime Updates
@@ -472,13 +470,13 @@ from vaiz.models import EditTaskRequest, TaskPriority
 
 # Edit an existing task with new datetime deadlines
 edit_request = EditTaskRequest(
-    taskId="existing_task_id",
+    task_id="existing_task_id",
     name="Updated Task with New Deadlines",
     priority=TaskPriority.High,
     completed=False,
     assignees=["user_id"],
-    dueStart=datetime(2025, 4, 1, 9, 0, 0),    # April 1st, 9:00 AM
-    dueEnd=datetime(2025, 4, 30, 17, 0, 0)     # April 30th, 5:00 PM
+    due_start=datetime(2025, 4, 1, 9, 0, 0),    # April 1st, 9:00 AM
+    due_end=datetime(2025, 4, 30, 17, 0, 0)     # April 30th, 5:00 PM
 )
 
 response = client.edit_task(edit_request)
@@ -584,7 +582,7 @@ response = client.create_task(task)
 from vaiz.models import EditTaskRequest
 
 edit_task = EditTaskRequest(
-    taskId="task_id",
+    task_id="task_id",
     name="Updated Task Name",
     assignees=["assignee_id"]
 )
@@ -616,7 +614,7 @@ task_file = TaskFile(
 
 # Edit task to add description and files
 edit_task = EditTaskRequest(
-    taskId="task_id",
+    task_id="task_id",
     name="Updated Task with Files",
     description="This task has been updated to include a description and attached files.",
     files=[task_file]
@@ -633,7 +631,7 @@ response = client.edit_task(edit_task)
 from vaiz.models import EditTaskRequest
 
 edit_task = EditTaskRequest(
-    taskId="task_id",
+    task_id="task_id",
 )
 
 response = client.edit_task(edit_task)

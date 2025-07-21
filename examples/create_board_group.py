@@ -10,9 +10,9 @@ def create_board_group():
     client = get_client()
     
     request = CreateBoardGroupRequest(
-        name="Test Group",
-        boardId=BOARD_ID,
-        description="This is a test group created via the SDK."
+        name="New Group",
+        board_id=BOARD_ID,
+        description="This is a new group."
     )
     
     try:
