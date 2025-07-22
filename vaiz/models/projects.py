@@ -16,7 +16,7 @@ class Project(VaizBaseModel):
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
     team: List[str] = []
-    color: str
+    color: Optional[EColor] = None
     slug: Optional[str] = None
     icon: Optional[EIcon] = None
     space: Optional[str] = None
