@@ -111,13 +111,24 @@ class TestMultiSelectCustomField:
         def generate_option_id(title):
             return hashlib.md5(title.encode()).hexdigest()[:24]
         
-        test_option = {"_id": generate_option_id("Test Country"), "title": "Test Country", "color": EColor.Red, "icon": EIcon.User}
-        field_id = self.test_create_select_custom_field_with_options([test_option])
+        # Create select field using helper functions
+        from vaiz.helpers import make_select_field, make_select_option
+        
+        test_option = make_select_option("Test Country", EColor.Red, EIcon.User)
+        select_field_request = make_select_field(
+            name="Test Countries Single",
+            board_id=board_id,
+            options=[test_option],
+            description="Test select field for single selection"
+        )
+        
+        field_response = client.create_board_custom_field(select_field_request)
+        field_id = field_response.custom_field.id
         
         # Create custom field with single value
         custom_field = CustomField(
             id=field_id,
-            value=test_option["_id"]  # Single value as string (option ID)
+            value=test_option.id  # Single value as string (option ID)
         )
         
         # Create the task
@@ -147,7 +158,7 @@ class TestMultiSelectCustomField:
                 break
         
         assert found_field is not None, f"Custom field {field_id} not found in task"
-        assert found_field.value == test_option["_id"]
+        assert found_field.value == test_option.id
         assert task.id is not None
     
     def test_create_task_with_multi_select_values(self, country_options):
@@ -157,8 +168,18 @@ class TestMultiSelectCustomField:
         project_id = TEST_PROJECT_ID
         group_id = TEST_GROUP_ID
         
-        # First create a custom field with country options
-        field_id = self.test_create_select_custom_field_with_options(country_options)
+        # First create a custom field with country options using helper functions
+        from vaiz.helpers import make_select_field
+        
+        select_field_request = make_select_field(
+            name="Test Countries Multi",
+            board_id=board_id,
+            options=country_options,
+            description="Test select field for multi selection"
+        )
+        
+        field_response = client.create_board_custom_field(select_field_request)
+        field_id = field_response.custom_field.id
         
         # Selected countries (multiple values) - using option IDs
         selected_country_names = ["United States", "Germany", "Japan"]
@@ -211,10 +232,48 @@ class TestMultiSelectCustomField:
     
     def test_retrieve_task_with_multi_select_values(self, country_options):
         """Test retrieving a task and verifying multi-select custom field values."""
+        from vaiz.helpers import make_select_field
+        
         client = get_test_client()
+        board_id = TEST_BOARD_ID
+        project_id = TEST_PROJECT_ID
+        group_id = TEST_GROUP_ID
+        
+        # Create select field with country options
+        select_field_request = make_select_field(
+            name="Test Countries Retrieve",
+            board_id=board_id,
+            options=country_options,
+            description="Test select field for retrieval test"
+        )
+        
+        field_response = client.create_board_custom_field(select_field_request)
+        field_id = field_response.custom_field.id
         
         # Create task with multi-select values
-        task_id, field_id = self.test_create_task_with_multi_select_values(country_options)
+        selected_country_names = ["United States", "Germany", "Japan"]
+        selected_country_ids = []
+        for option in country_options:
+            if option["title"] in selected_country_names:
+                selected_country_ids.append(option["_id"])
+        
+        custom_field = CustomField(
+            id=field_id,
+            value=selected_country_ids
+        )
+        
+        task_request = CreateTaskRequest(
+            name="Multi Select Retrieve Test Task",
+            group=group_id,
+            board=board_id,
+            project=project_id,
+            description="Test task for retrieval with multi-select custom field",
+            priority=TaskPriority.Medium,
+            custom_fields=[custom_field]
+        )
+        
+        task_response = client.create_task(task_request)
+        task_id = task_response.task.hrid  # Use hrid for get_task
         
         # Retrieve the task
         task_response = client.get_task(task_id)
@@ -222,8 +281,8 @@ class TestMultiSelectCustomField:
         assert task_response.task is not None
         
         task = task_response.task
-        assert task.id == task_id
-        assert task.name == "Multi Select Test Task"
+        assert task.hrid == task_id
+        assert task.name == "Multi Select Retrieve Test Task"
         
         # Find our custom field
         found_field = None

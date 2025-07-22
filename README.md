@@ -4,9 +4,21 @@ Python SDK for accessing the Vaiz platform API.
 
 ## 🚀 What's New in 0.4.x
 
+### ✨ Custom Field Helper Functions (v0.4.6+)
+
+- **🎛️ Strongly-Typed Helpers**: Create custom fields with `make_text_field()`, `make_select_field()`, `make_date_field()`, etc.
+- **🔧 Field Management**: Edit fields with `edit_custom_field_name()`, `edit_custom_field_complete()`
+- **🔗 Task Relations**: Manage task relationships with `add_task_relation()`, `remove_task_relation()`
+- **👥 Member Fields**: Handle member assignments with `add_member_to_field()`, `remove_member_from_field()`
+- **📅 Date Handling**: Format dates with `make_date_value()`, `make_date_range_value()`
+- **🎨 Value Formatting**: Type-safe value preparation with `make_text_value()`, `make_checkbox_value()`, etc.
+- **🎯 Select Options**: Manage options with `add_board_custom_field_select_option()`, `make_select_option()`
+
+### 🔧 Previous Updates
+
 - **🕓 Task History**: New `get_history` method for retrieving the change history of tasks and other objects
 - **📦 New Models**: `GetHistoryRequest`, `GetHistoryResponse`, `HistoryItem`, `HistoryData`
-- **🧪 Usage Example**: see `examples/get_history.py`
+- **🧪 Usage Examples**: see `examples/custom_field_helpers_usage.py`, `examples/advanced_custom_field_management.py`
 - **🛠️ Improvements**: alias fixes, environment variable handling, test stability
 - **🔄 Automatic DateTime Conversion**: All date/time fields now automatically convert between Python `datetime` objects and ISO strings
 - **💬 Full Comment System**: Post, edit, delete comments with file attachments, replies, and emoji reactions
@@ -308,49 +320,141 @@ response = client.edit_board_type(request)
 board_type = response.board_type
 ```
 
-#### Create a Board Custom Field
+#### Custom Fields with Helper Functions 🎛️
+
+The Vaiz SDK provides **strongly-typed helper functions** for creating and managing custom fields with ease:
+
+##### Create Custom Fields
 
 ```python
-from vaiz import VaizClient, CreateBoardCustomFieldRequest, CustomFieldType
+from vaiz import (
+    VaizClient,
+    # Field creation helpers
+    make_text_field,
+    make_number_field,
+    make_date_field,
+    make_select_field,
+    make_select_option
+)
+from vaiz.models.enums import EColor, EIcon
 
 client = VaizClient(api_key="your-api-key", space_id="your-space-id")
 
-# Create a new custom field
-request = CreateBoardCustomFieldRequest(
-    name="Date",
-    type=CustomFieldType.DATE,
+# Text field - simple and clean
+text_field = make_text_field(
+    name="Customer Name",
     board_id="your-board-id",
-    description="Date field for tracking deadlines",
-    hidden=False
+    description="Name of the customer for this project"
 )
+response = client.create_board_custom_field(text_field)
 
-response = client.create_board_custom_field(request)
-custom_field = response.custom_field
+# Date field with proper typing
+date_field = make_date_field(
+    name="Launch Date",
+    board_id="your-board-id",
+    description="When we plan to launch this feature"
+)
+response = client.create_board_custom_field(date_field)
 
-print(f"Created custom field: {custom_field.name} (ID: {custom_field.id})")
+# Select field with options
+priority_options = [
+    make_select_option("🔥 Critical", EColor.Red, EIcon.Fire),
+    make_select_option("⚡ High", EColor.Orange, EIcon.Flag),
+    make_select_option("📋 Medium", EColor.Blue, EIcon.Circle),
+    make_select_option("🌱 Low", EColor.Green, EIcon.Target)
+]
+
+select_field = make_select_field(
+    name="Priority Level",
+    board_id="your-board-id",
+    options=priority_options,
+    description="Task priority level"
+)
+response = client.create_board_custom_field(select_field)
 ```
 
-#### Edit a Board Custom Field
+##### Edit Custom Fields
 
 ```python
-from vaiz import VaizClient, EditBoardCustomFieldRequest
-
-client = VaizClient(api_key="your-api-key", space_id="your-space-id")
-
-# Edit an existing custom field
-request = EditBoardCustomFieldRequest(
-    field_id="your-field-id",
-    board_id="your-board-id",
-    hidden=True,
-    description="Updated field description"
+from vaiz import (
+    edit_custom_field_name,
+    edit_custom_field_description,
+    edit_custom_field_complete
 )
 
-response = client.edit_board_custom_field(request)
-custom_field = response.custom_field
+# Edit field name
+name_edit = edit_custom_field_name(
+    field_id="your-field-id",
+    board_id="your-board-id",
+    new_name="🎯 Updated Field Name"
+)
+client.edit_board_custom_field(name_edit)
 
-print(f"Updated custom field: {custom_field.name} (ID: {custom_field.id})")
-print(f"Hidden: {custom_field.hidden}")
-print(f"Description: {custom_field.description}")
+# Edit multiple properties at once
+complete_edit = edit_custom_field_complete(
+    field_id="your-field-id",
+    board_id="your-board-id",
+    name="New Name",
+    description="New description",
+    hidden=False
+)
+client.edit_board_custom_field(complete_edit)
+```
+
+##### Work with Field Values
+
+```python
+from vaiz import (
+    make_date_value,
+    make_member_value,
+    make_task_relation_value,
+    make_checkbox_value,
+    CustomField
+)
+from datetime import datetime
+
+# Format values for different field types
+date_value = make_date_value(datetime(2025, 12, 31))
+member_value = make_member_value(["user1", "user2"])  # Multiple members
+relations_value = make_task_relation_value(["task1", "task2", "task3"])
+checkbox_value = make_checkbox_value(True)
+
+# Use in task creation
+custom_fields = [
+    CustomField(id="date_field_id", value=date_value),
+    CustomField(id="member_field_id", value=member_value),
+    CustomField(id="relations_field_id", value=relations_value),
+    CustomField(id="checkbox_field_id", value=checkbox_value)
+]
+```
+
+##### Manage Select Field Options
+
+```python
+from vaiz import (
+    add_board_custom_field_select_option,
+    remove_board_custom_field_select_option,
+    edit_board_custom_field_select_field_option
+)
+
+# Add new option to existing select field
+new_option = make_select_option("🚨 Emergency", EColor.Magenta, EIcon.Crown)
+add_request = add_board_custom_field_select_option(
+    field_id="select_field_id",
+    board_id="your-board-id",
+    new_option=new_option,
+    existing_options=current_options  # Get from field.options
+)
+client.edit_board_custom_field(add_request)
+
+# Remove option
+remove_request = remove_board_custom_field_select_option(
+    field_id="select_field_id",
+    board_id="your-board-id",
+    option_id="option_to_remove_id",
+    existing_options=current_options
+)
+client.edit_board_custom_field(remove_request)
 ```
 
 #### Create a Board Group
@@ -1003,6 +1107,147 @@ for file in edit_response.comment.files:
     print(f"File: {file.original_name} (ID: {file.id})")
 ```
 
+### 🎛️ Custom Field Helper Functions Reference
+
+The Vaiz SDK provides a comprehensive set of helper functions for working with custom fields:
+
+#### Field Creation Helpers
+
+```python
+from vaiz import (
+    make_text_field,
+    make_number_field,
+    make_checkbox_field,
+    make_date_field,
+    make_member_field,
+    make_task_relations_field,
+    make_select_field,
+    make_url_field
+)
+
+# All field creation helpers follow the same pattern:
+field_request = make_text_field(
+    name="Field Name",
+    board_id="board_id",
+    description="Optional description",  # Optional
+    hidden=False  # Optional, defaults to False
+)
+```
+
+#### Field Editing Helpers
+
+```python
+from vaiz import (
+    edit_custom_field_name,
+    edit_custom_field_description,
+    edit_custom_field_visibility,
+    edit_custom_field_complete
+)
+
+# Edit specific properties
+edit_request = edit_custom_field_name(field_id, board_id, "New Name")
+
+# Edit multiple properties at once
+edit_request = edit_custom_field_complete(
+    field_id=field_id,
+    board_id=board_id,
+    name="New Name",           # Optional
+    description="New desc",    # Optional
+    hidden=True               # Optional
+)
+```
+
+#### Value Formatting Helpers
+
+```python
+from vaiz import (
+    make_text_value,
+    make_number_value,
+    make_checkbox_value,
+    make_url_value,
+    make_date_value,
+    make_date_range_value
+)
+from datetime import datetime
+
+# Format values for use with CustomField
+text_val = make_text_value("Hello World")
+number_val = make_number_value(42.5)
+checkbox_val = make_checkbox_value(True)
+url_val = make_url_value("https://example.com")
+date_val = make_date_value(datetime.now())
+
+date_range = make_date_range_value(
+    start_date=datetime(2025, 1, 1),
+    end_date=datetime(2025, 12, 31)
+)
+```
+
+#### Task Relations Helpers
+
+```python
+from vaiz import (
+    make_task_relation_value,
+    add_task_relation,
+    remove_task_relation
+)
+
+# Create task relations
+relations = make_task_relation_value(["task1", "task2", "task3"])
+
+# Manage relations
+updated_relations = add_task_relation(relations, "task4")
+final_relations = remove_task_relation(updated_relations, "task1")
+```
+
+#### Member Field Helpers
+
+```python
+from vaiz import (
+    make_member_value,
+    add_member_to_field,
+    remove_member_from_field
+)
+
+# Create member values (single or multiple)
+single_member = make_member_value("user123")
+multiple_members = make_member_value(["user1", "user2", "user3"])
+
+# Manage members
+more_members = add_member_to_field(single_member, "user456")
+fewer_members = remove_member_from_field(multiple_members, "user2")
+```
+
+#### Select Field & Options Helpers
+
+```python
+from vaiz import (
+    make_select_option,
+    make_select_field,
+    add_board_custom_field_select_option,
+    remove_board_custom_field_select_option,
+    edit_board_custom_field_select_field_option,
+    SelectOption
+)
+from vaiz.models.enums import EColor, EIcon
+
+# Create options
+option = make_select_option("High Priority", EColor.Red, EIcon.Flag)
+
+# Create select field with options
+options = [
+    make_select_option("High", EColor.Red, EIcon.Flag),
+    make_select_option("Medium", EColor.Blue, EIcon.Circle),
+    make_select_option("Low", EColor.Green, EIcon.Target)
+]
+select_field = make_select_field("Priority", board_id, options)
+
+# Manage options in existing fields
+add_request = add_board_custom_field_select_option(
+    field_id, board_id, new_option, existing_options
+)
+```
+
 **File Operations:**
 
 - `add_file_ids`: Upload files first, then add their IDs to the comment
@@ -1067,10 +1312,14 @@ reaction_data = reaction_request.model_dump()
 
 The SDK includes comprehensive examples demonstrating various API operations:
 
-- **Task Management**: Create and edit tasks with descriptions and file attachments
-- **File Upload**: Upload real files from the `assets/` folder (example.pdf, example.png, example.mp4)
-- **Board Operations**: Create, edit, and manage boards with custom fields and groups
-- **Comment System**: Complete CRUD operations with HTML content, reactions, replies, file attachments, and soft delete
+- **🎛️ Custom Field Management**: Complete examples for creating, editing, and managing custom fields
+  - `examples/custom_field_helpers_usage.py` - Basic custom field operations
+  - `examples/advanced_custom_field_management.py` - Advanced field editing, relations, and value formatting
+- **📋 Task Management**: Create and edit tasks with descriptions and file attachments
+- **📁 File Upload**: Upload real files from the `assets/` folder (example.pdf, example.png, example.mp4)
+- **🏗️ Board Operations**: Create, edit, and manage boards with custom fields and groups
+- **💬 Comment System**: Complete CRUD operations with HTML content, reactions, replies, file attachments, and soft delete
+- **📊 History Tracking**: Retrieve change history for tasks and other objects
 
 #### Testing and Development
 

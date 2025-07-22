@@ -41,14 +41,14 @@ class BoardCustomField(BaseModel):
     Represents a custom field in a board.
     
     Attributes:
-        name (str): The name of the custom field
+        name (Optional[str]): The name of the custom field (may not be returned in some API responses)
         type (CustomFieldType): The type of the custom field
         id (str): The unique identifier of the custom field
         description (Optional[str]): Optional description of the custom field
         options (Optional[List[Any]]): List of options for Select type fields
         hidden (Optional[bool]): Whether the field is hidden from view
     """
-    name: str
+    name: Optional[str] = None
     type: CustomFieldType
     id: str = Field(..., alias="_id")
     description: Optional[str] = None
@@ -165,6 +165,7 @@ class CreateBoardCustomFieldResponse(BaseModel):
 class EditBoardCustomFieldRequest(VaizBaseModel):
     field_id: str = Field(..., alias="fieldId")
     board_id: str = Field(..., alias="boardId")
+    name: Optional[str] = None
     hidden: Optional[bool] = None
     description: Optional[str] = None
     options: Optional[List[Any]] = None

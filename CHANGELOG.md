@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.4.6] - 2025-01-21
+
+### Added
+
+- **🎛️ Custom Field Helper Functions**: Complete set of strongly-typed helper functions for creating and managing custom fields
+  - **Field creation helpers**: `make_text_field()`, `make_number_field()`, `make_checkbox_field()`, `make_date_field()`, `make_member_field()`, `make_task_relations_field()`, `make_select_field()`, `make_url_field()`
+  - **Field editing helpers**: `edit_custom_field_name()`, `edit_custom_field_description()`, `edit_custom_field_visibility()`, `edit_custom_field_complete()`
+  - **Select option helpers**: `make_select_option()`, `SelectOption` class for typed option creation
+  - **Option management**: `add_board_custom_field_select_option()`, `remove_board_custom_field_select_option()`, `edit_board_custom_field_select_field_option()`
+  - **Task relations helpers**: `make_task_relation_value()`, `add_task_relation()`, `remove_task_relation()`
+  - **Member field helpers**: `make_member_value()`, `add_member_to_field()`, `remove_member_from_field()`
+  - **Date field helpers**: `make_date_value()`, `make_date_range_value()` with datetime support
+  - **Value formatting helpers**: `make_text_value()`, `make_number_value()`, `make_checkbox_value()`, `make_url_value()`
+
+### Improved
+
+- **🔧 Enhanced API**: Complete CRUD operations for custom fields with strongly-typed helpers
+- **🔗 Relations Management**: Simplified task relationship handling with add/remove functions
+- **👥 Member Management**: Easy member assignment with single/multiple member support
+- **📅 Date Handling**: Automatic datetime formatting and range support
+- **📝 Value Formatting**: Type-safe value preparation for all field types
+- **🎨 Better UX**: Automatic ID generation for select options with collision-safe hashing
+
+### Fixed
+
+- **🐛 Model Compatibility**: Made `BoardCustomField.name` optional to match API response behavior
+- **✅ Test Stability**: Fixed board custom field tests to handle API response variations
+
+### Technical Details
+
+- All helper functions return properly typed request objects ready for API calls
+- All value helpers return properly formatted data for immediate use with CustomField
+- Smart member field management maintains appropriate data types (string vs list)
+- Date helpers support both datetime objects and ISO strings
+- Field editing helpers allow partial updates with optional parameters
+- Enhanced EditBoardCustomFieldRequest model with name field support
+- Support for both `EColor`/`EIcon` enums and string values for maximum flexibility
+- Helper functions handle option format conversion automatically
+- Full backward compatibility with existing custom field APIs
+
 ## [0.4.5] - 2025-01-21
 
 ### Fixed
