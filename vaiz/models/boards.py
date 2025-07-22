@@ -62,15 +62,15 @@ class Board(VaizBaseModel):
     project: Optional[str] = None
     creator: Optional[str] = None
     archiver: Optional[str] = None
-    archived_at: Optional[datetime] = Field(None, alias="archivedAt")
-    created_at: Optional[datetime] = Field(None, alias="createdAt")
+    archived_at: Optional[datetime] = Field(default=None, alias="archivedAt")
+    created_at: Optional[datetime] = Field(default=None, alias="createdAt")
     deleter: Optional[str] = None
-    deleted_at: Optional[datetime] = Field(None, alias="deletedAt")
+    deleted_at: Optional[datetime] = Field(default=None, alias="deletedAt")
     groups: Optional[List[BoardGroup]] = None
-    types_list: Optional[List[BoardType]] = Field(None, alias="typesList")
-    custom_fields: Optional[List[BoardCustomField]] = Field(None, alias="customFields")
-    task_order_by_groups: Optional[Dict[str, List[str]]] = Field(None, alias="taskOrderByGroups")
-    updated_at: Optional[datetime] = Field(None, alias="updatedAt")
+    types_list: Optional[List[BoardType]] = Field(default=None, alias="typesList")
+    custom_fields: Optional[List[BoardCustomField]] = Field(default=None, alias="customFields")
+    task_order_by_groups: Optional[Dict[str, List[str]]] = Field(default=None, alias="taskOrderByGroups")
+    updated_at: Optional[datetime] = Field(default=None, alias="updatedAt")
 
 
 class BoardsPayload(BaseModel):

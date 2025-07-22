@@ -3,6 +3,7 @@
 Python SDK for accessing the Vaiz platform API.
 
 ## 🚀 What's New in 0.4.x
+
 - **🕓 Task History**: New `get_history` method for retrieving the change history of tasks and other objects
 - **📦 New Models**: `GetHistoryRequest`, `GetHistoryResponse`, `HistoryItem`, `HistoryData`
 - **🧪 Usage Example**: see `examples/get_history.py`
@@ -13,6 +14,7 @@ Python SDK for accessing the Vaiz platform API.
 - **📖 Comprehensive Documentation**: New DateTime Support section with examples
 
 #### Breaking Changes
+
 - Date fields now return `datetime` objects instead of strings (automatic parsing from API)
 - All models updated to inherit from `VaizBaseModel` for datetime support
 

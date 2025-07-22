@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.5] - 2025-01-21
+
+### Fixed
+
+- **🔧 Pydantic v2 Compatibility**: Fixed Optional field definitions to use `Field(default=None, alias="...")` instead of `Field(None, alias="...")`
+- **🛠️ Linter Issues**: Resolved linter warnings about missing default values for Optional fields
+- **📝 Code Quality**: Improved code clarity by using explicit named parameters in Field definitions
+
+### Technical Details
+
+- Follows Pydantic v2 best practices for Optional field definitions
+
 ## [0.4.4] - 2025-01-21
 
 ### Changed

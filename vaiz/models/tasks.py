@@ -37,7 +37,7 @@ class Task(VaizBaseModel):
     group: str
     board: str
     project: str
-    parent_task: Optional[str] = Field(None, alias="parentTask")
+    parent_task: Optional[str] = Field(default=None, alias="parentTask")
     types: List[str] = []
     priority: TaskPriority
     hrid: str
@@ -47,15 +47,15 @@ class Task(VaizBaseModel):
     assignees: List[str] = []
     subtasks: List[str] = []
     milestones: List[str] = []
-    due_start: Optional[datetime] = Field(None, alias="dueStart")
-    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    due_start: Optional[datetime] = Field(default=None, alias="dueStart")
+    due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
     right_connectors: List[str] = Field(default_factory=list, alias="rightConnectors")
     left_connectors: List[str] = Field(default_factory=list, alias="leftConnectors")
-    archived_at: Optional[datetime] = Field(None, alias="archivedAt")
-    completed_at: Optional[datetime] = Field(None, alias="completedAt")
+    archived_at: Optional[datetime] = Field(default=None, alias="archivedAt")
+    completed_at: Optional[datetime] = Field(default=None, alias="completedAt")
     custom_fields: List[TaskCustomField] = Field(default_factory=list, alias="customFields")
     deleter: Optional[str] = None
-    deleted_at: Optional[datetime] = Field(None, alias="deletedAt")
+    deleted_at: Optional[datetime] = Field(default=None, alias="deletedAt")
     creator: str
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
@@ -85,15 +85,15 @@ class CreateTaskRequest(VaizBaseModel):
     board: str
     project: str
     description: Optional[str] = None
-    parent_task: Optional[str] = Field(None, alias="parentTask")
+    parent_task: Optional[str] = Field(default=None, alias="parentTask")
     types: List[str] = []
     priority: TaskPriority = TaskPriority.General
     completed: bool = False
     assignees: List[str] = []
     subtasks: List[str] = []
     milestones: List[str] = []
-    due_start: Optional[datetime] = Field(None, alias="dueStart")
-    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    due_start: Optional[datetime] = Field(default=None, alias="dueStart")
+    due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
     right_connectors: List[str] = Field(default_factory=list, alias="rightConnectors")
     left_connectors: List[str] = Field(default_factory=list, alias="leftConnectors")
     custom_fields: List[CustomField] = Field(default_factory=list, alias="customFields")
@@ -108,18 +108,18 @@ class CreateTaskRequest(VaizBaseModel):
 class EditTaskRequest(VaizBaseModel):
     task_id: str = Field(..., alias="taskId")
     name: Optional[str] = None
-    parent_task: Optional[str] = Field(None, alias="parentTask")
+    parent_task: Optional[str] = Field(default=None, alias="parentTask")
     types: Optional[List[str]] = None
     priority: Optional[TaskPriority] = None
     completed: Optional[bool] = None
     assignees: Optional[List[str]] = None
     subtasks: Optional[List[str]] = None
     milestones: Optional[List[str]] = None
-    due_start: Optional[datetime] = Field(None, alias="dueStart")
-    due_end: Optional[datetime] = Field(None, alias="dueEnd")
-    right_connectors: Optional[List[str]] = Field(None, alias="rightConnectors")
-    left_connectors: Optional[List[str]] = Field(None, alias="leftConnectors")
-    custom_fields: Optional[List[CustomField]] = Field(None, alias="customFields")
+    due_start: Optional[datetime] = Field(default=None, alias="dueStart")
+    due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
+    right_connectors: Optional[List[str]] = Field(default=None, alias="rightConnectors")
+    left_connectors: Optional[List[str]] = Field(default=None, alias="leftConnectors")
+    custom_fields: Optional[List[CustomField]] = Field(default=None, alias="customFields")
     description: Optional[str] = None
     files: Optional[List[TaskFile]] = None
 

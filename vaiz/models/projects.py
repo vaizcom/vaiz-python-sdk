@@ -11,7 +11,7 @@ class Project(VaizBaseModel):
     name: str
     description: Optional[str] = None
     creator: str
-    archived_at: Optional[datetime] = Field(None, alias="archivedAt")
+    archived_at: Optional[datetime] = Field(default=None, alias="archivedAt")
     archiver: Optional[str] = None
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")

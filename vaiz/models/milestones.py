@@ -13,8 +13,8 @@ class CreateMilestoneRequest(VaizBaseModel):
     description: Optional[str] = None
     board: str
     project: str
-    due_start: Optional[datetime] = Field(None, alias="dueStart")
-    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    due_start: Optional[datetime] = Field(default=None, alias="dueStart")
+    due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
     tags: List[str] = []
     color: str = "#3498db"  # Default blue color
 
@@ -28,10 +28,10 @@ class Milestone(VaizBaseModel):
     project: str
     creator: str
     archiver: Optional[str] = None
-    due_start: Optional[datetime] = Field(None, alias="dueStart")
-    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    due_start: Optional[datetime] = Field(default=None, alias="dueStart")
+    due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
     tags: List[str] = []
-    archived_at: Optional[datetime] = Field(None, alias="archivedAt")
+    archived_at: Optional[datetime] = Field(default=None, alias="archivedAt")
     is_archived: bool = Field(False, alias="isArchived")
     is_active: bool = Field(True, alias="isActive")
     is_completed: bool = Field(False, alias="isCompleted")
@@ -40,7 +40,7 @@ class Milestone(VaizBaseModel):
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
     deleter: Optional[str] = None
-    deleted_at: Optional[datetime] = Field(None, alias="deletedAt")
+    deleted_at: Optional[datetime] = Field(default=None, alias="deletedAt")
     # Additional fields found in API responses
     followers: Optional[Dict[str, str]] = {}
     document: Optional[str] = None
@@ -95,8 +95,8 @@ class EditMilestoneRequest(VaizBaseModel):
     milestone_id: str = Field(..., alias="_id")  # Use alias to send as "_id" to API
     name: Optional[str] = None
     description: Optional[str] = None
-    due_start: Optional[datetime] = Field(None, alias="dueStart")
-    due_end: Optional[datetime] = Field(None, alias="dueEnd")
+    due_start: Optional[datetime] = Field(default=None, alias="dueStart")
+    due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
     tags: Optional[List[str]] = None
     color: Optional[str] = None
 

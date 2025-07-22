@@ -23,11 +23,11 @@ class Comment(VaizBaseModel):
     content: str
     files: List[UploadedFile] = []
     reactions: List["CommentReaction"] = []
-    reply_to: Optional[str] = Field(None, alias="replyTo")
+    reply_to: Optional[str] = Field(default=None, alias="replyTo")
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
-    edited_at: Optional[datetime] = Field(None, alias="editedAt")
-    deleted_at: Optional[datetime] = Field(None, alias="deletedAt")
+    edited_at: Optional[datetime] = Field(default=None, alias="editedAt")
+    deleted_at: Optional[datetime] = Field(default=None, alias="deletedAt")
     has_removed_files: bool = Field(False, alias="hasRemovedFiles")
 
     model_config = ConfigDict(populate_by_name=True)
@@ -38,7 +38,7 @@ class PostCommentRequest(BaseModel):
     content: str
     file_ids: List[str] = Field(default_factory=list, alias="fileIds")
     document_id: str = Field(..., alias="documentId")
-    reply_to: Optional[str] = Field(None, alias="replyTo")
+    reply_to: Optional[str] = Field(default=None, alias="replyTo")
 
     model_config = ConfigDict(populate_by_name=True)
 
