@@ -1,5 +1,48 @@
 # Changelog
 
+## [0.4.7] - 2025-01-21
+
+### Added
+
+- **🌐 File Upload from URL**: New `upload_file_from_url()` method for uploading files directly from external URLs
+  - **📥 Direct URL Upload**: Upload files without downloading them locally first
+  - **🔍 Auto Type Detection**: Automatically detect file types from URL extensions and HTTP content-type headers
+  - **📝 Custom Filenames**: Specify custom filenames for uploaded files
+  - **🎯 Task Integration**: Complete workflow examples for creating tasks with external files
+  - **🛠️ Error Handling**: Robust handling of network issues, invalid URLs, and missing MIME types
+  - **🔧 Helper Methods**: Private `_detect_file_type_from_url_and_content()` method for intelligent type detection
+  - **📦 Temporary File Management**: Automatic cleanup of temporary files during upload process
+
+### Improved
+
+- **📄 Documentation**: Updated README with comprehensive examples of URL upload functionality
+- **🧪 Test Coverage**: Added extensive test suite for URL upload functionality including:
+  - Auto-detection tests for different file types
+  - Explicit type specification tests
+  - Multiple file upload tests
+  - Integration tests for task creation with external files
+  - Edge case handling for files without extensions
+  - Invalid URL error handling tests
+- **🎯 Examples**: New example files demonstrating URL upload usage:
+  - `examples/upload_file_from_url.py` - Basic URL upload examples
+  - `examples/create_task_with_external_file.py` - Task creation with external files
+
+### Technical Details
+
+- **🔗 URL Support**: Supports any publicly accessible HTTP/HTTPS URL
+- **📋 File Type Detection**: 
+  - URL extension matching for common formats (.jpg, .png, .pdf, .mp4, etc.)
+  - HTTP Content-Type header analysis
+  - Fallback to `EUploadFileType.File` for unknown types
+- **💾 Memory Efficient**: Streams file downloads to temporary files
+- **🧹 Resource Management**: Automatic cleanup of temporary files even on errors
+- **🔒 Security**: Respects SSL verification settings from client configuration
+
+### Fixed
+
+- **🏷️ Model Fields**: Made `UploadedFile.mime` field optional to handle API responses that don't include MIME type
+- **🌐 URL Reliability**: Replaced unstable external URLs in tests with reliable httpbin.org and w3.org endpoints
+
 ## [0.4.6] - 2025-01-21
 
 ### Added
