@@ -15,7 +15,7 @@ class UploadedFile(VaizBaseModel):
     type: EUploadFileType
     ext: str
     size: int
-    mime: str = Field(..., alias="mime")
+    mime: Optional[str] = Field(default=None, alias="mime")
     original_name: str = Field(..., alias="originalName")
     access_kind: str = Field(..., alias="accessKind")
     access_kind_id: str = Field(..., alias="accessKindId")

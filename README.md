@@ -4,6 +4,14 @@ Python SDK for accessing the Vaiz platform API.
 
 ## 🚀 What's New in 0.4.x
 
+### 🌐 File Upload from URL (v0.4.7+)
+
+- **📥 Direct URL Upload**: Upload files directly from external URLs with `upload_file_from_url()`
+- **🔍 Auto Type Detection**: Automatically detect file types from URL extensions and content headers
+- **📝 Custom Filenames**: Specify custom filenames for uploaded files
+- **🎯 Task Integration**: Create tasks with external files in a single workflow
+- **🛠️ Error Handling**: Robust handling of network issues and invalid URLs
+
 ### ✨ Custom Field Helper Functions (v0.4.6+)
 
 - **🎛️ Strongly-Typed Helpers**: Create custom fields with `make_text_field()`, `make_select_field()`, `make_date_field()`, etc.
@@ -761,6 +769,67 @@ response = client.upload_file("/path/to/file.pdf", file_type=EUploadFileType.Pdf
 
 file = response.file
 print(file.url)
+```
+
+#### Upload File from URL
+
+Upload files directly from external URLs without downloading them locally first:
+
+```python
+from vaiz.models.enums import EUploadFileType
+
+# Upload with automatic file type detection
+response = client.upload_file_from_url("https://example.com/image.png")
+
+# Upload with explicit file type and custom filename
+response = client.upload_file_from_url(
+    file_url="https://example.com/document.pdf",
+    file_type=EUploadFileType.Pdf,
+    filename="my_document.pdf"
+)
+
+file = response.file
+print(f"Uploaded: {file.name} ({file.type})")
+print(f"URL: {file.url}")
+```
+
+#### Create Task with External File
+
+You can also create tasks with files uploaded from URLs:
+
+```python
+from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
+
+# 1. Upload file from URL
+upload_response = client.upload_file_from_url(
+    file_url="https://example.com/mockup.png",
+    file_type=EUploadFileType.Image,
+    filename="project_mockup.png"
+)
+
+# 2. Create TaskFile object
+task_file = TaskFile(
+    url=upload_response.file.url,
+    name=upload_response.file.name,
+    dimension=upload_response.file.dimension,
+    ext=upload_response.file.ext,
+    _id=upload_response.file.id,
+    type=upload_response.file.type
+)
+
+# 3. Create task with attached file
+task_request = CreateTaskRequest(
+    name="Review Project Mockup",
+    group="your_group_id",
+    board="your_board_id", 
+    project="your_project_id",
+    priority=TaskPriority.High,
+    description="Please review the attached mockup",
+    files=[task_file]
+)
+
+task_response = client.create_task(task_request)
+print(f"Task created: {task_response.payload['task']['_id']}")
 ```
 
 #### Available File Types
