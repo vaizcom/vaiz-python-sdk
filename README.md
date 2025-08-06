@@ -866,87 +866,6 @@ for history in response.payload.histories:
     print(history.key, history.createdAt, history.data)
 ```
 
-## Development
-
-### Setting Up Development Environment
-
-1. Create and activate a virtual environment:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-```
-
-2. Install the package in development mode:
-
-```bash
-pip install -e .
-```
-
-### Testing
-
-#### Setup
-
-1. Install test dependencies:
-
-```bash
-pip install pytest pytest-mock python-dotenv
-```
-
-2. Create a `.env` file in the project root with your test credentials:
-
-```env
-VAIZ_API_KEY=your_test_api_key
-VAIZ_SPACE_ID=your_test_space_id
-```
-
-The test configuration (`tests/test_config.py`) will automatically load these credentials.
-
-#### Running Tests
-
-Run all tests:
-
-```bash
-PYTHONPATH=. pytest
-```
-
-Run specific test file:
-
-```bash
-PYTHONPATH=. pytest tests/test_client.py
-```
-
-Run with verbose output:
-
-```bash
-PYTHONPATH=. pytest -v
-```
-
-Note: Setting `PYTHONPATH=.` is required to ensure Python can find the package modules during testing.
-
-#### Writing Tests
-
-Tests in this project are designed to run against a real API and database, which requires a valid `VAIZ_API_KEY` and `VAIZ_SPACE_ID` to be configured in your `.env` file. The tests do not use mocks for API calls; instead, they interact with the live environment specified in your configuration.
-
-When writing tests for the SDK:
-
-1. Use the test configuration from `tests/test_config.py` to get a pre-configured client:
-
-```python
-from tests.test_config import get_test_client, TEST_BOARD_ID
-
-def test_get_board():
-    client = get_test_client()
-    response = client.get_board(TEST_BOARD_ID)
-    # ... assertions to verify the response
-```
-
-2. Structure your tests to perform real operations and validate the responses from the API. For example, a test might create a resource, then retrieve it to ensure it was created correctly.
-
-3. Include proper assertions to verify the state and data of the responses.
-
-4. Be mindful that tests will create, modify, or delete real data in the configured Vaiz space.
-
 ### Working with Comments
 
 **Important:** Comments require a valid `document_id` from an existing task. You can get this from getting or creating a task:
@@ -1376,6 +1295,88 @@ reaction_request = ReactToCommentRequest(
 reaction_data = reaction_request.model_dump()
 # Results in: {"commentId": "...", "id": "heart_eyes", "name": "...", "native": "😍", ...}
 ```
+
+## Development
+
+### Setting Up Development Environment
+
+1. Create and activate a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+```
+
+2. Install the package in development mode:
+
+```bash
+pip install -e .
+```
+
+### Testing
+
+#### Setup
+
+1. Install test dependencies:
+
+```bash
+pip install pytest pytest-mock python-dotenv
+```
+
+2. Create a `.env` file in the project root with your test credentials:
+
+```env
+VAIZ_API_KEY=your_test_api_key
+VAIZ_SPACE_ID=your_test_space_id
+```
+
+The test configuration (`tests/test_config.py`) will automatically load these credentials.
+
+#### Running Tests
+
+Run all tests:
+
+```bash
+PYTHONPATH=. pytest
+```
+
+Run specific test file:
+
+```bash
+PYTHONPATH=. pytest tests/test_client.py
+```
+
+Run with verbose output:
+
+```bash
+PYTHONPATH=. pytest -v
+```
+
+Note: Setting `PYTHONPATH=.` is required to ensure Python can find the package modules during testing.
+
+#### Writing Tests
+
+Tests in this project are designed to run against a real API and database, which requires a valid `VAIZ_API_KEY` and `VAIZ_SPACE_ID` to be configured in your `.env` file. The tests do not use mocks for API calls; instead, they interact with the live environment specified in your configuration.
+
+When writing tests for the SDK:
+
+1. Use the test configuration from `tests/test_config.py` to get a pre-configured client:
+
+```python
+from tests.test_config import get_test_client, TEST_BOARD_ID
+
+def test_get_board():
+    client = get_test_client()
+    response = client.get_board(TEST_BOARD_ID)
+    # ... assertions to verify the response
+```
+
+2. Structure your tests to perform real operations and validate the responses from the API. For example, a test might create a resource, then retrieve it to ensure it was created correctly.
+
+3. Include proper assertions to verify the state and data of the responses.
+
+4. Be mindful that tests will create, modify, or delete real data in the configured Vaiz space.
+
 
 ### Examples
 
