@@ -26,11 +26,13 @@ BOARD_ID = os.getenv("VAIZ_BOARD_ID")
 GROUP_ID = os.getenv("VAIZ_GROUP_ID")
 ASSIGNEE_ID = os.getenv("VAIZ_ASSIGNEE_ID")
 
+BASE_URL = os.getenv("VAIZ_BASE_URL")
+
 def get_client():
     """Initialize and return a VaizClient instance."""
     return VaizClient(
         api_key=API_KEY,
         space_id=SPACE_ID,
         verify_ssl=False,
-        base_url="https://api.vaiz.local:10000/v4"
+        base_url=BASE_URL
     ) 
