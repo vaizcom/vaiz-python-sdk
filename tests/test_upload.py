@@ -336,7 +336,7 @@ def test_create_task_with_external_file_from_url(client):
     print(f"   File name: {uploaded_file.name}")
     print(f"   File type: {uploaded_file.type}")
     
-    return created_task["_id"]  # Return task ID for potential cleanup or further testing
+    # Test completed successfully - task ID available for debugging if needed
 
 def test_create_task_with_multiple_external_files(client):
     """
@@ -425,4 +425,4 @@ def test_create_task_with_multiple_external_files(client):
     for i, task_file in enumerate(task_files):
         print(f"   File {i+1}: {task_file.name} ({task_file.type})")
     
-    return created_task["_id"] 
+    # Test completed successfully - task ID available for debugging if needed 
