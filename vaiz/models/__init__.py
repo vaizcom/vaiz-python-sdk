@@ -5,6 +5,7 @@ from .profile import Profile, ProfileResponse
 from .projects import Project, ProjectsResponse, ProjectResponse
 from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
 from .upload import UploadedFile, UploadFileResponse
+from .documents import GetDocumentRequest
 from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
 from .enums import CommentReactionType, COMMENT_REACTION_METADATA
 
@@ -70,6 +71,9 @@ __all__ = [
     # Upload models
     'UploadedFile',
     'UploadFileResponse',
+    
+    # Document models
+    'GetDocumentRequest',
     
     # Comment models
     'Comment',
