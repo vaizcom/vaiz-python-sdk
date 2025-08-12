@@ -1,9 +1,12 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
 from .enums import EUploadFileType, EKind
 
+if TYPE_CHECKING:
+    # Avoid runtime import cycle; type-checking only
+    from vaiz.client import VaizClient
 
 class TaskFile(VaizBaseModel):
     id: str = Field(..., alias="_id")
@@ -64,6 +67,17 @@ class Task(VaizBaseModel):
     milestone: Optional[str] = None
 
     model_config = ConfigDict(populate_by_name=True)
+
+    def get_task_description(self, client: 'VaizClient') -> Dict[str, Any]:
+        """Convenience method to fetch this task's description document body.
+
+        Args:
+            client (VaizClient): An initialized Vaiz client instance
+
+        Returns:
+            Dict[str, Any]: Parsed JSON document body for this task's description
+        """
+        return client.get_document_body(self.document)
 
 
 class TaskResponse(BaseModel):

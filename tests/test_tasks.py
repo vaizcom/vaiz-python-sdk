@@ -88,4 +88,45 @@ def test_get_history(client, task_id):
     assert isinstance(response.payload.histories, list)
     # Optionally check that each item is a HistoryItem
     if response.payload.histories:
-        assert isinstance(response.payload.histories[0], HistoryItem) 
+        assert isinstance(response.payload.histories[0], HistoryItem)
+
+
+def test_task_get_description_method_with_initial_content(client):
+    """Test Task.get_task_description() with a task that has initial description content."""
+    if not all([TEST_GROUP_ID, TEST_BOARD_ID, TEST_PROJECT_ID]):
+        pytest.skip("Test config values are missing. Please set VAIZ_GROUP_ID, VAIZ_BOARD_ID, VAIZ_PROJECT_ID.")
+    
+    # Create task with initial description
+    initial_description = "Initial task description content"
+    task = CreateTaskRequest(
+        name="Task for Description Test - Initial",
+        group=TEST_GROUP_ID,
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        priority=TaskPriority.General,
+        description=initial_description
+    )
+    
+    task_response = client.create_task(task)
+    assert task_response.type == "CreateTask"
+    
+    # Get the Task model instance
+    task_instance = task_response.task
+    assert task_instance.document is not None
+    
+    # Use the convenience method to get description
+    description_body = task_instance.get_task_description(client)
+    assert isinstance(description_body, dict)
+    
+    print(f"Initial description body keys: {list(description_body.keys())}")
+    print(f"Full description body: {description_body}")
+    print(f"Task document ID: {task_instance.document}")
+    
+    # Check if there's content in the default key
+    if 'default' in description_body:
+        default_content = description_body['default']
+        print(f"Default content type: {type(default_content)}")
+        print(f"Default content: {default_content}")
+
+
+ 

@@ -821,7 +821,7 @@ task_file = TaskFile(
 task_request = CreateTaskRequest(
     name="Review Project Mockup",
     group="your_group_id",
-    board="your_board_id", 
+    board="your_board_id",
     project="your_project_id",
     priority=TaskPriority.High,
     description="Please review the attached mockup",
@@ -846,6 +846,80 @@ from vaiz.models.enums import EUploadFileType
 # EUploadFileType.Pdf    - For PDF documents
 ```
 
+### Retrieve JSON Document Content
+
+You can fetch the JSON content of a task description document or a standalone document using `get_document_body`.
+
+```python
+from vaiz import VaizClient
+
+client = VaizClient(api_key="...", space_id="...")
+
+# Known documentId
+document_id = "6878ff0ad2c2d60e246402c2"
+doc = client.get_document_body(document_id)
+
+# The API returns a JSON structure. Example top-level keys:
+print(doc.keys())  # dict_keys(['default'])
+```
+
+If you need a `document_id`, create a task and use its `document` field:
+
+````python
+from vaiz.models import CreateTaskRequest, TaskPriority
+
+task_response = client.create_task(CreateTaskRequest(
+    name="My Task",
+    group="your_group_id",
+    board="your_board_id",
+    project="your_project_id",
+    priority=TaskPriority.General
+))
+
+document_id = task_response.task.document
+doc = client.get_document_body(document_id)
+
+You can also fetch the description directly from a `Task` instance:
+
+```python
+task = task_response.task
+description_body = task.get_task_description(client)
+print(type(description_body))  # dict
+```
+
+#### Replace Document Content
+
+You can completely replace document content using `replace_document`:
+
+```python
+import json
+
+# Get or create document ID (from task, for example)
+document_id = task_response.task.document
+
+# Create new content as PLAIN TEXT (current API supports plain text only)
+new_description_text = (
+    "New Content\n\n"
+    "This content completely replaces the original document content.\n\n"
+    "Features:\n"
+    "- ✅ Complete content replacement\n"
+    "- 📝 Plain text\n"
+    "- 🎯 Direct API access\n\n"
+    "Note: Content replaced via replace_document API\n"
+)
+
+# Replace document content
+client.replace_document(
+    document_id=document_id,
+    description=new_description_text,
+    files=[]  # Optional: attach file IDs
+)
+
+# Verify the change
+updated_content = client.get_document_body(document_id)
+print(updated_content)  # Shows new content
+```
+
 ### Retrieve Task History
 
 You can retrieve the full change history for a task (or other supported entity) using the `get_history` method. This returns a list of history events with all relevant metadata.
@@ -864,7 +938,7 @@ response = client.get_history(request)
 
 for history in response.payload.histories:
     print(history.key, history.createdAt, history.data)
-```
+````
 
 ### Working with Comments
 
@@ -1376,7 +1450,6 @@ def test_get_board():
 3. Include proper assertions to verify the state and data of the responses.
 
 4. Be mindful that tests will create, modify, or delete real data in the configured Vaiz space.
-
 
 ### Examples
 

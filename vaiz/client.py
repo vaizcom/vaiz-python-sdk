@@ -6,9 +6,10 @@ from vaiz.api.projects import ProjectsAPIClient
 from vaiz.api.milestones import MilestonesAPIClient
 from vaiz.api.upload import UploadAPIClient
 from vaiz.api.comments import CommentsAPIClient
+from vaiz.api.documents import DocumentsAPIClient
 
 
-class VaizClient(TasksAPIClient, BoardsAPIClient, ProfileAPIClient, ProjectsAPIClient, MilestonesAPIClient, UploadAPIClient, CommentsAPIClient):
+class VaizClient(TasksAPIClient, BoardsAPIClient, ProfileAPIClient, ProjectsAPIClient, MilestonesAPIClient, UploadAPIClient, CommentsAPIClient, DocumentsAPIClient):
     """
     Main client for interacting with the Vaiz API.
     This class inherits all task-related operations from TasksAPIClient,
