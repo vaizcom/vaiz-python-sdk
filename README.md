@@ -885,9 +885,40 @@ You can also fetch the description directly from a `Task` instance:
 task = task_response.task
 description_body = task.get_task_description(client)
 print(type(description_body))  # dict
-````
+```
 
-````
+#### Replace Document Content
+
+You can completely replace document content using `replace_document`:
+
+```python
+import json
+
+# Get or create document ID (from task, for example)
+document_id = task_response.task.document
+
+# Create new content as PLAIN TEXT (current API supports plain text only)
+new_description_text = (
+    "New Content\n\n"
+    "This content completely replaces the original document content.\n\n"
+    "Features:\n"
+    "- ✅ Complete content replacement\n"
+    "- 📝 Plain text\n"
+    "- 🎯 Direct API access\n\n"
+    "Note: Content replaced via replace_document API\n"
+)
+
+# Replace document content
+client.replace_document(
+    document_id=document_id,
+    description=new_description_text,
+    files=[]  # Optional: attach file IDs
+)
+
+# Verify the change
+updated_content = client.get_document_body(document_id)
+print(updated_content)  # Shows new content
+```
 
 ### Retrieve Task History
 
