@@ -84,7 +84,6 @@ class Task(VaizBaseModel):
         self,
         client: 'VaizClient',
         description: str,
-        files: Optional[List[str]] = None,
     ) -> ReplaceDocumentResponse:
         """Replace this task's description content.
 
@@ -94,14 +93,11 @@ class Task(VaizBaseModel):
         Args:
             client (VaizClient): An initialized Vaiz client instance
             description (str): New description content as plain text
-            files (Optional[List[str]]): Optional file IDs to attach to the document
 
         Returns:
             ReplaceDocumentResponse: Response object from the replace operation
         """
-        if files is None:
-            files = []
-        return client.replace_document(self.document, description, files)
+        return client.replace_document(self.document, description)
 
 
 class TaskResponse(BaseModel):

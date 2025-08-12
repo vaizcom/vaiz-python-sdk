@@ -156,7 +156,7 @@ def test_task_update_description_method(client):
         "Updated via Task.update_task_description()\n\n"
         "This replaces the existing description content."
     )
-    update_response = task_instance.update_task_description(client, new_description, files=[])
+    update_response = task_instance.update_task_description(client, new_description)
     assert isinstance(update_response, ReplaceDocumentResponse)
 
     # Fetch description body to ensure API call succeeded
@@ -164,74 +164,4 @@ def test_task_update_description_method(client):
     assert isinstance(updated_body, dict)
 
 
-def test_task_update_description_with_files(client):
-    """Test Task.update_task_description() with file attachments."""
-    if not all([TEST_GROUP_ID, TEST_BOARD_ID, TEST_PROJECT_ID]):
-        pytest.skip("Test config values are missing. Please set VAIZ_GROUP_ID, VAIZ_BOARD_ID, VAIZ_PROJECT_ID.")
-
-    # Create task with initial description
-    task = CreateTaskRequest(
-        name="Task for Update Description with Files Test",
-        group=TEST_GROUP_ID,
-        board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
-        priority=TaskPriority.General,
-        description="Initial description"
-    )
-
-    task_response = client.create_task(task)
-    assert task_response.type == "CreateTask"
-
-    task_instance = task_response.task
-    assert task_instance.document is not None
-
-    # Upload a test file to attach
-    import tempfile
-    import os
-    
-    # Create a temporary text file for testing
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as temp_file:
-        temp_file.write("Test file content for task description update")
-        temp_file_path = temp_file.name
-    
-    try:
-        # Upload the file
-        from vaiz.models.enums import EUploadFileType
-        upload_response = client.upload_file(
-            file_path=temp_file_path,
-            file_type=EUploadFileType.File
-        )
-        
-        uploaded_file_id = upload_response.file.id
-        print(f"Uploaded file ID: {uploaded_file_id}")
-        
-        # Update description via convenience method with file attachment
-        new_description = (
-            "📎 Task Description Updated with File\n\n"
-            "This task description was updated using Task.update_task_description()\n"
-            "with an attached file.\n\n"
-            "- ✅ Convenience method works\n"
-            "- 📎 File attachment supported\n"
-            "- 🎯 Complete functionality"
-        )
-        
-        update_response = task_instance.update_task_description(
-            client, 
-            new_description, 
-            files=[uploaded_file_id]
-        )
-        
-        assert isinstance(update_response, ReplaceDocumentResponse)
-        
-        # Verify the update worked by fetching the description
-        updated_body = task_instance.get_task_description(client)
-        assert isinstance(updated_body, dict)
-        
-        print(f"✅ Task description updated with file attachment successfully!")
-        print(f"✅ File ID: {uploaded_file_id}")
-        print(f"✅ Task document ID: {task_instance.document}")
-        
-    finally:
-        # Clean up temporary file
-        if os.path.exists(temp_file_path):
-            os.unlink(temp_file_path) 
+ 

@@ -875,8 +875,7 @@ new_description_text = (
 # Replace document content
 client.replace_document(
     document_id=document_id,
-    description=new_description_text,
-    files=[]  # Optional: attach file IDs
+    description=new_description_text
 )
 
 # Verify the change
@@ -888,7 +887,7 @@ You can also update a task's description directly via the `Task` model:
 
 ```python
 task = task_response.task
-task.update_task_description(client, "New plain text description", files=[])
+task.update_task_description(client, "New plain text description")
 ```
 
 ### Retrieve Task History
