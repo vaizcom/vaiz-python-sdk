@@ -13,9 +13,9 @@ class TasksAPIClient(BaseAPIClient):
         file: Optional[TaskUploadFile] = None
     ) -> TaskResponse:
         """
-        Create a new task с опциональным description и строго типизированным file.
-        Если file передан, он должен содержать path и type (оба обязательны).
-        
+        Create a new task with optional description and strongly-typed file parameter.
+        If a file is provided, it must include path and type (both required).
+
         If description is provided, it will be set in the task.
         If file is provided (with 'path' and optionally 'type'), the file will be automatically uploaded
         and added to the task.files list before creating the task.

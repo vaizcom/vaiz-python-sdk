@@ -14,7 +14,7 @@ PROJECT_ID = os.getenv("VAIZ_PROJECT_ID")
 
 client = VaizClient(api_key=API_KEY, space_id=SPACE_ID, base_url="https://api.vaiz.local:10000/v4", verify_ssl=False)
 
-# Создаём тестовую задачу (или используем существующую)
+# Create a test task (or use an existing one)
 if not all([BOARD_ID, GROUP_ID, PROJECT_ID]):
     raise RuntimeError("Set VAIZ_BOARD_ID, VAIZ_GROUP_ID, VAIZ_PROJECT_ID in your .env")
 
@@ -29,7 +29,7 @@ task = CreateTaskRequest(
 response = client.create_task(task)
 task_id = response.payload["task"]["_id"]
 
-# Получаем историю по только что созданной задаче
+# Get history for the newly created task
 request = GetHistoryRequest(
     kind=EKind.Task,
     kindId=task_id,

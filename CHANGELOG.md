@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.8] - 2025-08-12
+
+### Added
+
+- 🧾 Documents API:
+  - `get_document_body(document_id)` — get JSON document body
+  - `replace_document(document_id, description, files=[])` — replace document content (plain text)
+  - Task model convenience: `Task.get_task_description(client)`
+
+---
+
 ## [0.4.7] - 2025-01-21
 
 ### Added
@@ -30,7 +41,7 @@
 ### Technical Details
 
 - **🔗 URL Support**: Supports any publicly accessible HTTP/HTTPS URL
-- **📋 File Type Detection**: 
+- **📋 File Type Detection**:
   - URL extension matching for common formats (.jpg, .png, .pdf, .mp4, etc.)
   - HTTP Content-Type header analysis
   - Fallback to `EUploadFileType.File` for unknown types

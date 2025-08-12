@@ -2,42 +2,6 @@
 
 Python SDK for accessing the Vaiz platform API.
 
-## 🚀 What's New in 0.4.x
-
-### 🌐 File Upload from URL (v0.4.7+)
-
-- **📥 Direct URL Upload**: Upload files directly from external URLs with `upload_file_from_url()`
-- **🔍 Auto Type Detection**: Automatically detect file types from URL extensions and content headers
-- **📝 Custom Filenames**: Specify custom filenames for uploaded files
-- **🎯 Task Integration**: Create tasks with external files in a single workflow
-- **🛠️ Error Handling**: Robust handling of network issues and invalid URLs
-
-### ✨ Custom Field Helper Functions (v0.4.6+)
-
-- **🎛️ Strongly-Typed Helpers**: Create custom fields with `make_text_field()`, `make_select_field()`, `make_date_field()`, etc.
-- **🔧 Field Management**: Edit fields with `edit_custom_field_name()`, `edit_custom_field_complete()`
-- **🔗 Task Relations**: Manage task relationships with `add_task_relation()`, `remove_task_relation()`
-- **👥 Member Fields**: Handle member assignments with `add_member_to_field()`, `remove_member_from_field()`
-- **📅 Date Handling**: Format dates with `make_date_value()`, `make_date_range_value()`
-- **🎨 Value Formatting**: Type-safe value preparation with `make_text_value()`, `make_checkbox_value()`, etc.
-- **🎯 Select Options**: Manage options with `add_board_custom_field_select_option()`, `make_select_option()`
-
-### 🔧 Previous Updates
-
-- **🕓 Task History**: New `get_history` method for retrieving the change history of tasks and other objects
-- **📦 New Models**: `GetHistoryRequest`, `GetHistoryResponse`, `HistoryItem`, `HistoryData`
-- **🧪 Usage Examples**: see `examples/custom_field_helpers_usage.py`, `examples/advanced_custom_field_management.py`
-- **🛠️ Improvements**: alias fixes, environment variable handling, test stability
-- **🔄 Automatic DateTime Conversion**: All date/time fields now automatically convert between Python `datetime` objects and ISO strings
-- **💬 Full Comment System**: Post, edit, delete comments with file attachments, replies, and emoji reactions
-- **🔧 Updated Examples**: All examples now demonstrate datetime best practices
-- **📖 Comprehensive Documentation**: New DateTime Support section with examples
-
-#### Breaking Changes
-
-- Date fields now return `datetime` objects instead of strings (automatic parsing from API)
-- All models updated to inherit from `VaizBaseModel` for datetime support
-
 ## Usage
 
 ### Basic Setup

@@ -56,6 +56,7 @@ def test_get_document_fetches_json(client):
         board=TEST_BOARD_ID,
         project=TEST_PROJECT_ID,
         priority=TaskPriority.General,
+        description="Initial document content for get_document test",
         completed=False,
     )
     task_response = client.create_task(task)
