@@ -17,7 +17,6 @@ class ReplaceDocumentRequest(BaseModel):
     """Request model for replacing document content."""
     document_id: str = Field(..., alias="documentId")
     description: str
-    files: List[str] = Field(default_factory=list)
 
     model_config = ConfigDict(populate_by_name=True)
 

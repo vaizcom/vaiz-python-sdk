@@ -6,8 +6,9 @@
 
 - 🧾 Documents API:
   - `get_document_body(document_id)` — get JSON document body
-  - `replace_document(document_id, description, files=[])` — replace document content (plain text)
+  - `replace_document(document_id, description)` — replace document content (plain text)
   - Task model convenience: `Task.get_task_description(client)`
+  - Task model convenience: `Task.update_task_description(client, description)`
 
 ---
 

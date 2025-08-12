@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
+from .documents import ReplaceDocumentResponse
 from .enums import EUploadFileType, EKind
 
 if TYPE_CHECKING:
@@ -78,6 +79,29 @@ class Task(VaizBaseModel):
             Dict[str, Any]: Parsed JSON document body for this task's description
         """
         return client.get_document_body(self.document)
+
+    def update_task_description(
+        self,
+        client: 'VaizClient',
+        description: str,
+        files: Optional[List[str]] = None,
+    ) -> ReplaceDocumentResponse:
+        """Replace this task's description content.
+
+        Uses the document API to completely replace the description content for
+        the document associated with this task.
+
+        Args:
+            client (VaizClient): An initialized Vaiz client instance
+            description (str): New description content as plain text
+            files (Optional[List[str]]): Optional file IDs to attach to the document
+
+        Returns:
+            ReplaceDocumentResponse: Response object from the replace operation
+        """
+        if files is None:
+            files = []
+        return client.replace_document(self.document, description, files)
 
 
 class TaskResponse(BaseModel):

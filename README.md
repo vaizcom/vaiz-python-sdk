@@ -884,6 +884,13 @@ updated_content = client.get_document_body(document_id)
 print(updated_content)  # Shows new content
 ```
 
+You can also update a task's description directly via the `Task` model:
+
+```python
+task = task_response.task
+task.update_task_description(client, "New plain text description", files=[])
+```
+
 ### Retrieve Task History
 
 You can retrieve the full change history for a task (or other supported entity) using the `get_history` method. This returns a list of history events with all relevant metadata.
