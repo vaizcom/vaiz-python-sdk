@@ -1,0 +1,56 @@
+---
+description: Common rules
+alwaysApply: true
+---
+
+# Project Standards & Best Practices
+
+## Comments
+
+- Write code comments, in English only, even if the user communicates in another language.
+
+## TypeScript
+
+- Prefer TypeScript for project source code. Avoid JavaScript, except for development scripts and utilities.
+
+## Yarn
+
+- Use Yarn to run all scripts. Do not use npm directly.
+
+## Development runs and builds
+
+- User will run all necessary scripts, docker containers and apps builds manually except yarn install & yarn build:MONOREPO_PACKAGE_NAME
+
+## Code Style & Formatting
+
+- Follow the code style defined in the project's `.prettierrc` files. Do not override formatting settings manually.
+
+## Linting
+
+- Fix all linter errors and warnings before committing code. Use the project's ESLint configuration for all TypeScript and JavaScript files.
+
+## Dependencies
+
+- Add new dependencies only if absolutely necessary. Always ask user about adding packages.
+
+## Pull Requests & Commits
+
+- Write clear, descriptive commit messages in English. Each pull request should contain only related changes and be reviewed by at least one team member.
+
+## Sensitive Data
+
+- Never commit secrets, passwords, or API keys to the repository. Use environment variables and `.env` files, and ensure they are listed in `.gitignore`.
+
+## Documentation
+
+- Update documentation (`README.md`, code comments, etc.) when adding new features or making significant changes.
+
+## React Components
+
+- Use code style that is practically used in the project.
+- Reuse components and hooks that is already present in the project.
+- Prefer @vaiz/ui-kit for UI components, do not create your own components if it is not necessary
+
+## Imports
+
+- Use relative imports for project's packages e.g.: import {...} from '@vaiz/shared'. Do not use absolute paths like '@vaiz/shared/src/types/type'.
