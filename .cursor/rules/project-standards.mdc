@@ -5,6 +5,9 @@ alwaysApply: true
 
 # Project Standards & Best Practices
 
+## Environment
+- Always check venv and activate if needed
+
 ## Comments & docs
 
 - Write code comments, readme, specs and changelogs in English only, even if the user communicates in another language.
