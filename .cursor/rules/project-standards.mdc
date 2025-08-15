@@ -1,0 +1,31 @@
+---
+description: Common rules
+alwaysApply: true
+---
+
+# Project Standards & Best Practices
+
+## Comments & docs
+
+- Write code comments, readme, specs and changelogs in English only, even if the user communicates in another language.
+
+## Dependencies
+
+- Add new dependencies only if absolutely necessary. Always ask user about adding packages.
+
+## Pull Requests & Commits
+
+- Write clear, descriptive commit messages in English. Each pull request should contain only related changes and be reviewed by at least one team member.
+
+## Sensitive Data
+
+- Never commit secrets, passwords, or API keys to the repository. Use environment variables and `.env` files, and ensure they are listed in `.gitignore`.
+
+## Documentation
+
+- Update documentation (`README.md`, code comments, etc.) when adding new features or making significant changes. Do not write changelogs in README.md. There is CHANGELOG.md for that purpose.
+- Update CHANGELOG.md when adding new features or making significant changes.
+
+## Tests
+- Update integration tests always for new changes made
+- Write new tests only for new functionality and methods
