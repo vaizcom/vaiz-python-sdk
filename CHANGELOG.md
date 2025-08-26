@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.9] - 2025-08-26
+
+### Added
+
+- **🔢 New Custom Field Type**: Added `ESTIMATION` field type to `CustomFieldType` enum for project estimation fields
+- **🎨 Enhanced Project Colors**: Project `color` field now accepts both hex color codes (e.g., `#1F36AD`) and `EColor` enum values for maximum flexibility
+
+---
+
 ## [0.4.8] - 2025-08-12
 
 ### Added

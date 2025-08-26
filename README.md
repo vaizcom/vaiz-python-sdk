@@ -109,7 +109,14 @@ color = EColor.Silver
 
 ```python
 response = client.get_projects()
+projects = response.projects
+
+for project in projects:
+    print(f"Project: {project.name}")
+    print(f"Color: {project.color}")  # Can be EColor enum or hex code like '#1F36AD'
 ```
+
+**Note**: Project `color` field supports both `EColor` enum values and hex color codes for maximum flexibility.
 
 ### Working with Milestones
 
@@ -474,6 +481,7 @@ print(f"Updated board groups: {[g.name for g in board_groups]}")
 - `CustomFieldType.TASK_RELATIONS` - Task relations field
 - `CustomFieldType.SELECT` - Select field
 - `CustomFieldType.URL` - Url field
+- `CustomFieldType.ESTIMATION` - Estimation field
 
 ### Working with Profile
 
