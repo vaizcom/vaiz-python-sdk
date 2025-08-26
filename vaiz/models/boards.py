@@ -17,6 +17,7 @@ class CustomFieldType(str, Enum):
     TASK_RELATIONS = "TaskRelations"
     SELECT = "Select"
     URL = "Url"
+    ESTIMATION = "Estimation"
 
 
 class BoardGroup(BaseModel):
