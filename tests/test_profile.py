@@ -17,19 +17,19 @@ def test_get_profile():
     assert isinstance(response.payload["profile"], Profile)
     profile = response.payload["profile"]
     assert isinstance(profile.id, str)
-    assert isinstance(profile.fullName, str)
-    assert isinstance(profile.nickName, str)
+    assert isinstance(profile.full_name, str)
+    assert isinstance(profile.nick_name, str)
     assert isinstance(profile.email, str)
     assert isinstance(profile.emails, list)
     assert len(profile.emails) > 0
     assert isinstance(profile.emails[0].email, str)
     assert isinstance(profile.emails[0].confirmed, bool)
     assert isinstance(profile.emails[0].primary, bool)
-    assert isinstance(profile.avatarMode, int)
-    assert isinstance(profile.incompleteSteps, list)
-    assert isinstance(profile.memberId, str)
+    assert isinstance(profile.avatar_mode, int)
+    assert isinstance(profile.incomplete_steps, list)
+    assert isinstance(profile.member_id, str)
     if profile.color.color is not None:
         assert isinstance(profile.color.color, str)
         assert is_valid_hex_color(profile.color.color)
-    if profile.color.isDark is not None:
-        assert isinstance(profile.color.isDark, bool) 
+    if profile.color.is_dark is not None:
+        assert isinstance(profile.color.is_dark, bool) 

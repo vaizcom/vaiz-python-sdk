@@ -14,15 +14,15 @@ def get_profile():
         
         print("Profile retrieved successfully!")
         print(f"ID: {profile.id}")
-        print(f"Full Name: {profile.fullName}")
-        print(f"Nickname: {profile.nickName}")
+        print(f"Full Name: {profile.full_name}")
+        print(f"Nickname: {profile.nick_name}")
         print(f"Email: {profile.email}")
         print("\nEmail Addresses:")
         for email in profile.emails:
             print(f"  - {email.email} (Primary: {email.primary}, Confirmed: {email.confirmed})")
-        print(f"\nAvatar Mode: {profile.avatarMode}")
-        print(f"Incomplete Steps: {profile.incompleteSteps}")
-        print(f"Member ID: {profile.memberId}")
+        print(f"\nAvatar Mode: {profile.avatar_mode}")
+        print(f"Incomplete Steps: {profile.incomplete_steps}")
+        print(f"Member ID: {profile.member_id}")
         print(f"Created: {profile.created_at}")
         print(f"Updated: {profile.updated_at}")
         

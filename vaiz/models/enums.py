@@ -1,6 +1,14 @@
 from enum import Enum
 
 
+class EAvatarMode(int, Enum):
+    """
+    Enum for avatar modes.
+    """
+    Uploaded = 0
+    Generated = 2
+
+
 class EIcon(str, Enum):
     """
     Enum for styler icons.

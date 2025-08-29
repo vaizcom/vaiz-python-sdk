@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.4.10] - 2025-01-27
+
+### Added
+
+- **👤 Profile Model Enhancements**: 
+  - Added `EAvatarMode` enum with `Uploaded = 0` and `Generated = 2` values for type-safe avatar mode handling
+  - Added new profile fields: `is_email_confirmed`, `avatar`, `invited`, `recovery_codes_viewed_date`, `phone_number`, `webauthn_credentials`
+
+### Changed
+
+- **🐍 Python Naming Convention**: All profile model fields now use snake_case naming with proper API aliases:
+  - `fullName` → `full_name` (alias: "fullName")
+  - `nickName` → `nick_name` (alias: "nickName") 
+  - `avatarMode` → `avatar_mode` (alias: "avatarMode", type: `EAvatarMode`)
+  - `incompleteSteps` → `incomplete_steps` (alias: "incompleteSteps")
+  - `memberId` → `member_id` (alias: "memberId")
+  - `passwordHash` → `password_hash` (alias: "passwordHash")
+  - `passwordChangedDate` → `password_changed_date` (alias: "passwordChangedDate")
+  - `registeredDate` → `registered_date` (alias: "registeredDate")
+  - `recoveryCodes` → `recovery_codes` (alias: "recoveryCodes")
+  - `cData` → `c_data` (alias: "cData")
+  - `isDark` → `is_dark` (alias: "isDark") in ProfileColor model
+
+### Fixed
+
+- **🔧 API Compatibility**: Made `createdAt` field optional in Profile model as it's no longer returned by the API
+
+### Removed
+
+- **🔐 Security Fields**: Removed sensitive OTP-related fields (`otp_secret`, `otp_secret_enabled_date`) from Profile model
+
+---
+
 ## [0.4.9] - 2025-08-26
 
 ### Added

@@ -7,7 +7,7 @@ from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, C
 from .upload import UploadedFile, UploadFileResponse
 from .documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse
 from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
-from .enums import CommentReactionType, COMMENT_REACTION_METADATA
+from .enums import CommentReactionType, COMMENT_REACTION_METADATA, EAvatarMode
 
 __all__ = [
     # Base models
@@ -92,4 +92,5 @@ __all__ = [
     'DeleteCommentResponse',
     'CommentReactionType',
     'COMMENT_REACTION_METADATA',
+    'EAvatarMode',
 ] 
