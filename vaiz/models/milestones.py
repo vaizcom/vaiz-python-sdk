@@ -41,7 +41,6 @@ class Milestone(VaizBaseModel):
     updated_at: datetime = Field(..., alias="updatedAt")
     deleter: Optional[str] = None
     deleted_at: Optional[datetime] = Field(default=None, alias="deletedAt")
-    # Additional fields found in API responses
     followers: Optional[Dict[str, str]] = {}
     document: Optional[str] = None
     total: Optional[int] = 0

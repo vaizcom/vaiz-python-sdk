@@ -29,7 +29,6 @@ class Profile(VaizBaseModel):
     registered_date: datetime = Field(..., alias="registeredDate")
     recovery_codes: Optional[List[Dict[str, str]]] = Field(default_factory=list, alias="recoveryCodes")
     password_changed_date: datetime = Field(..., alias="passwordChangedDate")
-    password_hash: Optional[str] = Field(None, alias="passwordHash")
     member_id: Optional[str] = Field(None, alias="memberId")
     created_at: Optional[datetime] = Field(None, alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
