@@ -291,6 +291,7 @@ def test_react_to_comment_request_model():
 
 def test_comment_reaction_model():
     """Test CommentReaction model with field aliases."""
+    # Test with native field present
     reaction_data = {
         "_id": "reaction123",
         "native": "😙",
@@ -304,10 +305,24 @@ def test_comment_reaction_model():
     assert reaction.native == "😙"
     assert reaction.emoji_id == "kissing_smiling_eyes"
     assert reaction.member_ids == ["member1", "member2"]
+    
+    # Test without native field (as API doesn't always return it)
+    reaction_data_no_native = {
+        "_id": "reaction456",
+        "id": "thumbs_up",
+        "memberIds": ["member3"]
+    }
+    
+    reaction2 = CommentReaction(**reaction_data_no_native)
+    assert reaction2.reaction_db_id == "reaction456"
+    assert reaction2.native is None  # Should be None when not provided
+    assert reaction2.emoji_id == "thumbs_up"
+    assert reaction2.member_ids == ["member3"]
 
 
 def test_react_to_comment_response_model():
     """Test ReactToCommentResponse model."""
+    # Test with native field present
     response_data = {
         "payload": {
             "reactions": [
@@ -331,6 +346,25 @@ def test_react_to_comment_response_model():
     assert reaction.reaction_db_id == "reaction123"
     assert reaction.native == "😙"
     assert reaction.emoji_id == "kissing_smiling_eyes"
+    
+    # Test without native field (as API doesn't always return it)
+    response_data_no_native = {
+        "payload": {
+            "reactions": [
+                {
+                    "_id": "reaction456",
+                    "id": "thumbs_up",
+                    "memberIds": ["member2", "member3"]
+                }
+            ]
+        },
+        "type": "ReactToComment"
+    }
+    
+    response2 = ReactToCommentResponse(**response_data_no_native)
+    assert response2.type == "ReactToComment"
+    assert len(response2.reactions) == 1
+    assert response2.reactions[0].native is None
     assert reaction.member_ids == ["member1"]
 
 
@@ -370,12 +404,12 @@ def test_react_to_comment(client, test_document_id):
             break
     
     assert our_reaction is not None
-    assert our_reaction.native == "😙"
+    # Note: API doesn't return native field anymore, so we don't check it
     assert our_reaction.emoji_id == "kissing_smiling_eyes"
     assert len(our_reaction.member_ids) >= 1
     
     print(f"Created reaction ID: {our_reaction.reaction_db_id}")
-    print(f"Reaction emoji: {our_reaction.native}")
+    print(f"Reaction emoji ID: {our_reaction.emoji_id}")
     print(f"Reaction members: {our_reaction.member_ids}")
 
 
@@ -436,10 +470,10 @@ def test_add_reaction_simple_api(client, test_document_id):
             break
     
     assert thumbs_up_reaction is not None
-    assert thumbs_up_reaction.native == "👍"
+    # Note: API doesn't return native field anymore, so we don't check it
     assert len(thumbs_up_reaction.member_ids) >= 1
     
-    print(f"Added THUMBS_UP reaction: {thumbs_up_reaction.native}")
+    print(f"Added THUMBS_UP reaction")
     print(f"Reaction ID: {thumbs_up_reaction.reaction_db_id}")
 
 
@@ -479,17 +513,17 @@ def test_add_all_popular_reactions(client, test_document_id):
                 break
         
         assert our_reaction is not None
-        assert our_reaction.native == metadata["native"]
+        # Note: API doesn't return native field anymore, so we don't check it
         assert len(our_reaction.member_ids) >= 1
         
         reactions_added.append({
             "type": reaction_type,
-            "emoji": our_reaction.native,
+            "emoji": metadata["native"],  # Use metadata since API doesn't return native
             "id": our_reaction.reaction_db_id,
             "members": len(our_reaction.member_ids)
         })
         
-        print(f"✅ Added {reaction_type.value}: {our_reaction.native} (ID: {our_reaction.reaction_db_id})")
+        print(f"✅ Added {reaction_type.value}: {metadata['native']} (ID: {our_reaction.reaction_db_id})")
     
     print(f"\n🎉 Successfully added all {len(reactions_added)} popular reactions!")
     print("Reactions summary:")
@@ -606,7 +640,7 @@ def test_get_comments(client, test_document_id):
             break
     
     assert thumbs_up_reaction is not None
-    assert thumbs_up_reaction.native == "👍"
+    # Note: API doesn't return native field anymore, so we don't check it
     
     # Validate second comment (reply)
     assert our_comment2 is not None

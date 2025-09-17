@@ -1,14 +1,15 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, List, Dict
 from .upload import UploadedFile
 from .base import VaizBaseModel
 
 
 class CommentReaction(BaseModel):
     """Model for comment reaction."""
+
     reaction_db_id: str = Field(..., alias="_id")
-    native: str
+    native: Optional[str] = None  # Made optional as API doesn't always return it
     emoji_id: str = Field(..., alias="id")
     member_ids: List[str] = Field(..., alias="memberIds")
 
@@ -17,6 +18,7 @@ class CommentReaction(BaseModel):
 
 class Comment(VaizBaseModel):
     """Represents a comment in the system."""
+
     id: str = Field(..., alias="_id")
     document_id: str = Field(..., alias="documentId")
     author_id: str = Field(..., alias="authorId")
@@ -35,6 +37,7 @@ class Comment(VaizBaseModel):
 
 class PostCommentRequest(BaseModel):
     """Request model for creating a comment."""
+
     content: str
     file_ids: List[str] = Field(default_factory=list, alias="fileIds")
     document_id: str = Field(..., alias="documentId")
@@ -50,6 +53,7 @@ class PostCommentRequest(BaseModel):
 
 class PostCommentResponse(BaseModel):
     """Response model for creating a comment."""
+
     payload: Dict[str, Comment]
     type: str
 
@@ -61,6 +65,7 @@ class PostCommentResponse(BaseModel):
 
 class ReactToCommentRequest(BaseModel):
     """Request model for reacting to a comment."""
+
     comment_id: str = Field(..., alias="commentId")
     id: str  # Emoji ID like "kissing_smiling_eyes"
     name: str  # Human readable name like "Kissing Face with Smiling Eyes"
@@ -79,6 +84,7 @@ class ReactToCommentRequest(BaseModel):
 
 class ReactToCommentResponse(BaseModel):
     """Response model for reacting to a comment."""
+
     payload: Dict[str, List[CommentReaction]]
     type: str
 
@@ -90,6 +96,7 @@ class ReactToCommentResponse(BaseModel):
 
 class GetCommentsRequest(BaseModel):
     """Request model for getting comments."""
+
     document_id: str = Field(..., alias="documentId")
 
     model_config = ConfigDict(populate_by_name=True)
@@ -102,6 +109,7 @@ class GetCommentsRequest(BaseModel):
 
 class GetCommentsResponse(BaseModel):
     """Response model for getting comments."""
+
     payload: Dict[str, List[Comment]]
     type: str
 
@@ -113,6 +121,7 @@ class GetCommentsResponse(BaseModel):
 
 class EditCommentRequest(BaseModel):
     """Request model for editing a comment."""
+
     content: str
     comment_id: str = Field(..., alias="commentId")
     add_file_ids: List[str] = Field(default_factory=list, alias="addFileIds")
@@ -129,6 +138,7 @@ class EditCommentRequest(BaseModel):
 
 class EditCommentResponse(BaseModel):
     """Response model for editing a comment."""
+
     payload: Dict[str, Comment]
     type: str
 
@@ -140,6 +150,7 @@ class EditCommentResponse(BaseModel):
 
 class DeleteCommentRequest(BaseModel):
     """Request model for deleting a comment."""
+
     comment_id: str = Field(..., alias="commentId")
 
     model_config = ConfigDict(populate_by_name=True)
@@ -152,10 +163,11 @@ class DeleteCommentRequest(BaseModel):
 
 class DeleteCommentResponse(BaseModel):
     """Response model for deleting a comment."""
+
     payload: Dict[str, Comment]
     type: str
 
     @property
     def comment(self) -> Comment:
         """Get the deleted comment."""
-        return self.payload["comment"] 
+        return self.payload["comment"]
