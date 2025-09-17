@@ -731,7 +731,7 @@ response = client.get_task("task_slug")  # e.g., "PRJ-123"
 
 #### Get Multiple Tasks with Filtering and Pagination
 
-The SDK provides a powerful `get_tasks()` method for retrieving multiple tasks with filtering and pagination. The method includes built-in API protection with mandatory caching and strict limits.
+The SDK provides a powerful `get_tasks()` method for retrieving multiple tasks with filtering and pagination. 
 
 ```python
 from vaiz.models import GetTasksRequest
@@ -798,7 +798,7 @@ request = GetTasksRequest(
 )
 ```
 
-##### Manual Pagination for Large Datasets
+##### Manual Pagination
 
 For retrieving more than 50 tasks, use manual pagination:
 
@@ -828,22 +828,6 @@ while True:
         break  # Last page
 
 print(f"Total collected: {len(all_tasks)} tasks")
-```
-
-##### API Protection Features
-
-- **🛡️ Maximum 50 tasks per request** (enforced by validation)
-- **⚡ Mandatory 5-minute caching** (prevents excessive API calls)
-- **🔄 Automatic cache management** (same requests return cached results)
-- **🎯 Manual pagination only** (no bulk download methods)
-
-```python
-# These will raise validation errors:
-GetTasksRequest(limit=51)   # ❌ ValueError: limit must be ≤ 50
-GetTasksRequest(limit=100)  # ❌ ValueError: limit must be ≤ 50
-
-# Cache management:
-client.clear_tasks_cache()  # Clear all cached getTasks results
 ```
 
 ##### Available Parameters

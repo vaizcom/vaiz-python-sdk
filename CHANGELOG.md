@@ -7,13 +7,9 @@
 - **📋 New getTasks Method**: Comprehensive task retrieval with filtering and pagination
   - **🔍 Advanced Filtering**: Filter by assignees, board, project, completion status, archived status, parent task, milestones, and specific task IDs
   - **📄 Pagination Support**: Retrieve tasks in pages with `limit` (max 50) and `skip` parameters
-  - **🛡️ API Protection**: Built-in rate limiting and caching to protect against excessive API usage
-  - **⚡ Mandatory 5-minute Caching**: All requests are automatically cached for 5 minutes to reduce API load
-  - **🎯 Manual Pagination Only**: Enforces controlled data access with maximum 50 tasks per request
 
 ### Changed
 
-- **🔒 Enhanced API Security**: Removed bulk data access methods to ensure controlled API usage
 - **🐛 Fixed Comment Reactions**: Made `native` field optional in `CommentReaction` model to match API behavior
 - **⚙️ Modernized Pydantic**: Updated deprecated `class Config:` to modern `model_config = ConfigDict()` syntax
 
@@ -21,21 +17,10 @@
 
 - **Request Model**: `GetTasksRequest` with comprehensive filtering options
 - **Response Models**: `GetTasksResponse` and `GetTasksPayload` for structured data access
-- **Validation**: Strict Pydantic validation ensures `limit ≤ 50` and `skip ≥ 0`
-- **Caching**: MD5-based cache keys for unique parameter combinations
-- **Cache TTL**: 5-minute automatic expiration with cleanup
-- **Field Aliases**: Proper `parentTask` alias mapping for API compatibility
 
 ### Examples Added
 
 - **📖 `examples/get_tasks.py`**: Comprehensive examples demonstrating all filtering options and pagination
-- **🔄 `examples/test_caching_simple.py`**: Caching demonstration and manual pagination examples
-
-### Tests Added
-
-- **✅ 19 comprehensive tests** covering all filtering options, pagination, validation, and caching
-- **🧪 Cache behavior tests** including key generation, TTL validation, and data consistency
-- **🛡️ API protection tests** ensuring limits are properly enforced
 
 ---
 
