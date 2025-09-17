@@ -228,16 +228,16 @@ def test_get_tasks_with_pagination(client):
         assert len(task_ids_1.intersection(task_ids_2)) == 0
 
 
-def test_get_tasks_with_high_limit(client):
-    """Test get_tasks with higher limit."""
-    request = GetTasksRequest(limit=100, skip=0)
+def test_get_tasks_with_max_limit(client):
+    """Test get_tasks with maximum allowed limit (50)."""
+    request = GetTasksRequest(limit=50, skip=0)
     response = client.get_tasks(request)
     
     assert isinstance(response, GetTasksResponse)
     assert response.type == "GetTasks"
     assert hasattr(response.payload, "tasks")
     assert isinstance(response.payload.tasks, list)
-    assert len(response.payload.tasks) <= 100
+    assert len(response.payload.tasks) <= 50
 
 
 def test_get_tasks_request_validation():
@@ -300,16 +300,19 @@ def test_get_tasks_request_validation_limits():
     assert request_min.limit == 1
     assert request_min.skip == 0
     
-    # Test maximum limit
-    request_max = GetTasksRequest(limit=1000, skip=0)
-    assert request_max.limit == 1000
+    # Test maximum limit (50 tasks per page)
+    request_max = GetTasksRequest(limit=50, skip=0)
+    assert request_max.limit == 50
     
     # Test with invalid values should raise validation error
     with pytest.raises(ValueError):
         GetTasksRequest(limit=0)  # Below minimum
     
     with pytest.raises(ValueError):
-        GetTasksRequest(limit=1001)  # Above maximum
+        GetTasksRequest(limit=51)  # Above maximum (50)
+    
+    with pytest.raises(ValueError):
+        GetTasksRequest(limit=100)  # Way above maximum
     
     with pytest.raises(ValueError):
         GetTasksRequest(skip=-1)  # Below minimum
@@ -537,6 +540,48 @@ def test_get_tasks_request_alias_mapping():
     assert "parent_task" in dumped_without_alias
     assert dumped_without_alias["parent_task"] == "parent123"
     assert "parentTask" not in dumped_without_alias
+
+
+def test_get_all_tasks_helper(client):
+    """Test the get_all_tasks helper method with automatic pagination."""
+    # Test with default parameters
+    all_tasks = client.get_all_tasks(max_tasks=100)
+    
+    assert isinstance(all_tasks, list)
+    assert len(all_tasks) <= 100
+    
+    # All items should be Task instances
+    from vaiz.models import Task
+    for task in all_tasks:
+        assert isinstance(task, Task)
+
+
+def test_get_all_tasks_with_filters(client):
+    """Test get_all_tasks with filters."""
+    # Get only completed tasks
+    request = GetTasksRequest(completed=True)
+    completed_tasks = client.get_all_tasks(request, max_tasks=50)
+    
+    assert isinstance(completed_tasks, list)
+    assert len(completed_tasks) <= 50
+    
+    # Verify all returned tasks are completed
+    for task in completed_tasks:
+        assert task.completed is True
+
+
+def test_get_all_tasks_safety_limit():
+    """Test that get_all_tasks respects the safety limit."""
+    from vaiz import VaizClient
+    
+    # Create a mock client
+    client = VaizClient(api_key="test", space_id="test")
+    
+    # Should raise ValueError for max_tasks > 10000
+    with pytest.raises(ValueError) as exc_info:
+        client.get_all_tasks(max_tasks=15000)
+    
+    assert "cannot exceed 10000" in str(exc_info.value)
 
 
  

@@ -244,7 +244,7 @@ class GetHistoryResponse(VaizBaseModel):
 
 class GetTasksRequest(VaizBaseModel):
     ids: Optional[List[str]] = None
-    limit: Optional[int] = Field(default=50, ge=1, le=1000)
+    limit: Optional[int] = Field(default=50, ge=1, le=50)  # Maximum 50 tasks per page
     skip: Optional[int] = Field(default=0, ge=0)
     board: Optional[str] = None
     project: Optional[str] = None

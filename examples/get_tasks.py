@@ -190,28 +190,45 @@ def main():
 
     print("\n" + "=" * 50 + "\n")
 
-    # Example 8: Get tasks with maximum limit and statistics
-    print("8. Getting tasks with maximum limit and statistics...")
+    # Example 8: Get tasks with pagination for large datasets
+    print("8. Getting tasks with pagination for large datasets...")
     try:
-        request = GetTasksRequest(
-            limit=100,  # Higher limit
-            skip=0,
-        )
-        response = client.get_tasks(request)
+        # Since max limit is 50, we need to paginate for more tasks
+        all_tasks = []
+        page = 0
+        max_pages = 3  # Get up to 150 tasks (3 pages * 50 tasks)
+        
+        while page < max_pages:
+            request = GetTasksRequest(
+                limit=50,  # Maximum allowed limit
+                skip=page * 50
+            )
+            response = client.get_tasks(request)
+            
+            tasks = response.payload.tasks
+            if not tasks:
+                break  # No more tasks
+            
+            all_tasks.extend(tasks)
+            page += 1
+            
+            if len(tasks) < 50:
+                break  # Last page had fewer than 50 tasks
 
         print(f"Response type: {response.type}")
-        print(f"Total tasks returned: {len(response.payload.tasks)}")
+        print(f"Total pages fetched: {page}")
+        print(f"Total tasks collected: {len(all_tasks)}")
 
         # Show some statistics
-        completed_tasks = sum(1 for task in response.payload.tasks if task.completed)
-        pending_tasks = len(response.payload.tasks) - completed_tasks
+        completed_tasks = sum(1 for task in all_tasks if task.completed)
+        pending_tasks = len(all_tasks) - completed_tasks
 
         print(f"Completed tasks: {completed_tasks}")
         print(f"Pending tasks: {pending_tasks}")
 
         # Show tasks by priority
         priority_counts = {}
-        for task in response.payload.tasks:
+        for task in all_tasks:
             priority = task.priority
             priority_counts[priority] = priority_counts.get(priority, 0) + 1
 
@@ -220,7 +237,7 @@ def main():
             print(f"  Priority {priority}: {count} tasks")
 
     except Exception as e:
-        print(f"Error getting tasks with high limit: {e}")
+        print(f"Error getting paginated tasks: {e}")
 
 
 if __name__ == "__main__":
