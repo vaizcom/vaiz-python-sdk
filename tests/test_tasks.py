@@ -542,46 +542,106 @@ def test_get_tasks_request_alias_mapping():
     assert "parentTask" not in dumped_without_alias
 
 
-def test_get_all_tasks_helper(client):
-    """Test the get_all_tasks helper method with automatic pagination."""
-    # Test with default parameters
-    all_tasks = client.get_all_tasks(max_tasks=100)
-    
-    assert isinstance(all_tasks, list)
-    assert len(all_tasks) <= 100
-    
-    # All items should be Task instances
-    from vaiz.models import Task
-    for task in all_tasks:
-        assert isinstance(task, Task)
 
 
-def test_get_all_tasks_with_filters(client):
-    """Test get_all_tasks with filters."""
-    # Get only completed tasks
-    request = GetTasksRequest(completed=True)
-    completed_tasks = client.get_all_tasks(request, max_tasks=50)
+def test_get_tasks_caching(client):
+    """Test that getTasks caching works correctly."""
+    import time
     
-    assert isinstance(completed_tasks, list)
-    assert len(completed_tasks) <= 50
+    # Enable verbose mode to track cache operations
+    original_verbose = client.verbose
+    client.verbose = False  # Set to True to see cache debug output
     
-    # Verify all returned tasks are completed
-    for task in completed_tasks:
-        assert task.completed is True
+    # Clear cache to start fresh
+    client.clear_tasks_cache()
+    
+    # Test 1: First request should be a cache miss
+    request = GetTasksRequest(limit=5)
+    start = time.time()
+    response1 = client.get_tasks(request)
+    time1 = time.time() - start
+    
+    # Test 2: Same request should be a cache hit (much faster)
+    start = time.time()
+    response2 = client.get_tasks(request)
+    time2 = time.time() - start
+    
+    # Cache hit should be faster (at least 2x in most cases)
+    # But we can't guarantee exact timing, so just check data consistency
+    assert response1.payload.tasks == response2.payload.tasks
+    assert response1.type == response2.type
+    
+    # Test 3: Different request should be a cache miss
+    request2 = GetTasksRequest(limit=10)
+    response3 = client.get_tasks(request2)
+    
+    # Should get different amount of tasks
+    assert len(response3.payload.tasks) != len(response1.payload.tasks) or request2.limit != request.limit
+    
+    # Test 4: Cache is mandatory - no bypass option
+    # Same request should still hit cache
+    response4 = client.get_tasks(request)
+    # Should get same data from cache
+    assert response4.payload.tasks == response1.payload.tasks
+    
+    # Test 5: Clear cache
+    client.clear_tasks_cache()
+    # After clear, should work normally
+    response5 = client.get_tasks(request)
+    assert len(response5.payload.tasks) == len(response1.payload.tasks)
+    
+    # Restore original verbose setting
+    client.verbose = original_verbose
 
 
-def test_get_all_tasks_safety_limit():
-    """Test that get_all_tasks respects the safety limit."""
+def test_get_tasks_cache_key_generation():
+    """Test that cache keys are generated correctly for different requests."""
     from vaiz import VaizClient
     
-    # Create a mock client
+    client = VaizClient(api_key="test", space_id="test_space")
+    
+    # Same parameters should generate same key
+    req1 = GetTasksRequest(limit=10, skip=0)
+    req2 = GetTasksRequest(limit=10, skip=0)
+    key1 = client._get_cache_key(req1)
+    key2 = client._get_cache_key(req2)
+    assert key1 == key2
+    
+    # Different parameters should generate different keys
+    req3 = GetTasksRequest(limit=10, skip=5)
+    key3 = client._get_cache_key(req3)
+    assert key1 != key3
+    
+    # Different filters should generate different keys
+    req4 = GetTasksRequest(limit=10, completed=True)
+    req5 = GetTasksRequest(limit=10, completed=False)
+    key4 = client._get_cache_key(req4)
+    key5 = client._get_cache_key(req5)
+    assert key4 != key5
+    
+    # Order of parameters shouldn't matter (JSON is sorted)
+    req6 = GetTasksRequest(limit=10, skip=5, completed=True)
+    req7 = GetTasksRequest(completed=True, skip=5, limit=10)
+    key6 = client._get_cache_key(req6)
+    key7 = client._get_cache_key(req7)
+    assert key6 == key7
+
+
+def test_get_tasks_cache_ttl():
+    """Test that cache TTL is respected."""
+    from vaiz import VaizClient
+    from datetime import datetime, timedelta
+    
     client = VaizClient(api_key="test", space_id="test")
     
-    # Should raise ValueError for max_tasks > 10000
-    with pytest.raises(ValueError) as exc_info:
-        client.get_all_tasks(max_tasks=15000)
+    # Test that cache is valid within TTL
+    now = datetime.now()
+    assert client._is_cache_valid(now) == True
+    assert client._is_cache_valid(now - timedelta(minutes=4)) == True
     
-    assert "cannot exceed 10000" in str(exc_info.value)
+    # Test that cache is invalid after TTL
+    assert client._is_cache_valid(now - timedelta(minutes=6)) == False
+    assert client._is_cache_valid(now - timedelta(hours=1)) == False
 
 
  

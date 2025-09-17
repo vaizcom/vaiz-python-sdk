@@ -9,13 +9,20 @@ from vaiz.models import (
     GetHistoryResponse,
     GetTasksRequest,
     GetTasksResponse,
-    Task,
 )
-from typing import Optional, List
+from typing import Optional, Dict, Tuple
+from datetime import datetime, timedelta
 import os
+import hashlib
+import json
 
 
 class TasksAPIClient(BaseAPIClient):
+    def __init__(self, *args, **kwargs):
+        """Initialize TasksAPIClient with caching support."""
+        super().__init__(*args, **kwargs)
+        self._tasks_cache: Dict[str, Tuple[GetTasksResponse, datetime]] = {}
+        self._cache_ttl = timedelta(minutes=5)  # 5 minutes cache TTL
     def create_task(
         self,
         task: CreateTaskRequest,
@@ -122,87 +129,70 @@ class TasksAPIClient(BaseAPIClient):
         )
         return GetHistoryResponse(**response_data)
 
+    def _get_cache_key(self, request: GetTasksRequest) -> str:
+        """Generate a unique cache key for the request."""
+        # Create a deterministic string from request parameters
+        request_dict = request.model_dump(by_alias=True)
+        request_str = json.dumps(request_dict, sort_keys=True)
+        # Add space_id to make cache unique per space
+        cache_str = f"{self.space_id}:{request_str}"
+        # Create a hash for the cache key
+        return hashlib.md5(cache_str.encode()).hexdigest()
+    
+    def _is_cache_valid(self, cached_time: datetime) -> bool:
+        """Check if cached data is still valid (within TTL)."""
+        return datetime.now() - cached_time < self._cache_ttl
+    
+    def clear_tasks_cache(self):
+        """Clear all cached tasks data."""
+        self._tasks_cache.clear()
+        if self.verbose:
+            print("Tasks cache cleared")
+    
     def get_tasks(self, request: GetTasksRequest) -> GetTasksResponse:
         """
         Get tasks with optional filtering by assignees and pagination.
-        Maximum 50 tasks per page.
+        Maximum 50 tasks per page. Results are automatically cached for 5 minutes for API protection.
 
         Args:
             request (GetTasksRequest): The request containing filter and pagination parameters
 
         Returns:
             GetTasksResponse: The response containing the list of tasks (max 50)
+            
+        Note:
+            Caching is mandatory for API protection. The same request will return cached
+            results for 5 minutes to prevent excessive API calls.
         """
+        # Generate cache key
+        cache_key = self._get_cache_key(request)
+        
+        # Check cache (mandatory for API protection)
+        if cache_key in self._tasks_cache:
+            cached_response, cached_time = self._tasks_cache[cache_key]
+            if self._is_cache_valid(cached_time):
+                if self.verbose:
+                    print(f"Cache hit for getTasks (key: {cache_key[:8]}...)")
+                return cached_response
+            else:
+                # Remove expired cache entry
+                del self._tasks_cache[cache_key]
+                if self.verbose:
+                    print(f"Cache expired for getTasks (key: {cache_key[:8]}...)")
+        
+        # Make API request
+        if self.verbose:
+            print(f"Cache miss for getTasks (key: {cache_key[:8]}...)")
+        
         response_data = self._make_request(
             "getTasks", json_data=request.model_dump(by_alias=True)
         )
-        return GetTasksResponse(**response_data)
+        response = GetTasksResponse(**response_data)
+        
+        # Store in cache (mandatory for API protection)
+        self._tasks_cache[cache_key] = (response, datetime.now())
+        if self.verbose:
+            print(f"Cached getTasks response (key: {cache_key[:8]}...)")
+        
+        return response
 
-    def get_all_tasks(
-        self, request: Optional[GetTasksRequest] = None, max_tasks: int = 500
-    ) -> List[Task]:
-        """
-        Get all tasks matching the filters, automatically handling pagination.
-
-        This is a convenience method that automatically fetches multiple pages of tasks.
-        Use with caution on large datasets as it may take time and resources.
-
-        Args:
-            request (Optional[GetTasksRequest]): The request with filters (limit and skip will be managed automatically)
-            max_tasks (int): Maximum number of tasks to fetch (default 500, max 10000)
-
-        Returns:
-            List[Task]: A list of all tasks matching the filters
-
-        Example:
-            # Get all completed tasks
-            request = GetTasksRequest(completed=True)
-            all_completed_tasks = client.get_all_tasks(request)
-
-            # Get all tasks with default filters
-            all_tasks = client.get_all_tasks()
-        """
-        if max_tasks > 10000:
-            raise ValueError("max_tasks cannot exceed 10000 for safety reasons")
-
-        # Create base request if not provided
-        if request is None:
-            request = GetTasksRequest()
-
-        all_tasks = []
-        page = 0
-
-        while len(all_tasks) < max_tasks:
-            # Create a copy of the request with pagination
-            paginated_request = GetTasksRequest(
-                ids=request.ids,
-                board=request.board,
-                project=request.project,
-                assignees=request.assignees,
-                parent_task=request.parent_task,
-                milestones=request.milestones,
-                completed=request.completed,
-                archived=request.archived,
-                limit=50,  # Always use max limit per page
-                skip=page * 50,
-            )
-
-            response = self.get_tasks(paginated_request)
-            tasks = response.payload.tasks
-
-            if not tasks:
-                break  # No more tasks
-
-            all_tasks.extend(tasks)
-
-            if len(tasks) < 50:
-                break  # Last page had fewer than 50 tasks
-
-            page += 1
-
-            # Respect max_tasks limit
-            if len(all_tasks) >= max_tasks:
-                all_tasks = all_tasks[:max_tasks]
-                break
-
-        return all_tasks

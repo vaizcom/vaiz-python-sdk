@@ -190,14 +190,15 @@ def main():
 
     print("\n" + "=" * 50 + "\n")
 
-    # Example 8: Get tasks with pagination for large datasets
-    print("8. Getting tasks with pagination for large datasets...")
+    # Example 8: Manual pagination for large datasets
+    print("8. Manual pagination for large datasets...")
     try:
-        # Since max limit is 50, we need to paginate for more tasks
+        # Manual pagination - the only way to get more than 50 tasks
         all_tasks = []
         page = 0
         max_pages = 3  # Get up to 150 tasks (3 pages * 50 tasks)
         
+        print("Fetching pages manually:")
         while page < max_pages:
             request = GetTasksRequest(
                 limit=50,  # Maximum allowed limit
@@ -209,14 +210,14 @@ def main():
             if not tasks:
                 break  # No more tasks
             
+            print(f"  Page {page + 1}: {len(tasks)} tasks")
             all_tasks.extend(tasks)
             page += 1
             
             if len(tasks) < 50:
                 break  # Last page had fewer than 50 tasks
 
-        print(f"Response type: {response.type}")
-        print(f"Total pages fetched: {page}")
+        print(f"\nTotal pages fetched: {page}")
         print(f"Total tasks collected: {len(all_tasks)}")
 
         # Show some statistics
@@ -235,6 +236,9 @@ def main():
         print("\nTasks by priority:")
         for priority, count in priority_counts.items():
             print(f"  Priority {priority}: {count} tasks")
+            
+        print("\n💡 Note: Each page is cached for 5 minutes.")
+        print("   Repeated requests with same parameters will use cache.")
 
     except Exception as e:
         print(f"Error getting paginated tasks: {e}")
