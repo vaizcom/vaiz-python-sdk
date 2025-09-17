@@ -1,5 +1,5 @@
 from vaiz.api.base import BaseAPIClient
-from vaiz.models import CreateTaskRequest, TaskResponse, EditTaskRequest, TaskFile, TaskUploadFile, GetHistoryRequest, GetHistoryResponse
+from vaiz.models import CreateTaskRequest, TaskResponse, EditTaskRequest, TaskFile, TaskUploadFile, GetHistoryRequest, GetHistoryResponse, GetTasksRequest, GetTasksResponse
 from vaiz.models.enums import EUploadFileType
 from typing import Optional, Dict, Any
 import os
@@ -104,4 +104,17 @@ class TasksAPIClient(BaseAPIClient):
             GetHistoryResponse: The response containing histories.
         """
         response_data = self._make_request("getHistory", json_data=request.model_dump(by_alias=True))
-        return GetHistoryResponse(**response_data) 
+        return GetHistoryResponse(**response_data)
+
+    def get_tasks(self, request: GetTasksRequest) -> GetTasksResponse:
+        """
+        Get tasks with optional filtering by assignees and pagination.
+        
+        Args:
+            request (GetTasksRequest): The request containing filter and pagination parameters
+            
+        Returns:
+            GetTasksResponse: The response containing the list of tasks
+        """
+        response_data = self._make_request("getTasks", json_data=request.model_dump(by_alias=True))
+        return GetTasksResponse(**response_data) 

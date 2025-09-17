@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
-from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority, TaskResponse, GetHistoryRequest, GetHistoryResponse, HistoryItem, ReplaceDocumentResponse
+from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority, GetHistoryRequest, GetHistoryResponse, HistoryItem, ReplaceDocumentResponse, GetTasksRequest, GetTasksResponse
 from vaiz.models.enums import EKind
 
 @pytest.fixture(scope="module")
@@ -162,6 +162,381 @@ def test_task_update_description_method(client):
     # Fetch description body to ensure API call succeeded
     updated_body = task_instance.get_task_description(client)
     assert isinstance(updated_body, dict)
+
+
+def test_get_tasks_default_parameters(client):
+    """Test get_tasks with default parameters."""
+    request = GetTasksRequest()
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # Check default values are applied correctly
+    assert request.limit == 50
+    assert request.skip == 0
+    assert request.assignees is None
+
+
+def test_get_tasks_with_assignees_filter(client):
+    """Test get_tasks with assignees filter."""
+    if not TEST_ASSIGNEE_ID:
+        pytest.skip("TEST_ASSIGNEE_ID is missing.")
+    
+    request = GetTasksRequest(
+        assignees=[str(TEST_ASSIGNEE_ID)],
+        limit=10,
+        skip=0
+    )
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # Verify that returned tasks have the correct assignee (if any tasks returned)
+    for task in response.payload.tasks:
+        assert str(TEST_ASSIGNEE_ID) in task.assignees
+
+
+def test_get_tasks_with_pagination(client):
+    """Test get_tasks with pagination parameters."""
+    # First, get tasks with limit 5
+    request1 = GetTasksRequest(limit=5, skip=0)
+    response1 = client.get_tasks(request1)
+    
+    assert isinstance(response1, GetTasksResponse)
+    assert response1.type == "GetTasks"
+    assert len(response1.payload.tasks) <= 5
+    
+    # Then get next page
+    request2 = GetTasksRequest(limit=5, skip=5)
+    response2 = client.get_tasks(request2)
+    
+    assert isinstance(response2, GetTasksResponse)
+    assert response2.type == "GetTasks"
+    assert len(response2.payload.tasks) <= 5
+    
+    # Verify different tasks are returned (if there are enough tasks)
+    if len(response1.payload.tasks) == 5 and len(response2.payload.tasks) > 0:
+        task_ids_1 = {task.id for task in response1.payload.tasks}
+        task_ids_2 = {task.id for task in response2.payload.tasks}
+        # Should have different task IDs (no overlap)
+        assert len(task_ids_1.intersection(task_ids_2)) == 0
+
+
+def test_get_tasks_with_high_limit(client):
+    """Test get_tasks with higher limit."""
+    request = GetTasksRequest(limit=100, skip=0)
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    assert len(response.payload.tasks) <= 100
+
+
+def test_get_tasks_request_validation():
+    """Test GetTasksRequest model validation."""
+    # Test valid request with all parameters
+    request = GetTasksRequest(
+        ids=["task1", "task2"],
+        assignees=["user1", "user2"],
+        limit=25,
+        skip=10,
+        board="board1",
+        project="project1",
+        parent_task="parent1",
+        milestones=["milestone1", "milestone2"],
+        completed=True,
+        archived=False
+    )
+    assert request.ids == ["task1", "task2"]
+    assert request.assignees == ["user1", "user2"]
+    assert request.limit == 25
+    assert request.skip == 10
+    assert request.board == "board1"
+    assert request.project == "project1"
+    assert request.parent_task == "parent1"
+    assert request.milestones == ["milestone1", "milestone2"]
+    assert request.completed is True
+    assert request.archived is False
+    
+    # Test default values
+    request_default = GetTasksRequest()
+    assert request_default.ids is None
+    assert request_default.assignees is None
+    assert request_default.limit == 50
+    assert request_default.skip == 0
+    assert request_default.board is None
+    assert request_default.project is None
+    assert request_default.parent_task is None
+    assert request_default.milestones is None
+    assert request_default.completed is None
+    assert request_default.archived is None
+    
+    # Test model_dump excludes None values
+    dumped = request_default.model_dump()
+    assert "ids" not in dumped
+    assert "assignees" not in dumped
+    assert "board" not in dumped
+    assert "project" not in dumped
+    assert "parentTask" not in dumped
+    assert "milestones" not in dumped
+    assert "completed" not in dumped
+    assert "archived" not in dumped
+    assert "limit" in dumped
+    assert "skip" in dumped
+
+
+def test_get_tasks_request_validation_limits():
+    """Test GetTasksRequest validation with edge cases."""
+    # Test minimum values
+    request_min = GetTasksRequest(limit=1, skip=0)
+    assert request_min.limit == 1
+    assert request_min.skip == 0
+    
+    # Test maximum limit
+    request_max = GetTasksRequest(limit=1000, skip=0)
+    assert request_max.limit == 1000
+    
+    # Test with invalid values should raise validation error
+    with pytest.raises(ValueError):
+        GetTasksRequest(limit=0)  # Below minimum
+    
+    with pytest.raises(ValueError):
+        GetTasksRequest(limit=1001)  # Above maximum
+    
+    with pytest.raises(ValueError):
+        GetTasksRequest(skip=-1)  # Below minimum
+
+
+def test_get_tasks_response_structure(client):
+    """Test that GetTasksResponse has the correct structure."""
+    request = GetTasksRequest(limit=1)
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert hasattr(response, 'payload')
+    assert hasattr(response, 'type')
+    assert response.type == "GetTasks"
+    
+    assert hasattr(response.payload, 'tasks')
+    assert isinstance(response.payload.tasks, list)
+    
+    # If there are tasks, verify task structure
+    if response.payload.tasks:
+        task = response.payload.tasks[0]
+        # Verify task has expected fields from the API response example
+        assert hasattr(task, 'id')
+        assert hasattr(task, 'name')
+        assert hasattr(task, 'group')
+        assert hasattr(task, 'board')
+        assert hasattr(task, 'project')
+        assert hasattr(task, 'priority')
+        assert hasattr(task, 'hrid')
+        assert hasattr(task, 'completed')
+        assert hasattr(task, 'assignees')
+        assert hasattr(task, 'creator')
+        assert hasattr(task, 'created_at')
+        assert hasattr(task, 'updated_at')
+
+
+def test_get_tasks_with_ids_filter(client):
+    """Test get_tasks with specific task IDs filter."""
+    # Use example task IDs from the API response
+    task_ids = ["68c19e08020b3f8c50a8150e", "68c19e09020b3f8c50a81663"]
+    
+    request = GetTasksRequest(ids=task_ids)
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # If tasks are returned, verify they match the requested IDs
+    for task in response.payload.tasks:
+        assert task.id in task_ids
+
+
+def test_get_tasks_with_board_filter(client):
+    """Test get_tasks with board filter."""
+    board_id = "68c19e08020b3f8c50a814d6"  # Example from API response
+    
+    request = GetTasksRequest(
+        board=board_id,
+        limit=10
+    )
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # If tasks are returned, verify they belong to the correct board
+    for task in response.payload.tasks:
+        assert task.board == board_id
+
+
+def test_get_tasks_with_project_filter(client):
+    """Test get_tasks with project filter."""
+    project_id = "68c19e08020b3f8c50a814ce"  # Example from API response
+    
+    request = GetTasksRequest(
+        project=project_id,
+        limit=10
+    )
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # If tasks are returned, verify they belong to the correct project
+    for task in response.payload.tasks:
+        assert task.project == project_id
+
+
+def test_get_tasks_with_completed_filter(client):
+    """Test get_tasks with completed status filter."""
+    # Test completed tasks
+    request_completed = GetTasksRequest(
+        completed=True,
+        limit=10
+    )
+    response_completed = client.get_tasks(request_completed)
+    
+    assert isinstance(response_completed, GetTasksResponse)
+    assert response_completed.type == "GetTasks"
+    
+    # If tasks are returned, verify they are all completed
+    for task in response_completed.payload.tasks:
+        assert task.completed is True
+    
+    # Test pending tasks
+    request_pending = GetTasksRequest(
+        completed=False,
+        limit=10
+    )
+    response_pending = client.get_tasks(request_pending)
+    
+    assert isinstance(response_pending, GetTasksResponse)
+    assert response_pending.type == "GetTasks"
+    
+    # If tasks are returned, verify they are all pending
+    for task in response_pending.payload.tasks:
+        assert task.completed is False
+
+
+def test_get_tasks_with_archived_filter(client):
+    """Test get_tasks with archived status filter."""
+    # Test non-archived tasks
+    request = GetTasksRequest(
+        archived=False,
+        limit=10
+    )
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # If tasks are returned, verify they are not archived
+    for task in response.payload.tasks:
+        assert task.archived_at is None
+
+
+def test_get_tasks_with_parent_task_filter(client):
+    """Test get_tasks with parent task filter."""
+    parent_task_id = "68c19e09020b3f8c50a81663"  # Example from API response
+    
+    request = GetTasksRequest(
+        parent_task=parent_task_id,
+        limit=10
+    )
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # If tasks are returned, verify they have the correct parent
+    for task in response.payload.tasks:
+        assert task.parent_task == parent_task_id
+
+
+def test_get_tasks_with_milestones_filter(client):
+    """Test get_tasks with milestones filter."""
+    milestone_ids = ["68c19e08020b3f8c50a814e6"]  # Example from API response
+    
+    request = GetTasksRequest(
+        milestones=milestone_ids,
+        limit=10
+    )
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # If tasks are returned, verify they have the correct milestones
+    for task in response.payload.tasks:
+        # Check if any of the requested milestones are in the task's milestones
+        task_milestone_set = set(task.milestones)
+        requested_milestone_set = set(milestone_ids)
+        assert len(task_milestone_set.intersection(requested_milestone_set)) > 0
+
+
+def test_get_tasks_with_multiple_filters(client):
+    """Test get_tasks with multiple filters combined."""
+    if not TEST_ASSIGNEE_ID:
+        pytest.skip("TEST_ASSIGNEE_ID is missing.")
+    
+    request = GetTasksRequest(
+        assignees=[str(TEST_ASSIGNEE_ID)],
+        completed=False,
+        archived=False,
+        limit=5
+    )
+    response = client.get_tasks(request)
+    
+    assert isinstance(response, GetTasksResponse)
+    assert response.type == "GetTasks"
+    assert hasattr(response.payload, "tasks")
+    assert isinstance(response.payload.tasks, list)
+    
+    # If tasks are returned, verify they match all filters
+    for task in response.payload.tasks:
+        assert str(TEST_ASSIGNEE_ID) in task.assignees
+        assert task.completed is False
+        assert task.archived_at is None
+
+
+def test_get_tasks_request_alias_mapping():
+    """Test that parentTask alias is properly mapped."""
+    request = GetTasksRequest(parent_task="parent123")
+    
+    # Test model_dump with by_alias=True
+    dumped_with_alias = request.model_dump(by_alias=True)
+    assert "parentTask" in dumped_with_alias
+    assert dumped_with_alias["parentTask"] == "parent123"
+    assert "parent_task" not in dumped_with_alias
+    
+    # Test model_dump without by_alias
+    dumped_without_alias = request.model_dump(by_alias=False)
+    assert "parent_task" in dumped_without_alias
+    assert dumped_without_alias["parent_task"] == "parent123"
+    assert "parentTask" not in dumped_without_alias
 
 
  

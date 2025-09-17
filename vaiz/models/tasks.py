@@ -240,4 +240,31 @@ class GetHistoryPayload(VaizBaseModel):
 
 class GetHistoryResponse(VaizBaseModel):
     payload: GetHistoryPayload
+    type: str
+
+
+class GetTasksRequest(VaizBaseModel):
+    ids: Optional[List[str]] = None
+    limit: Optional[int] = Field(default=50, ge=1, le=1000)
+    skip: Optional[int] = Field(default=0, ge=0)
+    board: Optional[str] = None
+    project: Optional[str] = None
+    assignees: Optional[List[str]] = None
+    parent_task: Optional[str] = Field(default=None, alias="parentTask")
+    milestones: Optional[List[str]] = None
+    completed: Optional[bool] = None
+    archived: Optional[bool] = None
+
+    def model_dump(self, **kwargs):
+        # Remove None values from the dict
+        data = super().model_dump(**kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class GetTasksPayload(VaizBaseModel):
+    tasks: List[Task]
+
+
+class GetTasksResponse(VaizBaseModel):
+    payload: GetTasksPayload
     type: str 
