@@ -726,8 +726,140 @@ response = client.edit_task(edit_task)
 #### Get Task Information
 
 ```python
-response = client.get_task("task_id")
+response = client.get_task("task_slug")  # e.g., "PRJ-123"
 ```
+
+#### Get Multiple Tasks with Filtering and Pagination
+
+The SDK provides a powerful `get_tasks()` method for retrieving multiple tasks with filtering and pagination. The method includes built-in API protection with mandatory caching and strict limits.
+
+```python
+from vaiz.models import GetTasksRequest
+
+# Basic usage - get first 50 tasks (default)
+request = GetTasksRequest()
+response = client.get_tasks(request)
+
+print(f"Retrieved {len(response.payload.tasks)} tasks")
+for task in response.payload.tasks:
+    print(f"- {task.hrid}: {task.name} (Completed: {task.completed})")
+```
+
+##### Filtering Options
+
+The `GetTasksRequest` supports comprehensive filtering:
+
+```python
+# Filter by assignees
+request = GetTasksRequest(
+    assignees=["user_id_1", "user_id_2"],
+    limit=25
+)
+response = client.get_tasks(request)
+
+# Filter by completion status
+request = GetTasksRequest(
+    completed=True,  # Get only completed tasks
+    limit=20
+)
+
+# Filter by board and project
+request = GetTasksRequest(
+    board="board_id",
+    project="project_id",
+    archived=False,  # Exclude archived tasks
+    limit=30
+)
+
+# Filter by specific task IDs
+request = GetTasksRequest(
+    ids=["task_id_1", "task_id_2", "task_id_3"]
+)
+
+# Filter by parent task (get subtasks)
+request = GetTasksRequest(
+    parent_task="parent_task_id",
+    limit=10
+)
+
+# Filter by milestones
+request = GetTasksRequest(
+    milestones=["milestone_id_1", "milestone_id_2"],
+    limit=15
+)
+
+# Combine multiple filters
+request = GetTasksRequest(
+    assignees=["user_id"],
+    completed=False,
+    board="board_id",
+    archived=False,
+    limit=50
+)
+```
+
+##### Manual Pagination for Large Datasets
+
+For retrieving more than 50 tasks, use manual pagination:
+
+```python
+# Manual pagination - the only way to get more than 50 tasks
+all_tasks = []
+page = 0
+
+while True:
+    request = GetTasksRequest(
+        completed=False,  # Your filters here
+        limit=50,         # Maximum allowed
+        skip=page * 50    # Pagination offset
+    )
+    
+    response = client.get_tasks(request)
+    tasks = response.payload.tasks
+    
+    if not tasks:
+        break  # No more tasks
+    
+    print(f"Page {page + 1}: {len(tasks)} tasks")
+    all_tasks.extend(tasks)
+    page += 1
+    
+    if len(tasks) < 50:
+        break  # Last page
+
+print(f"Total collected: {len(all_tasks)} tasks")
+```
+
+##### API Protection Features
+
+- **🛡️ Maximum 50 tasks per request** (enforced by validation)
+- **⚡ Mandatory 5-minute caching** (prevents excessive API calls)
+- **🔄 Automatic cache management** (same requests return cached results)
+- **🎯 Manual pagination only** (no bulk download methods)
+
+```python
+# These will raise validation errors:
+GetTasksRequest(limit=51)   # ❌ ValueError: limit must be ≤ 50
+GetTasksRequest(limit=100)  # ❌ ValueError: limit must be ≤ 50
+
+# Cache management:
+client.clear_tasks_cache()  # Clear all cached getTasks results
+```
+
+##### Available Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `ids` | `List[str]` | Filter by specific task IDs |
+| `limit` | `int` | Number of tasks to return (1-50, default: 50) |
+| `skip` | `int` | Number of tasks to skip for pagination (≥0, default: 0) |
+| `board` | `str` | Filter by board ID |
+| `project` | `str` | Filter by project ID |
+| `assignees` | `List[str]` | Filter by assignee user IDs |
+| `parent_task` | `str` | Filter by parent task ID (get subtasks) |
+| `milestones` | `List[str]` | Filter by milestone IDs |
+| `completed` | `bool` | Filter by completion status |
+| `archived` | `bool` | Filter by archived status |
 
 ### Working with Files
 
