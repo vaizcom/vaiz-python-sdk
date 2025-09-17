@@ -220,9 +220,8 @@ class HistoryData(VaizBaseModel):
     project: Optional[str] = None
     dueStart: Optional[str] = None
     dueEnd: Optional[str] = None
-    # Accept arbitrary extra fields
-    class Config:
-        extra = "allow"
+    
+    model_config = ConfigDict(extra="allow")  # Accept arbitrary extra fields
 
 class HistoryItem(VaizBaseModel):
     _id: str
