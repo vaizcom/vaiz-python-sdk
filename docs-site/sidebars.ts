@@ -6,10 +6,9 @@ const sidebars: SidebarsConfig = {
     'getting-started',
     {
       type: 'category',
-      label: 'API Reference',
+      label: 'Guides',
       items: [
         'api/overview',
-        'api/methods',
         'api/boards',
         'api/comments',
         'api/custom-fields',
@@ -24,6 +23,7 @@ const sidebars: SidebarsConfig = {
         'api/tasks',
       ],
     },
+    'api/methods',
     'examples',
   ],
 };

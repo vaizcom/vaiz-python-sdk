@@ -67,12 +67,6 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'docs',
-          position: 'left',
-          label: 'Documentation',
-        },
-        {
           href: 'https://github.com/vaizcom/vaiz-python-sdk',
           label: 'GitHub',
           position: 'right',

@@ -1,10 +1,11 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
+sidebar_label: API Reference
 ---
 
-# Methods & Enums
+# API Reference
 
-Complete reference of all SDK methods and enums.
+Complete reference: all methods, models, and enums.
 
 ## Tasks
 
