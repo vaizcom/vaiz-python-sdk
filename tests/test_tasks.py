@@ -389,10 +389,13 @@ def test_get_tasks_with_board_filter(client):
 
 def test_get_tasks_with_project_filter(client):
     """Test get_tasks with project filter."""
-    project_id = "68c19e08020b3f8c50a814ce"  # Example from API response
+    from tests.test_config import TEST_PROJECT_ID
+    
+    if not TEST_PROJECT_ID:
+        pytest.skip("TEST_PROJECT_ID not set in environment variables")
     
     request = GetTasksRequest(
-        project=project_id,
+        project=TEST_PROJECT_ID,
         limit=10
     )
     response = client.get_tasks(request)
@@ -404,7 +407,7 @@ def test_get_tasks_with_project_filter(client):
     
     # If tasks are returned, verify they belong to the correct project
     for task in response.payload.tasks:
-        assert task.project == project_id
+        assert task.project == TEST_PROJECT_ID
 
 
 def test_get_tasks_with_completed_filter(client):

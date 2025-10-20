@@ -28,7 +28,7 @@ class Profile(VaizBaseModel):
     incomplete_steps: Optional[List[str]] = Field(default_factory=list, alias="incompleteSteps")
     registered_date: datetime = Field(..., alias="registeredDate")
     recovery_codes: Optional[List[Dict[str, str]]] = Field(default_factory=list, alias="recoveryCodes")
-    password_changed_date: datetime = Field(..., alias="passwordChangedDate")
+    password_changed_date: Optional[datetime] = Field(None, alias="passwordChangedDate")
     member_id: Optional[str] = Field(None, alias="memberId")
     created_at: Optional[datetime] = Field(None, alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
