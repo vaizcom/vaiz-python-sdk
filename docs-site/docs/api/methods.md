@@ -788,6 +788,18 @@ class SelectOption:
     icon: EIcon                         # Option icon
 ```
 
+### History Models
+
+#### GetHistoryRequest
+
+```python
+class GetHistoryRequest:
+    kind: EKind                         # Required - Entity type (Task, Project, etc.)
+    kindId: str                         # Required - Entity ID
+    excludeKeys: Optional[List[str]]    # Keys to exclude from history
+    lastLoadedDate: Optional[int]       # Timestamp for pagination (default: 0)
+```
+
 ## Enums
 
 ### TaskPriority

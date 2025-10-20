@@ -40,31 +40,6 @@ request = GetHistoryRequest(
 response = client.get_history(request)
 ```
 
-## Common History Keys
-
-Track these common task changes:
-
-| Key | Description |
-|-----|-------------|
-| `name` | Task name changes |
-| `priority` | Priority updates |
-| `completed` | Status changes |
-| `assignees` | Assignee modifications |
-| `dueStart`, `dueEnd` | Date changes |
-| `description` | Description updates |
-| `types` | Type changes |
-| `milestones` | Milestone assignments |
-| `customFields` | Custom field updates |
-
-## Request Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `kind` | `EKind` | Yes | Entity type (Task, Project, etc.) |
-| `kindId` | `str` | Yes | Entity ID |
-| `excludeKeys` | `List[str]` | No | Keys to exclude from history |
-| `lastLoadedDate` | `int` | No | Timestamp for pagination (default: 0) |
-
 ## Use Cases
 
 ### Audit Trail
