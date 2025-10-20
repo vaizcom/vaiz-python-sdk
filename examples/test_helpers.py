@@ -30,8 +30,8 @@ def create_test_task_and_get_document_id(task_name="Test Task for Comment Exampl
         assignees=[TEST_ASSIGNEE_ID] if TEST_ASSIGNEE_ID else [],
         subtasks=[],
         milestones=[],
-        rightConnectors=[],
-        leftConnectors=[]
+        blocking=[],
+        blockers=[]
     )
     
     response = client.create_task(task)

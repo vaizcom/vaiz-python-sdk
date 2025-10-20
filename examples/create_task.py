@@ -21,8 +21,8 @@ def create_task():
         types=[],
         subtasks=[],
         milestones=[],
-        rightConnectors=[],
-        leftConnectors=[]
+        blocking=[],
+        blockers=[]
     )
 
     try:
