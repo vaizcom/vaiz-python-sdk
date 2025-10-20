@@ -214,14 +214,16 @@ class EColor(str, Enum):
     """
     Enum for colors.
     """
+    Silver = 'silver'
     Red = 'red'
     Orange = 'orange'
     Gold = 'gold'
     Olive = 'olive'
     Green = 'green'
-    Cyan = 'cyan'
+    Mint = 'mint'
     Blue = 'blue'
     Violet = 'violet'
+    Lavender = 'lavender'
     Magenta = 'magenta'
     Rose = 'rose'
 

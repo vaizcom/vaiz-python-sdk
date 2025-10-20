@@ -65,7 +65,7 @@ def create_multi_select_custom_field() -> Optional[str]:
             {
                 "_id": generate_option_id("Brazil"),
                 "title": "Brazil",
-                "color": EColor.Sun,
+                "color": EColor.Gold,
                 "icon": EIcon.Sun
             },
             {
@@ -77,7 +77,7 @@ def create_multi_select_custom_field() -> Optional[str]:
             {
                 "_id": generate_option_id("Canada"),
                 "title": "Canada",
-                "color": EColor.Cyan,
+                "color": EColor.Mint,
                 "icon": EIcon.Snow
             },
             {

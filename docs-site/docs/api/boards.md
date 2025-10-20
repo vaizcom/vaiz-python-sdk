@@ -92,7 +92,7 @@ feature_type = CreateBoardTypeRequest(
 task_type = CreateBoardTypeRequest(
     board_id="board_id",
     label="📋 Task",
-    icon=EIcon.CheckSquare,
+    icon=EIcon.Checkbox,
     color=EColor.Green
 )
 ```
@@ -171,8 +171,8 @@ board_id = "board_id"
 types = [
     ("Bug", EIcon.Bug, EColor.Red),
     ("Feature", EIcon.Star, EColor.Blue),
-    ("Task", EIcon.CheckSquare, EColor.Green),
-    ("Documentation", EIcon.FileText, EColor.Yellow),
+    ("Task", EIcon.Checkbox, EColor.Green),
+    ("Documentation", EIcon.Document, EColor.Gold),
 ]
 
 for label, icon, color in types:

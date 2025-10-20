@@ -922,9 +922,18 @@ All available colors:
 ```python
 from vaiz.models.enums import EColor
 
-# Available Colors
-EColor.Red, EColor.Orange, EColor.Gold, EColor.Olive, EColor.Green
-EColor.Cyan, EColor.Blue, EColor.Violet, EColor.Magenta, EColor.Rose
+EColor.Silver = 'silver'
+EColor.Red = 'red'
+EColor.Orange = 'orange'
+EColor.Gold = 'gold'
+EColor.Olive = 'olive'
+EColor.Green = 'green'
+EColor.Mint = 'mint'
+EColor.Blue = 'blue'
+EColor.Violet = 'violet'
+EColor.Lavender = 'lavender'
+EColor.Magenta = 'magenta'
+EColor.Rose = 'rose'
 ```
 
 ### EKind

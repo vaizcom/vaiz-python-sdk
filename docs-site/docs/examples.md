@@ -246,8 +246,8 @@ client.create_board_custom_field(text_field)
 # Select field with options
 status_options = [
     make_select_option("🟢 Active", EColor.Green, EIcon.Circle),
-    make_select_option("🟡 Pending", EColor.Yellow, EIcon.Clock),
-    make_select_option("🔴 Blocked", EColor.Red, EIcon.Cross)
+    make_select_option("🟡 Pending", EColor.Gold, EIcon.Clock),
+    make_select_option("🔴 Blocked", EColor.Red, EIcon.Cancel)
 ]
 
 select_field = make_select_field(

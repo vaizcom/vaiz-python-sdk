@@ -40,9 +40,9 @@ class TestMultiSelectCustomField:
             {"_id": generate_option_id("Germany"), "title": "Germany", "color": EColor.Blue, "icon": EIcon.Circle},
             {"_id": generate_option_id("France"), "title": "France", "color": EColor.Violet, "icon": EIcon.Heart},
             {"_id": generate_option_id("Japan"), "title": "Japan", "color": EColor.Green, "icon": EIcon.Star},
-            {"_id": generate_option_id("Brazil"), "title": "Brazil", "color": EColor.Sun, "icon": EIcon.Sun},
+            {"_id": generate_option_id("Brazil"), "title": "Brazil", "color": EColor.Gold, "icon": EIcon.Sun},
             {"_id": generate_option_id("India"), "title": "India", "color": EColor.Orange, "icon": EIcon.Fire},
-            {"_id": generate_option_id("Canada"), "title": "Canada", "color": EColor.Cyan, "icon": EIcon.Snow},
+            {"_id": generate_option_id("Canada"), "title": "Canada", "color": EColor.Mint, "icon": EIcon.Snow},
             {"_id": generate_option_id("Australia"), "title": "Australia", "color": EColor.Magenta, "icon": EIcon.Triangle}
         ]
     
