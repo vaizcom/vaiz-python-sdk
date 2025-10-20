@@ -289,7 +289,7 @@ Explore detailed documentation for each API category:
 - [Projects](./projects) - Project management
 - [Profile](./profile) - User information
 - [Documents](./documents) - Task descriptions
-- [History](./history) - Change tracking
+- [History Events](./history) - Change tracking
 - [Helper Functions](./helpers) - Utility functions
 
 Or check out [Examples](../examples) for ready-to-use code.

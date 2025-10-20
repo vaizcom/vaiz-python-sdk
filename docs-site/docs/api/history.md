@@ -2,7 +2,7 @@
 sidebar_position: 10
 ---
 
-# History
+# History Events
 
 Track all changes made to tasks and other entities.
 

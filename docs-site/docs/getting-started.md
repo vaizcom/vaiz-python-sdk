@@ -75,7 +75,7 @@ Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 - 📂 [Projects](./api/projects) - Project management
 - 👤 [Profile](./api/profile) - User information
 - 📝 [Documents](./api/documents) - Task descriptions
-- 📜 [History](./api/history) - Change tracking
+- 📜 [History Events](./api/history) - Change tracking
 - 🛠️ [Helper Functions](./api/helpers) - Utility functions for common tasks
 - 💡 [Examples](./examples) - Ready-to-use code examples
 
