@@ -46,7 +46,7 @@ def create_task_with_external_image():
             name=uploaded_file.name,
             dimension=uploaded_file.dimension,
             ext=uploaded_file.ext,
-            _id=uploaded_file.id,
+            id=uploaded_file.id,
             type=uploaded_file.type
         )
         
@@ -200,7 +200,7 @@ def create_task_with_auto_detected_file():
             name=uploaded_file.name,
             dimension=uploaded_file.dimension,
             ext=uploaded_file.ext,
-            _id=uploaded_file.id,
+            id=uploaded_file.id,
             type=uploaded_file.type
         )
         

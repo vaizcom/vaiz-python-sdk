@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.6.0] - 2025-10-20
+
+### Breaking Changes
+
+- **🔗 Renamed Task Connector Fields** for better clarity:
+  - `right_connectors` → `blocking` (tasks that this task blocks)
+  - `left_connectors` → `blockers` (tasks that block this task)
+  - API mapping is automatic - SDK uses intuitive names, API receives technical names
+  - **Migration**: Replace `rightConnectors` with `blocking` and `leftConnectors` with `blockers` in your code
+
+### Added
+
+- **📚 Complete Docusaurus Documentation**: Full documentation site with:
+  - Getting Started guide
+  - Complete API Reference for all endpoints
+  - Task Blockers documentation
+  - Helper Functions reference
+  - Practical examples
+  - Contributing guide
+- **🔗 Task Blockers API**: New documentation page explaining blocker relationships
+- **📖 Comprehensive Examples**: Updated all code examples with new field names
+
+### Changed
+
+- **Documentation**: Moved from README to dedicated Docusaurus site
+- **README**: Simplified to quick start guide with links to full documentation
+- **CONTRIBUTING.md**: Moved to project root as standard practice
+
+### Documentation
+
+- Site: https://vaiz-python-sdk.vercel.app
+- Getting Started: https://vaiz-python-sdk.vercel.app/getting-started
+- API Reference: https://vaiz-python-sdk.vercel.app/api/overview
+
+---
+
 ## [0.5.0] - 2025-09-17
 
 ### Added
