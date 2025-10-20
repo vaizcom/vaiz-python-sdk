@@ -66,7 +66,7 @@ for task in response.payload.tasks:
 
 ```python
 from vaiz.models import CreateTaskRequest, TaskFile
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 # Upload files
 doc = client.upload_file("design.pdf", EUploadFileType.Pdf)
@@ -122,7 +122,7 @@ print(f"🔗 URL: {response.file.url}")
 ### Add Comment with Files
 
 ```python
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 # Upload screenshot
 screenshot = client.upload_file(
@@ -233,7 +233,7 @@ print(f"✅ Milestone attached to task: {response.task.name}")
 
 ```python
 from vaiz import make_text_field, make_select_field, make_select_option
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 # Text field
 text_field = make_text_field(
@@ -245,9 +245,9 @@ client.create_board_custom_field(text_field)
 
 # Select field with options
 status_options = [
-    make_select_option("🟢 Active", EColor.Green, EIcon.Circle),
-    make_select_option("🟡 Pending", EColor.Gold, EIcon.Clock),
-    make_select_option("🔴 Blocked", EColor.Red, EIcon.Cancel)
+    make_select_option("🟢 Active", Color.Green, Icon.Circle),
+    make_select_option("🟡 Pending", Color.Gold, Icon.Clock),
+    make_select_option("🔴 Blocked", Color.Red, Icon.Cancel)
 ]
 
 select_field = make_select_field(
@@ -347,7 +347,7 @@ for task in response.payload.tasks:
 
 ```python
 from vaiz.models import CreateTaskRequest, TaskPriority, CustomField, TaskFile
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from vaiz import make_text_value
 from datetime import datetime, timedelta
 

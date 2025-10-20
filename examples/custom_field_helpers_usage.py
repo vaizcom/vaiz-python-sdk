@@ -33,7 +33,7 @@ from vaiz import (
     CustomField,
     TaskPriority
 )
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 
 def demonstrate_field_creation_helpers():
@@ -99,11 +99,11 @@ def demonstrate_field_creation_helpers():
     
     # 7. Select field with options - the most complex but now simplified
     priority_options = [
-        make_select_option("🔥 Critical", EColor.Red, EIcon.Fire),
-        make_select_option("⚡ High", EColor.Orange, EIcon.Flag),
-        make_select_option("📋 Medium", EColor.Blue, EIcon.Circle),
-        make_select_option("🌱 Low", EColor.Green, EIcon.Target),
-        make_select_option("💤 Someday", EColor.Violet, EIcon.Moon)
+        make_select_option("🔥 Critical", Color.Red, Icon.Fire),
+        make_select_option("⚡ High", Color.Orange, Icon.Flag),
+        make_select_option("📋 Medium", Color.Blue, Icon.Circle),
+        make_select_option("🌱 Low", Color.Green, Icon.Target),
+        make_select_option("💤 Someday", Color.Violet, Icon.Moon)
     ]
     
     select_field_request = make_select_field(
@@ -137,7 +137,7 @@ def demonstrate_select_option_management(select_field, priority_options):
     existing_options = select_field.options
     
     # 1. Add a new option
-    new_option = make_select_option("🚨 Emergency", EColor.Magenta, EIcon.Crown)
+    new_option = make_select_option("🚨 Emergency", Color.Magenta, Icon.Crown)
     add_request = add_board_custom_field_select_option(
         field_id=field_id,
         board_id=BOARD_ID,
@@ -160,7 +160,7 @@ def demonstrate_select_option_management(select_field, priority_options):
             break
     
     if low_option_id:
-        updated_option = make_select_option("🐌 Low Priority", EColor.Mint, EIcon.Target)
+        updated_option = make_select_option("🐌 Low Priority", Color.Mint, Icon.Target)
         edit_request = edit_board_custom_field_select_field_option(
             field_id=field_id,
             board_id=BOARD_ID,

@@ -9,7 +9,7 @@ class EAvatarMode(int, Enum):
     Generated = 2
 
 
-class EIcon(str, Enum):
+class Icon(str, Enum):
     """
     Enum for styler icons.
     """
@@ -210,7 +210,7 @@ class EIcon(str, Enum):
     TypeUser = 'TypeUser'
 
 
-class EColor(str, Enum):
+class Color(str, Enum):
     """
     Enum for colors.
     """
@@ -228,7 +228,7 @@ class EColor(str, Enum):
     Rose = 'rose'
 
 
-class EUploadFileType(str, Enum):
+class UploadFileType(str, Enum):
     """
     Enum for upload file types.
     """
@@ -238,7 +238,7 @@ class EUploadFileType(str, Enum):
     Pdf = 'Pdf'
 
 
-class EKind(str, Enum):
+class Kind(str, Enum):
     Space = "Space"
     Project = "Project"
     Task = "Task"

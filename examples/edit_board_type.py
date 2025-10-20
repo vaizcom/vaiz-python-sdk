@@ -15,8 +15,8 @@ def main():
         board_type_id=BOARD_TYPE_ID,
         board_id=BOARD_ID,
         label="Updated Type",
-        icon=EIcon.Bookmark,
-        color=EColor.Green,
+        icon=Icon.Bookmark,
+        color=Color.Green,
         description="Updated description for the board type",
         hidden=False
     )

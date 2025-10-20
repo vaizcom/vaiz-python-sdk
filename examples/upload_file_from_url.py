@@ -3,7 +3,7 @@ Example: Upload a file from URL using the Vaiz SDK.
 """
 
 from .config import get_client
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 def upload_image_from_url_example():
     """

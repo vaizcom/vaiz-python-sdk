@@ -58,7 +58,7 @@ from vaiz import (
     CustomField,
     TaskPriority
 )
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 
 def demonstrate_field_editing():

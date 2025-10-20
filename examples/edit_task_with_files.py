@@ -4,7 +4,7 @@ This example shows how to modify an existing task to include files and descripti
 """
 
 from vaiz.models import EditTaskRequest, TaskFile, CreateTaskRequest, TaskPriority
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from .config import get_client, BOARD_ID, GROUP_ID, PROJECT_ID
 import os
 

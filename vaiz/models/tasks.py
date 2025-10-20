@@ -3,7 +3,7 @@ from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
 from .documents import ReplaceDocumentResponse
-from .enums import EUploadFileType, EKind
+from .enums import EUploadFileType, Kind
 
 if TYPE_CHECKING:
     # Avoid runtime import cycle; type-checking only
@@ -204,7 +204,7 @@ class TaskUploadFile(BaseModel):
 
 
 class GetHistoryRequest(VaizBaseModel):
-    kind: EKind
+    kind: Kind
     kindId: str
     excludeKeys: Optional[List[str]] = None
     lastLoadedDate: Optional[int] = 0

@@ -34,7 +34,7 @@ print(f"Boards: {project.boards}")
 class Project:
     id: str                      # Project ID
     name: str                    # Project name
-    color: str                   # Hex color or EColor enum
+    color: str                   # Hex color or Color enum
     description: Optional[str]   # Description
     boards: List[str]            # Board IDs
     created_at: datetime         # Creation date
@@ -43,13 +43,13 @@ class Project:
 
 ## Project Colors
 
-Projects support both `EColor` enum values and custom hex colors:
+Projects support both `Color` enum values and custom hex colors:
 
 ```python
-from vaiz.models.enums import EColor
+from vaiz.models.enums import Color
 
 # Using enum
-project_color = EColor.Blue
+project_color = Color.Blue
 
 # Or custom hex color
 project_color = "#1F36AD"

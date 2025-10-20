@@ -29,7 +29,7 @@ from vaiz.models import (
     EditBoardCustomFieldRequest,
     CustomFieldType
 )
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 
 class TestFieldCreationHelpers:
@@ -149,14 +149,14 @@ class TestSelectOptionHelpers:
         """Test creating select option with enum values."""
         option = make_select_option(
             title="High Priority",
-            color=EColor.Red,
-            icon=EIcon.Flag
+            color=Color.Red,
+            icon=Icon.Flag
         )
         
         assert isinstance(option, SelectOption)
         assert option.title == "High Priority"
-        assert option.color == EColor.Red
-        assert option.icon == EIcon.Flag
+        assert option.color == Color.Red
+        assert option.icon == Icon.Flag
         assert option.id is not None
         assert len(option.id) == 24  # MD5 hash truncated to 24 chars
         
@@ -164,8 +164,8 @@ class TestSelectOptionHelpers:
         option_dict = option.to_dict()
         assert option_dict["_id"] == option.id
         assert option_dict["title"] == "High Priority"
-        assert option_dict["color"] == EColor.Red
-        assert option_dict["icon"] == EIcon.Flag
+        assert option_dict["color"] == Color.Red
+        assert option_dict["icon"] == Icon.Flag
     
     def test_make_select_option_with_strings(self):
         """Test creating select option with string values."""
@@ -177,16 +177,16 @@ class TestSelectOptionHelpers:
         
         assert isinstance(option, SelectOption)
         assert option.title == "Medium Priority"
-        assert option.color == EColor.Orange
-        assert option.icon == EIcon.Circle
+        assert option.color == Color.Orange
+        assert option.icon == Icon.Circle
     
     def test_make_select_option_with_custom_id(self):
         """Test creating select option with custom ID."""
         custom_id = "custom_option_id_123"
         option = make_select_option(
             title="Custom Option",
-            color=EColor.Blue,
-            icon=EIcon.User,
+            color=Color.Blue,
+            icon=Icon.User,
             option_id=custom_id
         )
         
@@ -196,9 +196,9 @@ class TestSelectOptionHelpers:
     def test_make_select_field_with_options(self):
         """Test creating select field with options."""
         options = [
-            make_select_option("High", EColor.Red, EIcon.Flag),
-            make_select_option("Medium", EColor.Orange, EIcon.Circle),
-            make_select_option("Low", EColor.Green, EIcon.Target)
+            make_select_option("High", Color.Red, Icon.Flag),
+            make_select_option("Medium", Color.Orange, Icon.Circle),
+            make_select_option("Low", Color.Green, Icon.Target)
         ]
         
         request = make_select_field(
@@ -218,15 +218,15 @@ class TestSelectOptionHelpers:
         # Check first option
         option_dict = request.options[0]
         assert option_dict["title"] == "High"
-        assert option_dict["color"] == EColor.Red
-        assert option_dict["icon"] == EIcon.Flag
+        assert option_dict["color"] == Color.Red
+        assert option_dict["icon"] == Icon.Flag
         assert "_id" in option_dict
     
     def test_make_select_field_with_dict_options(self):
         """Test creating select field with dictionary options."""
         options = [
-            {"_id": "opt1", "title": "Option 1", "color": EColor.Red, "icon": EIcon.Flag},
-            {"_id": "opt2", "title": "Option 2", "color": EColor.Blue, "icon": EIcon.Circle}
+            {"_id": "opt1", "title": "Option 1", "color": Color.Red, "icon": Icon.Flag},
+            {"_id": "opt2", "title": "Option 2", "color": Color.Blue, "icon": Icon.Circle}
         ]
         
         request = make_select_field(
@@ -257,13 +257,13 @@ class TestSelectOptionManagement:
         self.field_id = "field_123"
         self.board_id = "board_123"
         self.existing_options = [
-            {"_id": "opt1", "title": "Option 1", "color": EColor.Red, "icon": EIcon.Flag},
-            {"_id": "opt2", "title": "Option 2", "color": EColor.Blue, "icon": EIcon.Circle}
+            {"_id": "opt1", "title": "Option 1", "color": Color.Red, "icon": Icon.Flag},
+            {"_id": "opt2", "title": "Option 2", "color": Color.Blue, "icon": Icon.Circle}
         ]
     
     def test_add_board_custom_field_select_option(self):
         """Test adding a new option to select field."""
-        new_option = make_select_option("Option 3", EColor.Green, EIcon.Target)
+        new_option = make_select_option("Option 3", Color.Green, Icon.Target)
         
         request = add_board_custom_field_select_option(
             field_id=self.field_id,
@@ -280,12 +280,12 @@ class TestSelectOptionManagement:
         # Check that new option was added
         new_option_dict = request.options[2]
         assert new_option_dict["title"] == "Option 3"
-        assert new_option_dict["color"] == EColor.Green
-        assert new_option_dict["icon"] == EIcon.Target
+        assert new_option_dict["color"] == Color.Green
+        assert new_option_dict["icon"] == Icon.Target
     
     def test_add_board_custom_field_select_option_with_dict(self):
         """Test adding a new option using dictionary format."""
-        new_option = {"_id": "opt3", "title": "Option 3", "color": EColor.Green, "icon": EIcon.Target}
+        new_option = {"_id": "opt3", "title": "Option 3", "color": Color.Green, "icon": Icon.Target}
         
         request = add_board_custom_field_select_option(
             field_id=self.field_id,
@@ -324,7 +324,7 @@ class TestSelectOptionManagement:
     
     def test_edit_board_custom_field_select_field_option(self):
         """Test editing an existing option in select field."""
-        updated_option = make_select_option("Updated Option 1", EColor.Magenta, EIcon.Crown)
+        updated_option = make_select_option("Updated Option 1", Color.Magenta, Icon.Crown)
         
         request = edit_board_custom_field_select_field_option(
             field_id=self.field_id,
@@ -343,8 +343,8 @@ class TestSelectOptionManagement:
         updated_option_dict = request.options[0]
         assert updated_option_dict["_id"] == "opt1"  # ID preserved
         assert updated_option_dict["title"] == "Updated Option 1"
-        assert updated_option_dict["color"] == EColor.Magenta
-        assert updated_option_dict["icon"] == EIcon.Crown
+        assert updated_option_dict["color"] == Color.Magenta
+        assert updated_option_dict["icon"] == Icon.Crown
         
         # Check that other option remained unchanged
         assert request.options[1]["_id"] == "opt2"
@@ -352,7 +352,7 @@ class TestSelectOptionManagement:
     
     def test_edit_board_custom_field_select_field_option_with_dict(self):
         """Test editing an option using dictionary format."""
-        updated_option = {"title": "Updated Option 1", "color": EColor.Magenta, "icon": EIcon.Crown}
+        updated_option = {"title": "Updated Option 1", "color": Color.Magenta, "icon": Icon.Crown}
         
         request = edit_board_custom_field_select_field_option(
             field_id=self.field_id,
@@ -369,7 +369,7 @@ class TestSelectOptionManagement:
     
     def test_edit_board_custom_field_select_field_option_not_found(self):
         """Test error when trying to edit non-existent option."""
-        updated_option = make_select_option("New Title", EColor.Red, EIcon.Flag)
+        updated_option = make_select_option("New Title", Color.Red, Icon.Flag)
         
         with pytest.raises(ValueError, match="Option with ID 'nonexistent' not found"):
             edit_board_custom_field_select_field_option(

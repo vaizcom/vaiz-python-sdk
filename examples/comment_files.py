@@ -5,7 +5,7 @@ Demonstrates uploading files and attaching them to comments.
 
 import os
 from vaiz.models import CommentReactionType
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from .config import get_client
 from .test_helpers import get_or_create_document_id
 

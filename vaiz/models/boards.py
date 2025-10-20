@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from enum import Enum
 from datetime import datetime
 
-from .enums import EIcon, EColor
+from .enums import Icon, Color
 from .base import VaizBaseModel
 
 
@@ -30,8 +30,8 @@ class BoardGroup(BaseModel):
 
 class BoardType(BaseModel):
     label: str
-    icon: EIcon
-    color: Union[str, EColor]  # Allow both hex codes and enum values
+    icon: Icon
+    color: Union[str, Color]  # Allow both hex codes and enum values
     id: str = Field(..., alias="_id")
     description: Optional[str] = None
     hidden: Optional[bool] = None
@@ -99,8 +99,8 @@ class BoardResponse(BaseModel):
 class CreateBoardTypeRequest(VaizBaseModel):
     board_id: str = Field(..., alias="boardId")
     label: str
-    icon: EIcon
-    color: EColor
+    icon: Icon
+    color: Color
 
 
 class CreateBoardTypePayload(BaseModel):
@@ -121,8 +121,8 @@ class EditBoardTypeRequest(VaizBaseModel):
     board_type_id: str = Field(..., alias="boardTypeId")
     board_id: str = Field(..., alias="boardId")
     label: Optional[str] = None
-    icon: Optional[EIcon] = None
-    color: Optional[EColor] = None
+    icon: Optional[Icon] = None
+    color: Optional[Color] = None
     description: Optional[str] = None
     hidden: Optional[bool] = None
 

@@ -3,7 +3,7 @@ Example: Upload a file using the Vaiz SDK.
 """
 
 from .config import get_client
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 def upload_file_example():
     client = get_client()

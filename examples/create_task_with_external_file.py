@@ -8,7 +8,7 @@ This example demonstrates the complete workflow:
 """
 
 from .config import get_client
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
 
 def create_task_with_external_image():

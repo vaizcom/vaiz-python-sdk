@@ -20,7 +20,7 @@ from vaiz.models import (
     CustomField,
     TaskPriority
 )
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 
 class TestMultiSelectCustomField:
@@ -36,14 +36,14 @@ class TestMultiSelectCustomField:
             return hashlib.md5(title.encode()).hexdigest()[:24]
         
         return [
-            {"_id": generate_option_id("United States"), "title": "United States", "color": EColor.Red, "icon": EIcon.User},
-            {"_id": generate_option_id("Germany"), "title": "Germany", "color": EColor.Blue, "icon": EIcon.Circle},
-            {"_id": generate_option_id("France"), "title": "France", "color": EColor.Violet, "icon": EIcon.Heart},
-            {"_id": generate_option_id("Japan"), "title": "Japan", "color": EColor.Green, "icon": EIcon.Star},
-            {"_id": generate_option_id("Brazil"), "title": "Brazil", "color": EColor.Gold, "icon": EIcon.Sun},
-            {"_id": generate_option_id("India"), "title": "India", "color": EColor.Orange, "icon": EIcon.Fire},
-            {"_id": generate_option_id("Canada"), "title": "Canada", "color": EColor.Mint, "icon": EIcon.Snow},
-            {"_id": generate_option_id("Australia"), "title": "Australia", "color": EColor.Magenta, "icon": EIcon.Triangle}
+            {"_id": generate_option_id("United States"), "title": "United States", "color": Color.Red, "icon": Icon.User},
+            {"_id": generate_option_id("Germany"), "title": "Germany", "color": Color.Blue, "icon": Icon.Circle},
+            {"_id": generate_option_id("France"), "title": "France", "color": Color.Violet, "icon": Icon.Heart},
+            {"_id": generate_option_id("Japan"), "title": "Japan", "color": Color.Green, "icon": Icon.Star},
+            {"_id": generate_option_id("Brazil"), "title": "Brazil", "color": Color.Gold, "icon": Icon.Sun},
+            {"_id": generate_option_id("India"), "title": "India", "color": Color.Orange, "icon": Icon.Fire},
+            {"_id": generate_option_id("Canada"), "title": "Canada", "color": Color.Mint, "icon": Icon.Snow},
+            {"_id": generate_option_id("Australia"), "title": "Australia", "color": Color.Magenta, "icon": Icon.Triangle}
         ]
     
     def test_create_select_custom_field_with_options(self, country_options):
@@ -114,7 +114,7 @@ class TestMultiSelectCustomField:
         # Create select field using helper functions
         from vaiz.helpers import make_select_field, make_select_option
         
-        test_option = make_select_option("Test Country", EColor.Red, EIcon.User)
+        test_option = make_select_option("Test Country", Color.Red, Icon.User)
         select_field_request = make_select_field(
             name="Test Countries Single",
             board_id=board_id,
@@ -332,9 +332,9 @@ class TestMultiSelectCustomField:
             return hashlib.md5(title.encode()).hexdigest()[:24]
         
         options = [
-            {"_id": generate_option_id("Option A"), "title": "Option A", "color": EColor.Red, "icon": EIcon.Checkbox},
-            {"_id": generate_option_id("Option B"), "title": "Option B", "color": EColor.Green, "icon": EIcon.Circle},
-            {"_id": generate_option_id("Option C"), "title": "Option C", "color": EColor.Blue, "icon": EIcon.Square}
+            {"_id": generate_option_id("Option A"), "title": "Option A", "color": Color.Red, "icon": Icon.Checkbox},
+            {"_id": generate_option_id("Option B"), "title": "Option B", "color": Color.Green, "icon": Icon.Circle},
+            {"_id": generate_option_id("Option C"), "title": "Option C", "color": Color.Blue, "icon": Icon.Square}
         ]
         
         edit_request = EditBoardCustomFieldRequest(

@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from examples.config import GROUP_ID, BOARD_ID, PROJECT_ID, get_client
 from vaiz.client import VaizClient
 from vaiz.models import CreateTaskRequest, TaskPriority, TaskUploadFile
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 
 def main():

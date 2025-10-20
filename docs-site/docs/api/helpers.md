@@ -100,13 +100,13 @@ date_range = make_date_range_value(
 
 ```python
 from vaiz import make_select_option
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 # Create option with icon and color
 option = make_select_option(
     label="🔥 Critical",
-    color=EColor.Red,
-    icon=EIcon.Fire
+    color=Color.Red,
+    icon=Icon.Fire
 )
 ```
 
@@ -141,8 +141,8 @@ edit_request = edit_board_custom_field_select_field_option(
     board_id="board_id",
     option_id="option_id",
     label="Updated Label",
-    color=EColor.Blue,
-    icon=EIcon.Star,
+    color=Color.Blue,
+    icon=Icon.Star,
     existing_options=current_options
 )
 ```
@@ -199,16 +199,16 @@ from vaiz import (
     make_date_value
 )
 from vaiz.models import CreateTaskRequest, CustomField
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 from datetime import datetime
 
 client = VaizClient(api_key="...", space_id="...")
 
 # 1. Create custom fields using helpers
 priority_options = [
-    make_select_option("High", EColor.Red, EIcon.Flag),
-    make_select_option("Medium", EColor.Blue, EIcon.Circle),
-    make_select_option("Low", EColor.Green, EIcon.Target)
+    make_select_option("High", Color.Red, Icon.Flag),
+    make_select_option("Medium", Color.Blue, Icon.Circle),
+    make_select_option("Low", Color.Green, Icon.Target)
 ]
 
 select_field = make_select_field(

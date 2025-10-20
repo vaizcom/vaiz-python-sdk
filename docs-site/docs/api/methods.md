@@ -577,8 +577,8 @@ class CreateBoardGroupRequest:
 class CreateBoardTypeRequest:
     board_id: str                       # Required - Board ID
     label: str                          # Required - Type label
-    icon: EIcon                         # Required - Type icon
-    color: EColor                       # Required - Type color
+    icon: Icon                         # Required - Type icon
+    color: Color                       # Required - Type color
 ```
 
 #### EditBoardCustomFieldRequest
@@ -612,8 +612,8 @@ class EditBoardTypeRequest:
     board_type_id: str                  # Required - Type ID
     board_id: str                       # Required - Board ID
     label: Optional[str]                # New label
-    icon: Optional[EIcon]               # New icon
-    color: Optional[EColor]             # New color
+    icon: Optional[Icon]               # New icon
+    color: Optional[Color]             # New color
     description: Optional[str]          # New description
     hidden: Optional[bool]              # Hidden status
 ```
@@ -700,8 +700,8 @@ class CustomField:
 class SelectOption:
     id: str                             # Option ID
     label: str                          # Option label
-    color: EColor                       # Option color
-    icon: EIcon                         # Option icon
+    color: Color                       # Option color
+    icon: Icon                         # Option icon
 ```
 
 ### Document Models
@@ -764,7 +764,7 @@ class TaskUploadFile:
 
 ```python
 class GetHistoryRequest:
-    kind: EKind                         # Required - Entity type (Task, Project, etc.)
+    kind: Kind                         # Required - Entity type (Task, Project, etc.)
     kindId: str                         # Required - Entity ID
     excludeKeys: Optional[List[str]]    # Keys to exclude from history
     lastLoadedDate: Optional[int]       # Timestamp for pagination (default: 0)
@@ -972,131 +972,131 @@ CommentReactionType.ANGRY        # 😡
 CommentReactionType.PARTY        # 🎉
 ```
 
-### EIcon
+### Icon
 
 All available icons (200+ options):
 
 ```python
-from vaiz.models.enums import EIcon
+from vaiz.models.enums import Icon
 
 # Shapes
-EIcon.Cursor, EIcon.Square, EIcon.Hexagon, EIcon.Rhombus, EIcon.Triangle
-EIcon.Checkbox, EIcon.Diamonds, EIcon.Circle
+Icon.Cursor, Icon.Square, Icon.Hexagon, Icon.Rhombus, Icon.Triangle
+Icon.Checkbox, Icon.Diamonds, Icon.Circle
 
 # UI & Interface
-EIcon.Light, EIcon.Search, EIcon.Stop, EIcon.User, EIcon.People
-EIcon.UserGroup2, EIcon.ConnectedPeople, EIcon.Col, EIcon.Code, EIcon.Todo
-EIcon.Board, EIcon.Document, EIcon.Project
+Icon.Light, Icon.Search, Icon.Stop, Icon.User, Icon.People
+Icon.UserGroup2, Icon.ConnectedPeople, Icon.Col, Icon.Code, Icon.Todo
+Icon.Board, Icon.Document, Icon.Project
 
 # Science & Tech
-EIcon.Air, EIcon.Atom, EIcon.Molecule, EIcon.Battery, EIcon.BatteryCharging
-EIcon.BatteryLevel, EIcon.BenzeneRing, EIcon.BGRemover
+Icon.Air, Icon.Atom, Icon.Molecule, Icon.Battery, Icon.BatteryCharging
+Icon.BatteryLevel, Icon.BenzeneRing, Icon.BGRemover
 
 # Objects & Items
-EIcon.Barcode, EIcon.QR, EIcon.Basilica, EIcon.Basketball, EIcon.Binoculars
-EIcon.BlackHat, EIcon.Hat, EIcon.Bot, EIcon.Broom, EIcon.CampingChair
-EIcon.Cable, EIcon.Terminal, EIcon.Rs232Female, EIcon.CD
+Icon.Barcode, Icon.QR, Icon.Basilica, Icon.Basketball, Icon.Binoculars
+Icon.BlackHat, Icon.Hat, Icon.Bot, Icon.Broom, Icon.CampingChair
+Icon.Cable, Icon.Terminal, Icon.Rs232Female, Icon.CD
 
 # Music & Media
-EIcon.Music, EIcon.Music2, EIcon.MusicPlaylist, EIcon.Video, EIcon.Play
-EIcon.Camera, EIcon.Camera2, EIcon.Aperture, EIcon.Image
+Icon.Music, Icon.Music2, Icon.MusicPlaylist, Icon.Video, Icon.Play
+Icon.Camera, Icon.Camera2, Icon.Aperture, Icon.Image
 
 # Time & Actions
-EIcon.Clock, EIcon.Watch, EIcon.Tenses, EIcon.Voicemail, EIcon.WatchesFrontView
-EIcon.WeddingRings, EIcon.List, EIcon.Restart, EIcon.Swap, EIcon.Target
+Icon.Clock, Icon.Watch, Icon.Tenses, Icon.Voicemail, Icon.WatchesFrontView
+Icon.WeddingRings, Icon.List, Icon.Restart, Icon.Swap, Icon.Target
 
 # Weather & Nature
-EIcon.Moon, EIcon.Sun, EIcon.Cloud, EIcon.Snow, EIcon.Fire, EIcon.Drop
+Icon.Moon, Icon.Sun, Icon.Cloud, Icon.Snow, Icon.Fire, Icon.Drop
 
 # Medical & Health
-EIcon.DoctorsBag, EIcon.Hospital, EIcon.MedicalDoctor
+Icon.DoctorsBag, Icon.Hospital, Icon.MedicalDoctor
 
 # Work & Education
-EIcon.ELearning, EIcon.Laptop, EIcon.FanSpeed, EIcon.MindMap, EIcon.Mirror
-EIcon.Attach, EIcon.Table, EIcon.Chart, EIcon.Broadcast
+Icon.ELearning, Icon.Laptop, Icon.FanSpeed, Icon.MindMap, Icon.Mirror
+Icon.Attach, Icon.Table, Icon.Chart, Icon.Broadcast
 
 # Achievement & Status
-EIcon.Flag, EIcon.Finish, EIcon.Crown, EIcon.Money, EIcon.Coins
-EIcon.Shield, EIcon.Trophy, EIcon.Star
+Icon.Flag, Icon.Finish, Icon.Crown, Icon.Money, Icon.Coins
+Icon.Shield, Icon.Trophy, Icon.Star
 
 # Characters & People
-EIcon.WomanHead, EIcon.Knight
+Icon.WomanHead, Icon.Knight
 
 # Animals & Creatures
-EIcon.Bug, EIcon.Bird, EIcon.PeacePigeon, EIcon.Penguin, EIcon.Fish
-EIcon.Alien, EIcon.Panda, EIcon.Cat, EIcon.Dog, EIcon.Unicorn
+Icon.Bug, Icon.Bird, Icon.PeacePigeon, Icon.Penguin, Icon.Fish
+Icon.Alien, Icon.Panda, Icon.Cat, Icon.Dog, Icon.Unicorn
 
 # Sports & Activities
-EIcon.Run, EIcon.Swimming, EIcon.Ball
+Icon.Run, Icon.Swimming, Icon.Ball
 
 # Location & Navigation
-EIcon.Geography, EIcon.Planet, EIcon.Location, EIcon.Navigate
+Icon.Geography, Icon.Planet, Icon.Location, Icon.Navigate
 
 # Vehicles & Transportation
-EIcon.Stormtrooper, EIcon.SpaceFighter, EIcon.Submarine, EIcon.Plane
-EIcon.Ship, EIcon.ShipWheel, EIcon.Lifebuoy, EIcon.Launch, EIcon.Car
-EIcon.BikePath, EIcon.Cycling, EIcon.MotorbikeHelmet, EIcon.Road
+Icon.Stormtrooper, Icon.SpaceFighter, Icon.Submarine, Icon.Plane
+Icon.Ship, Icon.ShipWheel, Icon.Lifebuoy, Icon.Launch, Icon.Car
+Icon.BikePath, Icon.Cycling, Icon.MotorbikeHelmet, Icon.Road
 
 # Communication & Tech
-EIcon.GpsSignal, EIcon.Radio, EIcon.InternetAntenna, EIcon.Satellites
-EIcon.Satellite, EIcon.Speed, EIcon.Info, EIcon.Help, EIcon.Quote
-EIcon.Attention, EIcon.Phone, EIcon.Email, EIcon.Mail, EIcon.Message
-EIcon.Chat, EIcon.Sound
+Icon.GpsSignal, Icon.Radio, Icon.InternetAntenna, Icon.Satellites
+Icon.Satellite, Icon.Speed, Icon.Info, Icon.Help, Icon.Quote
+Icon.Attention, Icon.Phone, Icon.Email, Icon.Mail, Icon.Message
+Icon.Chat, Icon.Sound
 
 # Editing & Content
-EIcon.Rename, EIcon.New, EIcon.Add, EIcon.Delete, EIcon.Type, EIcon.Asterisk
-EIcon.Thumb, EIcon.Percent, EIcon.Percent25, EIcon.Percent50
+Icon.Rename, Icon.New, Icon.Add, Icon.Delete, Icon.Type, Icon.Asterisk
+Icon.Thumb, Icon.Percent, Icon.Percent25, Icon.Percent50
 
 # Food & Drink
-EIcon.Coffee, EIcon.Beer, EIcon.Champagne, EIcon.WineGlass, EIcon.Cocktail
-EIcon.Plate
+Icon.Coffee, Icon.Beer, Icon.Champagne, Icon.WineGlass, Icon.Cocktail
+Icon.Plate
 
 # Misc & Fun
-EIcon.Heart, EIcon.Link, EIcon.Happy, EIcon.Layers, EIcon.Apps, EIcon.Up
-EIcon.Lab, EIcon.Cancel, EIcon.Poo, EIcon.Skull, EIcon.Bone, EIcon.Dice
-EIcon.Puzzle, EIcon.Bang, EIcon.Explosion, EIcon.Gun, EIcon.Shower
-EIcon.SpaFlower, EIcon.FoamBubbles, EIcon.Galaxy, EIcon.Bookmark, EIcon.Book
-EIcon.Sent, EIcon.Home, EIcon.MarkerPen, EIcon.Illustrator, EIcon.Paint
-EIcon.Paint2, EIcon.Gear, EIcon.BoxClose
+Icon.Heart, Icon.Link, Icon.Happy, Icon.Layers, Icon.Apps, Icon.Up
+Icon.Lab, Icon.Cancel, Icon.Poo, Icon.Skull, Icon.Bone, Icon.Dice
+Icon.Puzzle, Icon.Bang, Icon.Explosion, Icon.Gun, Icon.Shower
+Icon.SpaFlower, Icon.FoamBubbles, Icon.Galaxy, Icon.Bookmark, Icon.Book
+Icon.Sent, Icon.Home, Icon.MarkerPen, Icon.Illustrator, Icon.Paint
+Icon.Paint2, Icon.Gear, Icon.BoxClose
 
 # Greek Letters
-EIcon.Alpha, EIcon.Beta, EIcon.Gamma, EIcon.Lambda, EIcon.Mu
-EIcon.Omega, EIcon.Pi, EIcon.Sigma
+Icon.Alpha, Icon.Beta, Icon.Gamma, Icon.Lambda, Icon.Mu
+Icon.Omega, Icon.Pi, Icon.Sigma
 
 # Field Type Icons
-EIcon.TypeText, EIcon.TypeNumber, EIcon.TypeDate, EIcon.TypeCheck, EIcon.TypeUser
+Icon.TypeText, Icon.TypeNumber, Icon.TypeDate, Icon.TypeCheck, Icon.TypeUser
 ```
 
-### EColor
+### Color
 
 All available colors:
 
 ```python
-from vaiz.models.enums import EColor
+from vaiz.models.enums import Color
 
-EColor.Silver = 'silver'
-EColor.Red = 'red'
-EColor.Orange = 'orange'
-EColor.Gold = 'gold'
-EColor.Olive = 'olive'
-EColor.Green = 'green'
-EColor.Mint = 'mint'
-EColor.Blue = 'blue'
-EColor.Violet = 'violet'
-EColor.Lavender = 'lavender'
-EColor.Magenta = 'magenta'
-EColor.Rose = 'rose'
+Color.Silver = 'silver'
+Color.Red = 'red'
+Color.Orange = 'orange'
+Color.Gold = 'gold'
+Color.Olive = 'olive'
+Color.Green = 'green'
+Color.Mint = 'mint'
+Color.Blue = 'blue'
+Color.Violet = 'violet'
+Color.Lavender = 'lavender'
+Color.Magenta = 'magenta'
+Color.Rose = 'rose'
 ```
 
-### EKind
+### Kind
 
 Entity types for history:
 
 ```python
-from vaiz.models.enums import EKind
+from vaiz.models.enums import Kind
 
 # Entity types
-EKind.Task, EKind.Project, EKind.Board, EKind.Document, EKind.Milestone
+Kind.Task, Kind.Project, Kind.Board, Kind.Document, Kind.Milestone
 ```
 
 ### CustomFieldType

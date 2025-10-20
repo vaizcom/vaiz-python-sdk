@@ -11,7 +11,7 @@ Files in Vaiz are always attached to either [tasks](./tasks) or [comments](./com
 Choose the right type for proper display:
 
 ```python
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 EUploadFileType.Image    # Shows preview thumbnail
 EUploadFileType.Video    # Shows embedded player
@@ -29,7 +29,7 @@ Upload and attach files when creating or updating tasks:
 
 ```python
 from vaiz.models import CreateTaskRequest, TaskFile
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 # 1. Upload file
 upload = client.upload_file("design.pdf", EUploadFileType.Pdf)
@@ -58,7 +58,7 @@ response = client.create_task(task)
 ### Multiple Files in Task
 
 ```python
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 # Upload multiple files
 files = [
@@ -95,7 +95,7 @@ response = client.create_task(task)
 Files are commonly used in comments for discussions:
 
 ```python
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 # Upload files
 screenshot = client.upload_file("bug.png", EUploadFileType.Image)

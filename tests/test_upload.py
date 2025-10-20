@@ -6,7 +6,7 @@ from tests.test_config import (
     TEST_GROUP_ID,
     TEST_PROJECT_ID,
 )
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
 
 
@@ -214,7 +214,7 @@ def test_upload_from_invalid_url(client):
 def test_upload_from_url_file_type_detection():
     """Test the file type detection helper method."""
     from vaiz.api.upload import UploadAPIClient
-    from vaiz.models.enums import EUploadFileType
+    from vaiz.models.enums import UploadFileType
 
     # Create a test instance (we don't need actual API calls for this)
     upload_client = UploadAPIClient("http://test.com", "test_token")

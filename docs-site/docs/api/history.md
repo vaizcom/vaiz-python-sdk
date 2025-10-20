@@ -10,10 +10,10 @@ Track all changes made to tasks and other entities.
 
 ```python
 from vaiz.models import GetHistoryRequest
-from vaiz.models.enums import EKind
+from vaiz.models.enums import Kind
 
 request = GetHistoryRequest(
-    kind=EKind.Task,
+    kind=Kind.Task,
     kindId="task_id"
 )
 
@@ -32,7 +32,7 @@ for history in response.payload.histories:
 ```python
 # Track everything except description changes
 request = GetHistoryRequest(
-    kind=EKind.Task,
+    kind=Kind.Task,
     kindId="task_id",
     excludeKeys=["description", "customFields"]
 )
@@ -48,7 +48,7 @@ response = client.get_history(request)
 def get_task_audit_trail(task_id: str):
     """Get complete audit trail for a task"""
     request = GetHistoryRequest(
-        kind=EKind.Task,
+        kind=Kind.Task,
         kindId=task_id
     )
     
@@ -72,7 +72,7 @@ get_task_audit_trail("task_id")
 def monitor_important_changes(task_id: str):
     """Get history excluding description changes"""
     request = GetHistoryRequest(
-        kind=EKind.Task,
+        kind=Kind.Task,
         kindId=task_id,
         excludeKeys=["description", "files"]
     )
@@ -90,7 +90,7 @@ def monitor_important_changes(task_id: str):
 def generate_activity_report(task_id: str):
     """Generate activity report for a task"""
     request = GetHistoryRequest(
-        kind=EKind.Task,
+        kind=Kind.Task,
         kindId=task_id
     )
     
@@ -118,7 +118,7 @@ def generate_activity_report(task_id: str):
 ```python
 from vaiz import VaizClient
 from vaiz.models import GetHistoryRequest
-from vaiz.models.enums import EKind
+from vaiz.models.enums import Kind
 
 client = VaizClient(api_key="...", space_id="...")
 
@@ -128,7 +128,7 @@ task_id = task.payload["task"]["_id"]
 
 # Get all history
 request = GetHistoryRequest(
-    kind=EKind.Task,
+    kind=Kind.Task,
     kindId=task_id
 )
 
@@ -137,7 +137,7 @@ print(f"📊 Total changes: {len(response.payload.histories)}")
 
 # Get history excluding certain keys
 filtered = GetHistoryRequest(
-    kind=EKind.Task,
+    kind=Kind.Task,
     kindId=task_id,
     excludeKeys=["description", "files", "customFields"]
 )

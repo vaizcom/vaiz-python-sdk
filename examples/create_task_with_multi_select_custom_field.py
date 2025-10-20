@@ -18,7 +18,7 @@ from vaiz.models import (
     CustomField,
     TaskPriority
 )
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 
 def generate_option_id(title: str) -> str:
@@ -41,50 +41,50 @@ def create_multi_select_custom_field() -> Optional[str]:
             {
                 "_id": generate_option_id("United States"),
                 "title": "United States", 
-                "color": EColor.Red,
-                "icon": EIcon.User
+                "color": Color.Red,
+                "icon": Icon.User
             },
             {
                 "_id": generate_option_id("Germany"),
                 "title": "Germany",
-                "color": EColor.Blue,
-                "icon": EIcon.Circle
+                "color": Color.Blue,
+                "icon": Icon.Circle
             },
             {
                 "_id": generate_option_id("France"),
                 "title": "France",
-                "color": EColor.Violet,
-                "icon": EIcon.Heart
+                "color": Color.Violet,
+                "icon": Icon.Heart
             },
             {
                 "_id": generate_option_id("Japan"),
                 "title": "Japan",
-                "color": EColor.Green,
-                "icon": EIcon.Star
+                "color": Color.Green,
+                "icon": Icon.Star
             },
             {
                 "_id": generate_option_id("Brazil"),
                 "title": "Brazil",
-                "color": EColor.Gold,
-                "icon": EIcon.Sun
+                "color": Color.Gold,
+                "icon": Icon.Sun
             },
             {
                 "_id": generate_option_id("India"),
                 "title": "India",
-                "color": EColor.Orange,
-                "icon": EIcon.Fire
+                "color": Color.Orange,
+                "icon": Icon.Fire
             },
             {
                 "_id": generate_option_id("Canada"),
                 "title": "Canada",
-                "color": EColor.Mint,
-                "icon": EIcon.Snow
+                "color": Color.Mint,
+                "icon": Icon.Snow
             },
             {
                 "_id": generate_option_id("Australia"),
                 "title": "Australia",
-                "color": EColor.Magenta,
-                "icon": EIcon.Triangle
+                "color": Color.Magenta,
+                "icon": Icon.Triangle
             }
         ]
         

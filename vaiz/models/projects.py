@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List, Dict, Any, Union
 from datetime import datetime
 from .base import VaizBaseModel
-from .enums import EIcon, EColor
+from .enums import Icon, Color
 
 
 class Project(VaizBaseModel):
@@ -16,9 +16,9 @@ class Project(VaizBaseModel):
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
     team: List[str] = []
-    color: Optional[Union[str, EColor]] = None  # Allow both hex codes and enum values
+    color: Optional[Union[str, Color]] = None  # Allow both hex codes and enum values
     slug: Optional[str] = None
-    icon: Optional[EIcon] = None
+    icon: Optional[Icon] = None
     space: Optional[str] = None
 
 

@@ -999,7 +999,7 @@ def test_delete_nonexistent_comment(client):
 def test_post_comment_with_single_file(client, test_document_id):
     """Test posting a comment with a single uploaded file."""
     import os
-    from vaiz.models.enums import EUploadFileType
+    from vaiz.models.enums import UploadFileType
     
     # Upload a single file first
     file_path = os.path.join("assets", "example.png")
@@ -1033,7 +1033,7 @@ def test_post_comment_with_single_file(client, test_document_id):
 def test_post_comment_with_multiple_files(client, test_document_id):
     """Test posting a comment with multiple uploaded files (image, video, document)."""
     import os
-    from vaiz.models.enums import EUploadFileType
+    from vaiz.models.enums import UploadFileType
     
     # Upload multiple different file types
     files_to_upload = [
@@ -1084,7 +1084,7 @@ def test_post_comment_with_multiple_files(client, test_document_id):
 def test_edit_comment_add_files(client, test_document_id):
     """Test editing a comment to add files."""
     import os
-    from vaiz.models.enums import EUploadFileType
+    from vaiz.models.enums import UploadFileType
     
     # First create a comment without files
     original_response = client.post_comment(
@@ -1130,7 +1130,7 @@ def test_edit_comment_add_files(client, test_document_id):
 def test_edit_comment_remove_files(client, test_document_id):
     """Test editing a comment to remove files."""
     import os
-    from vaiz.models.enums import EUploadFileType
+    from vaiz.models.enums import UploadFileType
     
     # Upload files first
     file_path1 = os.path.join("assets", "example.png")
@@ -1185,7 +1185,7 @@ def test_edit_comment_remove_files(client, test_document_id):
 def test_edit_comment_reorder_files(client, test_document_id):
     """Test editing a comment to reorder files."""
     import os
-    from vaiz.models.enums import EUploadFileType
+    from vaiz.models.enums import UploadFileType
     
     # Upload multiple files
     files_to_upload = [
@@ -1236,7 +1236,7 @@ def test_edit_comment_reorder_files(client, test_document_id):
 def test_comment_with_files_complete_lifecycle(client, test_document_id):
     """Test complete lifecycle of comment with files: create -> add -> reorder -> remove -> delete."""
     import os
-    from vaiz.models.enums import EUploadFileType
+    from vaiz.models.enums import UploadFileType
     
     print("\n=== COMPLETE FILE LIFECYCLE TEST ===")
     

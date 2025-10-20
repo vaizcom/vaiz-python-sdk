@@ -51,11 +51,11 @@ Use enums for type-safe values:
 
 ```python
 from vaiz.models import TaskPriority
-from vaiz.models.enums import EIcon, EColor, EUploadFileType
+from vaiz.models.enums import Icon, Color, EUploadFileType
 
 priority = TaskPriority.High           # 3
-icon = EIcon.Bug                       # "Bug"
-color = EColor.Red                     # "Red"
+icon = Icon.Bug                       # "Bug"
+color = Color.Red                     # "Red"
 file_type = EUploadFileType.Image      # "image"
 ```
 
@@ -271,7 +271,7 @@ from vaiz import make_text_value, make_date_value, make_select_option
 # Clean, type-safe value creation
 value = make_text_value("Hello")
 date = make_date_value(datetime.now())
-option = make_select_option("High", EColor.Red, EIcon.Flag)
+option = make_select_option("High", Color.Red, Icon.Flag)
 ```
 
 [See all helper functions →](./helpers)

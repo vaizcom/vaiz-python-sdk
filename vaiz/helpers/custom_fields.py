@@ -15,7 +15,7 @@ from vaiz.models import (
     CreateBoardCustomFieldResponse,
     EditBoardCustomFieldResponse
 )
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 
 class SelectOption:
@@ -24,13 +24,13 @@ class SelectOption:
     def __init__(
         self,
         title: str,
-        color: Union[EColor, str],
-        icon: Union[EIcon, str],
+        color: Union[Color, str],
+        icon: Union[Icon, str],
         option_id: Optional[str] = None
     ):
         self.title = title
-        self.color = color if isinstance(color, EColor) else EColor(color)
-        self.icon = icon if isinstance(icon, EIcon) else EIcon(icon)
+        self.color = color if isinstance(color, Color) else Color(color)
+        self.icon = icon if isinstance(icon, Icon) else Icon(icon)
         self.id = option_id or self._generate_id(title)
     
     def _generate_id(self, title: str) -> str:
@@ -49,8 +49,8 @@ class SelectOption:
 
 def make_select_option(
     title: str,
-    color: Union[EColor, str],
-    icon: Union[EIcon, str],
+    color: Union[Color, str],
+    icon: Union[Icon, str],
     option_id: Optional[str] = None
 ) -> SelectOption:
     """
@@ -58,8 +58,8 @@ def make_select_option(
     
     Args:
         title: Display name for the option
-        color: Color from EColor enum or string value
-        icon: Icon from EIcon enum or string value
+        color: Color from Color enum or string value
+        icon: Icon from Icon enum or string value
         option_id: Optional custom ID (auto-generated if not provided)
         
     Returns:
@@ -68,8 +68,8 @@ def make_select_option(
     Example:
         option = make_select_option(
             title="High Priority",
-            color=EColor.Red,
-            icon=EIcon.Flag
+            color=Color.Red,
+            icon=Icon.Flag
         )
     """
     return SelectOption(title, color, icon, option_id)
@@ -301,9 +301,9 @@ def make_select_field(
         
     Example:
         options = [
-            make_select_option("High", EColor.Red, EIcon.Flag),
-            make_select_option("Medium", EColor.Orange, EIcon.Circle),
-            make_select_option("Low", EColor.Green, EIcon.Target)
+            make_select_option("High", Color.Red, Icon.Flag),
+            make_select_option("Medium", Color.Orange, Icon.Circle),
+            make_select_option("Low", Color.Green, Icon.Target)
         ]
         select_field = make_select_field(
             name="Priority",
@@ -390,7 +390,7 @@ def add_board_custom_field_select_option(
         # field = next(f for f in board.custom_fields if f.id == field_id)
         # existing_options = field.options
         
-        new_option = make_select_option("Very High", EColor.Magenta, EIcon.Crown)
+        new_option = make_select_option("Very High", Color.Magenta, Icon.Crown)
         edit_request = add_board_custom_field_select_option(
             field_id=field_id,
             board_id=board_id,
@@ -488,7 +488,7 @@ def edit_board_custom_field_select_field_option(
         # field = next(f for f in board.custom_fields if f.id == field_id)
         # existing_options = field.options
         
-        updated_option = make_select_option("Critical", EColor.Red, EIcon.Fire)
+        updated_option = make_select_option("Critical", Color.Red, Icon.Fire)
         edit_request = edit_board_custom_field_select_field_option(
             field_id=field_id,
             board_id=board_id,

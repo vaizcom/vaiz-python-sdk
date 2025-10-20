@@ -40,7 +40,7 @@ response = client.post_comment(
 ### Comment with Files
 
 ```python
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 # Upload files
 img = client.upload_file("screenshot.png", EUploadFileType.Image)

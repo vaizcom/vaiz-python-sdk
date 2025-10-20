@@ -66,7 +66,7 @@ Upload and attach file in one step:
 
 ```python
 from vaiz.models import TaskUploadFile
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 task = CreateTaskRequest(
     name="Review Document",

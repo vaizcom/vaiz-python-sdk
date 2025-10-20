@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from vaiz import VaizClient
 from vaiz.models import GetHistoryRequest, CreateTaskRequest, TaskPriority
-from vaiz.models.enums import EKind
+from vaiz.models.enums import Kind
 
 load_dotenv()
 
@@ -31,7 +31,7 @@ task_id = response.payload["task"]["_id"]
 
 # Get history for the newly created task
 request = GetHistoryRequest(
-    kind=EKind.Task,
+    kind=Kind.Task,
     kindId=task_id,
     excludeKeys=["TASK_COMMENTED", "MILESTONE_COMMENTED", "DOCUMENT_COMMENTED"],
     lastLoadedDate=0

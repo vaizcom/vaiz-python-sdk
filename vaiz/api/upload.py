@@ -1,6 +1,6 @@
 from vaiz.api.base import BaseAPIClient
 from vaiz.models import UploadFileResponse
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from typing import IO, Optional
 import os
 import requests

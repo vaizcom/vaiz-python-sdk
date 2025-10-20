@@ -55,11 +55,11 @@ print(response.task.due_end.year)  # 2025
 The SDK provides enums for all valid values:
 
 ```python
-from vaiz.models.enums import EIcon, EColor
+from vaiz.models.enums import Icon, Color
 
 # Use enums instead of strings
-icon = EIcon.Cursor
-color = EColor.Blue
+icon = Icon.Cursor
+color = Color.Blue
 ```
 
 ### 🎛️ Custom Field Helpers
@@ -78,9 +78,9 @@ text_field = make_text_field(
 
 # Create select field with options
 priority_options = [
-    make_select_option("🔥 Critical", EColor.Red, EIcon.Fire),
-    make_select_option("⚡ High", EColor.Orange, EIcon.Flag),
-    make_select_option("📋 Medium", EColor.Blue, EIcon.Circle)
+    make_select_option("🔥 Critical", Color.Red, Icon.Fire),
+    make_select_option("⚡ High", Color.Orange, Icon.Flag),
+    make_select_option("📋 Medium", Color.Blue, Icon.Circle)
 ]
 
 select_field = make_select_field(
@@ -95,7 +95,7 @@ select_field = make_select_field(
 Upload files from local disk or URL:
 
 ```python
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 # Upload local file
 response = client.upload_file("/path/to/file.pdf", file_type=EUploadFileType.Pdf)

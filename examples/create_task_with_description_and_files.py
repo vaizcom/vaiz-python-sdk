@@ -4,7 +4,7 @@ This example shows the complete workflow: upload file first, then create task wi
 """
 
 from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from .config import get_client, BOARD_ID, GROUP_ID, PROJECT_ID
 import os
 

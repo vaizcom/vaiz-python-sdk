@@ -72,7 +72,7 @@
 ### Added
 
 - **🔢 New Custom Field Type**: Added `ESTIMATION` field type to `CustomFieldType` enum for project estimation fields
-- **🎨 Enhanced Project Colors**: Project `color` field now accepts both hex color codes (e.g., `#1F36AD`) and `EColor` enum values for maximum flexibility
+- **🎨 Enhanced Project Colors**: Project `color` field now accepts both hex color codes (e.g., `#1F36AD`) and `Color` enum values for maximum flexibility
 
 ---
 
@@ -167,7 +167,7 @@
 - Date helpers support both datetime objects and ISO strings
 - Field editing helpers allow partial updates with optional parameters
 - Enhanced EditBoardCustomFieldRequest model with name field support
-- Support for both `EColor`/`EIcon` enums and string values for maximum flexibility
+- Support for both `Color`/`Icon` enums and string values for maximum flexibility
 - Helper functions handle option format conversion automatically
 - Full backward compatibility with existing custom field APIs
 
@@ -208,8 +208,8 @@
 
 ### Changed
 
-- The `kind` field in all models (including `GetHistoryRequest`) now uses the `EKind` enum instead of a string.
-- All usages, tests, and documentation updated to use `EKind` (e.g., `EKind.Task`) instead of string values.
+- The `kind` field in all models (including `GetHistoryRequest`) now uses the `Kind` enum instead of a string.
+- All usages, tests, and documentation updated to use `Kind` (e.g., `Kind.Task`) instead of string values.
 
 ### Fixed
 
@@ -221,14 +221,14 @@
 
 - New `get_history` method for retrieving history of tasks and other entities
 - Models: `GetHistoryRequest`, `GetHistoryResponse`, `HistoryItem`, `HistoryData`
-- Enum: `EKind` for supported entity types (Space, Project, Task, Document, Board, Milestone)
+- Enum: `Kind` for supported entity types (Space, Project, Task, Document, Board, Milestone)
 - Usage example: `examples/get_history.py`
 - Tests for the new method
 
 ### Changed
 
-- All models and API now use `EKind` enum for the `kind` field instead of string
-- All usages, tests, and documentation updated to use `EKind` (e.g., `EKind.Task`) instead of string values
+- All models and API now use `Kind` enum for the `kind` field instead of string
+- All usages, tests, and documentation updated to use `Kind` (e.g., `Kind.Task`) instead of string values
 
 ### Fixed
 

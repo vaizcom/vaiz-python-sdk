@@ -35,7 +35,7 @@ from vaiz import (
     CustomField,
     TaskPriority
 )
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 
 class TestCompleteCustomFieldWorkflow:
@@ -158,10 +158,10 @@ class TestCompleteCustomFieldWorkflow:
         
         # Select field with options
         priority_options = [
-            make_select_option("🔥 Critical", EColor.Red, EIcon.Fire),
-            make_select_option("⚡ High", EColor.Orange, EIcon.Flag),
-            make_select_option("📋 Medium", EColor.Blue, EIcon.Circle),
-            make_select_option("🌱 Low", EColor.Green, EIcon.Target)
+            make_select_option("🔥 Critical", Color.Red, Icon.Fire),
+            make_select_option("⚡ High", Color.Orange, Icon.Flag),
+            make_select_option("📋 Medium", Color.Blue, Icon.Circle),
+            make_select_option("🌱 Low", Color.Green, Icon.Target)
         ]
         
         select_field = make_select_field(

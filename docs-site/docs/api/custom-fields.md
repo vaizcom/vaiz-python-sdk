@@ -72,14 +72,14 @@ response = client.create_board_custom_field(date_field)
 
 ```python
 from vaiz import make_select_field, make_select_option
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 # Create options
 options = [
-    make_select_option("🔥 Critical", EColor.Red, EIcon.Fire),
-    make_select_option("⚡ High", EColor.Orange, EIcon.Flag),
-    make_select_option("📋 Medium", EColor.Blue, EIcon.Circle),
-    make_select_option("🌱 Low", EColor.Green, EIcon.Target)
+    make_select_option("🔥 Critical", Color.Red, Icon.Fire),
+    make_select_option("⚡ High", Color.Orange, Icon.Flag),
+    make_select_option("📋 Medium", Color.Blue, Icon.Circle),
+    make_select_option("🌱 Low", Color.Green, Icon.Target)
 ]
 
 # Create select field
@@ -180,10 +180,10 @@ client.edit_board_custom_field(edit)
 
 ```python
 from vaiz import add_board_custom_field_select_option, make_select_option
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 # Create new option
-new_option = make_select_option("🚨 Emergency", EColor.Magenta, EIcon.Crown)
+new_option = make_select_option("🚨 Emergency", Color.Magenta, Icon.Crown)
 
 # Add to field
 add_request = add_board_custom_field_select_option(
@@ -221,8 +221,8 @@ edit_request = edit_board_custom_field_select_field_option(
     board_id="board_id",
     option_id="option_id",
     label="Updated Label",
-    color=EColor.Blue,
-    icon=EIcon.Star,
+    color=Color.Blue,
+    icon=Icon.Star,
     existing_options=current_options
 )
 
@@ -335,15 +335,15 @@ final = remove_task_relation(updated, "task1")
 ```python
 from vaiz import VaizClient, make_select_field, make_select_option
 from vaiz.models import CreateTaskRequest, CustomField
-from vaiz.models.enums import EColor, EIcon
+from vaiz.models.enums import Color, Icon
 
 client = VaizClient(api_key="...", space_id="...")
 
 # 1. Create custom field
 priority_options = [
-    make_select_option("High", EColor.Red, EIcon.Flag),
-    make_select_option("Medium", EColor.Blue, EIcon.Circle),
-    make_select_option("Low", EColor.Green, EIcon.Target)
+    make_select_option("High", Color.Red, Icon.Flag),
+    make_select_option("Medium", Color.Blue, Icon.Circle),
+    make_select_option("Low", Color.Green, Icon.Target)
 ]
 
 field = make_select_field(

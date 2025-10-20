@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 from datetime import datetime
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 from .base import VaizBaseModel
 
 class UploadedFile(VaizBaseModel):

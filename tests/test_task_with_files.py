@@ -2,7 +2,7 @@ import pytest
 import os
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID
 from vaiz.models import CreateTaskRequest, TaskPriority, TaskFile, TaskUploadFile
-from vaiz.models.enums import EUploadFileType
+from vaiz.models.enums import UploadFileType
 
 @pytest.fixture(scope="module")
 def client():

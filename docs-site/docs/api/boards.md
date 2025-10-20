@@ -36,13 +36,13 @@ Types categorize tasks (e.g., Bug, Feature, Task).
 
 ```python
 from vaiz.models import CreateBoardTypeRequest
-from vaiz.models.enums import EIcon, EColor
+from vaiz.models.enums import Icon, Color
 
 request = CreateBoardTypeRequest(
     board_id="board_id",
     label="Bug",
-    icon=EIcon.Bug,
-    color=EColor.Red,
+    icon=Icon.Bug,
+    color=Color.Red,
     description="Bug reports and issues"
 )
 
@@ -59,7 +59,7 @@ request = EditBoardTypeRequest(
     board_type_id="type_id",
     board_id="board_id",
     label="Critical Bug",
-    color=EColor.Magenta,
+    color=Color.Magenta,
     description="High priority bugs",
     hidden=False
 )
@@ -70,30 +70,30 @@ response = client.edit_board_type(request)
 ### Common Type Examples
 
 ```python
-from vaiz.models.enums import EIcon, EColor
+from vaiz.models.enums import Icon, Color
 
 # Bug type
 bug_type = CreateBoardTypeRequest(
     board_id="board_id",
     label="🐛 Bug",
-    icon=EIcon.Bug,
-    color=EColor.Red
+    icon=Icon.Bug,
+    color=Color.Red
 )
 
 # Feature type
 feature_type = CreateBoardTypeRequest(
     board_id="board_id",
     label="✨ Feature",
-    icon=EIcon.Star,
-    color=EColor.Blue
+    icon=Icon.Star,
+    color=Color.Blue
 )
 
 # Task type
 task_type = CreateBoardTypeRequest(
     board_id="board_id",
     label="📋 Task",
-    icon=EIcon.Checkbox,
-    color=EColor.Green
+    icon=Icon.Checkbox,
+    color=Color.Green
 )
 ```
 
@@ -161,7 +161,7 @@ from vaiz.models import (
     CreateBoardTypeRequest,
     CreateBoardGroupRequest
 )
-from vaiz.models.enums import EIcon, EColor
+from vaiz.models.enums import Icon, Color
 
 client = VaizClient(api_key="...", space_id="...")
 
@@ -169,10 +169,10 @@ board_id = "board_id"
 
 # Create types
 types = [
-    ("Bug", EIcon.Bug, EColor.Red),
-    ("Feature", EIcon.Star, EColor.Blue),
-    ("Task", EIcon.Checkbox, EColor.Green),
-    ("Documentation", EIcon.Document, EColor.Gold),
+    ("Bug", Icon.Bug, Color.Red),
+    ("Feature", Icon.Star, Color.Blue),
+    ("Task", Icon.Checkbox, Color.Green),
+    ("Documentation", Icon.Document, Color.Gold),
 ]
 
 for label, icon, color in types:
