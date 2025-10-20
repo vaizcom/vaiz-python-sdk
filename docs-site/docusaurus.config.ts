@@ -59,6 +59,38 @@ const config: Config = {
     colorMode: {
       respectPrefersColorScheme: true,
     },
+    // Algolia DocSearch configuration
+    algolia: {
+      // Application ID provided by Algolia
+      appId: '55Y6IM29JE',
+      
+      // Public API key: it is safe to commit it
+      apiKey: 'e3a005e6dcc969173ae27b34390db823',
+      
+      // Index name
+      indexName: 'vaiz-python-sdk',
+      
+      // Optional: see doc section below
+      contextualSearch: true,
+      
+      // Optional: Specify domains where the navigation should occur through window.location instead of history.push
+      // externalUrlRegex: 'external\\.com|domain\\.com',
+      
+      // Optional: Replace parts of the item URLs from Algolia
+      // replaceSearchResultPathname: {
+      //   from: '/docs/', // or as RegExp: /\/docs\//
+      //   to: '/',
+      // },
+      
+      // Optional: Algolia search parameters
+      searchParameters: {},
+      
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+      
+      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+      insights: false,
+    },
     navbar: {
       title: 'Vaiz Python SDK',
       logo: {
