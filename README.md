@@ -2,6 +2,58 @@
 
 Python SDK for accessing the Vaiz platform API.
 
+[![PyPI version](https://badge.fury.io/py/vaiz-sdk.svg)](https://badge.fury.io/py/vaiz-sdk)
+[![Python](https://img.shields.io/pypi/pyversions/vaiz-sdk.svg)](https://pypi.org/project/vaiz-sdk/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## 📚 Documentation
+
+**[Full Documentation →](https://vaiz-python-sdk.vercel.app)**
+
+- [Getting Started](https://vaiz-python-sdk.vercel.app/getting-started)
+- [API Reference](https://vaiz-python-sdk.vercel.app/api/overview)
+- [Examples](https://vaiz-python-sdk.vercel.app/examples)
+- [Contributing](https://vaiz-python-sdk.vercel.app/contributing)
+
+## Installation
+
+```bash
+pip install vaiz-sdk
+```
+
+## Quick Start
+
+```python
+from vaiz import VaizClient
+from vaiz.models import CreateTaskRequest, TaskPriority
+
+# Create client
+client = VaizClient(
+    api_key="your_api_key",
+    space_id="your_space_id"
+)
+
+# Create a task
+task = CreateTaskRequest(
+    name="My First Task",
+    board="board_id",
+    group="group_id",
+    priority=TaskPriority.High
+)
+
+response = client.create_task(task)
+print(f"✅ Task created: {response.task.id}")
+```
+
+## Key Features
+
+- ✨ **Fully Typed** - Complete type hints with Pydantic v2
+- 📅 **Automatic DateTime Handling** - Seamless conversion between Python datetime and ISO strings
+- 🎨 **Enums** - Type-safe enums for icons, colors, and other constants
+- 🎛️ **Custom Field Helpers** - Powerful functions for working with custom fields
+- 📁 **File Upload** - Easy file upload from local disk or URL
+- 💬 **Comments** - Full comment system with reactions and replies
+
 ## Usage
 
 ### Basic Setup
