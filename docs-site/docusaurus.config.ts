@@ -68,7 +68,7 @@ const config: Config = {
       apiKey: 'e3a005e6dcc969173ae27b34390db823',
       
       // Index name
-      indexName: 'vaiz-python-sdk',
+      indexName: 'docs_python_sdk_vaiz_com_55y6im29je_docs',
       
       // Optional: see doc section below
       contextualSearch: true,
