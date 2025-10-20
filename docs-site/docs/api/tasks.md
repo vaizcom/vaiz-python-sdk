@@ -171,31 +171,6 @@ for task in response.payload.tasks:
     print(f"{task.hrid}: {task.name}")
 ```
 
-## Request Models
-
-### CreateTaskRequest
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | `str` | Yes | Task name |
-| `board` | `str` | Yes | Board ID |
-| `group` | `str` | Yes | Group ID |
-| `project` | `str` | Yes | Project ID |
-| `description` | `str` | No | Task description |
-| `priority` | `TaskPriority` | No | Priority (0-3, default: 1) |
-| `completed` | `bool` | No | Completion status (default: False) |
-| `assignees` | `List[str]` | No | Assignee user IDs |
-| `types` | `List[str]` | No | Task type IDs |
-| `parent_task` | `str` | No | Parent task ID (for subtasks) |
-| `subtasks` | `List[str]` | No | Subtask IDs |
-| `milestones` | `List[str]` | No | Milestone IDs |
-| `due_start` | `datetime` | No | Start date |
-| `due_end` | `datetime` | No | Due date |
-| `blockers` | `List[str]` | No | Task IDs that block this task |
-| `blocking` | `List[str]` | No | Task IDs this task blocks |
-| `custom_fields` | `List[CustomField]` | No | Custom field values |
-| `files` | `List[TaskFile]` | No | Attached files |
-
 ## See Also
 
 - [Task Blockers](./blockers) - Manage task dependencies
