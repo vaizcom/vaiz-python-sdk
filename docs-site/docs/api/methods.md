@@ -548,6 +548,289 @@ Clear the get_tasks() cache manually.
 
 ## Models & Interfaces
 
+### Board Models
+
+#### CreateBoardCustomFieldRequest
+
+```python
+class CreateBoardCustomFieldRequest:
+    name: str                           # Required - Field name
+    type: CustomFieldType               # Required - Field type
+    board_id: str                       # Required - Board ID
+    description: Optional[str]          # Description
+    hidden: bool                        # Hidden status (default: False)
+    options: Optional[List[Any]]        # Options (for SELECT type)
+```
+
+#### CreateBoardGroupRequest
+
+```python
+class CreateBoardGroupRequest:
+    name: str                           # Required - Group name
+    board_id: str                       # Required - Board ID
+    description: Optional[str]          # Description
+```
+
+#### CreateBoardTypeRequest
+
+```python
+class CreateBoardTypeRequest:
+    board_id: str                       # Required - Board ID
+    label: str                          # Required - Type label
+    icon: EIcon                         # Required - Type icon
+    color: EColor                       # Required - Type color
+```
+
+#### EditBoardCustomFieldRequest
+
+```python
+class EditBoardCustomFieldRequest:
+    field_id: str                       # Required - Field ID
+    board_id: str                       # Required - Board ID
+    name: Optional[str]                 # New field name
+    hidden: Optional[bool]              # Hidden status
+    description: Optional[str]          # New description
+    options: Optional[List[Any]]        # New options (for SELECT type)
+```
+
+#### EditBoardGroupRequest
+
+```python
+class EditBoardGroupRequest:
+    board_group_id: str                 # Required - Group ID
+    board_id: str                       # Required - Board ID
+    name: Optional[str]                 # New name
+    description: Optional[str]          # New description
+    limit: Optional[int]                # Task limit
+    hidden: Optional[bool]              # Hidden status
+```
+
+#### EditBoardTypeRequest
+
+```python
+class EditBoardTypeRequest:
+    board_type_id: str                  # Required - Type ID
+    board_id: str                       # Required - Board ID
+    label: Optional[str]                # New label
+    icon: Optional[EIcon]               # New icon
+    color: Optional[EColor]             # New color
+    description: Optional[str]          # New description
+    hidden: Optional[bool]              # Hidden status
+```
+
+### Comment Models
+
+#### DeleteCommentRequest
+
+```python
+class DeleteCommentRequest:
+    comment_id: str                     # Required - Comment ID to delete
+```
+
+#### EditCommentRequest
+
+```python
+class EditCommentRequest:
+    comment_id: str                     # Required - Comment ID
+    content: str                        # Required - New comment content (HTML)
+    add_file_ids: List[str]             # File IDs to add
+    order_file_ids: List[str]           # Order of file IDs
+    remove_file_ids: List[str]          # File IDs to remove
+```
+
+#### GetCommentsRequest
+
+```python
+class GetCommentsRequest:
+    document_id: str                    # Required - Document ID
+```
+
+#### PostCommentRequest
+
+```python
+class PostCommentRequest:
+    document_id: str                    # Required - Document ID
+    content: str                        # Required - Comment content (HTML)
+    file_ids: List[str]                 # File IDs to attach
+    reply_to: Optional[str]             # Parent comment ID for replies
+```
+
+#### ReactToCommentRequest
+
+```python
+class ReactToCommentRequest:
+    comment_id: str                     # Required - Comment ID
+    id: str                             # Required - Emoji ID (e.g., "kissing_smiling_eyes")
+    name: str                           # Required - Human readable name
+    native: str                         # Required - Emoji character (e.g., "😙")
+    unified: str                        # Required - Unicode codepoint (e.g., "1f619")
+    keywords: List[str]                 # Keywords for the emoji
+    shortcodes: str                     # Required - Shortcode (e.g., ":kissing_smiling_eyes:")
+```
+
+#### Comment
+
+```python
+class Comment:
+    id: str                             # Comment ID
+    content: str                        # HTML content
+    author_id: str                      # Author user ID
+    document_id: str                    # Document ID
+    created_at: datetime                # Creation timestamp
+    edited_at: Optional[datetime]       # Edit timestamp
+    deleted_at: Optional[datetime]      # Deletion timestamp
+    reply_to: Optional[str]             # Parent comment ID
+    files: List[UploadedFile]           # Attached files
+    reactions: List[CommentReaction]    # Reactions
+```
+
+### Custom Field Models
+
+#### CustomField
+
+```python
+class CustomField:
+    id: str                             # Field ID
+    value: Any                          # Field value (use helper functions)
+```
+
+#### SelectOption
+
+```python
+class SelectOption:
+    id: str                             # Option ID
+    label: str                          # Option label
+    color: EColor                       # Option color
+    icon: EIcon                         # Option icon
+```
+
+### Document Models
+
+#### GetDocumentRequest
+
+```python
+class GetDocumentRequest:
+    document_id: str                    # Required - Document ID
+```
+
+#### ReplaceDocumentRequest
+
+```python
+class ReplaceDocumentRequest:
+    document_id: str                    # Required - Document ID
+    description: str                    # Required - New document content
+```
+
+### File Models
+
+#### UploadedFile
+
+```python
+class UploadedFile:
+    id: str                             # File ID
+    url: str                            # Access URL
+    name: str                           # Filename
+    original_name: str                  # Original filename
+    size: int                           # Size in bytes
+    type: EUploadFileType               # File type
+    ext: str                            # Extension
+    dimension: Optional[dict]           # Dimensions (images/videos)
+```
+
+#### TaskFile
+
+```python
+class TaskFile:
+    id: str                             # File ID
+    url: str                            # File URL
+    name: str                           # Filename
+    ext: str                            # File extension
+    type: EUploadFileType               # File type
+    dimension: Optional[List[int]]      # Dimensions [width, height] for images/videos
+    size: Optional[int]                 # File size in bytes
+```
+
+#### TaskUploadFile
+
+```python
+class TaskUploadFile:
+    path: str                           # Path to file
+    type: Optional[EUploadFileType]     # File type (auto-detected if not provided)
+```
+
+### History Models
+
+#### GetHistoryRequest
+
+```python
+class GetHistoryRequest:
+    kind: EKind                         # Required - Entity type (Task, Project, etc.)
+    kindId: str                         # Required - Entity ID
+    excludeKeys: Optional[List[str]]    # Keys to exclude from history
+    lastLoadedDate: Optional[int]       # Timestamp for pagination (default: 0)
+```
+
+### Milestone Models
+
+#### CreateMilestoneRequest
+
+```python
+class CreateMilestoneRequest:
+    name: str                           # Required - Milestone name
+    board: str                          # Required - Board ID
+    project: str                        # Required - Project ID
+    description: Optional[str]          # Description
+    due_start: Optional[datetime]       # Start date
+    due_end: Optional[datetime]         # End date
+    tags: List[str]                     # Tags
+    color: str                          # Hex color (default: "#3498db")
+```
+
+#### EditMilestoneRequest
+
+```python
+class EditMilestoneRequest:
+    milestone_id: str                   # Required - Milestone ID
+    name: Optional[str]                 # New name
+    description: Optional[str]          # New description
+    due_start: Optional[datetime]       # New start date
+    due_end: Optional[datetime]         # New end date
+    tags: Optional[List[str]]           # New tags
+    color: Optional[str]                # New hex color
+```
+
+#### ToggleMilestoneRequest
+
+```python
+class ToggleMilestoneRequest:
+    task_id: str                        # Required - Task ID
+    milestone_ids: List[str]            # Required - Milestone IDs to toggle
+```
+
+#### Milestone
+
+```python
+class Milestone:
+    id: str                             # Milestone ID
+    name: str                           # Name
+    description: Optional[str]          # Description
+    board: str                          # Board ID
+    project: str                        # Project ID
+    total: int                          # Total tasks
+    completed: int                      # Completed tasks
+    creator: str                        # Creator ID
+    editor: Optional[str]               # Editor ID
+    created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Update timestamp
+    due_start: Optional[datetime]       # Start date
+    due_end: Optional[datetime]         # End date
+    tags: List[str]                     # Tags
+    color: Optional[str]                # Color
+    is_archived: bool                   # Archive status
+    is_active: bool                     # Active status
+    is_completed: bool                  # Completion status
+```
+
 ### Task Models
 
 #### CreateTaskRequest
@@ -655,149 +938,6 @@ class Task:
     archived_at: Optional[datetime]     # Archive timestamp
     deleted_at: Optional[datetime]      # Deletion timestamp
     followers: Dict[str, str]           # Follower mapping
-```
-
-#### TaskFile
-
-```python
-class TaskFile:
-    id: str                             # File ID
-    url: str                            # File URL
-    name: str                           # Filename
-    ext: str                            # File extension
-    type: EUploadFileType               # File type
-    dimension: Optional[List[int]]      # Dimensions [width, height] for images/videos
-    size: Optional[int]                 # File size in bytes
-```
-
-#### TaskUploadFile
-
-```python
-class TaskUploadFile:
-    path: str                           # Path to file
-    type: Optional[EUploadFileType]     # File type (auto-detected if not provided)
-```
-
-### Comment Models
-
-#### PostCommentRequest
-
-```python
-class PostCommentRequest:
-    document_id: str                    # Required - Document ID
-    content: str                        # Required - Comment content (HTML)
-    file_ids: List[str]                 # File IDs to attach
-    reply_to: Optional[str]             # Parent comment ID for replies
-```
-
-#### Comment
-
-```python
-class Comment:
-    id: str                             # Comment ID
-    content: str                        # HTML content
-    author_id: str                      # Author user ID
-    created_at: datetime                # Creation timestamp
-    edited_at: Optional[datetime]       # Edit timestamp
-    deleted_at: Optional[datetime]      # Deletion timestamp
-    reply_to: Optional[str]             # Parent comment ID
-    files: List[UploadedFile]           # Attached files
-    reactions: List[Reaction]           # Reactions
-```
-
-### Milestone Models
-
-#### CreateMilestoneRequest
-
-```python
-class CreateMilestoneRequest:
-    name: str                           # Required - Milestone name
-    board: str                          # Required - Board ID
-    project: str                        # Required - Project ID
-    description: Optional[str]          # Description
-    due_start: Optional[datetime]       # Start date
-    due_end: Optional[datetime]         # End date
-    color: Optional[str]                # Hex color
-```
-
-#### Milestone
-
-```python
-class Milestone:
-    id: str                             # Milestone ID
-    name: str                           # Name
-    description: Optional[str]          # Description
-    board: str                          # Board ID
-    project: str                        # Project ID
-    total: int                          # Total tasks
-    completed: int                      # Completed tasks
-    creator: str                        # Creator ID
-    editor: Optional[str]               # Editor ID
-    created_at: datetime                # Creation timestamp
-    updated_at: datetime                # Update timestamp
-    due_start: Optional[datetime]       # Start date
-    due_end: Optional[datetime]         # End date
-    color: Optional[str]                # Color
-```
-
-### File Models
-
-#### UploadedFile
-
-```python
-class UploadedFile:
-    id: str                             # File ID
-    url: str                            # Access URL
-    name: str                           # Filename
-    original_name: str                  # Original filename
-    size: int                           # Size in bytes
-    type: EUploadFileType               # File type
-    ext: str                            # Extension
-    dimension: Optional[dict]           # Dimensions (images/videos)
-```
-
-### Custom Field Models
-
-#### CustomField
-
-```python
-class CustomField:
-    id: str                             # Field ID
-    value: Any                          # Field value (use helper functions)
-```
-
-#### CreateBoardCustomFieldRequest
-
-```python
-class CreateBoardCustomFieldRequest:
-    name: str                           # Required - Field name
-    type: CustomFieldType               # Required - Field type
-    board_id: str                       # Required - Board ID
-    description: Optional[str]          # Description
-    hidden: bool                        # Hidden status (default: False)
-    options: Optional[List[SelectOption]]  # Options (for SELECT type)
-```
-
-#### SelectOption
-
-```python
-class SelectOption:
-    id: str                             # Option ID
-    label: str                          # Option label
-    color: EColor                       # Option color
-    icon: EIcon                         # Option icon
-```
-
-### History Models
-
-#### GetHistoryRequest
-
-```python
-class GetHistoryRequest:
-    kind: EKind                         # Required - Entity type (Task, Project, etc.)
-    kindId: str                         # Required - Entity ID
-    excludeKeys: Optional[List[str]]    # Keys to exclude from history
-    lastLoadedDate: Optional[int]       # Timestamp for pagination (default: 0)
 ```
 
 ## Enums
