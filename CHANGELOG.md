@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.7.0] - 2025-10-20
+
+### Breaking Changes
+
+- **✨ Changed Enum Names**: Renamed all enum classes for consistency:
+- `EColor` → `Color`
+- `EIcon` → `Icon`
+- `EKind` → `Kind`
+- `EUploadFileType` → `UploadFileType`
+- **Migration**: Update imports and usage: `from vaiz.models.enums import Color, Icon, Kind, UploadFileType`
+
+### Added
+
+- **🎨 Color Palette**: Added:
+  - `Color.Silver` - silver color
+  - `Color.Mint` - mint/cyan color
+  - `Color.Lavender` - lavender color
+
+---
+
 ## [0.6.0] - 2025-10-20
 
 ### Breaking Changes
