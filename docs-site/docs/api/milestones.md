@@ -160,7 +160,7 @@ for milestone in response.milestones:
 
 ## See Also
 
-- [Tasks API](./tasks)
-- [Projects](./overview#projects--boards)
-- [Examples](../examples)
+- [Tasks](./tasks) - Task operations
+- [Projects](./projects) - Project management
+- [Examples](../examples) - More examples
 

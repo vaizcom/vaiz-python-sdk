@@ -85,11 +85,11 @@ const config: Config = {
             },
             {
               label: 'Getting Started',
-              to: '/getting-started',
+              to: '/',
             },
             {
               label: 'API Reference',
-              to: '/api/overview',
+              to: '/api/methods',
             },
           ],
         },

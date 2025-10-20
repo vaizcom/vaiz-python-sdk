@@ -131,10 +131,10 @@ client.add_reaction(
 
 ## What's Next?
 
-- 🚀 [Getting Started](./getting-started) - Install the SDK and create your first task
-- 📖 [API Reference](./api/client) - Detailed documentation of all methods
-- 💡 [Examples](./examples) - Ready-to-use examples for common scenarios
-- 🛠️ [Contributing](./contributing) - How to contribute to the project
+- 🚀 [Getting Started](/) - Install the SDK and create your first task
+- 📖 [API Reference](./api/methods) - Complete reference of methods, models, and enums
+- 📚 [Guides](./api/overview) - Detailed guides for each API category
+- 💡 [Examples](./examples) - Ready-to-use code examples
 
 ## Requirements
 
