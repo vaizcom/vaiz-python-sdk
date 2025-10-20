@@ -793,7 +793,7 @@ class SelectOption:
 ### TaskPriority
 
 ```python
-TaskPriority.None_     # 0 - No priority
+TaskPriority.Low       # 0 - Low priority
 TaskPriority.General   # 1 - General (default)
 TaskPriority.Medium    # 2 - Medium
 TaskPriority.High      # 3 - High

@@ -196,15 +196,6 @@ for task in response.payload.tasks:
 | `custom_fields` | `List[CustomField]` | No | Custom field values |
 | `files` | `List[TaskFile]` | No | Attached files |
 
-### TaskPriority Enum
-
-```python
-TaskPriority.None_     # 0
-TaskPriority.General   # 1 (default)
-TaskPriority.Medium    # 2
-TaskPriority.High      # 3
-```
-
 ## See Also
 
 - [Task Blockers](./blockers) - Manage task dependencies
