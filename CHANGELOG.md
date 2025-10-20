@@ -12,15 +12,8 @@
 
 ### Added
 
-- **📚 Complete Docusaurus Documentation**: Full documentation site with:
-  - Getting Started guide
-  - Complete API Reference for all endpoints
-  - Task Blockers documentation
-  - Helper Functions reference
-  - Practical examples
-  - Contributing guide
 - **🔗 Task Blockers API**: New documentation page explaining blocker relationships
-- **📖 Comprehensive Examples**: Updated all code examples with new field names
+- **📖 Updated Examples**: Updated all code examples with new field names
 
 ### Changed
 
@@ -30,9 +23,9 @@
 
 ### Documentation
 
-- Site: https://vaiz-python-sdk.vercel.app
-- Getting Started: https://vaiz-python-sdk.vercel.app/getting-started
-- API Reference: https://vaiz-python-sdk.vercel.app/api/overview
+- Site: https://docs-python-sdk.vaiz.com
+- Getting Started: https://docs-python-sdk.vaiz.com/getting-started
+- API Reference: https://docs-python-sdk.vaiz.com/api/overview
 
 ---
 

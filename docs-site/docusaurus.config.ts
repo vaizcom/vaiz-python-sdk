@@ -15,7 +15,7 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://vaiz-python-sdk.vercel.app',
+  url: 'https://docs-python-sdk.vaiz.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -85,11 +85,11 @@ const config: Config = {
             },
             {
               label: 'Getting Started',
-              to: '/getting-started',
+              to: '/',
             },
             {
               label: 'API Reference',
-              to: '/api/overview',
+              to: '/api/methods',
             },
           ],
         },
@@ -124,7 +124,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Vaiz. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Vaiz. Made with ❤️`,
     },
     prism: {
       theme: prismThemes.github,
