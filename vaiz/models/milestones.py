@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict, TYPE_CHECKING, Any
+from typing import List, Optional, Dict, TYPE_CHECKING, Any, Union
 from datetime import datetime
 from .base import VaizBaseModel
+from .enums import Color
 
 if TYPE_CHECKING:
     from .tasks import Task
@@ -16,7 +17,7 @@ class CreateMilestoneRequest(VaizBaseModel):
     due_start: Optional[datetime] = Field(default=None, alias="dueStart")
     due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
     tags: List[str] = []
-    color: str = "#3498db"  # Default blue color
+    color: Union[str, Color] = Color.Blue  # Default blue color
 
 
 class Milestone(VaizBaseModel):
@@ -36,7 +37,7 @@ class Milestone(VaizBaseModel):
     is_active: bool = Field(True, alias="isActive")
     is_completed: bool = Field(False, alias="isCompleted")
     hrid: Optional[str] = None
-    color: Optional[str] = None
+    color: Optional[Union[str, Color]] = None
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
     deleter: Optional[str] = None
@@ -97,7 +98,7 @@ class EditMilestoneRequest(VaizBaseModel):
     due_start: Optional[datetime] = Field(default=None, alias="dueStart")
     due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
     tags: Optional[List[str]] = None
-    color: Optional[str] = None
+    color: Optional[Union[str, Color]] = None
 
     model_config = ConfigDict(populate_by_name=True)
 

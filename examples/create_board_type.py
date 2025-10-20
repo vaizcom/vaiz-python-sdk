@@ -1,5 +1,5 @@
-from vaiz import VaizClient
 from vaiz.models import CreateBoardTypeRequest
+from vaiz.models.enums import Color
 from vaiz.api.base import VaizHTTPError, VaizSDKError
 from .config import get_client
 
@@ -14,7 +14,7 @@ def main():
         board_id="invalid_board_id",  # This will cause an error
         label="New Type",
         icon="Cursor",
-        color="silver"
+        color=Color.Silver
     )
 
     try:

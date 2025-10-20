@@ -783,7 +783,7 @@ class CreateMilestoneRequest:
     due_start: Optional[datetime]       # Start date
     due_end: Optional[datetime]         # End date
     tags: List[str]                     # Tags
-    color: str                          # Hex color (default: "#3498db")
+    color: str                          # Color name (default: "blue")
 ```
 
 #### EditMilestoneRequest
@@ -796,7 +796,7 @@ class EditMilestoneRequest:
     due_start: Optional[datetime]       # New start date
     due_end: Optional[datetime]         # New end date
     tags: Optional[List[str]]           # New tags
-    color: Optional[str]                # New hex color
+    color: Optional[str]                # New color name
 ```
 
 #### ToggleMilestoneRequest

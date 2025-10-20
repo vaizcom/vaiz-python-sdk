@@ -4,6 +4,7 @@ Test script to demonstrate authentication error handling.
 
 from vaiz import VaizClient
 from vaiz.models import CreateBoardTypeRequest
+from vaiz.models.enums import Color
 
 def main():
     # Create client with invalid token
@@ -20,11 +21,11 @@ def main():
         boardId="test_board",
         label="Test Type",
         icon="Cursor",
-        color="silver"
+        color=Color.Silver
     )
 
     try:
-        response = client.create_board_type(request)
+        client.create_board_type(request)
         print("Success! (This shouldn't happen)")
     except Exception as e:
         print(f"\nCaught error: {type(e).__name__}")

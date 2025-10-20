@@ -12,7 +12,7 @@ class ProfileEmail(BaseModel):
 
 
 class ProfileColor(BaseModel):
-    color: Optional[str] = None  # Hex color string
+    color: Optional[str] = None  # Color name
     is_dark: Optional[bool] = Field(None, alias="isDark")
 
 

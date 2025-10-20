@@ -171,7 +171,7 @@ class TestSelectOptionHelpers:
         """Test creating select option with string values."""
         option = make_select_option(
             title="Medium Priority",
-            color="orange",
+            color=Color.Orange,
             icon="Circle"
         )
         

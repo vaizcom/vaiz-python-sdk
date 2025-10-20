@@ -4,6 +4,7 @@ Module demonstrating milestone creation functionality with datetime objects.
 
 from datetime import datetime
 from vaiz.models import CreateMilestoneRequest
+from vaiz.models.enums import Color
 from .config import get_client, BOARD_ID, PROJECT_ID
 
 def create_milestone():
@@ -34,7 +35,7 @@ def create_milestone():
             project=PROJECT_ID,
             due_start=datetime(2025, 3, 1, 9, 0, 0),      # March 1st, 9:00 AM
             due_end=datetime(2025, 3, 31, 17, 0, 0),      # March 31st, 5:00 PM
-            color="#4CAF50"  # Green color
+            color=Color.Green  # Green color
         )
         
         response2 = client.create_milestone(milestone_with_dates)

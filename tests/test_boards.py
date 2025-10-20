@@ -1,5 +1,6 @@
 import pytest
 from vaiz.models import BoardsResponse, Board, BoardResponse
+from vaiz.models.enums import Color
 from tests.test_config import get_test_client, TEST_BOARD_ID
 from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoardCustomFieldRequest, EditBoardCustomFieldRequest, CustomFieldType, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse
 
@@ -10,7 +11,7 @@ def board_type_id():
         board_id=TEST_BOARD_ID,
         label="Test Type",
         icon="Cursor",
-        color="silver"
+        color=Color.Silver
     )
     response = client.create_board_type(request)
     return response.board_type.id
@@ -45,7 +46,7 @@ def test_create_board_type():
         board_id=TEST_BOARD_ID,
         label="Test Type",
         icon="Cursor",
-        color="silver"
+        color=Color.Silver
     )
     response = client.create_board_type(request)
     assert response.type == "CreateBoardType"
@@ -70,7 +71,7 @@ def test_edit_board_type(board_type_id):
         board_id=TEST_BOARD_ID,
         label="Updated Test Type",
         icon="Cursor",
-        color="silver",
+        color=Color.Silver,
         description="Updated test description",
         hidden=True
     )

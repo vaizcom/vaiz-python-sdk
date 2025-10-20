@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List, Dict, Any, Union
+from pydantic import BaseModel, Field
+from typing import Optional, List, Union
 from datetime import datetime
 from .base import VaizBaseModel
 from .enums import Icon, Color
@@ -16,7 +16,7 @@ class Project(VaizBaseModel):
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
     team: List[str] = []
-    color: Optional[Union[str, Color]] = None  # Allow both hex codes and enum values
+    color: Optional[Union[str, Color]] = None  # Color enum value or string
     slug: Optional[str] = None
     icon: Optional[Icon] = None
     space: Optional[str] = None

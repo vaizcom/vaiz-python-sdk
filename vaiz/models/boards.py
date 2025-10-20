@@ -31,7 +31,7 @@ class BoardGroup(BaseModel):
 class BoardType(BaseModel):
     label: str
     icon: Icon
-    color: Union[str, Color]  # Allow both hex codes and enum values
+    color: Union[str, Color]  # Color enum value or string
     id: str = Field(..., alias="_id")
     description: Optional[str] = None
     hidden: Optional[bool] = None

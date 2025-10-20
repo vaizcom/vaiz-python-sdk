@@ -49,6 +49,7 @@ response = client.create_milestone(milestone)
 
 ```python
 from datetime import datetime
+from vaiz.models.enums import Color
 
 milestone = CreateMilestoneRequest(
     name="Q1 2025 Release",
@@ -57,7 +58,7 @@ milestone = CreateMilestoneRequest(
     project="project_id",
     due_start=datetime(2025, 1, 1),
     due_end=datetime(2025, 3, 31),
-    color="#4CAF50"
+    color=Color.Green
 )
 
 response = client.create_milestone(milestone)
@@ -114,7 +115,7 @@ The `toggle_milestone` method works as a switch:
 | `description` | `str` | No | Description |
 | `due_start` | `datetime` | No | Start date |
 | `due_end` | `datetime` | No | End date |
-| `color` | `str` | No | Hex color |
+| `color` | `str` | No | Color name |
 
 ### EditMilestoneRequest
 

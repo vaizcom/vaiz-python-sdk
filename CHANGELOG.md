@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.2] - 2025-01-20
+
+### Changed
+
+- **🎨 Enhanced Color Support**: Updated all examples and documentation to use Color enum values instead of hex colors
+- **📚 Documentation**: Updated all examples in documentation to use `Color.Green`, `Color.Silver`, etc. instead of string values
+- **🔧 Models**: Enhanced color field types to support both Color enum values and string values for API compatibility
+- **✅ Examples**: All code examples now use Color enum for better type safety and IDE support
+
+### Fixed
+
+- **🔧 API Compatibility**: Fixed color validation to accept both enum values and string colors returned by API
+- **📝 Documentation**: Removed all references to hex color support in documentation
+
 ## [0.7.0] - 2025-10-20
 
 ### Breaking Changes
@@ -92,7 +106,7 @@
 ### Added
 
 - **🔢 New Custom Field Type**: Added `ESTIMATION` field type to `CustomFieldType` enum for project estimation fields
-- **🎨 Enhanced Project Colors**: Project `color` field now accepts both hex color codes (e.g., `#1F36AD`) and `Color` enum values for maximum flexibility
+- **🎨 Enhanced Project Colors**: Project `color` field now accepts `Color` enum values for consistent color management
 
 ---
 
