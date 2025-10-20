@@ -30,7 +30,8 @@ pip install vaiz-sdk
 - [PyPI Package](https://pypi.org/project/vaiz-sdk/)
 - [GitHub Repository](https://github.com/vaizcom/vaiz-python-sdk)
 - [Changelog](./CHANGELOG.md)
-- [Contributing](./CONTRIBUTING.md) - How to contribute to the project
+- [Contributing](./CONTRIBUTING.md)
+- [Known Issues and Tasks](./KNOWN_ISSUES.md)
 
 ## License
 
