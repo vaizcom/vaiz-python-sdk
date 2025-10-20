@@ -124,7 +124,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Vaiz. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Vaiz. Made with ❤️`,
     },
     prism: {
       theme: prismThemes.github,
