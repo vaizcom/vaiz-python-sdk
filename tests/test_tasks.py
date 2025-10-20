@@ -26,8 +26,8 @@ def task_id(client):
         assignees=[str(TEST_ASSIGNEE_ID)],
         subtasks=[],
         milestones=[],
-        rightConnectors=[],
-        leftConnectors=[]
+        blocking=[],
+        blockers=[]
     )
     response = client.create_task(task)
     assert response.type == "CreateTask"

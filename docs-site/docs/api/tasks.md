@@ -112,6 +112,25 @@ task = CreateTaskRequest(
 response = client.create_task(task)
 ```
 
+### Task with Blockers
+
+Create tasks with dependency relationships:
+
+```python
+# Task that is blocked by another task
+task = CreateTaskRequest(
+    name="Implement Feature",
+    board="board_id",
+    group="group_id",
+    project="project_id",
+    blockers=["design_task_id"]  # This task depends on design task
+)
+
+response = client.create_task(task)
+```
+
+Learn more in [Task Blockers](./blockers) documentation.
+
 ## Updating Tasks
 
 ```python
@@ -172,6 +191,8 @@ for task in response.payload.tasks:
 | `milestones` | `List[str]` | No | Milestone IDs |
 | `due_start` | `datetime` | No | Start date |
 | `due_end` | `datetime` | No | Due date |
+| `blockers` | `List[str]` | No | Task IDs that block this task |
+| `blocking` | `List[str]` | No | Task IDs this task blocks |
 | `custom_fields` | `List[CustomField]` | No | Custom field values |
 | `files` | `List[TaskFile]` | No | Attached files |
 
@@ -186,7 +207,8 @@ TaskPriority.High      # 3
 
 ## See Also
 
-- [Files API](./files)
-- [Comments API](./comments)
-- [Examples](../examples)
+- [Task Blockers](./blockers) - Manage task dependencies
+- [Files](./files) - File attachments
+- [Comments](./comments) - Task discussions
+- [Examples](../examples) - Code examples
 

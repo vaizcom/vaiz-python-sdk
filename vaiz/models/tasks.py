@@ -53,8 +53,8 @@ class Task(VaizBaseModel):
     milestones: List[str] = []
     due_start: Optional[datetime] = Field(default=None, alias="dueStart")
     due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
-    right_connectors: List[str] = Field(default_factory=list, alias="rightConnectors")
-    left_connectors: List[str] = Field(default_factory=list, alias="leftConnectors")
+    blocking: List[str] = Field(default_factory=list, alias="rightConnectors", serialization_alias="rightConnectors")
+    blockers: List[str] = Field(default_factory=list, alias="leftConnectors", serialization_alias="leftConnectors")
     archived_at: Optional[datetime] = Field(default=None, alias="archivedAt")
     completed_at: Optional[datetime] = Field(default=None, alias="completedAt")
     custom_fields: List[TaskCustomField] = Field(default_factory=list, alias="customFields")
@@ -128,8 +128,8 @@ class CreateTaskRequest(VaizBaseModel):
     milestones: List[str] = []
     due_start: Optional[datetime] = Field(default=None, alias="dueStart")
     due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
-    right_connectors: List[str] = Field(default_factory=list, alias="rightConnectors")
-    left_connectors: List[str] = Field(default_factory=list, alias="leftConnectors")
+    blocking: List[str] = Field(default_factory=list, alias="rightConnectors", serialization_alias="rightConnectors")
+    blockers: List[str] = Field(default_factory=list, alias="leftConnectors", serialization_alias="leftConnectors")
     custom_fields: List[CustomField] = Field(default_factory=list, alias="customFields")
     files: List[TaskFile] = []
 
@@ -151,8 +151,8 @@ class EditTaskRequest(VaizBaseModel):
     milestones: Optional[List[str]] = None
     due_start: Optional[datetime] = Field(default=None, alias="dueStart")
     due_end: Optional[datetime] = Field(default=None, alias="dueEnd")
-    right_connectors: Optional[List[str]] = Field(default=None, alias="rightConnectors")
-    left_connectors: Optional[List[str]] = Field(default=None, alias="leftConnectors")
+    blocking: Optional[List[str]] = Field(default=None, alias="rightConnectors", serialization_alias="rightConnectors")
+    blockers: Optional[List[str]] = Field(default=None, alias="leftConnectors", serialization_alias="leftConnectors")
     custom_fields: Optional[List[CustomField]] = Field(default=None, alias="customFields")
     description: Optional[str] = None
     files: Optional[List[TaskFile]] = None

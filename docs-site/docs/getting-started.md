@@ -76,6 +76,7 @@ Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 - 👤 [Profile](./api/profile) - User information
 - 📝 [Documents](./api/documents) - Task descriptions
 - 📜 [History Events](./api/history) - Change tracking
+- 🔗 [Task Blockers](./api/blockers) - Manage task dependencies
 - 🛠️ [Helper Functions](./api/helpers) - Utility functions for common tasks
 - 💡 [Examples](./examples) - Ready-to-use code examples
 

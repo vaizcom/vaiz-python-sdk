@@ -290,6 +290,7 @@ Explore detailed documentation for each API category:
 - [Profile](./profile) - User information
 - [Documents](./documents) - Task descriptions
 - [History Events](./history) - Change tracking
+- [Task Blockers](./blockers) - Manage task dependencies
 - [Helper Functions](./helpers) - Utility functions
 
 Or check out [Examples](../examples) for ready-to-use code.
