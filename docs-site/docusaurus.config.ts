@@ -42,8 +42,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/',  // Docs at root instead of /docs
-          editUrl:
-            'https://github.com/vaizcom/vaiz-python-sdk/tree/main/docs-site/',
+          // editUrl: 'https://github.com/vaizcom/vaiz-python-sdk/tree/main/docs-site/', // Disabled to hide "Edit this page" button
         },
         blog: false,
         theme: {
