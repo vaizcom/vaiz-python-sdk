@@ -9,6 +9,7 @@ const sidebars: SidebarsConfig = {
       label: 'API Reference',
       items: [
         'api/overview',
+        'api/methods',
         'api/boards',
         'api/comments',
         'api/custom-fields',

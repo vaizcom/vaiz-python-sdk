@@ -59,7 +59,7 @@ from vaiz.models.enums import EIcon, EColor
 
 # Use enums instead of strings
 icon = EIcon.Cursor
-color = EColor.Silver
+color = EColor.Blue
 ```
 
 ### 🎛️ Custom Field Helpers

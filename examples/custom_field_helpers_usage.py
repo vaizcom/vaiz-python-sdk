@@ -103,7 +103,7 @@ def demonstrate_field_creation_helpers():
         make_select_option("⚡ High", EColor.Orange, EIcon.Flag),
         make_select_option("📋 Medium", EColor.Blue, EIcon.Circle),
         make_select_option("🌱 Low", EColor.Green, EIcon.Target),
-        make_select_option("💤 Someday", EColor.Silver, EIcon.Moon)
+        make_select_option("💤 Someday", EColor.Violet, EIcon.Moon)
     ]
     
     select_field_request = make_select_field(
