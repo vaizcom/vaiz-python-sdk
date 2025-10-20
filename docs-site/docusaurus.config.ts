@@ -99,7 +99,7 @@ const config: Config = {
       },
       items: [
         {
-          label: 'v0.6.0',
+          label: 'v0.7.0',
           position: 'left',
         },
         {
