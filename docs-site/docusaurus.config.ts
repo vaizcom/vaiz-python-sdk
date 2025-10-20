@@ -99,6 +99,10 @@ const config: Config = {
       },
       items: [
         {
+          label: 'v0.6.0',
+          position: 'left',
+        },
+        {
           href: 'https://github.com/vaizcom/vaiz-python-sdk',
           label: 'GitHub',
           position: 'right',
