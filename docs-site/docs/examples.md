@@ -78,7 +78,7 @@ task_files = [
         url=doc.file.url,
         name=doc.file.name,
         ext=doc.file.ext,
-        _id=doc.file.id,
+        id=doc.file.id,
         type=doc.file.type,
         dimension=doc.file.dimension
     ),
@@ -86,7 +86,7 @@ task_files = [
         url=img.file.url,
         name=img.file.name,
         ext=img.file.ext,
-        _id=img.file.id,
+        id=img.file.id,
         type=img.file.type,
         dimension=img.file.dimension
     )
@@ -362,7 +362,7 @@ task_file = TaskFile(
     url=file_response.file.url,
     name=file_response.file.name,
     ext=file_response.file.ext,
-    _id=file_response.file.id,
+    id=file_response.file.id,
     type=file_response.file.type,
     dimension=file_response.file.dimension
 )

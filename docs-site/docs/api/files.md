@@ -39,7 +39,7 @@ task_file = TaskFile(
     url=upload.file.url,
     name=upload.file.name,
     ext=upload.file.ext,
-    _id=upload.file.id,
+    id=upload.file.id,
     type=upload.file.type,
     dimension=upload.file.dimension
 )
@@ -74,7 +74,7 @@ for path, file_type in files:
         url=upload.file.url,
         name=upload.file.name,
         ext=upload.file.ext,
-        _id=upload.file.id,
+        id=upload.file.id,
         type=upload.file.type,
         dimension=upload.file.dimension
     ))

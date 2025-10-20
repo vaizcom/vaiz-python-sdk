@@ -27,6 +27,23 @@ response = client.create_task(task)
 print(f"Created: {response.task.id}")
 ```
 
+### Task with Description
+
+Use the `description` parameter for convenience:
+
+```python
+task = CreateTaskRequest(
+    name="Task Name",
+    board="board_id",
+    group="group_id"
+)
+
+response = client.create_task(
+    task,
+    description="Task description content"
+)
+```
+
 ### Task with Dates
 
 ```python
@@ -43,11 +60,33 @@ task = CreateTaskRequest(
 response = client.create_task(task)
 ```
 
-### Task with Files
+### Task with Files (Easy Way)
+
+Upload and attach file in one step:
+
+```python
+from vaiz.models import TaskUploadFile
+from vaiz.models.enums import EUploadFileType
+
+task = CreateTaskRequest(
+    name="Review Document",
+    board="board_id",
+    group="group_id"
+)
+
+# File automatically uploaded and attached
+response = client.create_task(
+    task,
+    file=TaskUploadFile(path="doc.pdf", type=EUploadFileType.Pdf)
+)
+```
+
+### Task with Files (Manual Way)
+
+Or upload manually and create TaskFile:
 
 ```python
 from vaiz.models import TaskFile
-from vaiz.models.enums import EUploadFileType
 
 # Upload file
 file_response = client.upload_file("doc.pdf", EUploadFileType.Pdf)
@@ -57,7 +96,7 @@ task_file = TaskFile(
     url=file_response.file.url,
     name=file_response.file.name,
     ext=file_response.file.ext,
-    _id=file_response.file.id,
+    id=file_response.file.id,
     type=file_response.file.type,
     dimension=file_response.file.dimension
 )
@@ -122,11 +161,19 @@ for task in response.payload.tasks:
 | `name` | `str` | Yes | Task name |
 | `board` | `str` | Yes | Board ID |
 | `group` | `str` | Yes | Group ID |
-| `project` | `str` | No | Project ID |
-| `priority` | `TaskPriority` | No | Priority (0-3) |
+| `project` | `str` | Yes | Project ID |
+| `description` | `str` | No | Task description |
+| `priority` | `TaskPriority` | No | Priority (0-3, default: 1) |
+| `completed` | `bool` | No | Completion status (default: False) |
+| `assignees` | `List[str]` | No | Assignee user IDs |
+| `types` | `List[str]` | No | Task type IDs |
+| `parent_task` | `str` | No | Parent task ID (for subtasks) |
+| `subtasks` | `List[str]` | No | Subtask IDs |
+| `milestones` | `List[str]` | No | Milestone IDs |
 | `due_start` | `datetime` | No | Start date |
 | `due_end` | `datetime` | No | Due date |
-| `assignees` | `List[str]` | No | Assignee IDs |
+| `custom_fields` | `List[CustomField]` | No | Custom field values |
+| `files` | `List[TaskFile]` | No | Attached files |
 
 ### TaskPriority Enum
 

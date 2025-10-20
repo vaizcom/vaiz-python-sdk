@@ -21,57 +21,23 @@ response = client.get_history(request)
 
 for history in response.payload.histories:
     print(f"{history.key}: {history.createdAt}")
-    print(f"  Changed by: {history.createdBy}")
+    print(f"  Changed by: {history.creatorId}")
     print(f"  Data: {history.data}")
 ```
 
 ## Filter History
 
-### By Date Range
-
-```python
-from datetime import datetime
-
-request = GetHistoryRequest(
-    kind=EKind.Task,
-    kindId="task_id",
-    dateRangeStart=datetime(2025, 1, 1).isoformat(),
-    dateRangeEnd=datetime(2025, 12, 31).isoformat()
-)
-
-response = client.get_history(request)
-```
-
-### By User
-
-```python
-request = GetHistoryRequest(
-    kind=EKind.Task,
-    kindId="task_id",
-    createdBy=["user_id_1", "user_id_2"]
-)
-```
-
-### By Specific Keys
-
-```python
-# Only track name and priority changes
-request = GetHistoryRequest(
-    kind=EKind.Task,
-    kindId="task_id",
-    keys=["name", "priority", "completed"]
-)
-```
-
-### Exclude Keys
+### Exclude Specific Keys
 
 ```python
 # Track everything except description changes
 request = GetHistoryRequest(
     kind=EKind.Task,
     kindId="task_id",
-    excludeKeys=["description"]
+    excludeKeys=["description", "customFields"]
 )
+
+response = client.get_history(request)
 ```
 
 ## Common History Keys
@@ -92,16 +58,12 @@ Track these common task changes:
 
 ## Request Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `kind` | `EKind` | Entity type (Task, Project, etc.) |
-| `kindId` | `str` | Entity ID |
-| `limit` | `int` | Max results (default: 50, max: 100) |
-| `keys` | `List[str]` | Filter by specific keys |
-| `excludeKeys` | `List[str]` | Exclude specific keys |
-| `createdBy` | `List[str]` | Filter by user IDs |
-| `dateRangeStart` | `str` | ISO datetime string |
-| `dateRangeEnd` | `str` | ISO datetime string |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `kind` | `EKind` | Yes | Entity type (Task, Project, etc.) |
+| `kindId` | `str` | Yes | Entity ID |
+| `excludeKeys` | `List[str]` | No | Keys to exclude from history |
+| `lastLoadedDate` | `int` | No | Timestamp for pagination (default: 0) |
 
 ## Use Cases
 
@@ -112,8 +74,7 @@ def get_task_audit_trail(task_id: str):
     """Get complete audit trail for a task"""
     request = GetHistoryRequest(
         kind=EKind.Task,
-        kindId=task_id,
-        limit=100
+        kindId=task_id
     )
     
     response = client.get_history(request)
@@ -123,55 +84,29 @@ def get_task_audit_trail(task_id: str):
     
     for event in response.payload.histories:
         print(f"{event.createdAt}: {event.key} changed")
-        print(f"  By: {event.createdBy}")
+        print(f"  By: {event.creatorId}")
         print(f"  Value: {event.data}")
         print()
 
 get_task_audit_trail("task_id")
 ```
 
-### Track User Activity
+### Filter Specific Changes
 
 ```python
-def get_user_changes(user_id: str, days: int = 7):
-    """Get all changes made by user in last N days"""
-    from datetime import datetime, timedelta
-    
-    start_date = datetime.now() - timedelta(days=days)
-    
-    request = GetHistoryRequest(
-        kind=EKind.Task,
-        kindId="task_id",  # Or iterate over tasks
-        createdBy=[user_id],
-        dateRangeStart=start_date.isoformat()
-    )
-    
-    response = client.get_history(request)
-    
-    print(f"Changes by user {user_id} in last {days} days:")
-    for event in response.payload.histories:
-        print(f"  - {event.key} at {event.createdAt}")
-```
-
-### Monitor Important Changes
-
-```python
-def monitor_priority_changes(task_id: str):
-    """Monitor only priority and status changes"""
+def monitor_important_changes(task_id: str):
+    """Get history excluding description changes"""
     request = GetHistoryRequest(
         kind=EKind.Task,
         kindId=task_id,
-        keys=["priority", "completed"]
+        excludeKeys=["description", "files"]
     )
     
     response = client.get_history(request)
     
     for event in response.payload.histories:
-        if event.key == "priority":
-            print(f"⚡ Priority changed to {event.data}")
-        elif event.key == "completed":
-            status = "✅ Completed" if event.data else "⏳ Reopened"
-            print(f"{status} at {event.createdAt}")
+        print(f"{event.key} changed at {event.createdAt}")
+        print(f"  New value: {event.data}")
 ```
 
 ### Generate Reports
@@ -209,7 +144,6 @@ def generate_activity_report(task_id: str):
 from vaiz import VaizClient
 from vaiz.models import GetHistoryRequest
 from vaiz.models.enums import EKind
-from datetime import datetime, timedelta
 
 client = VaizClient(api_key="...", space_id="...")
 
@@ -217,38 +151,27 @@ client = VaizClient(api_key="...", space_id="...")
 task = client.get_task("PRJ-123")
 task_id = task.payload["task"]["_id"]
 
-# Get recent history
-recent = GetHistoryRequest(
+# Get all history
+request = GetHistoryRequest(
     kind=EKind.Task,
-    kindId=task_id,
-    dateRangeStart=(datetime.now() - timedelta(days=7)).isoformat(),
-    limit=20
+    kindId=task_id
 )
 
-response = client.get_history(recent)
+response = client.get_history(request)
+print(f"📊 Total changes: {len(response.payload.histories)}")
 
-print(f"📊 Recent changes (last 7 days): {len(response.payload.histories)}")
-
-# Get changes by specific user
-user_id = "user_id"
-user_changes = GetHistoryRequest(
+# Get history excluding certain keys
+filtered = GetHistoryRequest(
     kind=EKind.Task,
     kindId=task_id,
-    createdBy=[user_id]
+    excludeKeys=["description", "files", "customFields"]
 )
 
-response = client.get_history(user_changes)
-print(f"👤 Changes by user: {len(response.payload.histories)}")
-
-# Get only important changes
-important = GetHistoryRequest(
-    kind=EKind.Task,
-    kindId=task_id,
-    keys=["name", "priority", "completed", "assignees"]
-)
-
-response = client.get_history(important)
+response = client.get_history(filtered)
 print(f"⚡ Important changes: {len(response.payload.histories)}")
+
+for event in response.payload.histories:
+    print(f"  {event.key}: {event.createdAt}")
 ```
 
 ## See Also
