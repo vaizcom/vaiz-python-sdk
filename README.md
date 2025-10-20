@@ -19,7 +19,7 @@ pip install vaiz-sdk
 
 ## Documentation
 
-**[Full Documentation](https://docs-python-sdk.vaiz.com)**
+**[Documentation](https://docs-python-sdk.vaiz.com)**
 
 - [Getting Started](https://docs-python-sdk.vaiz.com/getting-started) - Installation and quick start guide
 - [API Reference](https://docs-python-sdk.vaiz.com/api/overview) - Complete API documentation
@@ -27,7 +27,6 @@ pip install vaiz-sdk
 
 ## Links
 
-- [Documentation](https://docs-python-sdk.vaiz.com)
 - [PyPI Package](https://pypi.org/project/vaiz-sdk/)
 - [GitHub Repository](https://github.com/vaizcom/vaiz-python-sdk)
 - [Changelog](./CHANGELOG.md)
