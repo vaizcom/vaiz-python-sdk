@@ -101,7 +101,7 @@ const config: Config = {
               href: 'https://github.com/vaizcom/vaiz-python-sdk',
             },
             {
-              label: 'Vaiz Platform',
+              label: 'Vaiz App',
               href: 'https://vaiz.com',
             },
           ],

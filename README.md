@@ -1,6 +1,6 @@
 # Vaiz Python SDK
 
-> Official Python SDK for the [Vaiz](https://vaiz.com) platform
+> Official Python SDK for the [Vaiz](https://vaiz.com) App
 
 [![PyPI version](https://badge.fury.io/py/vaiz-sdk.svg)](https://badge.fury.io/py/vaiz-sdk)
 [![Python](https://img.shields.io/pypi/pyversions/vaiz-sdk.svg)](https://pypi.org/project/vaiz-sdk/)
@@ -8,7 +8,7 @@
 
 ## About
 
-**Vaiz** is a modern project management platform that helps teams collaborate and get work done. 
+**Vaiz** is a modern project management app that helps teams collaborate and get work done. 
 This SDK provides a complete Python interface to the Vaiz API, making it easy to integrate Vaiz into your Python applications and workflows.
 
 ## Installation
