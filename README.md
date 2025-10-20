@@ -19,15 +19,15 @@ pip install vaiz-sdk
 
 ## Documentation
 
-**[📖 Full Documentation](https://vaiz-python-sdk.vercel.app)**
+**[📖 Full Documentation](https://docs-python-sdk.vaiz.com)**
 
-- [Getting Started](https://vaiz-python-sdk.vercel.app/getting-started) - Installation and quick start guide
-- [API Reference](https://vaiz-python-sdk.vercel.app/api/overview) - Complete API documentation
-- [Examples](https://vaiz-python-sdk.vercel.app/examples) - Practical code examples
+- [Getting Started](https://docs-python-sdk.vaiz.com/getting-started) - Installation and quick start guide
+- [API Reference](https://docs-python-sdk.vaiz.com/api/overview) - Complete API documentation
+- [Examples](https://docs-python-sdk.vaiz.com/examples) - Practical code examples
 
 ## Links
 
-- [Documentation](https://vaiz-python-sdk.vercel.app)
+- [Documentation](https://docs-python-sdk.vaiz.com)
 - [PyPI Package](https://pypi.org/project/vaiz-sdk/)
 - [GitHub Repository](https://github.com/vaizcom/vaiz-python-sdk)
 - [Changelog](./CHANGELOG.md)

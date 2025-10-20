@@ -23,9 +23,9 @@
 
 ### Documentation
 
-- Site: https://vaiz-python-sdk.vercel.app
-- Getting Started: https://vaiz-python-sdk.vercel.app/getting-started
-- API Reference: https://vaiz-python-sdk.vercel.app/api/overview
+- Site: https://docs-python-sdk.vaiz.com
+- Getting Started: https://docs-python-sdk.vaiz.com/getting-started
+- API Reference: https://docs-python-sdk.vaiz.com/api/overview
 
 ---
 
