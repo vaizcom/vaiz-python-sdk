@@ -2,78 +2,39 @@
 sidebar_position: 4
 ---
 
-# Files API
+# Working with Files
 
-Upload and manage files in Vaiz SDK.
+Files in Vaiz are always attached to either [tasks](./tasks) or [comments](./comments). You upload files and then attach them to content.
 
-## Uploading Files
+## File Types
 
-### From Local Disk
+Choose the right type for proper display:
 
 ```python
 from vaiz.models.enums import EUploadFileType
 
-response = client.upload_file(
-    "/path/to/file.pdf",
-    file_type=EUploadFileType.Pdf
-)
-
-file = response.file
-print(f"Uploaded: {file.name}")
-print(f"URL: {file.url}")
+EUploadFileType.Image    # Shows preview thumbnail
+EUploadFileType.Video    # Shows embedded player
+EUploadFileType.Pdf      # Shows document viewer
+EUploadFileType.File     # Shows download link
 ```
 
-### From URL
+:::tip File Type Matters
+The same file uploaded as `Image` shows a preview, while `File` shows only a download button. Choose based on how you want users to see it.
+:::
 
-```python
-response = client.upload_file_from_url(
-    "https://example.com/image.png"
-)
+## Files in Tasks
 
-# With custom name
-response = client.upload_file_from_url(
-    file_url="https://example.com/doc.pdf",
-    file_type=EUploadFileType.Pdf,
-    filename="custom_name.pdf"
-)
-```
-
-## File Types
-
-### EUploadFileType Options
-
-```python
-EUploadFileType.Image    # Images - shows preview
-EUploadFileType.Video    # Videos - shows player
-EUploadFileType.Pdf      # PDFs - shows viewer
-EUploadFileType.File     # Generic files - download link
-```
-
-### Display Differences
-
-```python
-# Image - preview thumbnail
-img = client.upload_file("photo.jpg", EUploadFileType.Image)
-
-# Video - embedded player
-vid = client.upload_file("demo.mp4", EUploadFileType.Video)
-
-# PDF - document viewer
-pdf = client.upload_file("doc.pdf", EUploadFileType.Pdf)
-
-# File - download button
-file = client.upload_file("archive.zip", EUploadFileType.File)
-```
-
-## Attaching to Tasks
+Upload and attach files when creating or updating tasks:
 
 ```python
 from vaiz.models import CreateTaskRequest, TaskFile
+from vaiz.models.enums import EUploadFileType
 
-# Upload file
-upload = client.upload_file("doc.pdf", EUploadFileType.Pdf)
+# 1. Upload file
+upload = client.upload_file("design.pdf", EUploadFileType.Pdf)
 
-# Create TaskFile
+# 2. Create TaskFile object
 task_file = TaskFile(
     url=upload.file.url,
     name=upload.file.name,
@@ -83,9 +44,9 @@ task_file = TaskFile(
     dimension=upload.file.dimension
 )
 
-# Create task
+# 3. Create task with file
 task = CreateTaskRequest(
-    name="Task with File",
+    name="Review Design Document",
     board="board_id",
     group="group_id",
     files=[task_file]
@@ -94,86 +55,78 @@ task = CreateTaskRequest(
 response = client.create_task(task)
 ```
 
-## Multiple Files
+### Multiple Files in Task
 
 ```python
-files_to_upload = [
-    ("doc.pdf", EUploadFileType.Pdf),
-    ("image.png", EUploadFileType.Image),
-    ("video.mp4", EUploadFileType.Video)
+from vaiz.models.enums import EUploadFileType
+
+# Upload multiple files
+files = [
+    ("requirements.pdf", EUploadFileType.Pdf),
+    ("mockup.png", EUploadFileType.Image),
+    ("demo.mp4", EUploadFileType.Video)
 ]
 
 task_files = []
-for path, file_type in files_to_upload:
+for path, file_type in files:
     upload = client.upload_file(path, file_type)
-    
-    task_file = TaskFile(
+    task_files.append(TaskFile(
         url=upload.file.url,
         name=upload.file.name,
         ext=upload.file.ext,
         _id=upload.file.id,
         type=upload.file.type,
         dimension=upload.file.dimension
-    )
-    task_files.append(task_file)
+    ))
 
 # Create task with all files
 task = CreateTaskRequest(
-    name="Multi-file Task",
+    name="Project Kickoff",
     board="board_id",
     group="group_id",
     files=task_files
 )
+
+response = client.create_task(task)
 ```
 
 ## Files in Comments
 
-```python
-# Upload files
-file1 = client.upload_file("report.pdf", EUploadFileType.Pdf)
-file2 = client.upload_file("chart.png", EUploadFileType.Image)
+Files are commonly used in comments for discussions:
 
-# Add to comment
+```python
+from vaiz.models.enums import EUploadFileType
+
+# Upload files
+screenshot = client.upload_file("bug.png", EUploadFileType.Image)
+log = client.upload_file("error.log", EUploadFileType.File)
+
+# Attach to comment
 response = client.post_comment(
     document_id="document_id",
-    content="<p>See attachments</p>",
-    file_ids=[file1.file.id, file2.file.id]
+    content="<p>Found a bug, see screenshot and logs</p>",
+    file_ids=[screenshot.file.id, log.file.id]
 )
 ```
 
-## Response Model
+### Upload from URL
 
-### UploadedFile
-
-```python
-class UploadedFile:
-    id: str                    # File ID
-    url: str                   # Access URL
-    name: str                  # Filename
-    original_name: str         # Original name
-    size: int                  # Size in bytes
-    type: EUploadFileType      # File type
-    ext: str                   # Extension
-    dimension: Optional[dict]  # Dimensions (images/videos)
-```
-
-## Error Handling
+Skip local files and upload directly from URLs:
 
 ```python
-import os
-from requests.exceptions import HTTPError
+# Upload external file
+upload = client.upload_file_from_url(
+    file_url="https://example.com/report.pdf",
+    file_type=EUploadFileType.Pdf,
+    filename="monthly_report.pdf"
+)
 
-try:
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"File not found: {file_path}")
-    
-    response = client.upload_file(file_path, file_type)
-    print(f"✅ Uploaded: {response.file.name}")
-    
-except HTTPError as e:
-    print(f"❌ HTTP Error: {e.response.status_code}")
-except Exception as e:
-    print(f"❌ Error: {e}")
+# Use in comment
+response = client.post_comment(
+    document_id="document_id",
+    content="<p>External report attached</p>",
+    file_ids=[upload.file.id]
+)
 ```
 
 ## See Also
