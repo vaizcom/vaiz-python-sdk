@@ -4,8 +4,6 @@
 
 ### Changed
 
-- **🎨 Enhanced Color Support**: Updated all examples and documentation to use Color enum values instead of hex colors
-- **📚 Documentation**: Updated all examples in documentation to use `Color.Green`, `Color.Silver`, etc. instead of string values
 - **🔧 Models**: Enhanced color field types to support both Color enum values and string values for API compatibility
 - **✅ Examples**: All code examples now use Color enum for better type safety and IDE support
 
