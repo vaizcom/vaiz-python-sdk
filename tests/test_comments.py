@@ -1008,7 +1008,7 @@ def test_post_comment_with_single_file(client, test_document_id):
         return
     
     print(f"Uploading file: {file_path}")
-    upload_response = client.upload_file(file_path, EUploadFileType.Image)
+    upload_response = client.upload_file(file_path, UploadFileType.Image)
     file_id = upload_response.file.id
     print(f"Uploaded file ID: {file_id}")
     print(f"File type: {upload_response.file.type.value}")
@@ -1037,9 +1037,9 @@ def test_post_comment_with_multiple_files(client, test_document_id):
     
     # Upload multiple different file types
     files_to_upload = [
-        ("assets/example.png", "Image", EUploadFileType.Image),
-        ("assets/example.mp4", "Video", EUploadFileType.Video), 
-        ("assets/example.pdf", "Document", EUploadFileType.Pdf)
+        ("assets/example.png", "Image", UploadFileType.Image),
+        ("assets/example.mp4", "Video", UploadFileType.Video), 
+        ("assets/example.pdf", "Document", UploadFileType.Pdf)
     ]
     
     uploaded_file_ids = []
@@ -1102,7 +1102,7 @@ def test_edit_comment_add_files(client, test_document_id):
         print(f"Skipping test - file not found: {file_path}")
         return
     
-    upload_response = client.upload_file(file_path, EUploadFileType.Pdf)
+    upload_response = client.upload_file(file_path, UploadFileType.Pdf)
     file_id = upload_response.file.id
     print(f"Uploaded file to add: {file_id}")
     print(f"File type: {upload_response.file.type.value}")
@@ -1137,7 +1137,7 @@ def test_edit_comment_remove_files(client, test_document_id):
     file_path2 = os.path.join("assets", "example.pdf")
     
     file_ids = []
-    file_types = [EUploadFileType.Image, EUploadFileType.Pdf]
+    file_types = [UploadFileType.Image, UploadFileType.Pdf]
     
     for file_path, file_type in zip([file_path1, file_path2], file_types):
         if os.path.exists(file_path):
@@ -1189,8 +1189,8 @@ def test_edit_comment_reorder_files(client, test_document_id):
     
     # Upload multiple files
     files_to_upload = [
-        ("assets/example.png", EUploadFileType.Image),
-        ("assets/example.pdf", EUploadFileType.Pdf)
+        ("assets/example.png", UploadFileType.Image),
+        ("assets/example.pdf", UploadFileType.Pdf)
     ]
     file_ids = []
     
@@ -1246,7 +1246,7 @@ def test_comment_with_files_complete_lifecycle(client, test_document_id):
         print("Skipping lifecycle test - no files available")
         return
     
-    upload1 = client.upload_file(file_path, EUploadFileType.Image)
+    upload1 = client.upload_file(file_path, UploadFileType.Image)
     file_id1 = upload1.file.id
     print(f"1. Uploaded initial file: {file_id1} ({upload1.file.type.value})")
     
@@ -1262,7 +1262,7 @@ def test_comment_with_files_complete_lifecycle(client, test_document_id):
     # 3. Add another file if available
     file_path2 = os.path.join("assets", "example.pdf")
     if os.path.exists(file_path2):
-        upload2 = client.upload_file(file_path2, EUploadFileType.Pdf)
+        upload2 = client.upload_file(file_path2, UploadFileType.Pdf)
         file_id2 = upload2.file.id
         print(f"3. Uploaded second file: {file_id2} ({upload2.file.type.value})")
         

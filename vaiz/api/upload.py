@@ -9,13 +9,13 @@ from urllib.parse import urlparse
 
 
 class UploadAPIClient(BaseAPIClient):
-    def upload_file(self, file_path: str, file_type: EUploadFileType) -> UploadFileResponse:
+    def upload_file(self, file_path: str, file_type: UploadFileType) -> UploadFileResponse:
         """
         Upload a file to the Vaiz platform.
 
         Args:
             file_path (str): Path to the file to upload.
-            file_type (EUploadFileType): Type of the file (Image, Video, Pdf, or File).
+            file_type (UploadFileType): Type of the file (Image, Video, Pdf, or File).
                 - Image: Will display as image preview in interface
                 - Video: Will display as video player in interface  
                 - Pdf: Will display as PDF viewer in interface
@@ -35,13 +35,13 @@ class UploadAPIClient(BaseAPIClient):
         response_data = response.json()
         return UploadFileResponse(**response_data)
 
-    def upload_file_from_url(self, file_url: str, file_type: Optional[EUploadFileType] = None, filename: Optional[str] = None) -> UploadFileResponse:
+    def upload_file_from_url(self, file_url: str, file_type: Optional[UploadFileType] = None, filename: Optional[str] = None) -> UploadFileResponse:
         """
         Upload a file from URL to the Vaiz platform.
 
         Args:
             file_url (str): URL of the file to download and upload.
-            file_type (Optional[EUploadFileType]): Type of the file. If not provided, will try to detect from URL or content type.
+            file_type (Optional[UploadFileType]): Type of the file. If not provided, will try to detect from URL or content type.
             filename (Optional[str]): Custom filename for the uploaded file. If not provided, will extract from URL.
 
         Returns:
@@ -90,7 +90,7 @@ class UploadAPIClient(BaseAPIClient):
                 except OSError:
                     pass
 
-    def _detect_file_type_from_url_and_content(self, file_url: str, content_type: Optional[str]) -> EUploadFileType:
+    def _detect_file_type_from_url_and_content(self, file_url: str, content_type: Optional[str]) -> UploadFileType:
         """
         Detect file type from URL extension and content type.
 
@@ -99,7 +99,7 @@ class UploadAPIClient(BaseAPIClient):
             content_type (Optional[str]): Content-Type header from the download response.
 
         Returns:
-            EUploadFileType: Detected file type.
+            UploadFileType: Detected file type.
 
         Raises:
             ValueError: If file type cannot be determined.
@@ -110,25 +110,25 @@ class UploadAPIClient(BaseAPIClient):
         
         # Image extensions
         if any(file_path.endswith(ext) for ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']):
-            return EUploadFileType.Image
+            return UploadFileType.Image
         
         # Video extensions
         if any(file_path.endswith(ext) for ext in ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv']):
-            return EUploadFileType.Video
+            return UploadFileType.Video
         
         # PDF extension
         if file_path.endswith('.pdf'):
-            return EUploadFileType.Pdf
+            return UploadFileType.Pdf
         
         # Try to detect from content type if URL extension didn't work
         if content_type:
             content_type = content_type.lower()
             if content_type.startswith('image/'):
-                return EUploadFileType.Image
+                return UploadFileType.Image
             elif content_type.startswith('video/'):
-                return EUploadFileType.Video
+                return UploadFileType.Video
             elif content_type == 'application/pdf':
-                return EUploadFileType.Pdf
+                return UploadFileType.Pdf
         
         # Default to File type if cannot determine
-        return EUploadFileType.File 
+        return UploadFileType.File 

@@ -25,7 +25,7 @@ def upload_single_file_comment():
             return
         
         print(f"📤 Uploading file: {file_path}")
-        upload_response = client.upload_file(file_path, EUploadFileType.Image)
+        upload_response = client.upload_file(file_path, UploadFileType.Image)
         file_id = upload_response.file.id
         
         print(f"✅ File uploaded successfully!")
@@ -64,9 +64,9 @@ def upload_multiple_files_comment():
         
         # Define files to upload with descriptions
         files_to_upload = [
-            ("assets/example.png", "🖼️ Image", "PNG image file", EUploadFileType.Image),
-            ("assets/example.mp4", "🎥 Video", "MP4 video file", EUploadFileType.Video),
-            ("assets/example.pdf", "📄 Document", "PDF document file", EUploadFileType.Pdf)
+            ("assets/example.png", "🖼️ Image", "PNG image file", UploadFileType.Image),
+            ("assets/example.mp4", "🎥 Video", "MP4 video file", UploadFileType.Video),
+            ("assets/example.pdf", "📄 Document", "PDF document file", UploadFileType.Pdf)
         ]
         
         uploaded_files = []
@@ -156,7 +156,7 @@ def edit_comment_add_files():
             return
         
         print(f"\n📤 Uploading file to add: {file_path}")
-        upload_response = client.upload_file(file_path, EUploadFileType.Pdf)
+        upload_response = client.upload_file(file_path, UploadFileType.Pdf)
         file_id = upload_response.file.id
         print(f"   ✅ File uploaded: {file_id}")
         print(f"   📝 Name: {upload_response.file.original_name}")
@@ -193,8 +193,8 @@ def edit_comment_manage_files():
         
         # 1. Upload initial files
         files_with_types = [
-            ("assets/example.png", EUploadFileType.Image),
-            ("assets/example.pdf", EUploadFileType.Pdf)
+            ("assets/example.png", UploadFileType.Image),
+            ("assets/example.pdf", UploadFileType.Pdf)
         ]
         initial_file_ids = []
         
@@ -225,7 +225,7 @@ def edit_comment_manage_files():
         third_file_path = os.path.join("assets", "example.mp4")
         if os.path.exists(third_file_path):
             print(f"\n📤 Adding third file: {third_file_path}")
-            upload_response = client.upload_file(third_file_path, EUploadFileType.Video)
+            upload_response = client.upload_file(third_file_path, UploadFileType.Video)
             third_file_id = upload_response.file.id
             print(f"   ✅ Uploaded: {third_file_id}")
             
@@ -284,7 +284,7 @@ def complete_file_workflow():
             return
         
         print("1️⃣ Uploading file...")
-        upload_response = client.upload_file(file_path, EUploadFileType.Image)
+        upload_response = client.upload_file(file_path, UploadFileType.Image)
         file_id = upload_response.file.id
         print(f"   ✅ Uploaded: {upload_response.file.original_name}")
         

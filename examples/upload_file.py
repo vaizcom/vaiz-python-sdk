@@ -8,7 +8,7 @@ from vaiz.models.enums import UploadFileType
 def upload_file_example():
     client = get_client()
     file_path = "./assets/example.pdf"  # Replace with path to your file
-    file_type = EUploadFileType.Pdf
+    file_type = UploadFileType.Pdf
     try:
         response = client.upload_file(file_path, file_type=file_type)
         file = response.file
@@ -30,10 +30,10 @@ def upload_different_file_types_example():
     
     # Examples of using different file types
     file_types = [
-        ("./image.jpg", EUploadFileType.Image),
-        ("./document.pdf", EUploadFileType.Pdf),
-        ("./video.mp4", EUploadFileType.Video),
-        ("./file.txt", EUploadFileType.File),
+        ("./image.jpg", UploadFileType.Image),
+        ("./document.pdf", UploadFileType.Pdf),
+        ("./video.mp4", UploadFileType.Video),
+        ("./file.txt", UploadFileType.File),
     ]
     
     for file_path, file_type in file_types:

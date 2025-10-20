@@ -69,8 +69,8 @@ from vaiz.models import CreateTaskRequest, TaskFile
 from vaiz.models.enums import UploadFileType
 
 # Upload files
-doc = client.upload_file("design.pdf", EUploadFileType.Pdf)
-img = client.upload_file("mockup.png", EUploadFileType.Image)
+doc = client.upload_file("design.pdf", UploadFileType.Pdf)
+img = client.upload_file("mockup.png", UploadFileType.Image)
 
 # Create TaskFile objects
 task_files = [
@@ -109,7 +109,7 @@ print(f"✅ Task created with {len(task_files)} files")
 ```python
 response = client.upload_file_from_url(
     "https://example.com/report.pdf",
-    file_type=EUploadFileType.Pdf,
+    file_type=UploadFileType.Pdf,
     filename="monthly_report.pdf"
 )
 
@@ -127,7 +127,7 @@ from vaiz.models.enums import UploadFileType
 # Upload screenshot
 screenshot = client.upload_file(
     "bug_screenshot.png",
-    EUploadFileType.Image
+    UploadFileType.Image
 )
 
 # Post comment
@@ -354,7 +354,7 @@ from datetime import datetime, timedelta
 # Upload file
 file_response = client.upload_file(
     "requirements.pdf",
-    EUploadFileType.Pdf
+    UploadFileType.Pdf
 )
 
 # Prepare task file
@@ -426,7 +426,7 @@ def safe_upload(file_path, file_type):
         return None
 
 # Usage
-file = safe_upload("large_file.pdf", EUploadFileType.Pdf)
+file = safe_upload("large_file.pdf", UploadFileType.Pdf)
 ```
 
 ### Retry Logic

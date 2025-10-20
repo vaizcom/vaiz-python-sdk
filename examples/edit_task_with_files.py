@@ -36,7 +36,7 @@ def edit_task_with_files():
     file_path = "./assets/example.png"  # Using real PNG file
     
     try:
-        upload_response = client.upload_file(file_path, file_type=EUploadFileType.Image)
+        upload_response = client.upload_file(file_path, file_type=UploadFileType.Image)
         uploaded_file = upload_response.file
         print(f"File uploaded successfully!")
         print(f"File ID: {uploaded_file.id}")
@@ -110,9 +110,9 @@ def edit_task_add_multiple_files():
     # Step 2: Upload multiple real files from assets
     print("\nStep 2: Uploading multiple real files from assets...")
     files_to_upload = [
-        ("./assets/example.pdf", EUploadFileType.Pdf),
-        ("./assets/example.png", EUploadFileType.Image),
-        ("./assets/example.mp4", EUploadFileType.Video)
+        ("./assets/example.pdf", UploadFileType.Pdf),
+        ("./assets/example.png", UploadFileType.Image),
+        ("./assets/example.mp4", UploadFileType.Video)
     ]
     
     task_files = []

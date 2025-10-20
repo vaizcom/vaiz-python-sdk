@@ -212,7 +212,7 @@ Add custom emoji reaction.
 ```python
 upload_file(
     file_path: str,
-    file_type: EUploadFileType
+    file_type: UploadFileType
 ) -> UploadFileResponse
 ```
 
@@ -231,7 +231,7 @@ Upload a file from local disk.
 ```python
 upload_file_from_url(
     file_url: str,
-    file_type: EUploadFileType = None,
+    file_type: UploadFileType = None,
     filename: str = None
 ) -> UploadFileResponse
 ```
@@ -732,7 +732,7 @@ class UploadedFile:
     name: str                           # Filename
     original_name: str                  # Original filename
     size: int                           # Size in bytes
-    type: EUploadFileType               # File type
+    type: UploadFileType               # File type
     ext: str                            # Extension
     dimension: Optional[dict]           # Dimensions (images/videos)
 ```
@@ -745,7 +745,7 @@ class TaskFile:
     url: str                            # File URL
     name: str                           # Filename
     ext: str                            # File extension
-    type: EUploadFileType               # File type
+    type: UploadFileType               # File type
     dimension: Optional[List[int]]      # Dimensions [width, height] for images/videos
     size: Optional[int]                 # File size in bytes
 ```
@@ -755,7 +755,7 @@ class TaskFile:
 ```python
 class TaskUploadFile:
     path: str                           # Path to file
-    type: Optional[EUploadFileType]     # File type (auto-detected if not provided)
+    type: Optional[UploadFileType]     # File type (auto-detected if not provided)
 ```
 
 ### History Models
@@ -951,13 +951,13 @@ TaskPriority.Medium    # 2 - Medium
 TaskPriority.High      # 3 - High
 ```
 
-### EUploadFileType
+### UploadFileType
 
 ```python
-EUploadFileType.Image    # Image files (shows preview)
-EUploadFileType.Video    # Video files (shows player)
-EUploadFileType.Pdf      # PDF files (shows viewer)
-EUploadFileType.File     # Generic files (download link)
+UploadFileType.Image    # Image files (shows preview)
+UploadFileType.Video    # Video files (shows player)
+UploadFileType.Pdf      # PDF files (shows viewer)
+UploadFileType.File     # Generic files (download link)
 ```
 
 ### CommentReactionType

@@ -77,7 +77,7 @@ task = CreateTaskRequest(
 # File automatically uploaded and attached
 response = client.create_task(
     task,
-    file=TaskUploadFile(path="doc.pdf", type=EUploadFileType.Pdf)
+    file=TaskUploadFile(path="doc.pdf", type=UploadFileType.Pdf)
 )
 ```
 
@@ -89,7 +89,7 @@ Or upload manually and create TaskFile:
 from vaiz.models import TaskFile
 
 # Upload file
-file_response = client.upload_file("doc.pdf", EUploadFileType.Pdf)
+file_response = client.upload_file("doc.pdf", UploadFileType.Pdf)
 
 # Create TaskFile
 task_file = TaskFile(

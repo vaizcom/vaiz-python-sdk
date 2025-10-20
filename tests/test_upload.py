@@ -22,7 +22,7 @@ def test_upload_pdf_file(client):
         pytest.skip(f"Test file {file_path} not found")
 
     try:
-        response = client.upload_file(file_path, file_type=EUploadFileType.Pdf)
+        response = client.upload_file(file_path, file_type=UploadFileType.Pdf)
     except Exception as e:
         if hasattr(e, "response") and e.response is not None:
             print("SERVER RESPONSE:", e.response.text)
@@ -32,7 +32,7 @@ def test_upload_pdf_file(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "example.pdf"
-    assert file.type == EUploadFileType.Pdf
+    assert file.type == UploadFileType.Pdf
     assert file.mime == "application/pdf"
     assert file.size > 0
 
@@ -44,7 +44,7 @@ def test_upload_image_file(client):
         pytest.skip(f"Test file {file_path} not found")
 
     try:
-        response = client.upload_file(file_path, file_type=EUploadFileType.Image)
+        response = client.upload_file(file_path, file_type=UploadFileType.Image)
     except Exception as e:
         if hasattr(e, "response") and e.response is not None:
             print("SERVER RESPONSE:", e.response.text)
@@ -54,7 +54,7 @@ def test_upload_image_file(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "example.png"
-    assert file.type == EUploadFileType.Image
+    assert file.type == UploadFileType.Image
     assert file.mime == "image/png"
     assert file.size > 0
 
@@ -66,7 +66,7 @@ def test_upload_video_file(client):
         pytest.skip(f"Test file {file_path} not found")
 
     try:
-        response = client.upload_file(file_path, file_type=EUploadFileType.Video)
+        response = client.upload_file(file_path, file_type=UploadFileType.Video)
     except Exception as e:
         if hasattr(e, "response") and e.response is not None:
             print("SERVER RESPONSE:", e.response.text)
@@ -76,7 +76,7 @@ def test_upload_video_file(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "example.mp4"
-    assert file.type == EUploadFileType.Video
+    assert file.type == UploadFileType.Video
     assert file.mime == "video/mp4"
     assert file.size > 0
 
@@ -89,7 +89,7 @@ def test_upload_file_with_explicit_type(client):
 
     try:
         response = client.upload_file(
-            file_path, EUploadFileType.Pdf
+            file_path, UploadFileType.Pdf
         )  # Explicit file_type
     except Exception as e:
         if hasattr(e, "response") and e.response is not None:
@@ -100,7 +100,7 @@ def test_upload_file_with_explicit_type(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "example.pdf"
-    assert file.type == EUploadFileType.Pdf  # Explicitly specified type
+    assert file.type == UploadFileType.Pdf  # Explicitly specified type
     assert file.mime == "application/pdf"
     assert file.size > 0
 
@@ -108,9 +108,9 @@ def test_upload_file_with_explicit_type(client):
 def test_upload_multiple_files(client):
     """Test uploading multiple real files from assets."""
     files_to_upload = [
-        ("./assets/example.pdf", EUploadFileType.Pdf),
-        ("./assets/example.png", EUploadFileType.Image),
-        ("./assets/example.mp4", EUploadFileType.Video),
+        ("./assets/example.pdf", UploadFileType.Pdf),
+        ("./assets/example.png", UploadFileType.Image),
+        ("./assets/example.mp4", UploadFileType.Video),
     ]
 
 
@@ -132,7 +132,7 @@ def test_upload_image_from_url_with_auto_detection(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "png"  # Extracted from URL
-    assert file.type == EUploadFileType.Image  # Auto-detected
+    assert file.type == UploadFileType.Image  # Auto-detected
     assert file.size > 0
 
 
@@ -144,7 +144,7 @@ def test_upload_image_from_url_with_explicit_type(client):
     try:
         response = client.upload_file_from_url(
             file_url=image_url,
-            file_type=EUploadFileType.Image,
+            file_type=UploadFileType.Image,
             filename=custom_filename,
         )
     except Exception as e:
@@ -156,7 +156,7 @@ def test_upload_image_from_url_with_explicit_type(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == custom_filename
-    assert file.type == EUploadFileType.Image
+    assert file.type == UploadFileType.Image
     assert file.size > 0
 
 
@@ -175,7 +175,7 @@ def test_upload_pdf_from_url_with_auto_detection(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "dummy.pdf"  # Extracted from URL
-    assert file.type == EUploadFileType.Pdf  # Auto-detected
+    assert file.type == UploadFileType.Pdf  # Auto-detected
     assert file.size > 0
 
 
@@ -187,7 +187,7 @@ def test_upload_from_url_with_no_extension(client):
     try:
         response = client.upload_file_from_url(
             file_url=url_no_ext,
-            file_type=EUploadFileType.File,  # Explicit type since auto-detection might fail
+            file_type=UploadFileType.File,  # Explicit type since auto-detection might fail
             filename="test_file.txt",
         )
     except Exception as e:
@@ -199,7 +199,7 @@ def test_upload_from_url_with_no_extension(client):
     file = response.file
     assert file.url.startswith("http")
     assert file.name == "test_file.txt"
-    assert file.type == EUploadFileType.File
+    assert file.type == UploadFileType.File
     assert file.size > 0
 
 
@@ -222,57 +222,57 @@ def test_upload_from_url_file_type_detection():
     # Test URL extension detection
     assert (
         upload_client._detect_file_type_from_url_and_content("test.jpg", None)
-        == EUploadFileType.Image
+        == UploadFileType.Image
     )
     assert (
         upload_client._detect_file_type_from_url_and_content("test.png", None)
-        == EUploadFileType.Image
+        == UploadFileType.Image
     )
     assert (
         upload_client._detect_file_type_from_url_and_content("test.mp4", None)
-        == EUploadFileType.Video
+        == UploadFileType.Video
     )
     assert (
         upload_client._detect_file_type_from_url_and_content("test.pdf", None)
-        == EUploadFileType.Pdf
+        == UploadFileType.Pdf
     )
     assert (
         upload_client._detect_file_type_from_url_and_content("test.txt", None)
-        == EUploadFileType.File
+        == UploadFileType.File
     )
 
     # Test content type detection
     assert (
         upload_client._detect_file_type_from_url_and_content("noext", "image/jpeg")
-        == EUploadFileType.Image
+        == UploadFileType.Image
     )
     assert (
         upload_client._detect_file_type_from_url_and_content("noext", "video/mp4")
-        == EUploadFileType.Video
+        == UploadFileType.Video
     )
     assert (
         upload_client._detect_file_type_from_url_and_content("noext", "application/pdf")
-        == EUploadFileType.Pdf
+        == UploadFileType.Pdf
     )
     assert (
         upload_client._detect_file_type_from_url_and_content("noext", "text/plain")
-        == EUploadFileType.File
+        == UploadFileType.File
     )
 
     # Test default fallback
     assert (
         upload_client._detect_file_type_from_url_and_content("noext", "unknown/type")
-        == EUploadFileType.File
+        == UploadFileType.File
     )
 
 
 def test_upload_multiple_files_from_urls(client):
     """Test uploading multiple files from different URLs."""
     urls_and_types = [
-        ("https://httpbin.org/image/png", EUploadFileType.Image, "small_image.png"),
+        ("https://httpbin.org/image/png", UploadFileType.Image, "small_image.png"),
         (
             "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-            EUploadFileType.Pdf,
+            UploadFileType.Pdf,
             "dummy.pdf",
         ),
     ]
@@ -327,7 +327,7 @@ def test_create_task_with_external_file_from_url(client):
     try:
         upload_response = client.upload_file_from_url(
             file_url=external_image_url,
-            file_type=EUploadFileType.Image,
+            file_type=UploadFileType.Image,
             filename="task_attachment_from_url.png",
         )
     except Exception as e:
@@ -341,7 +341,7 @@ def test_create_task_with_external_file_from_url(client):
     assert upload_response.type == "UploadFile"
     assert uploaded_file.url.startswith("http")
     assert uploaded_file.name == "task_attachment_from_url.png"
-    assert uploaded_file.type == EUploadFileType.Image
+    assert uploaded_file.type == UploadFileType.Image
     assert uploaded_file.size > 0
 
     # Step 2: Create a TaskFile object from the uploaded file
@@ -413,12 +413,12 @@ def test_create_task_with_multiple_external_files(client):
     external_files = [
         {
             "url": "https://httpbin.org/image/png",
-            "type": EUploadFileType.Image,
+            "type": UploadFileType.Image,
             "filename": "external_image_1.png",
         },
         {
             "url": "https://httpbin.org/image/png",
-            "type": EUploadFileType.Image,
+            "type": UploadFileType.Image,
             "filename": "external_image_2.png",
         },
     ]

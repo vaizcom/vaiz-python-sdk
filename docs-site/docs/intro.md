@@ -98,7 +98,7 @@ Upload files from local disk or URL:
 from vaiz.models.enums import UploadFileType
 
 # Upload local file
-response = client.upload_file("/path/to/file.pdf", file_type=EUploadFileType.Pdf)
+response = client.upload_file("/path/to/file.pdf", file_type=UploadFileType.Pdf)
 
 # Upload from URL
 response = client.upload_file_from_url("https://example.com/image.png")

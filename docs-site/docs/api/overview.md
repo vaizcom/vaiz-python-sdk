@@ -51,12 +51,12 @@ Use enums for type-safe values:
 
 ```python
 from vaiz.models import TaskPriority
-from vaiz.models.enums import Icon, Color, EUploadFileType
+from vaiz.models.enums import Icon, Color, UploadFileType
 
 priority = TaskPriority.High           # 3
 icon = Icon.Bug                       # "Bug"
 color = Color.Red                     # "Red"
-file_type = EUploadFileType.Image      # "image"
+file_type = UploadFileType.Image      # "image"
 ```
 
 ### Pydantic Models

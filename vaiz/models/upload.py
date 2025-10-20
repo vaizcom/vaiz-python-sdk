@@ -12,7 +12,7 @@ class UploadedFile(VaizBaseModel):
     owner: str
     url: str
     name: str
-    type: EUploadFileType
+    type: UploadFileType
     ext: str
     size: int
     mime: Optional[str] = Field(default=None, alias="mime")

@@ -41,7 +41,7 @@ def test_create_task_with_real_file():
         pytest.skip(f"Test file {file_path} not found")
     
     try:
-        upload_response = client.upload_file(file_path, file_type=EUploadFileType.Pdf)
+        upload_response = client.upload_file(file_path, file_type=UploadFileType.Pdf)
         uploaded_file = upload_response.file
         
         # Create TaskFile object from uploaded file
@@ -83,9 +83,9 @@ def test_create_task_with_multiple_real_files():
     
     # Upload multiple real files from assets
     files_to_upload = [
-        ("./assets/example.pdf", EUploadFileType.Pdf),
-        ("./assets/example.png", EUploadFileType.Image),
-        ("./assets/example.mp4", EUploadFileType.Video)
+        ("./assets/example.pdf", UploadFileType.Pdf),
+        ("./assets/example.png", UploadFileType.Image),
+        ("./assets/example.mp4", UploadFileType.Video)
     ]
     
     task_files = []
@@ -163,7 +163,7 @@ def test_create_task_with_file_pdf(client):
         project=TEST_PROJECT_ID,
         completed=True
     )
-    file = TaskUploadFile(path=file_path, type=EUploadFileType.Pdf)
+    file = TaskUploadFile(path=file_path, type=UploadFileType.Pdf)
     response = client.create_task(task, file=file)
     task_response = response.task
     assert task_response.completed is True
@@ -182,7 +182,7 @@ def test_create_task_with_file_png(client):
         project=TEST_PROJECT_ID,
         completed=True
     )
-    file = TaskUploadFile(path=file_path, type=EUploadFileType.Image)
+    file = TaskUploadFile(path=file_path, type=UploadFileType.Image)
     response = client.create_task(task, file=file)
     task_response = response.task
     assert task_response.completed is True
@@ -201,7 +201,7 @@ def test_create_task_with_file_mp4(client):
         project=TEST_PROJECT_ID,
         completed=True
     )
-    file = TaskUploadFile(path=file_path, type=EUploadFileType.Video)
+    file = TaskUploadFile(path=file_path, type=UploadFileType.Video)
     response = client.create_task(task, file=file)
     task_response = response.task
     assert task_response.completed is True
@@ -235,7 +235,7 @@ def test_create_task_with_description_and_file(client):
         priority=TaskPriority.High,
         completed=True
     )
-    file = TaskUploadFile(path=file_path, type=EUploadFileType.Pdf)
+    file = TaskUploadFile(path=file_path, type=UploadFileType.Pdf)
     response = client.create_task(task, description="This task has both description and file", file=file)
     task_response = response.task
     assert task_response.completed is True
@@ -255,7 +255,7 @@ def test_create_task_with_auto_detection(client):
         project=TEST_PROJECT_ID,
         completed=True
     )
-    file = TaskUploadFile(path=file_path, type=EUploadFileType.Pdf)
+    file = TaskUploadFile(path=file_path, type=UploadFileType.Pdf)
     response = client.create_task(task, file=file)
     task_response = response.task
     assert task_response.completed is True
@@ -274,7 +274,7 @@ def test_task_file_has_correct_fields_for_different_types(client):
             project=TEST_PROJECT_ID,
             completed=True
         )
-        file = TaskUploadFile(path=pdf_path, type=EUploadFileType.Pdf)
+        file = TaskUploadFile(path=pdf_path, type=UploadFileType.Pdf)
         response = client.create_task(task, file=file)
         
         # Check that task was created successfully
@@ -291,7 +291,7 @@ def test_task_file_has_correct_fields_for_different_types(client):
             project=TEST_PROJECT_ID,
             completed=True
         )
-        file = TaskUploadFile(path=png_path, type=EUploadFileType.Image)
+        file = TaskUploadFile(path=png_path, type=UploadFileType.Image)
         response = client.create_task(task, file=file)
         
         # Check that task was created successfully

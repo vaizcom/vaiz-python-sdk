@@ -121,7 +121,7 @@
 - **📋 File Type Detection**:
   - URL extension matching for common formats (.jpg, .png, .pdf, .mp4, etc.)
   - HTTP Content-Type header analysis
-  - Fallback to `EUploadFileType.File` for unknown types
+  - Fallback to `UploadFileType.File` for unknown types
 - **💾 Memory Efficient**: Streams file downloads to temporary files
 - **🧹 Resource Management**: Automatic cleanup of temporary files even on errors
 - **🔒 Security**: Respects SSL verification settings from client configuration

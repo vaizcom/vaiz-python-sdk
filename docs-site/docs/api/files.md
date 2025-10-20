@@ -13,10 +13,10 @@ Choose the right type for proper display:
 ```python
 from vaiz.models.enums import UploadFileType
 
-EUploadFileType.Image    # Shows preview thumbnail
-EUploadFileType.Video    # Shows embedded player
-EUploadFileType.Pdf      # Shows document viewer
-EUploadFileType.File     # Shows download link
+UploadFileType.Image    # Shows preview thumbnail
+UploadFileType.Video    # Shows embedded player
+UploadFileType.Pdf      # Shows document viewer
+UploadFileType.File     # Shows download link
 ```
 
 :::tip File Type Matters
@@ -32,7 +32,7 @@ from vaiz.models import CreateTaskRequest, TaskFile
 from vaiz.models.enums import UploadFileType
 
 # 1. Upload file
-upload = client.upload_file("design.pdf", EUploadFileType.Pdf)
+upload = client.upload_file("design.pdf", UploadFileType.Pdf)
 
 # 2. Create TaskFile object
 task_file = TaskFile(
@@ -62,9 +62,9 @@ from vaiz.models.enums import UploadFileType
 
 # Upload multiple files
 files = [
-    ("requirements.pdf", EUploadFileType.Pdf),
-    ("mockup.png", EUploadFileType.Image),
-    ("demo.mp4", EUploadFileType.Video)
+    ("requirements.pdf", UploadFileType.Pdf),
+    ("mockup.png", UploadFileType.Image),
+    ("demo.mp4", UploadFileType.Video)
 ]
 
 task_files = []
@@ -98,8 +98,8 @@ Files are commonly used in comments for discussions:
 from vaiz.models.enums import UploadFileType
 
 # Upload files
-screenshot = client.upload_file("bug.png", EUploadFileType.Image)
-log = client.upload_file("error.log", EUploadFileType.File)
+screenshot = client.upload_file("bug.png", UploadFileType.Image)
+log = client.upload_file("error.log", UploadFileType.File)
 
 # Attach to comment
 response = client.post_comment(
@@ -117,7 +117,7 @@ Skip local files and upload directly from URLs:
 # Upload external file
 upload = client.upload_file_from_url(
     file_url="https://example.com/report.pdf",
-    file_type=EUploadFileType.Pdf,
+    file_type=UploadFileType.Pdf,
     filename="monthly_report.pdf"
 )
 

@@ -26,7 +26,7 @@ def create_task_with_external_image():
         # Upload the external file
         upload_response = client.upload_file_from_url(
             file_url=external_image_url,
-            file_type=EUploadFileType.Image,
+            file_type=UploadFileType.Image,
             filename="project_mockup.png"
         )
         
@@ -92,17 +92,17 @@ def create_task_with_multiple_external_files():
     external_files = [
         {
             "url": "https://httpbin.org/image/png",
-            "type": EUploadFileType.Image,
+            "type": UploadFileType.Image,
             "filename": "screenshot_1.png"
         },
         {
             "url": "https://httpbin.org/image/png",
-            "type": EUploadFileType.Image,
+            "type": UploadFileType.Image,
             "filename": "screenshot_2.png"
         },
         {
             "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-            "type": EUploadFileType.Pdf,
+            "type": UploadFileType.Pdf,
             "filename": "requirements_doc.pdf"
         }
     ]

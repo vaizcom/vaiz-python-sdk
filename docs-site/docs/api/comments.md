@@ -43,8 +43,8 @@ response = client.post_comment(
 from vaiz.models.enums import UploadFileType
 
 # Upload files
-img = client.upload_file("screenshot.png", EUploadFileType.Image)
-doc = client.upload_file("report.pdf", EUploadFileType.Pdf)
+img = client.upload_file("screenshot.png", UploadFileType.Image)
+doc = client.upload_file("report.pdf", UploadFileType.Pdf)
 
 # Post comment
 response = client.post_comment(

@@ -41,7 +41,7 @@ def upload_pdf_from_url_with_explicit_type():
         # Upload with explicit file type and custom filename
         response = client.upload_file_from_url(
             file_url=pdf_url, 
-            file_type=EUploadFileType.Pdf,
+            file_type=UploadFileType.Pdf,
             filename="sample_document.pdf"
         )
         file = response.file
@@ -65,12 +65,12 @@ def upload_multiple_files_from_urls():
     files_to_upload = [
         {
             "url": "https://httpbin.org/image/jpeg", 
-            "type": EUploadFileType.Image,
+            "type": UploadFileType.Image,
             "filename": "httpbin_image.jpg"
         },
         {
             "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-            "type": EUploadFileType.Pdf,
+            "type": UploadFileType.Pdf,
             "filename": "sample_document.pdf"
         },
     ]

@@ -3,7 +3,7 @@ from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
 from .documents import ReplaceDocumentResponse
-from .enums import EUploadFileType, Kind
+from .enums import UploadFileType, Kind
 
 if TYPE_CHECKING:
     # Avoid runtime import cycle; type-checking only
@@ -14,7 +14,7 @@ class TaskFile(VaizBaseModel):
     url: str
     name: str
     ext: str
-    type: EUploadFileType
+    type: UploadFileType
     # Optional fields that may come from different file types
     dimension: Optional[List[int]] = None
     size: Optional[int] = None
@@ -165,7 +165,7 @@ class EditTaskRequest(VaizBaseModel):
 
 class TaskUploadFile(BaseModel):
     path: str
-    type: Optional[EUploadFileType] = None
+    type: Optional[UploadFileType] = None
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -173,7 +173,7 @@ class TaskUploadFile(BaseModel):
         if self.type is None:
             self.type = self._detect_file_type(self.path)
     
-    def _detect_file_type(self, file_path: str) -> EUploadFileType:
+    def _detect_file_type(self, file_path: str) -> UploadFileType:
         """
         Auto-detect file type based on file extension.
         
@@ -181,26 +181,26 @@ class TaskUploadFile(BaseModel):
             file_path (str): Path to the file
             
         Returns:
-            EUploadFileType: Detected file type
+            UploadFileType: Detected file type
         """
         import os
         ext = os.path.splitext(file_path)[1].lower()
         
         # Image files
         if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']:
-            return EUploadFileType.Image
+            return UploadFileType.Image
         
         # Video files
         elif ext in ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm']:
-            return EUploadFileType.Video
+            return UploadFileType.Video
         
         # Document files
         elif ext in ['.pdf', '.doc', '.docx', '.txt', '.rtf']:
-            return EUploadFileType.Pdf
+            return UploadFileType.Pdf
         
-        # Archive and audio files are not supported by EUploadFileType, so skip
+        # Archive and audio files are not supported by UploadFileType, so skip
         # Default to PDF for unknown extensions
-        return EUploadFileType.Pdf 
+        return UploadFileType.Pdf 
 
 
 class GetHistoryRequest(VaizBaseModel):

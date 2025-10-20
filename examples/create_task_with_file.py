@@ -91,7 +91,7 @@ def main():
             completed=True
         )
         
-        file = TaskUploadFile(path='./assets/example.png', type=EUploadFileType.Image)
+        file = TaskUploadFile(path='./assets/example.png', type=UploadFileType.Image)
         response = client.create_task(
             task, 
             description="This task has a PNG file with explicit type specification.",

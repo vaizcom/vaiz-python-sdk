@@ -17,7 +17,7 @@ def create_task_with_description_and_files():
     file_path = "./assets/example.pdf"  # Using real PDF file
     
     try:
-        upload_response = client.upload_file(file_path, file_type=EUploadFileType.Pdf)
+        upload_response = client.upload_file(file_path, file_type=UploadFileType.Pdf)
         uploaded_file = upload_response.file
         print(f"File uploaded successfully!")
         print(f"File ID: {uploaded_file.id}")
@@ -78,9 +78,9 @@ def create_task_with_multiple_files():
     
     # Real files from assets folder
     files_to_upload = [
-        ("./assets/example.pdf", EUploadFileType.Pdf),
-        ("./assets/example.png", EUploadFileType.Image),
-        ("./assets/example.mp4", EUploadFileType.Video)
+        ("./assets/example.pdf", UploadFileType.Pdf),
+        ("./assets/example.png", UploadFileType.Image),
+        ("./assets/example.mp4", UploadFileType.Video)
     ]
     
     task_files = []
