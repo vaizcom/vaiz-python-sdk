@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Comments API
+# Comments
 
 Working with comments, replies, and reactions.
 

@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# Milestones API
+# Milestones
 
 Track progress with milestones in Vaiz SDK.
 

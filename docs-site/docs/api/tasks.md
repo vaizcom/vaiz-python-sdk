@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Tasks API
+# Tasks
 
 Complete reference for working with tasks in the Vaiz SDK.
 

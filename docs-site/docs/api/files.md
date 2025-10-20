@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Working with Files
+# Files
 
 Files in Vaiz are always attached to either [tasks](./tasks) or [comments](./comments). You upload files and then attach them to content.
 
