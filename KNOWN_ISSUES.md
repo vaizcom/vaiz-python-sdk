@@ -108,6 +108,71 @@ This document tracks known inconsistencies between the Python SDK, documentation
 
 ---
 
+## Enum Naming Inconsistency
+
+**Issue:** The `CommentReactionType` and `CustomFieldType` enums use SCREAMING_SNAKE_CASE for their members (e.g., `THUMBS_UP`, `TEXT`, `TASK_RELATIONS`), while all other enums in the SDK follow PascalCase convention (e.g., `Icon.Square`, `Color.Red`, `Kind.Task`, `UploadFileType.Image`). This inconsistency creates a confusing developer experience.
+
+**Current State:**
+```python
+# Inconsistent - SCREAMING_SNAKE_CASE
+class CommentReactionType(Enum):
+    THUMBS_UP = "thumbs_up"
+    HEART = "heart"
+    LAUGHING = "joy"
+    # ...
+
+class CustomFieldType(str, Enum):
+    TEXT = "Text"
+    NUMBER = "Number"
+    CHECKBOX = "Checkbox"
+    TASK_RELATIONS = "TaskRelations"
+    # ...
+```
+
+**Expected State:**
+```python
+# Consistent - PascalCase
+class CommentReactionType(Enum):
+    ThumbsUp = "thumbs_up"
+    Heart = "heart"
+    Laughing = "joy"
+    # ...
+
+class CustomFieldType(str, Enum):
+    Text = "Text"
+    Number = "Number"
+    Checkbox = "Checkbox"
+    TaskRelations = "TaskRelations"
+    # ...
+```
+
+**Task:**
+- [ ] Rename `CommentReactionType` enum members to PascalCase:
+  - `THUMBS_UP` → `ThumbsUp`
+  - `HEART` → `Heart`
+  - `LAUGHING` → `Laughing`
+  - `WOW` → `Wow`
+  - `CRYING` → `Crying`
+  - `ANGRY` → `Angry`
+  - `PARTY` → `Party`
+- [ ] Rename `CustomFieldType` enum members to PascalCase:
+  - `TEXT` → `Text`
+  - `NUMBER` → `Number`
+  - `CHECKBOX` → `Checkbox`
+  - `DATE` → `Date`
+  - `MEMBER` → `Member`
+  - `TASK_RELATIONS` → `TaskRelations`
+  - `SELECT` → `Select`
+  - `URL` → `Url`
+  - `ESTIMATION` → `Estimation`
+- [ ] Update all references in code, tests, and examples
+- [ ] Update documentation with migration guide
+- [ ] Update `COMMENT_REACTION_METADATA` dictionary keys to use new enum members
+- [ ] Add deprecation warnings for old names (if backward compatibility is needed)
+- [ ] Add this as a breaking change in CHANGELOG
+
+---
+
 ## General Recommendations
 
 ### Alignment Strategy
@@ -136,6 +201,7 @@ This document tracks known inconsistencies between the Python SDK, documentation
 - GetTasksRequest filtering options (impacts usability significantly)
 - CreateTaskRequest project requirement (causes confusion)
 - File models type correctness (may cause runtime errors)
+- Enum naming inconsistency (affects developer experience and code consistency)
 
 **Medium Priority:**
 - GetHistoryRequest filtering options
