@@ -121,7 +121,11 @@ const config: Config = {
             },
             {
               label: 'Contributing',
-              to: '/contributing',
+              href: 'https://github.com/vaizcom/vaiz-python-sdk/blob/main/CONTRIBUTING.md',
+            },
+            {
+              label: 'Changelog',
+              href: 'https://github.com/vaizcom/vaiz-python-sdk/blob/main/CHANGELOG.md',
             },
           ],
         },

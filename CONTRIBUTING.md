@@ -1,7 +1,3 @@
----
-sidebar_position: 5
----
-
 # Contributing
 
 Thank you for your interest in contributing to the Vaiz Python SDK! 🎉
@@ -58,9 +54,7 @@ PYTHONPATH=. pytest tests/test_tasks.py
 PYTHONPATH=. pytest -v
 ```
 
-:::note
-Tests run against a real API instance. Make sure your `.env` file contains valid credentials for a test workspace.
-:::
+> **Note:** Tests run against a real API instance. Make sure your `.env` file contains valid credentials for a test workspace.
 
 ## Code Style
 
@@ -308,16 +302,38 @@ vaiz-python-sdk/
 │   └── ...
 ├── docs-site/             # Docusaurus documentation
 │   └── docs/
-└── README.md
+├── README.md
+├── CONTRIBUTING.md
+├── LICENSE
+└── CHANGELOG.md
 ```
 
 ## Release Process
 
 1. Update version in `pyproject.toml`
 2. Update `CHANGELOG.md`
-3. Create git tag
+3. Create git tag: `git tag v0.x.0`
 4. Build package: `python -m build`
 5. Upload to PyPI: `twine upload dist/*`
+
+## Documentation
+
+### Running Documentation Locally
+
+```bash
+cd docs-site
+npm install
+npm start
+```
+
+Documentation opens at `http://localhost:3000`
+
+### Adding Documentation
+
+1. Create/update markdown files in `docs-site/docs/`
+2. Update `docs-site/sidebars.ts` if adding new sections
+3. Test locally with `npm start`
+4. Include in your PR
 
 ## Getting Help
 

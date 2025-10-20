@@ -23,7 +23,6 @@ const sidebars: SidebarsConfig = {
       ],
     },
     'examples',
-    'contributing',
   ],
 };
 

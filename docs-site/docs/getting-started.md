@@ -5,7 +5,12 @@ slug: /
 
 # Getting Started
 
-Get up and running with Vaiz SDK in minutes! 🚀
+Learn how to install and configure the Vaiz Python SDK.
+
+## Prerequisites
+
+- Python 3.8 or higher
+- pip package manager
 
 ## Installation
 
@@ -78,5 +83,6 @@ Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 
 - [GitHub Repository](https://github.com/vaizcom/vaiz-python-sdk)
 - [PyPI Package](https://pypi.org/project/vaiz-sdk/)
+- [Contributing Guide](https://github.com/vaizcom/vaiz-python-sdk/blob/main/CONTRIBUTING.md)
 - [Changelog](https://github.com/vaizcom/vaiz-python-sdk/blob/main/CHANGELOG.md)
 
