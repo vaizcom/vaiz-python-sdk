@@ -545,6 +545,248 @@ Clear the get_tasks() cache manually.
 
 ---
 
+## Models & Interfaces
+
+### Task Models
+
+#### CreateTaskRequest
+
+```python
+class CreateTaskRequest:
+    name: str                           # Required - Task name
+    board: str                          # Required - Board ID
+    group: str                          # Required - Group ID
+    project: str                        # Required - Project ID
+    description: Optional[str]          # Task description
+    priority: TaskPriority              # Priority (default: General)
+    completed: bool                     # Completion status (default: False)
+    assignees: List[str]                # Assignee user IDs
+    types: List[str]                    # Task type IDs
+    parent_task: Optional[str]          # Parent task ID (for subtasks)
+    subtasks: List[str]                 # Subtask IDs
+    milestones: List[str]               # Milestone IDs
+    due_start: Optional[datetime]       # Start date
+    due_end: Optional[datetime]         # Due date
+    blockers: List[str]                 # Task IDs that block this task
+    blocking: List[str]                 # Task IDs this task blocks
+    custom_fields: List[CustomField]    # Custom field values
+    files: List[TaskFile]               # Attached files
+```
+
+#### EditTaskRequest
+
+```python
+class EditTaskRequest:
+    task_id: str                        # Required - Task ID to edit
+    name: Optional[str]                 # New name
+    priority: Optional[TaskPriority]    # New priority
+    completed: Optional[bool]           # New completion status
+    assignees: Optional[List[str]]      # New assignees
+    types: Optional[List[str]]          # New types
+    parent_task: Optional[str]          # New parent task
+    subtasks: Optional[List[str]]       # New subtasks
+    milestones: Optional[List[str]]     # New milestones
+    due_start: Optional[datetime]       # New start date
+    due_end: Optional[datetime]         # New due date
+    blockers: Optional[List[str]]       # New blockers
+    blocking: Optional[List[str]]       # New blocking
+    custom_fields: Optional[List[CustomField]]  # New custom fields
+    description: Optional[str]          # New description
+    files: Optional[List[TaskFile]]     # New files
+```
+
+#### GetTasksRequest
+
+```python
+class GetTasksRequest:
+    ids: Optional[List[str]]            # Filter by task IDs
+    limit: int                          # Results per page (1-50, default: 50)
+    skip: int                           # Skip N tasks (default: 0)
+    board: Optional[str]                # Filter by board ID
+    project: Optional[str]              # Filter by project ID
+    assignees: Optional[List[str]]      # Filter by assignee IDs
+    parent_task: Optional[str]          # Filter by parent task ID
+    milestones: Optional[List[str]]     # Filter by milestone IDs
+    completed: Optional[bool]           # Filter by completion status
+    archived: Optional[bool]            # Filter by archived status
+```
+
+#### TaskResponse
+
+```python
+class TaskResponse:
+    payload: Dict[str, Any]             # Response payload
+    type: str                           # Response type
+    
+    @property
+    def task(self) -> Task:             # Parsed task object
+        ...
+```
+
+#### Task
+
+```python
+class Task:
+    id: str                             # Task ID
+    name: str                           # Task name
+    hrid: str                           # Human-readable ID (e.g., "PRJ-123")
+    board: str                          # Board ID
+    group: str                          # Group ID
+    project: str                        # Project ID
+    priority: TaskPriority              # Priority level
+    completed: bool                     # Completion status
+    assignees: List[str]                # Assignee IDs
+    types: List[str]                    # Type IDs
+    parent_task: Optional[str]          # Parent task ID
+    subtasks: List[str]                 # Subtask IDs
+    milestones: List[str]               # Milestone IDs
+    milestone: Optional[str]            # Main milestone ID
+    due_start: Optional[datetime]       # Start date
+    due_end: Optional[datetime]         # Due date
+    blockers: List[str]                 # Blocker task IDs
+    blocking: List[str]                 # Blocked task IDs
+    custom_fields: List[TaskCustomField]  # Custom field values
+    document: str                       # Document ID
+    creator: str                        # Creator ID
+    created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Last update timestamp
+    completed_at: Optional[datetime]    # Completion timestamp
+    archived_at: Optional[datetime]     # Archive timestamp
+    deleted_at: Optional[datetime]      # Deletion timestamp
+    followers: Dict[str, str]           # Follower mapping
+```
+
+#### TaskFile
+
+```python
+class TaskFile:
+    id: str                             # File ID
+    url: str                            # File URL
+    name: str                           # Filename
+    ext: str                            # File extension
+    type: EUploadFileType               # File type
+    dimension: Optional[List[int]]      # Dimensions [width, height] for images/videos
+    size: Optional[int]                 # File size in bytes
+```
+
+#### TaskUploadFile
+
+```python
+class TaskUploadFile:
+    path: str                           # Path to file
+    type: Optional[EUploadFileType]     # File type (auto-detected if not provided)
+```
+
+### Comment Models
+
+#### PostCommentRequest
+
+```python
+class PostCommentRequest:
+    document_id: str                    # Required - Document ID
+    content: str                        # Required - Comment content (HTML)
+    file_ids: List[str]                 # File IDs to attach
+    reply_to: Optional[str]             # Parent comment ID for replies
+```
+
+#### Comment
+
+```python
+class Comment:
+    id: str                             # Comment ID
+    content: str                        # HTML content
+    author_id: str                      # Author user ID
+    created_at: datetime                # Creation timestamp
+    edited_at: Optional[datetime]       # Edit timestamp
+    deleted_at: Optional[datetime]      # Deletion timestamp
+    reply_to: Optional[str]             # Parent comment ID
+    files: List[UploadedFile]           # Attached files
+    reactions: List[Reaction]           # Reactions
+```
+
+### Milestone Models
+
+#### CreateMilestoneRequest
+
+```python
+class CreateMilestoneRequest:
+    name: str                           # Required - Milestone name
+    board: str                          # Required - Board ID
+    project: str                        # Required - Project ID
+    description: Optional[str]          # Description
+    due_start: Optional[datetime]       # Start date
+    due_end: Optional[datetime]         # End date
+    color: Optional[str]                # Hex color
+```
+
+#### Milestone
+
+```python
+class Milestone:
+    id: str                             # Milestone ID
+    name: str                           # Name
+    description: Optional[str]          # Description
+    board: str                          # Board ID
+    project: str                        # Project ID
+    total: int                          # Total tasks
+    completed: int                      # Completed tasks
+    creator: str                        # Creator ID
+    editor: Optional[str]               # Editor ID
+    created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Update timestamp
+    due_start: Optional[datetime]       # Start date
+    due_end: Optional[datetime]         # End date
+    color: Optional[str]                # Color
+```
+
+### File Models
+
+#### UploadedFile
+
+```python
+class UploadedFile:
+    id: str                             # File ID
+    url: str                            # Access URL
+    name: str                           # Filename
+    original_name: str                  # Original filename
+    size: int                           # Size in bytes
+    type: EUploadFileType               # File type
+    ext: str                            # Extension
+    dimension: Optional[dict]           # Dimensions (images/videos)
+```
+
+### Custom Field Models
+
+#### CustomField
+
+```python
+class CustomField:
+    id: str                             # Field ID
+    value: Any                          # Field value (use helper functions)
+```
+
+#### CreateBoardCustomFieldRequest
+
+```python
+class CreateBoardCustomFieldRequest:
+    name: str                           # Required - Field name
+    type: CustomFieldType               # Required - Field type
+    board_id: str                       # Required - Board ID
+    description: Optional[str]          # Description
+    hidden: bool                        # Hidden status (default: False)
+    options: Optional[List[SelectOption]]  # Options (for SELECT type)
+```
+
+#### SelectOption
+
+```python
+class SelectOption:
+    id: str                             # Option ID
+    label: str                          # Option label
+    color: EColor                       # Option color
+    icon: EIcon                         # Option icon
+```
+
 ## Enums
 
 ### TaskPriority
