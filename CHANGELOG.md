@@ -12,15 +12,8 @@
 
 ### Added
 
-- **📚 Complete Docusaurus Documentation**: Full documentation site with:
-  - Getting Started guide
-  - Complete API Reference for all endpoints
-  - Task Blockers documentation
-  - Helper Functions reference
-  - Practical examples
-  - Contributing guide
 - **🔗 Task Blockers API**: New documentation page explaining blocker relationships
-- **📖 Comprehensive Examples**: Updated all code examples with new field names
+- **📖 Updated Examples**: Updated all code examples with new field names
 
 ### Changed
 
