@@ -19,6 +19,7 @@ const sidebars: SidebarsConfig = {
         'api/profile',
         'api/documents',
         'api/history',
+        'api/helpers',
       ],
     },
     'examples',

@@ -56,30 +56,23 @@ client = VaizClient(
 )
 ```
 
-## Error Handling
-
-```python
-from requests.exceptions import HTTPError
-
-try:
-    response = client.get_task("invalid_task_id")
-except HTTPError as e:
-    print(f"❌ HTTP Error: {e}")
-    print(f"   Status: {e.response.status_code}")
-    print(f"   Response: {e.response.text}")
-except Exception as e:
-    print(f"❌ Unknown error: {e}")
-```
-
 ## Next Steps
 
 Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 
-- 📖 [API Reference](./api/client) - Complete documentation of all methods
-- 🎛️ [Custom Fields](./guides/custom-fields) - Working with custom fields
-- 💬 [Comments](./api/comments) - Create and manage comments
-- 📁 [Files](./api/files) - Upload and attach files
-- 💡 [Examples](./examples) - Ready-to-use examples for different scenarios
+- 📖 [API Overview](./api/overview) - Complete overview of all SDK capabilities
+- 📋 [Tasks](./api/tasks) - Full task management
+- 💬 [Comments](./api/comments) - Comments, reactions, and replies
+- 📁 [Files](./api/files) - File uploads and attachments
+- 🎯 [Milestones](./api/milestones) - Track progress with milestones
+- 📊 [Boards](./api/boards) - Board types and groups
+- 🎛️ [Custom Fields](./api/custom-fields) - Extend tasks with custom data
+- 📂 [Projects](./api/projects) - Project management
+- 👤 [Profile](./api/profile) - User information
+- 📝 [Documents](./api/documents) - Task descriptions
+- 📜 [History](./api/history) - Change tracking
+- 🛠️ [Helper Functions](./api/helpers) - Utility functions for common tasks
+- 💡 [Examples](./examples) - Ready-to-use code examples
 
 ## Useful Links
 
