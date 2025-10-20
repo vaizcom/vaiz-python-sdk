@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.6.0] - 2025-10-20
+
+### Breaking Changes
+
+- **🔗 Renamed Task Connector Fields** for better clarity:
+  - `right_connectors` → `blocking` (tasks that this task blocks)
+  - `left_connectors` → `blockers` (tasks that block this task)
+  - API mapping is automatic - SDK uses intuitive names, API receives technical names
+  - **Migration**: Replace `rightConnectors` with `blocking` and `leftConnectors` with `blockers` in your code
+
+### Added
+
+- **🔗 Task Blockers API**: New documentation page explaining blocker relationships
+- **📖 Updated Examples**: Updated all code examples with new field names
+
+### Changed
+
+- **Documentation**: Moved from README to dedicated Docusaurus site
+- **README**: Simplified to quick start guide with links to full documentation
+- **CONTRIBUTING.md**: Moved to project root as standard practice
+
+### Documentation
+
+- Site: https://docs-python-sdk.vaiz.com
+- Getting Started: https://docs-python-sdk.vaiz.com/getting-started
+- API Reference: https://docs-python-sdk.vaiz.com/api/overview
+
+---
+
 ## [0.5.0] - 2025-09-17
 
 ### Added

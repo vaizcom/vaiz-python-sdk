@@ -19,56 +19,38 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Virtual Environment
+MANIFEST
 venv/
-env/
 ENV/
-.env
-.venv
-env.bak/
-venv.bak/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-.DS_Store
+env/
 
 # Testing
+.pytest_cache/
 .coverage
 htmlcov/
-.pytest_cache/
-.tox/
-.nox/
-coverage.xml
-*.cover
-.hypothesis/
 
-# Distribution
-*.tar.gz
-*.zip
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Logs
-*.log
-logs/
-log/
-
-# Local development
+# Environment
+.env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
-# Documentation
-docs/_build/
-site/
+# OS
+.DS_Store
+Thumbs.db
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# Docusaurus
+docs-site/node_modules/
+docs-site/build/
+docs-site/.docusaurus/
+docs-site/.cache-loader/
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+# Package distribution
+dist/
+*.whl
+*.tar.gz
