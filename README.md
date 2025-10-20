@@ -29,13 +29,13 @@ pip install vaiz-sdk
 
 - [PyPI Package](https://pypi.org/project/vaiz-sdk/)
 - [GitHub Repository](https://github.com/vaizcom/vaiz-python-sdk)
-- [Changelog](./CHANGELOG.md)
-- [Contributing](./CONTRIBUTING.md)
-- [Known Issues and Tasks](./KNOWN_ISSUES.md)
+- [Changelog](https://github.com/vaizcom/vaiz-python-sdk/blob/main/CHANGELOG.md)
+- [Contributing](https://github.com/vaizcom/vaiz-python-sdk/blob/main/CONTRIBUTING.md)
+- [Known Issues and Tasks](https://github.com/vaizcom/vaiz-python-sdk/blob/main/KNOWN_ISSUES.md)
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) file for details.
+MIT License - see [LICENSE](https://github.com/vaizcom/vaiz-python-sdk/blob/main/LICENSE) file for details.
 
 ---
 
