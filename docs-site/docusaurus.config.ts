@@ -117,12 +117,12 @@ const config: Config = {
           title: 'Documentation',
           items: [
             {
-              label: 'Introduction',
+              label: 'Getting Started',
               to: '/',
             },
             {
-              label: 'Getting Started',
-              to: '/',
+              label: 'Introduction',
+              to: '/intro',
             },
             {
               label: 'API Reference',
@@ -133,6 +133,10 @@ const config: Config = {
         {
           title: 'Community',
           items: [
+            {
+              label: 'PyPI Package',
+              href: 'https://pypi.org/project/vaiz-sdk/',
+            },
             {
               label: 'GitHub',
               href: 'https://github.com/vaizcom/vaiz-python-sdk',
