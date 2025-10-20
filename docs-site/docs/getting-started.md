@@ -54,7 +54,6 @@ space_id = os.getenv("VAIZ_SPACE_ID")
 ```python
 from vaiz import VaizClient
 
-# For production use (verify_ssl=True by default)
 client = VaizClient(
     api_key="your_api_key",
     space_id="your_space_id"

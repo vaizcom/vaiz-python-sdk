@@ -9,7 +9,7 @@ Manage blocking relationships between tasks.
 ## Understanding Blockers
 
 Tasks can have blocking relationships:
-- **Blockers** (`blockers`) - Tasks that block this task (dependencies)
+- **Blockers** (`blockers`) - Tasks that block this task
 - **Blocking** (`blocking`) - Tasks that this task blocks
 
 ```
@@ -154,17 +154,6 @@ if can_start_task("task_id"):
 else:
     print("⏸️ Waiting for blockers to complete")
 ```
-
-## API Mapping
-
-The SDK uses intuitive names while the API uses technical names:
-
-| SDK Field | API Field | Description |
-|-----------|-----------|-------------|
-| `blockers` | `leftConnectors` | Tasks that block this one |
-| `blocking` | `rightConnectors` | Tasks this one blocks |
-
-All conversion is automatic - you only use `blockers` and `blocking` in your code.
 
 ## See Also
 
