@@ -8,13 +8,42 @@ alwaysApply: true
 ## Docs
 
 - For any documentation we use Docosaurus in docs-site dir.
-- **Never duplicate model definitions in guide pages** - model definitions belong only in `docs-site/docs/api` under "Models & Interfaces" section
-- Guide pages (like tasks.md, documents.md, etc.) should focus on usage examples and link to methods.md for model definitions
+- **Never duplicate model definitions in guide pages** - model definitions belong only in `docs-site/docs/api-reference/` under "Models & Interfaces" section
+- Guide pages (like tasks.md, documents.md, etc.) should focus on usage examples and link to api-reference for model definitions
 - **Keep documentation in sync with code changes**:
-  - When adding new API methods, update both the guide page (usage examples) and methods.md (API reference)
-  - When adding new models, add them to methods.md under "Models & Interfaces"
-  - When adding new examples, list them in examples.md under "Ready-to-Run Examples"
+  - When adding new API methods, update both the guide page (usage examples) and api-reference page (API reference)
+  - When adding new models, add them to api-reference under "Models & Interfaces"
+  - When adding new examples, list them in patterns/ready-to-run.md under "Ready-to-Run Examples"
   - Always verify documentation builds successfully after changes: `npm run build`
+
+### When Adding New API Endpoints
+
+Follow this checklist to ensure completeness:
+
+1. **Code Implementation:**
+   - [ ] Create models in `vaiz/models/` (Request, Response, main model)
+   - [ ] Create API client in `vaiz/api/` with methods
+   - [ ] Add API client to `VaizClient` in `vaiz/client.py`
+   - [ ] Export models in `vaiz/models/__init__.py`
+   - [ ] Export API client in `vaiz/api/__init__.py`
+
+2. **Examples & Tests:**
+   - [ ] Create example in `examples/` demonstrating usage
+   - [ ] Create comprehensive test in `tests/`
+   - [ ] Run all tests to ensure nothing broke: `pytest tests/`
+
+3. **Documentation:**
+   - [ ] Create guide page in `docs-site/docs/guides/` with usage examples
+   - [ ] Create API reference page in `docs-site/docs/api-reference/` with technical specs
+   - [ ] Add both pages to `docs-site/sidebars.ts` in appropriate sections
+   - [ ] Update `docs-site/docs/api-reference/overview.md` with new section link
+   - [ ] Add example to `docs-site/docs/patterns/ready-to-run.md`
+   - [ ] If adding enums, document them in `docs-site/docs/api-reference/enums.md`
+   - [ ] Verify build: `npm run build` in docs-site/
+
+4. **Naming Conventions:**
+   - [ ] Use enum names matching TypeScript API (e.g., `AvatarMode`, not `EAvatarMode`)
+   - [ ] Use existing enums instead of primitive types where applicable (e.g., `AvatarMode` instead of `int`)
 
 ## Comments
 
