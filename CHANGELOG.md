@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.8.0] - 2025-10-21
+
+### Added
+
+- **🏢 Spaces API**: New `get_space(space_id)` method for retrieving space information
+- **👥 Members API**: New `get_space_members()` method for listing all space members
+
+### Changed
+
+- **🔧 Breaking**: Renamed `EAvatarMode` → `AvatarMode` for consistency with TypeScript API
+  - Migration: Update `from vaiz.models import EAvatarMode` to `from vaiz.models import AvatarMode`
+
+---
+
 ## [0.7.3] - 2025-10-21
 
 ### Added

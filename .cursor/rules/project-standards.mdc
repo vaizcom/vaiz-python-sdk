@@ -45,6 +45,52 @@ Follow this checklist to ensure completeness:
    - [ ] Use enum names matching TypeScript API (e.g., `AvatarMode`, not `EAvatarMode`)
    - [ ] Use existing enums instead of primitive types where applicable (e.g., `AvatarMode` instead of `int`)
 
+## Changelog
+
+**Keep CHANGELOG.md user-focused and concise:**
+
+### ✅ Include:
+- New API methods and endpoints
+- Breaking changes with migration instructions
+- Important bug fixes
+- Changed behavior that affects users
+
+### ❌ Exclude:
+- Documentation updates
+- Test additions/changes
+- Example code additions
+- Internal refactoring
+- CI/CD changes
+- Development tools updates
+
+### Format:
+```markdown
+## [X.Y.Z] - YYYY-MM-DD
+
+### Added
+- New API methods (what users can do)
+
+### Changed
+- Breaking changes with migration path
+- Significant behavior changes
+
+### Fixed
+- Important bug fixes
+```
+
+**Example:**
+```markdown
+## [0.8.0] - 2025-10-21
+
+### Added
+- **🏢 Spaces API**: New `get_space(space_id)` method
+- **👥 Members API**: New `get_space_members()` method
+
+### Changed
+- **🔧 Breaking**: Renamed `EAvatarMode` → `AvatarMode`
+  - Migration: Update imports
+```
+
 ## Comments
 
 - Write code, comments & docs, in English only, even if the user communicates in another language.
