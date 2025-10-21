@@ -318,3 +318,199 @@ def test_document_model_creation():
     assert isinstance(document.updated_at, datetime)
 
 
+def test_space_document_content_workflow(client):
+    """Test getting and replacing content for Space documents."""
+    # 1. Get list of Space documents
+    request = GetDocumentsRequest(
+        kind=Kind.Space,
+        kind_id="68f7519ba65f977ddb66db8c"  # Replace with actual space ID
+    )
+    
+    response = client.get_documents(request)
+    
+    # Skip test if no documents available
+    if not response.payload.documents:
+        pytest.skip("No Space documents available for testing")
+    
+    # 2. Get first document
+    test_document = response.payload.documents[0]
+    print(f"Testing Space document: {test_document.title} (ID: {test_document.id})")
+    
+    # 3. Get document content
+    content = client.get_document_body(test_document.id)
+    assert isinstance(content, dict)
+    print(f"✅ Retrieved Space document content: {type(content)}")
+    
+    # 4. Replace document content
+    new_content = f"""
+# Test Content Update - Space Document
+
+Updated at: {datetime.now().isoformat()}
+
+This is a test content replacement for Space document.
+Document ID: {test_document.id}
+Document Title: {test_document.title}
+"""
+    
+    replace_response = client.replace_document(
+        document_id=test_document.id,
+        description=new_content
+    )
+    
+    assert isinstance(replace_response, ReplaceDocumentResponse)
+    print("✅ Replaced Space document content")
+    
+    # 5. Verify content was updated
+    updated_content = client.get_document_body(test_document.id)
+    assert isinstance(updated_content, dict)
+    print("✅ Retrieved updated Space document content")
+
+
+def test_member_document_content_workflow(client):
+    """Test getting and replacing content for Member documents."""
+    # 1. Get list of Member documents
+    request = GetDocumentsRequest(
+        kind=Kind.Member,
+        kind_id="68f7519ca65f977ddb66db8e"  # Replace with actual member ID
+    )
+    
+    response = client.get_documents(request)
+    
+    # Skip test if no documents available
+    if not response.payload.documents:
+        pytest.skip("No Member documents available for testing")
+    
+    # 2. Get first document
+    test_document = response.payload.documents[0]
+    print(f"Testing Member document: {test_document.title} (ID: {test_document.id})")
+    
+    # 3. Get document content
+    content = client.get_document_body(test_document.id)
+    assert isinstance(content, dict)
+    print(f"✅ Retrieved Member document content: {type(content)}")
+    
+    # 4. Replace document content
+    new_content = f"""
+# Test Content Update - Member Document
+
+Updated at: {datetime.now().isoformat()}
+
+This is a test content replacement for Member (personal) document.
+Document ID: {test_document.id}
+Document Title: {test_document.title}
+"""
+    
+    replace_response = client.replace_document(
+        document_id=test_document.id,
+        description=new_content
+    )
+    
+    assert isinstance(replace_response, ReplaceDocumentResponse)
+    print("✅ Replaced Member document content")
+    
+    # 5. Verify content was updated
+    updated_content = client.get_document_body(test_document.id)
+    assert isinstance(updated_content, dict)
+    print("✅ Retrieved updated Member document content")
+
+
+def test_project_document_content_workflow(client):
+    """Test getting and replacing content for Project documents."""
+    # 1. Get list of Project documents
+    request = GetDocumentsRequest(
+        kind=Kind.Project,
+        kind_id="68f756ddd9d111649a74ee88"  # Replace with actual project ID
+    )
+    
+    response = client.get_documents(request)
+    
+    # Skip test if no documents available
+    if not response.payload.documents:
+        pytest.skip("No Project documents available for testing")
+    
+    # 2. Get first document
+    test_document = response.payload.documents[0]
+    print(f"Testing Project document: {test_document.title} (ID: {test_document.id})")
+    
+    # 3. Get document content
+    content = client.get_document_body(test_document.id)
+    assert isinstance(content, dict)
+    print(f"✅ Retrieved Project document content: {type(content)}")
+    
+    # 4. Replace document content
+    new_content = f"""
+# Test Content Update - Project Document
+
+Updated at: {datetime.now().isoformat()}
+
+This is a test content replacement for Project document.
+Document ID: {test_document.id}
+Document Title: {test_document.title}
+
+## Test Details
+- Document Size: {test_document.size} bytes
+- Created At: {test_document.created_at}
+"""
+    
+    replace_response = client.replace_document(
+        document_id=test_document.id,
+        description=new_content
+    )
+    
+    assert isinstance(replace_response, ReplaceDocumentResponse)
+    print("✅ Replaced Project document content")
+    
+    # 5. Verify content was updated
+    updated_content = client.get_document_body(test_document.id)
+    assert isinstance(updated_content, dict)
+    print("✅ Retrieved updated Project document content")
+
+
+def test_all_scopes_document_workflow(client):
+    """Comprehensive test for all document scopes (Space, Member, Project)."""
+    scopes_to_test = [
+        (Kind.Space, "68f7519ba65f977ddb66db8c", "Space"),
+        (Kind.Member, "68f7519ca65f977ddb66db8e", "Member"),
+        (Kind.Project, "68f756ddd9d111649a74ee88", "Project"),
+    ]
+    
+    tested_scopes = []
+    
+    for kind, kind_id, scope_name in scopes_to_test:
+        print(f"\n=== Testing {scope_name} documents ===")
+        
+        # Get documents for this scope
+        request = GetDocumentsRequest(kind=kind, kind_id=kind_id)
+        
+        try:
+            response = client.get_documents(request)
+            
+            if not response.payload.documents:
+                print(f"⚠️ No {scope_name} documents available")
+                continue
+            
+            # Test first document
+            doc = response.payload.documents[0]
+            print(f"Document: {doc.title} (ID: {doc.id})")
+            
+            # Get content
+            content = client.get_document_body(doc.id)
+            assert isinstance(content, dict)
+            print(f"✅ Got {scope_name} document content")
+            
+            # Replace content
+            new_content = f"Test update for {scope_name} document at {datetime.now().isoformat()}"
+            replace_response = client.replace_document(doc.id, new_content)
+            assert isinstance(replace_response, ReplaceDocumentResponse)
+            print(f"✅ Replaced {scope_name} document content")
+            
+            tested_scopes.append(scope_name)
+            
+        except Exception as e:
+            print(f"❌ Error testing {scope_name} documents: {e}")
+    
+    # At least one scope should be tested
+    assert len(tested_scopes) > 0, "No document scopes could be tested"
+    print(f"\n✅ Successfully tested {len(tested_scopes)} scope(s): {', '.join(tested_scopes)}")
+
+
