@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1] - 2025-10-21
+
+### Fixed
+
+- **♻️ Refactor**: Consolidated color models - replaced `SpaceColor` and `MemberColor` with shared `ColorInfo` model
+
+---
+
 ## [0.8.0] - 2025-10-21
 
 ### Added

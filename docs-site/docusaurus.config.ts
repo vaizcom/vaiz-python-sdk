@@ -98,8 +98,8 @@ const config: Config = {
       },
       items: [
         {
-          label: 'v0.8.0',
-          href: 'https://pypi.org/project/vaiz-sdk/0.8.0/',
+          label: 'v0.8.1',
+          href: 'https://pypi.org/project/vaiz-sdk/0.8.1/',
           position: 'left',
         },
         {
