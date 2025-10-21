@@ -23,7 +23,7 @@ print(f"   Created: {space.created_at}")
 class Space:
     id: str                    # Space ID
     name: str                  # Space name
-    color: SpaceColor          # Color configuration
+    color: ColorInfo           # Color configuration
     avatar_mode: AvatarMode    # Avatar display mode
     avatar: Optional[str]      # Avatar URL
     creator: str               # Creator ID
@@ -33,7 +33,7 @@ class Space:
     is_foreign: bool           # Whether this is a foreign space
 ```
 
-## Space Color
+## Color Configuration
 
 The space color includes both the color code and whether it's a dark theme:
 

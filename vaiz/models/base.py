@@ -33,6 +33,12 @@ class VaizBaseModel(BaseModel):
         return data
 
 
+class ColorInfo(BaseModel):
+    """Color configuration used across different entities (profiles, spaces, members)."""
+    color: str
+    is_dark: bool = Field(..., alias="isDark")
+
+
 class TaskFollower(RootModel):
     root: Dict[str, Literal["creator"]]
 

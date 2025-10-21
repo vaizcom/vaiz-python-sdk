@@ -22,10 +22,12 @@ Follow this checklist to ensure completeness:
 
 1. **Code Implementation:**
    - [ ] Create models in `vaiz/models/` (Request, Response, main model)
+   - [ ] **Reuse existing models** where possible (e.g., `ColorInfo` instead of creating new color classes)
    - [ ] Create API client in `vaiz/api/` with methods
    - [ ] Add API client to `VaizClient` in `vaiz/client.py`
    - [ ] Export models in `vaiz/models/__init__.py`
    - [ ] Export API client in `vaiz/api/__init__.py`
+   - [ ] Export public models in `vaiz/__init__.py` for easy user imports
 
 2. **Examples & Tests:**
    - [ ] Create example in `examples/` demonstrating usage
@@ -44,6 +46,7 @@ Follow this checklist to ensure completeness:
 4. **Naming Conventions:**
    - [ ] Use enum names matching TypeScript API (e.g., `AvatarMode`, not `EAvatarMode`)
    - [ ] Use existing enums instead of primitive types where applicable (e.g., `AvatarMode` instead of `int`)
+   - [ ] Reuse shared models from `vaiz/models/base.py` (e.g., `ColorInfo` for color configurations)
 
 ## Changelog
 
@@ -125,6 +128,15 @@ Before committing code, ask:
 - [ ] Can this logic be extracted to a hook?
 - [ ] Can this UI be extracted to a component?
 - [ ] Am I copying code from another file?
+- [ ] **Are there existing shared models I can reuse?** (e.g., `ColorInfo`, `AvatarMode`)
 - [ ] Will this pattern be used again?
 
 If you answer "yes" to any question, refactor before proceeding.
+
+### Common Shared Models
+
+Always check `vaiz/models/base.py` for reusable models before creating new ones:
+- **`ColorInfo`** - Color configuration with hex code and dark mode flag (used in Profile, Space, Member)
+- **`TaskPriority`** - Task priority levels enum
+- **`TaskFollower`** - Task follower model
+- **`CustomField`** - Custom field value model

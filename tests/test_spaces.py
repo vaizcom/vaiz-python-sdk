@@ -1,5 +1,5 @@
 import re
-from vaiz.models import GetSpaceResponse, Space, SpaceColor, AvatarMode
+from vaiz.models import GetSpaceResponse, Space, ColorInfo, AvatarMode
 from tests.test_config import get_test_client, TEST_SPACE_ID
 
 
@@ -35,7 +35,7 @@ def test_get_space():
     assert len(space.name) > 0
     
     # Validate color
-    assert isinstance(space.color, SpaceColor)
+    assert isinstance(space.color, ColorInfo)
     assert isinstance(space.color.color, str)
     assert is_valid_hex_color(space.color.color)
     assert isinstance(space.color.is_dark, bool)

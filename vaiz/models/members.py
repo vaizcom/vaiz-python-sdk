@@ -1,14 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
-from .base import VaizBaseModel
+from .base import VaizBaseModel, ColorInfo
 from .enums import AvatarMode
-
-
-class MemberColor(BaseModel):
-    """Color configuration for a member."""
-    color: str
-    is_dark: bool = Field(..., alias="isDark")
 
 
 class Member(VaizBaseModel):
@@ -19,7 +13,7 @@ class Member(VaizBaseModel):
     email: str
     avatar: Optional[str] = None
     avatar_mode: AvatarMode = Field(..., alias="avatarMode")
-    color: MemberColor
+    color: ColorInfo
     space: str
     status: str
     joined_date: str = Field(..., alias="joinedDate")  # String date from API

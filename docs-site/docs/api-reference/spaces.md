@@ -34,7 +34,7 @@ print(f"Created: {space.created_at}")
 
 ---
 
-## Models & Interfaces
+## Models
 
 ### Space
 
@@ -44,7 +44,7 @@ Represents a space in the system.
 class Space:
     id: str                    # Space ID
     name: str                  # Space name
-    color: SpaceColor          # Color configuration
+    color: ColorInfo           # Color configuration
     avatar_mode: AvatarMode    # Avatar display mode (Uploaded=0, Generated=2)
     avatar: Optional[str]      # Avatar URL
     creator: str               # Creator ID
@@ -54,15 +54,7 @@ class Space:
     is_foreign: bool           # Whether this is a foreign space
 ```
 
-### SpaceColor
-
-Color configuration for a space.
-
-```python
-class SpaceColor:
-    color: str        # Hex color code (e.g., "#98a8e8")
-    is_dark: bool     # Whether the color is dark
-```
+---
 
 ### GetSpaceResponse
 
@@ -80,7 +72,32 @@ class GetSpaceResponse:
 
 ---
 
+### GetSpacePayload
+
+Payload wrapper for space data.
+
+```python
+class GetSpacePayload:
+    space: Space               # Space object
+```
+
+---
+
+### ColorInfo
+
+Color configuration shared across spaces, members, and profiles.
+
+```python
+class ColorInfo:
+    color: str        # Hex color code (e.g., "#98a8e8")
+    is_dark: bool     # Whether the color is dark
+```
+
+---
+
 ## See Also
 
-- [Examples](../patterns/ready-to-run) - Ready-to-run code examples
+- [Spaces Guide](../guides/spaces) - Usage examples and patterns
+- [Members API](./members) - Space members
+- [Enums](./enums) - AvatarMode enum
 

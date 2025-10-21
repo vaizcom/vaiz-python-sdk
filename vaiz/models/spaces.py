@@ -1,21 +1,15 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
-from .base import VaizBaseModel
+from .base import VaizBaseModel, ColorInfo
 from .enums import AvatarMode
-
-
-class SpaceColor(BaseModel):
-    """Color configuration for a space."""
-    color: str
-    is_dark: bool = Field(..., alias="isDark")
 
 
 class Space(VaizBaseModel):
     """Represents a space in the system."""
     id: str = Field(..., alias="_id")
     name: str
-    color: SpaceColor
+    color: ColorInfo
     avatar_mode: AvatarMode = Field(..., alias="avatarMode")
     avatar: Optional[str] = None
     creator: str

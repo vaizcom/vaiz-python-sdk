@@ -50,6 +50,12 @@ from .models import (
     DeleteCommentResponse,
     CommentReactionType,
     COMMENT_REACTION_METADATA,
+    Space,
+    GetSpaceResponse,
+    Member,
+    GetSpaceMembersResponse,
+    AvatarMode,
+    ColorInfo,
 )
 
 # Import helper functions for convenient usage
@@ -142,6 +148,12 @@ __all__ = [
     'DeleteCommentResponse',
     'CommentReactionType',
     'COMMENT_REACTION_METADATA',
+    'Space',
+    'GetSpaceResponse',
+    'Member',
+    'GetSpaceMembersResponse',
+    'AvatarMode',
+    'ColorInfo',
     
     # Helper functions for custom fields
     'make_text_field',

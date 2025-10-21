@@ -27,14 +27,14 @@ class Member:
     email: str                 # Email address
     avatar: Optional[str]      # Avatar URL
     avatar_mode: AvatarMode    # Avatar display mode
-    color: MemberColor         # Color configuration
+    color: ColorInfo           # Color configuration
     space: str                 # Space ID
     status: str                # Member status (Active, etc.)
     joined_date: str           # Join date string
     updated_at: str            # Last update date string
 ```
 
-## Member Color
+## Color Configuration
 
 The member color includes both the color code and theme:
 

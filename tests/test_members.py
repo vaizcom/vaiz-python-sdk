@@ -1,5 +1,5 @@
 import re
-from vaiz.models import GetSpaceMembersResponse, Member, MemberColor, AvatarMode
+from vaiz.models import GetSpaceMembersResponse, Member, ColorInfo, AvatarMode
 from tests.test_config import get_test_client
 
 
@@ -47,7 +47,7 @@ def test_get_space_members():
         assert isinstance(member.full_name, str)
     
     # Validate color
-    assert isinstance(member.color, MemberColor)
+    assert isinstance(member.color, ColorInfo)
     assert isinstance(member.color.color, str)
     assert is_valid_hex_color(member.color.color)
     assert isinstance(member.color.is_dark, bool)

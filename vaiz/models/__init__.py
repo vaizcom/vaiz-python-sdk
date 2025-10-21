@@ -1,4 +1,4 @@
-from .base import TaskFollower, TaskPriority, CustomField, VaizBaseModel
+from .base import TaskFollower, TaskPriority, CustomField, VaizBaseModel, ColorInfo
 from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField, GetHistoryRequest, GetHistoryResponse, HistoryItem, HistoryData, GetHistoryPayload, GetTasksRequest, GetTasksResponse, GetTasksPayload
 from .boards import Board, BoardResponse, BoardsResponse, CustomFieldType, CreateBoardTypeRequest, CreateBoardTypeResponse, EditBoardTypeRequest, EditBoardTypeResponse, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse, CreateBoardCustomFieldRequest, CreateBoardCustomFieldResponse, EditBoardCustomFieldRequest, EditBoardCustomFieldResponse
 from .profile import Profile, ProfileResponse
@@ -7,8 +7,8 @@ from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, C
 from .upload import UploadedFile, UploadFileResponse
 from .documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, Document, GetDocumentsRequest, GetDocumentsResponse, GetDocumentsPayload, CreateDocumentRequest, CreateDocumentResponse, CreateDocumentPayload
 from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
-from .spaces import Space, SpaceColor, GetSpaceRequest, GetSpaceResponse, GetSpacePayload
-from .members import Member, MemberColor, GetSpaceMembersResponse, GetSpaceMembersPayload
+from .spaces import Space, GetSpaceRequest, GetSpaceResponse, GetSpacePayload
+from .members import Member, GetSpaceMembersResponse, GetSpaceMembersPayload
 from .enums import CommentReactionType, COMMENT_REACTION_METADATA, AvatarMode, Kind
 
 __all__ = [
@@ -17,6 +17,7 @@ __all__ = [
     'TaskFollower',
     'TaskPriority',
     'CustomField',
+    'ColorInfo',
     
     # Task models
     'Task',
@@ -107,14 +108,12 @@ __all__ = [
     
     # Space models
     'Space',
-    'SpaceColor',
     'GetSpaceRequest',
     'GetSpaceResponse',
     'GetSpacePayload',
     
     # Member models
     'Member',
-    'MemberColor',
     'GetSpaceMembersResponse',
     'GetSpaceMembersPayload',
     

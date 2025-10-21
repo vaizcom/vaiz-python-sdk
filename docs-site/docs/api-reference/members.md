@@ -30,7 +30,7 @@ for member in response.members:
 
 ---
 
-## Models & Interfaces
+## Models
 
 ### Member
 
@@ -44,22 +44,14 @@ class Member:
     email: str                 # Email address
     avatar: Optional[str]      # Avatar URL
     avatar_mode: AvatarMode    # Avatar display mode (Uploaded=0, Generated=2)
-    color: MemberColor         # Color configuration
+    color: ColorInfo           # Color configuration
     space: str                 # Space ID
     status: str                # Member status (e.g., "Active")
     joined_date: str           # Join date as string
     updated_at: str            # Last update date as string
 ```
 
-### MemberColor
-
-Color configuration for a member.
-
-```python
-class MemberColor:
-    color: str        # Hex color code (e.g., "#a8f8b8")
-    is_dark: bool     # Whether the color is dark
-```
+---
 
 ### GetSpaceMembersResponse
 
@@ -77,9 +69,33 @@ class GetSpaceMembersResponse:
 
 ---
 
+### GetSpaceMembersPayload
+
+Payload wrapper for members list.
+
+```python
+class GetSpaceMembersPayload:
+    members: List[Member]      # List of space members
+```
+
+---
+
+### ColorInfo
+
+Color configuration shared across spaces, members, and profiles.
+
+```python
+class ColorInfo:
+    color: str        # Hex color code (e.g., "#a8f8b8")
+    is_dark: bool     # Whether the color is dark
+```
+
+---
+
 ## See Also
 
 - [Members Guide](../guides/members) - Usage examples and patterns
 - [Profile API](./profile) - Current user profile
 - [Spaces API](./spaces) - Space information
+- [Enums](./enums) - AvatarMode enum
 
