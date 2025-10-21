@@ -36,6 +36,31 @@ UploadFileType.File     # Generic files (download link)
 
 ---
 
+## AvatarMode
+
+Avatar display modes for spaces and profiles:
+
+```python
+from vaiz.models.enums import AvatarMode
+
+AvatarMode.Uploaded = 0    # Custom uploaded avatar image
+AvatarMode.Generated = 2   # Auto-generated avatar
+```
+
+**Usage:**
+
+```python
+# Check space avatar mode
+space = client.get_space(space_id).space
+
+if space.avatar_mode == AvatarMode.Uploaded:
+    print(f"Custom avatar: {space.avatar}")
+elif space.avatar_mode == AvatarMode.Generated:
+    print("Generated avatar")
+```
+
+---
+
 ## CommentReactionType
 
 Popular emoji reactions for comments:
@@ -262,5 +287,18 @@ docs = client.get_documents(
         kind_id="project_id"
     )
 )
+```
+
+### AvatarMode
+
+```python
+from vaiz.models.enums import AvatarMode
+
+space = client.get_space(space_id).space
+
+if space.avatar_mode == AvatarMode.Uploaded:
+    print(f"Custom avatar uploaded: {space.avatar}")
+elif space.avatar_mode == AvatarMode.Generated:
+    print("Generated avatar")
 ```
 

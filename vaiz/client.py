@@ -7,9 +7,10 @@ from vaiz.api.milestones import MilestonesAPIClient
 from vaiz.api.upload import UploadAPIClient
 from vaiz.api.comments import CommentsAPIClient
 from vaiz.api.documents import DocumentsAPIClient
+from vaiz.api.spaces import SpacesAPIClient
 
 
-class VaizClient(TasksAPIClient, BoardsAPIClient, ProfileAPIClient, ProjectsAPIClient, MilestonesAPIClient, UploadAPIClient, CommentsAPIClient, DocumentsAPIClient):
+class VaizClient(TasksAPIClient, BoardsAPIClient, ProfileAPIClient, ProjectsAPIClient, MilestonesAPIClient, UploadAPIClient, CommentsAPIClient, DocumentsAPIClient, SpacesAPIClient):
     """
     Main client for interacting with the Vaiz API.
     This class inherits all task-related operations from TasksAPIClient,
@@ -18,6 +19,8 @@ class VaizClient(TasksAPIClient, BoardsAPIClient, ProfileAPIClient, ProjectsAPIC
     project-related operations from ProjectsAPIClient,
     milestone-related operations from MilestonesAPIClient,
     upload-related operations from UploadAPIClient,
-    and comment-related operations from CommentsAPIClient.
+    comment-related operations from CommentsAPIClient,
+    document-related operations from DocumentsAPIClient,
+    and space-related operations from SpacesAPIClient.
     """
     pass

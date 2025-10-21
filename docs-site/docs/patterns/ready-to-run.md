@@ -79,6 +79,7 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 ## Other
 
 - **`get_profile.py`** - Get current user profile
+- **`get_space.py`** - Get space information
 - **`get_history.py`** - Get change history
 - **`test_helpers.py`** - Test helper functions
 - **`test_caching_simple.py`** - Test caching behavior

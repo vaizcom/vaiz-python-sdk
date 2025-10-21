@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class EAvatarMode(int, Enum):
+class AvatarMode(int, Enum):
     """
     Enum for avatar modes.
     """

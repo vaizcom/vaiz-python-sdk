@@ -1,0 +1,151 @@
+---
+sidebar_position: 9
+---
+
+# Spaces
+
+Get information about your workspace (space).
+
+## Get Space Information
+
+```python
+response = client.get_space(space_id)
+space = response.space
+
+print(f"📦 {space.name}")
+print(f"   Color: {space.color.color}")
+print(f"   Created: {space.created_at}")
+```
+
+## Space Model
+
+```python
+class Space:
+    id: str                    # Space ID
+    name: str                  # Space name
+    color: SpaceColor          # Color configuration
+    avatar_mode: AvatarMode    # Avatar display mode
+    avatar: Optional[str]      # Avatar URL
+    creator: str               # Creator ID
+    plan: str                  # Plan ID
+    created_at: datetime       # Creation timestamp
+    updated_at: datetime       # Last update timestamp
+    is_foreign: bool           # Whether this is a foreign space
+```
+
+## Space Color
+
+The space color includes both the color code and whether it's a dark theme:
+
+```python
+space_color = space.color
+print(f"Color: {space_color.color}")      # e.g., "#98a8e8"
+print(f"Is Dark: {space_color.is_dark}")  # True/False
+```
+
+## Complete Example
+
+```python
+from vaiz import VaizClient
+import os
+
+# Initialize client
+client = VaizClient(
+    api_key=os.getenv("VAIZ_API_KEY"),
+    space_id=os.getenv("VAIZ_SPACE_ID")
+)
+
+# Get space information
+space_id = os.getenv("VAIZ_SPACE_ID")
+response = client.get_space(space_id)
+space = response.space
+
+print("=== Space Information ===")
+print(f"Name: {space.name}")
+print(f"ID: {space.id}")
+print(f"Color: {space.color.color}")
+print(f"Dark Theme: {space.color.is_dark}")
+print(f"Created: {space.created_at}")
+print(f"Plan: {space.plan}")
+```
+
+## Use Cases
+
+### Verify Space Access
+
+```python
+try:
+    response = client.get_space(space_id)
+    print(f"✅ Connected to space: {response.space.name}")
+except Exception as e:
+    print("❌ Cannot access space")
+```
+
+### Display Space Info in UI
+
+```python
+def get_workspace_info(space_id: str):
+    """Get formatted workspace information."""
+    response = client.get_space(space_id)
+    space = response.space
+    
+    return {
+        "name": space.name,
+        "color": space.color.color,
+        "theme": "dark" if space.color.is_dark else "light",
+        "avatar": space.avatar,
+        "created": space.created_at.strftime("%Y-%m-%d")
+    }
+
+# Use in your app
+info = get_workspace_info(space_id)
+print(f"Workspace: {info['name']}")
+print(f"Theme: {info['theme']}")
+```
+
+### Check Space Details
+
+```python
+space = client.get_space(space_id).space
+
+# Get basic info
+print(f"Space Name: {space.name}")
+print(f"Space ID: {space.id}")
+
+# Check branding
+if space.avatar:
+    print(f"Logo: {space.avatar}")
+print(f"Brand Color: {space.color.color}")
+
+# Check metadata
+print(f"Created: {space.created_at}")
+print(f"Last Updated: {space.updated_at}")
+print(f"Is Foreign: {space.is_foreign}")
+```
+
+## Avatar Modes
+
+The `avatar_mode` field indicates how the space avatar is displayed:
+
+```python
+from vaiz.models import AvatarMode
+
+space = client.get_space(space_id).space
+
+if space.avatar_mode == AvatarMode.Uploaded:
+    print(f"Custom avatar uploaded: {space.avatar}")
+elif space.avatar_mode == AvatarMode.Generated:
+    print("Generated avatar")
+```
+
+Available avatar modes:
+- `AvatarMode.Uploaded` (0) - Custom uploaded avatar
+- `AvatarMode.Generated` (2) - Auto-generated avatar
+
+## See Also
+
+- [Spaces API Reference](../api-reference/spaces) - Technical specifications
+- [Projects](./projects) - Project management
+- [Profile](./profile) - User profile
+- [Ready-to-Run Examples](../patterns/ready-to-run) - More examples
+

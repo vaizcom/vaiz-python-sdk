@@ -21,6 +21,7 @@ Complete reference documentation for all Vaiz SDK methods, models, and enums.
 - [Files](./files) - File upload methods
 - [Documents](./documents) - Document management methods
 - [Profile](./profile) - User profile methods
+- [Spaces](./spaces) - Space information methods
 - [History](./history) - Change history methods
 
 ### System

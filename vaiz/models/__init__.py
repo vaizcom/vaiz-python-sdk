@@ -7,7 +7,8 @@ from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, C
 from .upload import UploadedFile, UploadFileResponse
 from .documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, Document, GetDocumentsRequest, GetDocumentsResponse, GetDocumentsPayload, CreateDocumentRequest, CreateDocumentResponse, CreateDocumentPayload
 from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
-from .enums import CommentReactionType, COMMENT_REACTION_METADATA, EAvatarMode, Kind
+from .spaces import Space, SpaceColor, GetSpaceRequest, GetSpaceResponse, GetSpacePayload
+from .enums import CommentReactionType, COMMENT_REACTION_METADATA, AvatarMode, Kind
 
 __all__ = [
     # Base models
@@ -102,6 +103,15 @@ __all__ = [
     'DeleteCommentResponse',
     'CommentReactionType',
     'COMMENT_REACTION_METADATA',
-    'EAvatarMode',
+    
+    # Space models
+    'Space',
+    'SpaceColor',
+    'GetSpaceRequest',
+    'GetSpaceResponse',
+    'GetSpacePayload',
+    
+    # Enums
+    'AvatarMode',
     'Kind',
 ] 

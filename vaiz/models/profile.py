@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from .base import VaizBaseModel
-from .enums import EAvatarMode
+from .enums import AvatarMode
 
 
 class ProfileEmail(BaseModel):
@@ -24,7 +24,7 @@ class Profile(VaizBaseModel):
     email: str
     emails: Optional[List[ProfileEmail]] = []
     color: ProfileColor = Field(default_factory=ProfileColor)
-    avatar_mode: EAvatarMode = Field(..., alias="avatarMode")
+    avatar_mode: AvatarMode = Field(..., alias="avatarMode")
     incomplete_steps: Optional[List[str]] = Field(default_factory=list, alias="incompleteSteps")
     registered_date: datetime = Field(..., alias="registeredDate")
     recovery_codes: Optional[List[Dict[str, str]]] = Field(default_factory=list, alias="recoveryCodes")
