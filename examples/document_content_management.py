@@ -72,9 +72,9 @@ This is a shared document accessible to all space members.
     # Example 2: Working with Member documents
     print("2. Working with Member (Personal) Documents:")
     try:
-        # Get profile to get member ID
+        # Get profile to get member ID (use memberId, not _id)
         profile = client.get_profile()
-        member_id = profile.profile.id
+        member_id = profile.profile.member_id
         
         # Get list of Member documents
         member_docs = client.get_documents(
@@ -143,7 +143,7 @@ This is a private document visible only to me.
                 
                 # Get current content
                 content = client.get_document_body(doc.id)
-                print(f"   Retrieved content")
+                print("   Retrieved content")
                 
                 # Update with project status
                 new_content = f"""

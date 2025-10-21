@@ -68,7 +68,7 @@ Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     print("2. Document Content Audit:")
     try:
         profile = client.get_profile()
-        member_id = profile.profile.id
+        member_id = profile.profile.member_id  # Use memberId for Member documents
         
         scopes = [
             (Kind.Space, space_id, "Space"),

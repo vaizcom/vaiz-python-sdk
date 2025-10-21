@@ -298,7 +298,7 @@ add_status_update("PRJ-123", "Design phase completed")
 ```
 
 :::info Advanced Usage
-If you need more control, you can work directly with the document ID from `task.document` field using the [Documents API Methods](./documents#api-methods-reference).
+If you need more control, you can work directly with the document ID from `task.document` field using the [Documents API](./documents) methods.
 :::
 
 ## See Also

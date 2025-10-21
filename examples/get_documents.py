@@ -32,7 +32,7 @@ def main():
     try:
         space_request = GetDocumentsRequest(
             kind=Kind.Space,
-            kind_id="68f7519ba65f977ddb66db8c"  # Replace with actual space ID
+            kind_id=space_id  # Use space_id from environment
         )
         space_documents = client.get_documents(space_request)
         
@@ -48,9 +48,13 @@ def main():
     # Example 2: Getting member documents
     print("2. Getting member documents (Member):")
     try:
+        # Get member ID from profile (use memberId, not _id)
+        profile = client.get_profile()
+        member_id = profile.profile.member_id
+        
         member_request = GetDocumentsRequest(
             kind=Kind.Member,
-            kind_id="68f7519ca65f977ddb66db8e"  # Replace with actual member ID
+            kind_id=member_id
         )
         member_documents = client.get_documents(member_request)
         
@@ -66,9 +70,18 @@ def main():
     # Example 3: Getting project documents
     print("3. Getting project documents (Project):")
     try:
+        # Get first available project
+        projects = client.get_projects()
+        
+        if not projects.projects:
+            print("No projects available")
+            return
+        
+        project_id = projects.projects[0].id
+        
         project_request = GetDocumentsRequest(
             kind=Kind.Project,
-            kind_id="68f756ddd9d111649a74ee88"  # Replace with actual project ID
+            kind_id=project_id
         )
         project_documents = client.get_documents(project_request)
         

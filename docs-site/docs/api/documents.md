@@ -106,9 +106,208 @@ print(f"Active: {len(active_docs)}")
 print(f"Recent 10: {len(recent_docs)}")
 ```
 
+## Creating Documents
+
+You can create new documents in any scope (Space, Member, or Project):
+
+```python
+from vaiz.models import CreateDocumentRequest, Kind
+
+# Create a Project document
+new_doc = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id="project_id",
+        title="Project Documentation",
+        index=0,  # Position in document list
+        parent_document_id=None  # Optional: for nested documents
+    )
+)
+
+document = new_doc.payload.document
+print(f"Created document: {document.id}")
+print(f"Title: {document.title}")
+```
+
+### Creating Documents in Different Scopes
+
+```python
+# Space document (shared across organization)
+space_doc = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Space,
+        kind_id=space_id,
+        title="Company Wiki",
+        index=0
+    )
+)
+
+# Member document (personal)
+personal_doc = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Member,
+        kind_id=member_id,
+        title="My Notes",
+        index=0
+    )
+)
+
+# Project document
+project_doc = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id=project_id,
+        title="Project Plan",
+        index=0
+    )
+)
+```
+
+### Create and Populate Document
+
+```python
+# 1. Create document
+response = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id="project_id",
+        title="Meeting Notes",
+        index=0
+    )
+)
+
+doc_id = response.payload.document.id
+
+# 2. Add content
+content = """
+# Meeting Notes
+
+**Date**: 2025-10-21
+
+## Attendees
+- John Doe
+- Jane Smith
+
+## Discussion
+[Meeting content here]
+"""
+
+client.replace_document(doc_id, content)
+print(f"✅ Document created and populated: {doc_id}")
+```
+
+### Creating Document Hierarchies
+
+Create nested document structures for better organization:
+
+```python
+# 1. Create parent document
+parent = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id=project_id,
+        title="Product Documentation",
+        index=0
+    )
+).payload.document
+
+# 2. Create child documents
+child1 = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id=project_id,
+        title="Getting Started",
+        index=0,
+        parent_document_id=parent.id  # Link to parent
+    )
+).payload.document
+
+child2 = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id=project_id,
+        title="API Reference",
+        index=1,
+        parent_document_id=parent.id  # Same parent
+    )
+).payload.document
+
+# 3. Create nested child (grandchild)
+grandchild = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id=project_id,
+        title="Quick Start Guide",
+        index=0,
+        parent_document_id=child1.id  # Nested under child1
+    )
+).payload.document
+
+print(f"Created hierarchy: {parent.title} -> {child1.title} -> {grandchild.title}")
+```
+
+### Multi-Level Structure Example
+
+```python
+# Build a complete documentation tree
+def create_doc_tree(client, project_id):
+    """Create a hierarchical documentation structure."""
+    
+    # Root
+    root = client.create_document(
+        CreateDocumentRequest(
+            kind=Kind.Project,
+            kind_id=project_id,
+            title="User Manual",
+            index=0
+        )
+    ).payload.document
+    
+    # Chapters
+    chapters = [
+        ("Chapter 1: Introduction", ["Overview", "Installation", "Quick Start"]),
+        ("Chapter 2: Features", ["Core Features", "Advanced Features"]),
+        ("Chapter 3: Configuration", ["Basic Setup", "Advanced Settings"])
+    ]
+    
+    for chapter_idx, (chapter_title, sections) in enumerate(chapters):
+        # Create chapter
+        chapter = client.create_document(
+            CreateDocumentRequest(
+                kind=Kind.Project,
+                kind_id=project_id,
+                title=chapter_title,
+                index=chapter_idx,
+                parent_document_id=root.id
+            )
+        ).payload.document
+        
+        print(f"📖 {chapter.title}")
+        
+        # Create sections
+        for section_idx, section_title in enumerate(sections):
+            section = client.create_document(
+                CreateDocumentRequest(
+                    kind=Kind.Project,
+                    kind_id=project_id,
+                    title=section_title,
+                    index=section_idx,
+                    parent_document_id=chapter.id
+                )
+            ).payload.document
+            
+            print(f"  📄 {section.title}")
+    
+    return root
+
+# Create the tree
+root_doc = create_doc_tree(client, project_id)
+print(f"\n✅ Created documentation tree with root: {root_doc.id}")
+```
+
 ## Working with Document Content
 
-In addition to listing documents, you can work with their content using document API methods.
+In addition to listing and creating documents, you can work with their content using document API methods.
 
 ### Get Document Content
 
@@ -142,7 +341,7 @@ client.replace_document(
 - Bulk content updates
 - Template-based content generation
 
-### Example: Update Project Document
+### Update Project Document
 
 ```python
 from vaiz.models import GetDocumentsRequest, Kind

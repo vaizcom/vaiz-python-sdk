@@ -10,6 +10,85 @@ def client():
     return get_test_client()
 
 
+def get_or_create_test_document(client, kind: Kind, kind_id: str, title_prefix: str = "SDK Test Document") -> Document:
+    """
+    Get an existing test document or create a new one if none exist.
+    
+    Args:
+        client: VaizClient instance
+        kind: Document scope (Space/Member/Project)
+        kind_id: ID of space/member/project
+        title_prefix: Prefix for created document title
+        
+    Returns:
+        Document: Existing or newly created document
+    """
+    # Try to get existing documents
+    response = client.get_documents(
+        GetDocumentsRequest(kind=kind, kind_id=kind_id)
+    )
+    
+    # If documents exist, return first one
+    if response.payload.documents:
+        return response.payload.documents[0]
+    
+    # No documents found, create one
+    create_response = client.create_document(
+        CreateDocumentRequest(
+            kind=kind,
+            kind_id=kind_id,
+            title=f"{title_prefix} - {kind.value}",
+            index=0
+        )
+    )
+    
+    return create_response.payload.document
+
+
+def ensure_test_documents_exist(client, kind: Kind, kind_id: str, min_count: int = 1) -> list[Document]:
+    """
+    Ensure at least min_count documents exist for testing.
+    Creates documents if needed.
+    
+    Args:
+        client: VaizClient instance
+        kind: Document scope
+        kind_id: ID of scope
+        min_count: Minimum number of documents needed
+        
+    Returns:
+        list[Document]: List of documents (existing + newly created)
+    """
+    # Get existing documents
+    response = client.get_documents(
+        GetDocumentsRequest(kind=kind, kind_id=kind_id)
+    )
+    
+    existing_docs = response.payload.documents
+    existing_count = len(existing_docs)
+    
+    # Calculate how many to create
+    to_create = max(0, min_count - existing_count)
+    
+    if to_create == 0:
+        return existing_docs[:min_count]
+    
+    # Create missing documents
+    all_docs = list(existing_docs)
+    for i in range(to_create):
+        create_response = client.create_document(
+            CreateDocumentRequest(
+                kind=kind,
+                kind_id=kind_id,
+                title=f"SDK Test - {kind.value} Doc {existing_count + i + 1}",
+                index=existing_count + i
+            )
+        )
+        all_docs.append(create_response.payload.document)
+    
+    return all_docs[:min_count]
+
+
 def test_get_document_request_model_serialization():
     request = GetDocumentRequest(document_id="doc123")
     data = request.model_dump()
@@ -145,9 +224,14 @@ def test_get_documents_request_model_serialization():
 
 def test_get_documents_space(client):
     """Test getting Space documents."""
+    from tests.test_config import TEST_SPACE_ID
+    
+    # Ensure at least one document exists
+    get_or_create_test_document(client, Kind.Space, TEST_SPACE_ID)
+    
     request = GetDocumentsRequest(
         kind=Kind.Space,
-        kind_id="68f7519ba65f977ddb66db8c"  # Replace with actual space ID
+        kind_id=TEST_SPACE_ID
     )
     
     response = client.get_documents(request)
@@ -156,34 +240,41 @@ def test_get_documents_space(client):
     assert response.type == "GetDocuments"
     assert hasattr(response.payload, "documents")
     assert isinstance(response.payload.documents, list)
+    assert len(response.payload.documents) > 0, "Should have at least one document"
     
-    # If documents are returned, verify structure
-    if response.payload.documents:
-        document = response.payload.documents[0]
-        assert isinstance(document, Document)
-        assert hasattr(document, "id")
-        assert hasattr(document, "title")
-        assert hasattr(document, "size")
-        assert hasattr(document, "kind")
-        assert hasattr(document, "kind_id")
-        assert hasattr(document, "creator")
-        assert hasattr(document, "created_at")
-        assert hasattr(document, "updated_at")
-        assert hasattr(document, "bucket")
-        assert hasattr(document, "contributor_ids")
-        assert hasattr(document, "followers")
-        assert hasattr(document, "map")
-        
-        # Verify document is of Space kind
-        assert document.kind == Kind.Space
-        assert document.kind_id == "68f7519ba65f977ddb66db8c"
+    # Verify structure
+    document = response.payload.documents[0]
+    assert isinstance(document, Document)
+    assert hasattr(document, "id")
+    assert hasattr(document, "title")
+    assert hasattr(document, "size")
+    assert hasattr(document, "kind")
+    assert hasattr(document, "kind_id")
+    assert hasattr(document, "creator")
+    assert hasattr(document, "created_at")
+    assert hasattr(document, "updated_at")
+    assert hasattr(document, "bucket")
+    assert hasattr(document, "contributor_ids")
+    assert hasattr(document, "followers")
+    assert hasattr(document, "map")
+    
+    # Verify document is of Space kind
+    assert document.kind == Kind.Space
+    assert document.kind_id == TEST_SPACE_ID
 
 
 def test_get_documents_member(client):
     """Test getting Member documents."""
+    # Get member ID from profile (use memberId, not _id)
+    profile = client.get_profile()
+    member_id = profile.profile.member_id
+    
+    # Ensure at least one document exists
+    get_or_create_test_document(client, Kind.Member, member_id)
+    
     request = GetDocumentsRequest(
         kind=Kind.Member,
-        kind_id="68f7519ca65f977ddb66db8e"  # Replace with actual member ID
+        kind_id=member_id
     )
     
     response = client.get_documents(request)
@@ -192,31 +283,39 @@ def test_get_documents_member(client):
     assert response.type == "GetDocuments"
     assert hasattr(response.payload, "documents")
     assert isinstance(response.payload.documents, list)
+    assert len(response.payload.documents) > 0, "Should have at least one document"
     
-    # If documents are returned, verify structure
-    if response.payload.documents:
-        document = response.payload.documents[0]
-        assert isinstance(document, Document)
-        assert hasattr(document, "id")
-        assert hasattr(document, "title")
-        assert hasattr(document, "size")
-        assert hasattr(document, "kind")
-        assert hasattr(document, "kind_id")
-        assert hasattr(document, "creator")
-        assert hasattr(document, "created_at")
-        assert hasattr(document, "updated_at")
-        assert hasattr(document, "bucket")
-        
-        # Verify document is of Member kind
-        assert document.kind == Kind.Member
-        assert document.kind_id == "68f7519ca65f977ddb66db8e"
+    # Verify structure
+    document = response.payload.documents[0]
+    assert isinstance(document, Document)
+    assert hasattr(document, "id")
+    assert hasattr(document, "title")
+    assert hasattr(document, "size")
+    assert hasattr(document, "kind")
+    assert hasattr(document, "kind_id")
+    assert hasattr(document, "creator")
+    assert hasattr(document, "created_at")
+    assert hasattr(document, "updated_at")
+    assert hasattr(document, "bucket")
+    
+    # Verify document is of Member kind
+    assert document.kind == Kind.Member
+    assert document.kind_id == member_id
 
 
 def test_get_documents_project(client):
     """Test getting Project documents."""
+    # Get first available project
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
+    # Ensure at least one document exists
+    get_or_create_test_document(client, Kind.Project, project_id)
+    
     request = GetDocumentsRequest(
         kind=Kind.Project,
-        kind_id="68f756ddd9d111649a74ee88"  # Replace with actual project ID
+        kind_id=project_id
     )
     
     response = client.get_documents(request)
@@ -225,31 +324,39 @@ def test_get_documents_project(client):
     assert response.type == "GetDocuments"
     assert hasattr(response.payload, "documents")
     assert isinstance(response.payload.documents, list)
+    assert len(response.payload.documents) > 0, "Should have at least one document"
     
-    # If documents are returned, verify structure
-    if response.payload.documents:
-        document = response.payload.documents[0]
-        assert isinstance(document, Document)
-        assert hasattr(document, "id")
-        assert hasattr(document, "title")
-        assert hasattr(document, "size")
-        assert hasattr(document, "kind")
-        assert hasattr(document, "kind_id")
-        assert hasattr(document, "creator")
-        assert hasattr(document, "created_at")
-        assert hasattr(document, "updated_at")
-        assert hasattr(document, "bucket")
-        
-        # Verify document is of Project kind
-        assert document.kind == Kind.Project
-        assert document.kind_id == "68f756ddd9d111649a74ee88"
+    # Verify structure
+    document = response.payload.documents[0]
+    assert isinstance(document, Document)
+    assert hasattr(document, "id")
+    assert hasattr(document, "title")
+    assert hasattr(document, "size")
+    assert hasattr(document, "kind")
+    assert hasattr(document, "kind_id")
+    assert hasattr(document, "creator")
+    assert hasattr(document, "created_at")
+    assert hasattr(document, "updated_at")
+    assert hasattr(document, "bucket")
+    
+    # Verify document is of Project kind
+    assert document.kind == Kind.Project
+    assert document.kind_id == project_id
 
 
 def test_get_documents_response_structure(client):
     """Test that GetDocumentsResponse has the correct structure."""
+    # Get first available project
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
+    # Ensure document exists
+    get_or_create_test_document(client, Kind.Project, project_id)
+    
     request = GetDocumentsRequest(
         kind=Kind.Project,
-        kind_id="68f756ddd9d111649a74ee88"
+        kind_id=project_id
     )
     response = client.get_documents(request)
     
@@ -320,20 +427,12 @@ def test_document_model_creation():
 
 def test_space_document_content_workflow(client):
     """Test getting and replacing content for Space documents."""
-    # 1. Get list of Space documents
-    request = GetDocumentsRequest(
-        kind=Kind.Space,
-        kind_id="68f7519ba65f977ddb66db8c"  # Replace with actual space ID
-    )
+    from tests.test_config import TEST_SPACE_ID
     
-    response = client.get_documents(request)
+    # 1. Ensure document exists
+    test_document = get_or_create_test_document(client, Kind.Space, TEST_SPACE_ID, "Space Content Test")
     
-    # Skip test if no documents available
-    if not response.payload.documents:
-        pytest.skip("No Space documents available for testing")
-    
-    # 2. Get first document
-    test_document = response.payload.documents[0]
+    # 2. Use existing document
     print(f"Testing Space document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
@@ -368,20 +467,13 @@ Document Title: {test_document.title}
 
 def test_member_document_content_workflow(client):
     """Test getting and replacing content for Member documents."""
-    # 1. Get list of Member documents
-    request = GetDocumentsRequest(
-        kind=Kind.Member,
-        kind_id="68f7519ca65f977ddb66db8e"  # Replace with actual member ID
-    )
+    # 1. Get member ID and ensure document exists (use memberId, not _id)
+    profile = client.get_profile()
+    member_id = profile.profile.member_id
     
-    response = client.get_documents(request)
+    test_document = get_or_create_test_document(client, Kind.Member, member_id, "Member Content Test")
     
-    # Skip test if no documents available
-    if not response.payload.documents:
-        pytest.skip("No Member documents available for testing")
-    
-    # 2. Get first document
-    test_document = response.payload.documents[0]
+    # 2. Use existing document
     print(f"Testing Member document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
@@ -416,20 +508,14 @@ Document Title: {test_document.title}
 
 def test_project_document_content_workflow(client):
     """Test getting and replacing content for Project documents."""
-    # 1. Get list of Project documents
-    request = GetDocumentsRequest(
-        kind=Kind.Project,
-        kind_id="68f756ddd9d111649a74ee88"  # Replace with actual project ID
-    )
+    # 1. Get project ID and ensure document exists
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
     
-    response = client.get_documents(request)
+    test_document = get_or_create_test_document(client, Kind.Project, project_id, "Project Content Test")
     
-    # Skip test if no documents available
-    if not response.payload.documents:
-        pytest.skip("No Project documents available for testing")
-    
-    # 2. Get first document
-    test_document = response.payload.documents[0]
+    # 2. Use existing document
     print(f"Testing Project document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
@@ -468,10 +554,20 @@ Document Title: {test_document.title}
 
 def test_all_scopes_document_workflow(client):
     """Comprehensive test for all document scopes (Space, Member, Project)."""
+    from tests.test_config import TEST_SPACE_ID
+    
+    # Get dynamic IDs (use memberId for Member documents, not _id)
+    profile = client.get_profile()
+    member_id = profile.profile.member_id
+    
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
     scopes_to_test = [
-        (Kind.Space, "68f7519ba65f977ddb66db8c", "Space"),
-        (Kind.Member, "68f7519ca65f977ddb66db8e", "Member"),
-        (Kind.Project, "68f756ddd9d111649a74ee88", "Project"),
+        (Kind.Space, TEST_SPACE_ID, "Space"),
+        (Kind.Member, member_id, "Member"),
+        (Kind.Project, project_id, "Project"),
     ]
     
     tested_scopes = []
@@ -479,18 +575,9 @@ def test_all_scopes_document_workflow(client):
     for kind, kind_id, scope_name in scopes_to_test:
         print(f"\n=== Testing {scope_name} documents ===")
         
-        # Get documents for this scope
-        request = GetDocumentsRequest(kind=kind, kind_id=kind_id)
-        
         try:
-            response = client.get_documents(request)
-            
-            if not response.payload.documents:
-                print(f"⚠️ No {scope_name} documents available")
-                continue
-            
-            # Test first document
-            doc = response.payload.documents[0]
+            # Ensure document exists
+            doc = get_or_create_test_document(client, kind, kind_id, f"{scope_name} Workflow Test")
             print(f"Document: {doc.title} (ID: {doc.id})")
             
             # Get content
@@ -516,9 +603,11 @@ def test_all_scopes_document_workflow(client):
 
 def test_create_document_space(client):
     """Test creating a Space document."""
+    from tests.test_config import TEST_SPACE_ID
+    
     request = CreateDocumentRequest(
         kind=Kind.Space,
-        kind_id="68f7519ba65f977ddb66db8c",  # Replace with actual space ID
+        kind_id=TEST_SPACE_ID,
         title="SDK Test - Space Document",
         index=0,
         parent_document_id=None
@@ -545,9 +634,14 @@ def test_create_document_space(client):
 
 def test_create_document_project(client):
     """Test creating a Project document."""
+    # Get first available project
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
     request = CreateDocumentRequest(
         kind=Kind.Project,
-        kind_id="68f756ddd9d111649a74ee88",  # Replace with actual project ID
+        kind_id=project_id,
         title="SDK Test - Project Document",
         index=0,
         parent_document_id=None
@@ -563,7 +657,7 @@ def test_create_document_project(client):
     assert isinstance(document, Document)
     assert document.title == "SDK Test - Project Document"
     assert document.kind == Kind.Project
-    assert document.kind_id == "68f756ddd9d111649a74ee88"
+    assert document.kind_id == project_id
     assert document.size == 0
     assert isinstance(document.id, str)
     
@@ -573,10 +667,15 @@ def test_create_document_project(client):
 
 def test_create_and_update_document_workflow(client):
     """Test complete workflow: create document -> add content -> verify."""
+    # Get project ID
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
     # 1. Create document
     create_request = CreateDocumentRequest(
         kind=Kind.Project,
-        kind_id="68f756ddd9d111649a74ee88",
+        kind_id=project_id,
         title="SDK Test - Workflow Document",
         index=0
     )
@@ -606,7 +705,7 @@ This document was created via SDK and immediately updated with content.
     
     # 4. Verify document appears in list
     list_response = client.get_documents(
-        GetDocumentsRequest(kind=Kind.Project, kind_id="68f756ddd9d111649a74ee88")
+        GetDocumentsRequest(kind=Kind.Project, kind_id=project_id)
     )
     
     doc_ids = [doc.id for doc in list_response.payload.documents]
@@ -642,5 +741,107 @@ def test_create_document_request_serialization():
     
     data_no_parent = request_no_parent.model_dump()
     assert "parentDocumentId" not in data_no_parent  # None values excluded
+
+
+def test_create_document_hierarchy(client):
+    """Test creating nested documents (parent-child hierarchy)."""
+    # Get project ID
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
+    # 1. Create parent document
+    parent_response = client.create_document(
+        CreateDocumentRequest(
+            kind=Kind.Project,
+            kind_id=project_id,
+            title="SDK Test - Parent Document",
+            index=0
+        )
+    )
+    
+    parent_doc = parent_response.payload.document
+    print(f"✅ Created parent document: {parent_doc.id}")
+    print(f"   Title: {parent_doc.title}")
+    
+    # 2. Create child document
+    child_response = client.create_document(
+        CreateDocumentRequest(
+            kind=Kind.Project,
+            kind_id=project_id,
+            title="SDK Test - Child Document",
+            index=0,
+            parent_document_id=parent_doc.id  # Set parent
+        )
+    )
+    
+    child_doc = child_response.payload.document
+    assert isinstance(child_doc, Document)
+    assert child_doc.kind == Kind.Project
+    print(f"✅ Created child document: {child_doc.id}")
+    print(f"   Title: {child_doc.title}")
+    print(f"   Parent: {parent_doc.id}")
+    
+    # 3. Create nested child (grandchild)
+    grandchild_response = client.create_document(
+        CreateDocumentRequest(
+            kind=Kind.Project,
+            kind_id=project_id,
+            title="SDK Test - Grandchild Document",
+            index=0,
+            parent_document_id=child_doc.id  # Set child as parent
+        )
+    )
+    
+    grandchild_doc = grandchild_response.payload.document
+    assert isinstance(grandchild_doc, Document)
+    print(f"✅ Created grandchild document: {grandchild_doc.id}")
+    print(f"   Title: {grandchild_doc.title}")
+    print(f"   Parent: {child_doc.id}")
+    
+    # 4. Verify all documents exist in list
+    docs_response = client.get_documents(
+        GetDocumentsRequest(kind=Kind.Project, kind_id=project_id)
+    )
+    
+    doc_ids = [doc.id for doc in docs_response.payload.documents]
+    assert parent_doc.id in doc_ids
+    assert child_doc.id in doc_ids
+    assert grandchild_doc.id in doc_ids
+    print("✅ All hierarchy documents appear in list")
+
+
+def test_create_multiple_child_documents(client):
+    """Test creating multiple child documents under one parent."""
+    # Get project ID
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
+    # 1. Ensure parent document exists
+    parent_doc = get_or_create_test_document(client, Kind.Project, project_id, "Parent for Multiple Children")
+    print(f"Using parent document: {parent_doc.id}")
+    
+    # 2. Create multiple child documents
+    child_titles = ["Chapter 1", "Chapter 2", "Chapter 3"]
+    created_children = []
+    
+    for idx, title in enumerate(child_titles):
+        child_response = client.create_document(
+            CreateDocumentRequest(
+                kind=Kind.Project,
+                kind_id=project_id,
+                title=f"SDK Test - {title}",
+                index=idx,
+                parent_document_id=parent_doc.id
+            )
+        )
+        
+        child_doc = child_response.payload.document
+        created_children.append(child_doc)
+        print(f"✅ Created child {idx + 1}: {child_doc.title} (ID: {child_doc.id})")
+    
+    assert len(created_children) == 3
+    print(f"✅ Created {len(created_children)} child documents under parent {parent_doc.id}")
 
 

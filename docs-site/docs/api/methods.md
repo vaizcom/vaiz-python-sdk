@@ -485,6 +485,38 @@ Get current user's profile information.
 
 ## Documents
 
+### `create_document`
+
+```python
+create_document(request: CreateDocumentRequest) -> CreateDocumentResponse
+```
+
+Create a new document in specified scope (Space/Member/Project).
+
+**Parameters:**
+- `request` - CreateDocumentRequest with kind, kind_id, title, index, and optional parent_document_id
+
+**Returns:** `CreateDocumentResponse` with created document
+
+**Example:**
+```python
+from vaiz.models import CreateDocumentRequest, Kind
+
+response = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id="project_id",
+        title="Project Plan",
+        index=0
+    )
+)
+
+document = response.payload.document
+print(f"Created: {document.id}")
+```
+
+---
+
 ### `get_documents`
 
 ```python
@@ -775,6 +807,32 @@ class Document:
     created_at: datetime                # Creation timestamp
     updated_at: datetime                # Last update timestamp
     bucket: str                         # Storage bucket ID
+```
+
+#### CreateDocumentRequest
+
+```python
+class CreateDocumentRequest:
+    kind: Kind                          # Required - Document scope (Space/Member/Project)
+    kind_id: str                        # Required - ID of space/member/project
+    title: str                          # Required - Document title
+    index: int                          # Required - Position in document list
+    parent_document_id: Optional[str]   # Optional - Parent document ID for nesting
+```
+
+#### CreateDocumentResponse
+
+```python
+class CreateDocumentResponse:
+    payload: CreateDocumentPayload      # Response payload
+    type: str                           # Response type ("CreateDocument")
+```
+
+#### CreateDocumentPayload
+
+```python
+class CreateDocumentPayload:
+    document: Document                  # Created document
 ```
 
 #### GetDocumentsRequest
