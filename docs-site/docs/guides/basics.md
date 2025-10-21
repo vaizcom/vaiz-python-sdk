@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Overview
+# Basics
 
 Complete overview of the Vaiz SDK capabilities and structure.
 

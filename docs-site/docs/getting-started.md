@@ -64,7 +64,7 @@ client = VaizClient(
 
 Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 
-- 📖 [API Overview](./guides/overview) - Complete overview of all SDK capabilities
+- 📖 [API Overview](./guides/basics) - Complete overview of all SDK capabilities
 - 📋 [Tasks](./guides/tasks) - Full task management
 - 💬 [Comments](./guides/comments) - Comments, reactions, and replies
 - 📁 [Files](./guides/files) - File uploads and attachments

@@ -8,7 +8,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Guides',
       items: [
-        'guides/overview',
+        'guides/basics',
         'guides/boards',
         'guides/comments',
         'guides/custom-fields',

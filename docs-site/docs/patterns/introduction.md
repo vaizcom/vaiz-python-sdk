@@ -22,7 +22,7 @@ This section provides real-world examples and patterns to help you build product
 ## Quick Start
 
 :::tip Quick Navigation
-For basic usage examples of each API method, see the [Guides](../guides/overview).
+For basic usage examples of each API method, see the [Guides](../guides/basics).
 For complete runnable code, check the [`/examples`](https://github.com/vaizcom/vaiz-python-sdk/tree/main/examples) directory.
 :::
 
