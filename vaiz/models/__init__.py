@@ -5,9 +5,9 @@ from .profile import Profile, ProfileResponse
 from .projects import Project, ProjectsResponse, ProjectResponse
 from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
 from .upload import UploadedFile, UploadFileResponse
-from .documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse
+from .documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, Document, GetDocumentsRequest, GetDocumentsResponse, GetDocumentsPayload
 from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
-from .enums import CommentReactionType, COMMENT_REACTION_METADATA, EAvatarMode
+from .enums import CommentReactionType, COMMENT_REACTION_METADATA, EAvatarMode, Kind
 
 __all__ = [
     # Base models
@@ -76,9 +76,13 @@ __all__ = [
     'UploadFileResponse',
     
     # Document models
+    'Document',
     'GetDocumentRequest',
     'ReplaceDocumentRequest',
     'ReplaceDocumentResponse',
+    'GetDocumentsRequest',
+    'GetDocumentsResponse',
+    'GetDocumentsPayload',
     
     # Comment models
     'Comment',
@@ -96,4 +100,5 @@ __all__ = [
     'CommentReactionType',
     'COMMENT_REACTION_METADATA',
     'EAvatarMode',
+    'Kind',
 ] 

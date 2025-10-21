@@ -280,7 +280,7 @@ option = make_select_option("High", Color.Red, Icon.Flag)
 
 Explore detailed documentation for each API category:
 
-- [Tasks](./tasks) - Create, read, update tasks
+- [Tasks](./tasks) - Create, read, update tasks and descriptions
 - [Comments](./comments) - Comments, reactions, and replies
 - [Files](./files) - File uploads and attachments
 - [Milestones](./milestones) - Track progress
@@ -288,7 +288,7 @@ Explore detailed documentation for each API category:
 - [Custom Fields](./custom-fields) - Extend tasks with custom data
 - [Projects](./projects) - Project management
 - [Profile](./profile) - User information
-- [Documents](./documents) - Task descriptions
+- [Documents](./documents) - Document lists (Space, Member, Project)
 - [History Events](./history) - Change tracking
 - [Task Blockers](./blockers) - Manage task dependencies
 - [Helper Functions](./helpers) - Utility functions

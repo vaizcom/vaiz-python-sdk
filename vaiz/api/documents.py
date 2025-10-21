@@ -2,7 +2,13 @@ from typing import Any, Dict, List
 import json
 
 from vaiz.api.base import BaseAPIClient
-from vaiz.models.documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse
+from vaiz.models.documents import (
+    GetDocumentRequest, 
+    ReplaceDocumentRequest, 
+    ReplaceDocumentResponse,
+    GetDocumentsRequest,
+    GetDocumentsResponse
+)
 
 
 class DocumentsAPIClient(BaseAPIClient):
@@ -53,5 +59,21 @@ class DocumentsAPIClient(BaseAPIClient):
         
         response_data = self._make_request("replaceDocument", json_data=request.model_dump())
         return ReplaceDocumentResponse(**response_data)
+
+    def get_documents(self, request: GetDocumentsRequest) -> GetDocumentsResponse:
+        """
+        Get list of documents by kind and kind ID.
+
+        Args:
+            request (GetDocumentsRequest): The request containing kind and kindId
+
+        Returns:
+            GetDocumentsResponse: The response containing the list of documents
+
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        response_data = self._make_request("getDocuments", json_data=request.model_dump())
+        return GetDocumentsResponse(**response_data)
 
 

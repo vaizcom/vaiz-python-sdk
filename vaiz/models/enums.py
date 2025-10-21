@@ -245,6 +245,7 @@ class Kind(str, Enum):
     Document = "Document"
     Board = "Board"
     Milestone = "Milestone"
+    Member = "Member"
 
 
 class CommentReactionType(Enum):

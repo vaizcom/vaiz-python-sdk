@@ -485,6 +485,21 @@ Get current user's profile information.
 
 ## Documents
 
+### `get_documents`
+
+```python
+get_documents(request: GetDocumentsRequest) -> GetDocumentsResponse
+```
+
+Get list of documents by kind and kind ID.
+
+**Parameters:**
+- `request` - Request with kind (Space/Member/Project) and kind_id
+
+**Returns:** `GetDocumentsResponse` with list of documents
+
+---
+
 ### `get_document_body`
 
 ```python
@@ -705,6 +720,34 @@ class SelectOption:
 ```
 
 ### Document Models
+
+#### Document
+
+```python
+class Document:
+    id: str                             # Document ID
+    title: str                          # Document title
+    size: int                           # Document size in bytes
+    contributor_ids: List[str]          # List of contributor IDs
+    archiver: Optional[str]             # User who archived (if archived)
+    followers: Dict[str, str]           # Document followers
+    archived_at: Optional[datetime]     # Archive timestamp
+    kind_id: str                        # ID of document
+    kind: Kind                          # Document scope (Space/Member/Project)
+    creator: str                        # Creator user ID
+    map: List[Any]                      # Document structure map
+    created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Last update timestamp
+    bucket: str                         # Storage bucket ID
+```
+
+#### GetDocumentsRequest
+
+```python
+class GetDocumentsRequest:
+    kind: Kind                          # Required - Document scope (Space/Member/Project)
+    kind_id: str                        # Required - ID of space/member/project
+```
 
 #### GetDocumentRequest
 
@@ -1090,13 +1133,19 @@ Color.Rose = 'rose'
 
 ### Kind
 
-Entity types for history:
+Entity types for history and documents:
 
 ```python
 from vaiz.models.enums import Kind
 
 # Entity types
-Kind.Task, Kind.Project, Kind.Board, Kind.Document, Kind.Milestone
+Kind.Space       # Space documents
+Kind.Member      # Personal member documents
+Kind.Project     # Project documents
+Kind.Task        # Tasks
+Kind.Board       # Boards
+Kind.Document    # Documents
+Kind.Milestone   # Milestones
 ```
 
 ### CustomFieldType
