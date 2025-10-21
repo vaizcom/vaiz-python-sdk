@@ -2,6 +2,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": "build",
   "framework": "docusaurus",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
 }
 
