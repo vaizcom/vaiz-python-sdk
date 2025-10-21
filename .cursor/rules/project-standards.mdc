@@ -91,6 +91,13 @@ Follow this checklist to ensure completeness:
   - Migration: Update imports
 ```
 
+### Version Update Checklist
+
+When releasing a new version:
+- [ ] Update version in `pyproject.toml`
+- [ ] Update CHANGELOG.md with user-facing changes
+- [ ] Update version in `docs-site/docusaurus.config.ts` (navbar label and href)
+
 ## Comments
 
 - Write code, comments & docs, in English only, even if the user communicates in another language.
