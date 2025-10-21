@@ -119,7 +119,7 @@ def test_upload_multiple_files(client):
 
 def test_upload_image_from_url_with_auto_detection(client):
     """Test uploading an image from URL with automatic type detection."""
-    image_url = "https://httpbin.org/image/png"
+    image_url = "https://placehold.co/150/png"
 
     try:
         response = client.upload_file_from_url(image_url)
@@ -138,7 +138,7 @@ def test_upload_image_from_url_with_auto_detection(client):
 
 def test_upload_image_from_url_with_explicit_type(client):
     """Test uploading an image from URL with explicit type and custom filename."""
-    image_url = "https://httpbin.org/image/png"
+    image_url = "https://placehold.co/150/png"
     custom_filename = "test_image.png"
 
     try:
@@ -182,7 +182,7 @@ def test_upload_pdf_from_url_with_auto_detection(client):
 def test_upload_from_url_with_no_extension(client):
     """Test uploading from URL without file extension (should default to File type)."""
     # This URL doesn't have a clear file extension - using a simple text endpoint
-    url_no_ext = "https://httpbin.org/uuid"
+    url_no_ext = "https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore"
 
     try:
         response = client.upload_file_from_url(
@@ -269,7 +269,7 @@ def test_upload_from_url_file_type_detection():
 def test_upload_multiple_files_from_urls(client):
     """Test uploading multiple files from different URLs."""
     urls_and_types = [
-        ("https://httpbin.org/image/png", UploadFileType.Image, "small_image.png"),
+        ("https://placehold.co/150/png", UploadFileType.Image, "small_image.png"),
         (
             "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
             UploadFileType.Pdf,
@@ -322,7 +322,7 @@ def test_create_task_with_external_file_from_url(client):
         )
 
     # Step 1: Upload an external file from URL
-    external_image_url = "https://httpbin.org/image/png"
+    external_image_url = "https://placehold.co/150/png"
 
     try:
         upload_response = client.upload_file_from_url(
@@ -412,12 +412,12 @@ def test_create_task_with_multiple_external_files(client):
     # Define multiple external files to upload
     external_files = [
         {
-            "url": "https://httpbin.org/image/png",
+            "url": "https://placehold.co/150/png",
             "type": UploadFileType.Image,
             "filename": "external_image_1.png",
         },
         {
-            "url": "https://httpbin.org/image/png",
+            "url": "https://placehold.co/200/png",
             "type": UploadFileType.Image,
             "filename": "external_image_2.png",
         },
