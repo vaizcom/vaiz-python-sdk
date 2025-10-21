@@ -76,3 +76,29 @@ class GetDocumentsResponse(VaizBaseModel):
     type: str
 
 
+class CreateDocumentRequest(VaizBaseModel):
+    """Request model for creating a new document."""
+    kind: Kind
+    kind_id: str = Field(..., alias="kindId")
+    title: str
+    index: int
+    parent_document_id: Optional[str] = Field(default=None, alias="parentDocumentId")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class CreateDocumentPayload(VaizBaseModel):
+    """Payload containing the created document."""
+    document: Document
+
+
+class CreateDocumentResponse(VaizBaseModel):
+    """Response model for creating a document."""
+    payload: CreateDocumentPayload
+    type: str
+
+

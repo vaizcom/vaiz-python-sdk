@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 
-from vaiz.models import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, GetDocumentsRequest, GetDocumentsResponse, Document, Kind
+from vaiz.models import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, GetDocumentsRequest, GetDocumentsResponse, Document, Kind, CreateDocumentRequest, CreateDocumentResponse
 from tests.test_config import get_test_client
 
 
@@ -512,5 +512,135 @@ def test_all_scopes_document_workflow(client):
     # At least one scope should be tested
     assert len(tested_scopes) > 0, "No document scopes could be tested"
     print(f"\n✅ Successfully tested {len(tested_scopes)} scope(s): {', '.join(tested_scopes)}")
+
+
+def test_create_document_space(client):
+    """Test creating a Space document."""
+    request = CreateDocumentRequest(
+        kind=Kind.Space,
+        kind_id="68f7519ba65f977ddb66db8c",  # Replace with actual space ID
+        title="SDK Test - Space Document",
+        index=0,
+        parent_document_id=None
+    )
+    
+    response = client.create_document(request)
+    
+    assert isinstance(response, CreateDocumentResponse)
+    assert response.type == "CreateDocument"
+    assert hasattr(response.payload, "document")
+    
+    document = response.payload.document
+    assert isinstance(document, Document)
+    assert document.title == "SDK Test - Space Document"
+    assert document.kind == Kind.Space
+    assert document.size == 0  # New document
+    assert isinstance(document.id, str)
+    assert isinstance(document.created_at, datetime)
+    
+    print(f"✅ Created Space document: {document.id}")
+    print(f"   Title: {document.title}")
+    print(f"   Size: {document.size} bytes")
+
+
+def test_create_document_project(client):
+    """Test creating a Project document."""
+    request = CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id="68f756ddd9d111649a74ee88",  # Replace with actual project ID
+        title="SDK Test - Project Document",
+        index=0,
+        parent_document_id=None
+    )
+    
+    response = client.create_document(request)
+    
+    assert isinstance(response, CreateDocumentResponse)
+    assert response.type == "CreateDocument"
+    assert hasattr(response.payload, "document")
+    
+    document = response.payload.document
+    assert isinstance(document, Document)
+    assert document.title == "SDK Test - Project Document"
+    assert document.kind == Kind.Project
+    assert document.kind_id == "68f756ddd9d111649a74ee88"
+    assert document.size == 0
+    assert isinstance(document.id, str)
+    
+    print(f"✅ Created Project document: {document.id}")
+    print(f"   Title: {document.title}")
+
+
+def test_create_and_update_document_workflow(client):
+    """Test complete workflow: create document -> add content -> verify."""
+    # 1. Create document
+    create_request = CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id="68f756ddd9d111649a74ee88",
+        title="SDK Test - Workflow Document",
+        index=0
+    )
+    
+    create_response = client.create_document(create_request)
+    document = create_response.payload.document
+    
+    assert document.size == 0  # New document is empty
+    print(f"✅ Created document: {document.id}")
+    
+    # 2. Add content
+    content = f"""
+# Workflow Test Document
+
+Created at: {datetime.now().isoformat()}
+
+This document was created via SDK and immediately updated with content.
+"""
+    
+    client.replace_document(document.id, content)
+    print("✅ Added content to document")
+    
+    # 3. Verify content
+    retrieved_content = client.get_document_body(document.id)
+    assert isinstance(retrieved_content, dict)
+    print("✅ Retrieved and verified document content")
+    
+    # 4. Verify document appears in list
+    list_response = client.get_documents(
+        GetDocumentsRequest(kind=Kind.Project, kind_id="68f756ddd9d111649a74ee88")
+    )
+    
+    doc_ids = [doc.id for doc in list_response.payload.documents]
+    assert document.id in doc_ids, "Created document should appear in list"
+    print("✅ Document appears in document list")
+
+
+def test_create_document_request_serialization():
+    """Test CreateDocumentRequest model serialization."""
+    request = CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id="project123",
+        title="Test Document",
+        index=5,
+        parent_document_id="parent456"
+    )
+    
+    data = request.model_dump()
+    
+    assert data["kind"] == Kind.Project
+    assert data["kindId"] == "project123"
+    assert data["title"] == "Test Document"
+    assert data["index"] == 5
+    assert data["parentDocumentId"] == "parent456"
+    
+    # Test without parent
+    request_no_parent = CreateDocumentRequest(
+        kind=Kind.Space,
+        kind_id="space123",
+        title="Root Document",
+        index=0
+    )
+    
+    data_no_parent = request_no_parent.model_dump()
+    assert "parentDocumentId" not in data_no_parent  # None values excluded
 
 

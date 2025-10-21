@@ -7,7 +7,9 @@ from vaiz.models.documents import (
     ReplaceDocumentRequest, 
     ReplaceDocumentResponse,
     GetDocumentsRequest,
-    GetDocumentsResponse
+    GetDocumentsResponse,
+    CreateDocumentRequest,
+    CreateDocumentResponse
 )
 
 class DocumentsAPIClient(BaseAPIClient):
@@ -74,5 +76,21 @@ class DocumentsAPIClient(BaseAPIClient):
         """
         response_data = self._make_request("getDocuments", json_data=request.model_dump())
         return GetDocumentsResponse(**response_data)
+
+    def create_document(self, request: CreateDocumentRequest) -> CreateDocumentResponse:
+        """
+        Create a new document.
+
+        Args:
+            request (CreateDocumentRequest): The request containing document details
+
+        Returns:
+            CreateDocumentResponse: The response containing the created document
+
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        response_data = self._make_request("createDocument", json_data=request.model_dump())
+        return CreateDocumentResponse(**response_data)
 
 
