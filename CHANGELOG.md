@@ -1,5 +1,49 @@
 # Changelog
 
+## [0.7.3] - 2025-10-21
+
+### Added
+
+- **📝 Document Creation API**: New `create_document()` method for creating documents programmatically
+  - **📚 Document Types**: Support for Space, Member (personal), and Project documents
+  - **🌳 Hierarchical Structure**: Create nested documents with `parent_document_id` parameter
+  - **🎯 Flexible Positioning**: Control document order with `index` parameter
+  - **📖 Complete Workflow**: Create and populate documents with content in one flow
+
+### Models
+
+- **📦 New Request Model**: `CreateDocumentRequest` with fields:
+  - `kind`: Document type (Space, Member, Project)
+  - `kind_id`: ID of the parent entity
+  - `title`: Document title
+  - `index`: Position in list
+  - `parent_document_id`: Optional parent for nested structure
+- **📦 New Response Models**: `CreateDocumentResponse` and `CreateDocumentPayload`
+
+### Examples
+
+- **📄 `examples/create_document.py`**: Complete examples for creating documents in different scopes
+- **🌳 `examples/document_hierarchy.py`**: Building multi-level document structures (books, wikis, nested docs)
+- **🚀 `examples/advanced_document_workflows.py`**: Advanced patterns for document management
+
+### Use Cases
+
+- **📚 Knowledge Bases**: Build structured documentation with chapters and sections
+- **📖 Project Wikis**: Create organized project documentation hierarchies
+- **📝 Personal Notes**: Organize personal documents with nested structure
+- **📑 Team Documentation**: Shared team knowledge bases with multi-level organization
+
+### Technical Details
+
+- Fully typed models with Pydantic validation
+- Automatic alias mapping between Python snake_case and API camelCase
+- Complete test coverage with 175 passing tests
+- Integration with existing document content management (`replace_document`, `get_document_body`)
+
+### Fixed
+
+- **🧪 Test Reliability**: Replaced unstable `httpbin.org` URLs in tests with reliable alternatives (`placehold.co`, `raw.githubusercontent.com`, `www.w3.org`)
+
 ## [0.7.2] - 2025-01-20
 
 ### Changed
