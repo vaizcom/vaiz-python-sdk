@@ -56,55 +56,7 @@ for doc in project_docs.payload.documents:
     print(f"  Followers: {doc.followers}")
 ```
 
-### Document Model
-
-Each document in the list contains:
-
-```python
-class Document:
-    id: str                      # Unique document ID
-    title: str                   # Document title
-    size: int                    # Document size in bytes
-    contributor_ids: List[str]   # List of contributor IDs
-    archiver: Optional[str]      # User who archived (if archived)
-    followers: Dict[str, str]    # Document followers
-    archived_at: Optional[datetime]  # Archive timestamp
-    kind_id: str                 # ID of parent (space/member/project)
-    kind: Kind                   # Document scope (Space/Member/Project)
-    creator: str                 # Creator user ID
-    map: List[Any]               # Document structure map
-    created_at: datetime         # Creation timestamp
-    updated_at: datetime         # Last update timestamp
-    bucket: str                  # Storage bucket ID
-```
-
-### Filtering Documents
-
-```python
-# Get all project documents
-all_docs = client.get_documents(
-    GetDocumentsRequest(
-        kind=Kind.Project,
-        kind_id=project_id
-    )
-)
-
-# Filter by criteria
-active_docs = [
-    doc for doc in all_docs.payload.documents
-    if doc.archived_at is None
-]
-
-recent_docs = sorted(
-    all_docs.payload.documents,
-    key=lambda d: d.created_at,
-    reverse=True
-)[:10]
-
-print(f"Total: {len(all_docs.payload.documents)}")
-print(f"Active: {len(active_docs)}")
-print(f"Recent 10: {len(recent_docs)}")
-```
+See [API Reference](./methods#document-models) for complete Document model definition.
 
 ## Creating Documents
 
