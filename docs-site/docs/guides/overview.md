@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# API Overview
+# Overview
 
-Complete overview of the Vaiz SDK capabilities and API structure.
+Complete overview of the Vaiz SDK capabilities and structure.
 
 ## Client Initialization
 
-All API interactions go through the `VaizClient` class:
+All interactions go through the `VaizClient` class:
 
 ```python
 from vaiz import VaizClient
@@ -168,43 +168,6 @@ for name, priority in tasks_data:
     client.create_task(task)
 ```
 
-## Response Structure
-
-All methods return typed response objects:
-
-```python
-response = client.create_task(task)
-
-# Type-safe access
-task_id = response.task.id              # str
-task_name = response.task.name          # str
-created_at = response.task.created_at   # datetime
-priority = response.task.priority       # int
-```
-
-## Field Naming Conventions
-
-The SDK uses Python naming (snake_case) while the API uses camelCase:
-
-```python
-# You write:
-task = CreateTaskRequest(
-    due_start=datetime.now(),  # snake_case
-    due_end=datetime.now()
-)
-
-# SDK sends to API:
-{
-    "dueStart": "2025-01-01T00:00:00",  # camelCase
-    "dueEnd": "2025-01-01T23:59:59"
-}
-
-# You receive:
-response.task.due_start  # snake_case again
-```
-
-All conversion is automatic via Pydantic field aliases.
-
 ## Best Practices
 
 ### Use Environment Variables
@@ -276,9 +239,9 @@ option = make_select_option("High", Color.Red, Icon.Flag)
 
 [See all helper functions →](./helpers)
 
-## API Reference
+## Guides
 
-Explore detailed documentation for each API category:
+Explore detailed documentation for each SDK feature:
 
 - [Tasks](./tasks) - Create, read, update tasks and descriptions
 - [Comments](./comments) - Comments, reactions, and replies
@@ -293,4 +256,4 @@ Explore detailed documentation for each API category:
 - [Task Blockers](./blockers) - Manage task dependencies
 - [Helper Functions](./helpers) - Utility functions
 
-Or check out [Examples](../examples) for ready-to-use code.
+Check out [Examples](../examples) for ready-to-use code.

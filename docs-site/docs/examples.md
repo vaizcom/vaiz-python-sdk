@@ -7,7 +7,7 @@ sidebar_position: 4
 Common patterns, best practices, and real-world scenarios for using the Vaiz SDK effectively.
 
 :::tip Quick Start
-For basic usage examples of each API method, see the [API Guides](./api/overview).
+For basic usage examples of each API method, see the [API Guides](./guides/overview).
 For ready-to-run code examples, check the [`/examples`](https://github.com/vaizcom/vaiz-python-sdk/tree/main/examples) directory.
 :::
 
@@ -583,8 +583,8 @@ The SDK includes complete, runnable examples in the `/examples` directory:
 
 ## See Also
 
-- [API Overview](./api/overview) - Complete API documentation
-- [Tasks Guide](./api/tasks) - Task management
-- [Documents Guide](./api/documents) - Document management
-- [Helper Functions](./api/helpers) - Utility functions
+- [API Overview](./guides/overview) - Complete API documentation
+- [Tasks Guide](./guides/tasks) - Task management
+- [Documents Guide](./guides/documents) - Document management
+- [Helper Functions](./guides/helpers) - Utility functions
 

@@ -125,7 +125,7 @@ const config: Config = {
             },
             {
               label: 'API Reference',
-              to: '/api/methods',
+              to: '/guides/methods',
             },
           ],
         },
