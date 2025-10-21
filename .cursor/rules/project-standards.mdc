@@ -10,6 +10,11 @@ alwaysApply: true
 - For any documentation we use Docosaurus in docs-site dir.
 - **Never duplicate model definitions in guide pages** - model definitions belong only in `docs-site/docs/api` under "Models & Interfaces" section
 - Guide pages (like tasks.md, documents.md, etc.) should focus on usage examples and link to methods.md for model definitions
+- **Keep documentation in sync with code changes**:
+  - When adding new API methods, update both the guide page (usage examples) and methods.md (API reference)
+  - When adding new models, add them to methods.md under "Models & Interfaces"
+  - When adding new examples, list them in examples.md under "Ready-to-Run Examples"
+  - Always verify documentation builds successfully after changes: `npm run build`
 
 ## Comments
 
