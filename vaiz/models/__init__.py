@@ -8,6 +8,7 @@ from .upload import UploadedFile, UploadFileResponse
 from .documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, Document, GetDocumentsRequest, GetDocumentsResponse, GetDocumentsPayload, CreateDocumentRequest, CreateDocumentResponse, CreateDocumentPayload
 from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
 from .spaces import Space, SpaceColor, GetSpaceRequest, GetSpaceResponse, GetSpacePayload
+from .members import Member, MemberColor, GetSpaceMembersResponse, GetSpaceMembersPayload
 from .enums import CommentReactionType, COMMENT_REACTION_METADATA, AvatarMode, Kind
 
 __all__ = [
@@ -110,6 +111,12 @@ __all__ = [
     'GetSpaceRequest',
     'GetSpaceResponse',
     'GetSpacePayload',
+    
+    # Member models
+    'Member',
+    'MemberColor',
+    'GetSpaceMembersResponse',
+    'GetSpaceMembersPayload',
     
     # Enums
     'AvatarMode',

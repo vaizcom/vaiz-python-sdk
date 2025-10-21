@@ -22,6 +22,7 @@ Complete reference documentation for all Vaiz SDK methods, models, and enums.
 - [Documents](./documents) - Document management methods
 - [Profile](./profile) - User profile methods
 - [Spaces](./spaces) - Space information methods
+- [Members](./members) - Space members methods
 - [History](./history) - Change history methods
 
 ### System
