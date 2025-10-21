@@ -82,7 +82,22 @@ const config: Config = {
       // },
       
       // Optional: Algolia search parameters
-      searchParameters: {},
+      searchParameters: {
+        // Show more content in snippets
+        attributesToSnippet: ['content:30'],
+        // Retrieve hierarchy for better context
+        attributesToRetrieve: [
+          'hierarchy.lvl0',
+          'hierarchy.lvl1', 
+          'hierarchy.lvl2',
+          'hierarchy.lvl3',
+          'content',
+          'url',
+          'type',
+        ],
+        // Highlight matching terms
+        attributesToHighlight: ['hierarchy.lvl1', 'hierarchy.lvl2', 'hierarchy.lvl3', 'content'],
+      },
       
       // Optional: path for search page that enabled by default (`false` to disable it)
       searchPagePath: 'search',
