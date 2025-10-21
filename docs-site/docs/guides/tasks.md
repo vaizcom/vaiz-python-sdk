@@ -171,10 +171,141 @@ for task in response.payload.tasks:
     print(f"{task.hrid}: {task.name}")
 ```
 
+## Task Descriptions
+
+Tasks store descriptions as structured JSON documents. The SDK provides convenient methods to work with descriptions directly from Task objects.
+
+### Get Task Description
+
+```python
+# Get from task object
+task_response = client.get_task("PRJ-123")
+task = task_response.task
+document_id = task.document
+
+# Get document content
+description = client.get_document_body(document_id)
+print(description)  # JSON structure
+```
+
+### Update Task Description
+
+Replace task description completely:
+
+```python
+# Get task
+task_response = client.get_task("PRJ-123")
+document_id = task_response.task.document
+
+# Update description
+new_content = """
+# Updated Description
+
+This completely replaces the previous content.
+
+## Features
+- Complete replacement
+- Plain text support
+- Direct API access
+"""
+
+client.replace_document(
+    document_id=document_id,
+    description=new_content
+)
+```
+
+### Using Task Helper Methods
+
+The Task model provides convenient helper methods:
+
+```python
+# Get task
+task_response = client.create_task(task)
+task_obj = task_response.task
+
+# Get description using helper
+description = task_obj.get_task_description(client)
+print(description)
+
+# Update description using helper
+task_obj.update_task_description(
+    client, 
+    "New task description content"
+)
+```
+
+### Full Workflow Example
+
+```python
+from vaiz.models import CreateTaskRequest
+
+# 1. Create task with initial description
+task = CreateTaskRequest(
+    name="Documentation Task",
+    board="board_id",
+    group="group_id",
+    project="project_id"
+)
+
+response = client.create_task(
+    task,
+    description="Initial task description"
+)
+
+# 2. Get task object
+task_obj = response.task
+
+# 3. Update description later
+task_obj.update_task_description(
+    client,
+    "Updated task description with more details"
+)
+
+# 4. Read current content
+content = task_obj.get_task_description(client)
+print(content)
+```
+
+### Programmatic Description Updates
+
+```python
+from datetime import datetime
+
+def add_status_update(task_id: str, status: str):
+    """Append status update to task description"""
+    
+    # Get task
+    task = client.get_task(task_id)
+    doc_id = task.payload["task"]["document"]
+    
+    # Get current content
+    current = client.get_document_body(doc_id)
+    
+    # Add status update
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    new_content = f"""
+{current}
+
+---
+**Status Update ({timestamp})**: {status}
+"""
+    
+    client.replace_document(doc_id, new_content)
+
+# Usage
+add_status_update("PRJ-123", "Design phase completed")
+```
+
+:::info Advanced Usage
+If you need more control, you can work directly with the document ID from `task.document` field using the [Documents API](./documents) methods.
+:::
+
 ## See Also
 
 - [Task Blockers](./blockers) - Manage task dependencies
 - [Files](./files) - File attachments
 - [Comments](./comments) - Task discussions
-- [Examples](../examples) - Code examples
+- [Documents](./documents) - Document lists and management
+- [Examples](../patterns/introduction) - Code examples
 

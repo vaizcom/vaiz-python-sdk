@@ -329,5 +329,5 @@ Helpers provide:
 
 - [Custom Fields](./custom-fields) - Full custom fields documentation
 - [Tasks](./tasks) - Using custom fields in tasks
-- [Examples](../examples) - Practical examples
+- [Examples](../patterns/introduction) - Practical examples
 

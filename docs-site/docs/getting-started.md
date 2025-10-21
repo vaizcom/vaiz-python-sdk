@@ -64,20 +64,20 @@ client = VaizClient(
 
 Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 
-- 📖 [API Overview](./api/overview) - Complete overview of all SDK capabilities
-- 📋 [Tasks](./api/tasks) - Full task management
-- 💬 [Comments](./api/comments) - Comments, reactions, and replies
-- 📁 [Files](./api/files) - File uploads and attachments
-- 🎯 [Milestones](./api/milestones) - Track progress with milestones
-- 📊 [Boards](./api/boards) - Board types and groups
-- 🎛️ [Custom Fields](./api/custom-fields) - Extend tasks with custom data
-- 📂 [Projects](./api/projects) - Project management
-- 👤 [Profile](./api/profile) - User information
-- 📝 [Documents](./api/documents) - Task descriptions
-- 📜 [History Events](./api/history) - Change tracking
-- 🔗 [Task Blockers](./api/blockers) - Manage task dependencies
-- 🛠️ [Helper Functions](./api/helpers) - Utility functions for common tasks
-- 💡 [Examples](./examples) - Ready-to-use code examples
+- 📖 [API Overview](./guides/basics) - Complete overview of all SDK capabilities
+- 📋 [Tasks](./guides/tasks) - Full task management
+- 💬 [Comments](./guides/comments) - Comments, reactions, and replies
+- 📁 [Files](./guides/files) - File uploads and attachments
+- 🎯 [Milestones](./guides/milestones) - Track progress with milestones
+- 📊 [Boards](./guides/boards) - Board types and groups
+- 🎛️ [Custom Fields](./guides/custom-fields) - Extend tasks with custom data
+- 📂 [Projects](./guides/projects) - Project management
+- 👤 [Profile](./guides/profile) - User information
+- 📝 [Documents](./guides/documents) - Task descriptions
+- 📜 [History Events](./guides/history) - Change tracking
+- 🔗 [Task Blockers](./guides/blockers) - Manage task dependencies
+- 🛠️ [Helper Functions](./guides/helpers) - Utility functions for common tasks
+- 💡 [Examples](./patterns/introduction) - Ready-to-use code examples
 
 ## Useful Links
 

@@ -106,4 +106,4 @@ for project in projects.projects:
 
 - [Boards API](./boards) - Board management
 - [Tasks API](./tasks) - Task operations
-- [Examples](../examples) - More examples
+- [Examples](../patterns/introduction) - More examples

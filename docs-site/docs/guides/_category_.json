@@ -1,0 +1,9 @@
+{
+  "label": "Guides",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Complete guides for all Vaiz SDK methods and features"
+  }
+}
+

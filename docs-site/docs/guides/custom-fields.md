@@ -375,5 +375,5 @@ client.create_task(task)
 
 - [Boards API](./boards) - Board management
 - [Tasks API](./tasks) - Using custom fields in tasks
-- [Examples](../examples) - More custom field examples
+- [Examples](../patterns/introduction) - More custom field examples
 

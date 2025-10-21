@@ -155,5 +155,5 @@ document_id = response.task.document
 
 - [Tasks API](./tasks)
 - [Files API](./files)
-- [Examples](../examples)
+- [Examples](../patterns/introduction)
 

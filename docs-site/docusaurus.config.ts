@@ -125,7 +125,7 @@ const config: Config = {
             },
             {
               label: 'API Reference',
-              to: '/api/methods',
+              to: '/api-reference/overview',
             },
           ],
         },
@@ -151,7 +151,7 @@ const config: Config = {
           items: [
             {
               label: 'Examples',
-              to: '/examples',
+              to: '/patterns/introduction',
             },
             {
               label: 'Contributing',

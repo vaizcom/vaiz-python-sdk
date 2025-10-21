@@ -158,5 +158,5 @@ else:
 ## See Also
 
 - [Tasks](./tasks) - Task operations
-- [Examples](../examples) - More examples
+- [Examples](../patterns/introduction) - More examples
 

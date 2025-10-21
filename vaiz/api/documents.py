@@ -1,9 +1,16 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 import json
 
 from vaiz.api.base import BaseAPIClient
-from vaiz.models.documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse
-
+from vaiz.models.documents import (
+    GetDocumentRequest, 
+    ReplaceDocumentRequest, 
+    ReplaceDocumentResponse,
+    GetDocumentsRequest,
+    GetDocumentsResponse,
+    CreateDocumentRequest,
+    CreateDocumentResponse
+)
 
 class DocumentsAPIClient(BaseAPIClient):
     """API client for document content operations."""
@@ -53,5 +60,37 @@ class DocumentsAPIClient(BaseAPIClient):
         
         response_data = self._make_request("replaceDocument", json_data=request.model_dump())
         return ReplaceDocumentResponse(**response_data)
+
+    def get_documents(self, request: GetDocumentsRequest) -> GetDocumentsResponse:
+        """
+        Get list of documents by kind and kind ID.
+
+        Args:
+            request (GetDocumentsRequest): The request containing kind and kindId
+
+        Returns:
+            GetDocumentsResponse: The response containing the list of documents
+
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        response_data = self._make_request("getDocuments", json_data=request.model_dump())
+        return GetDocumentsResponse(**response_data)
+
+    def create_document(self, request: CreateDocumentRequest) -> CreateDocumentResponse:
+        """
+        Create a new document.
+
+        Args:
+            request (CreateDocumentRequest): The request containing document details
+
+        Returns:
+            CreateDocumentResponse: The response containing the created document
+
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        response_data = self._make_request("createDocument", json_data=request.model_dump())
+        return CreateDocumentResponse(**response_data)
 
 
