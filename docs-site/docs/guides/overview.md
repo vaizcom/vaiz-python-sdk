@@ -256,4 +256,4 @@ Explore detailed documentation for each SDK feature:
 - [Task Blockers](./blockers) - Manage task dependencies
 - [Helper Functions](./helpers) - Utility functions
 
-Check out [Examples](../examples) for ready-to-use code.
+Check out [Examples](../patterns/introduction) for ready-to-use code.

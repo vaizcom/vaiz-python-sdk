@@ -163,5 +163,5 @@ for milestone in response.milestones:
 
 - [Tasks](./tasks) - Task operations
 - [Projects](./projects) - Project management
-- [Examples](../examples) - More examples
+- [Examples](../patterns/introduction) - More examples
 

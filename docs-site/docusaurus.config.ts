@@ -151,7 +151,7 @@ const config: Config = {
           items: [
             {
               label: 'Examples',
-              to: '/examples',
+              to: '/patterns/introduction',
             },
             {
               label: 'Contributing',

@@ -1,0 +1,9 @@
+{
+  "label": "Patterns & Best Practices",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Practical examples, patterns, and best practices for using the Vaiz SDK"
+  }
+}
+

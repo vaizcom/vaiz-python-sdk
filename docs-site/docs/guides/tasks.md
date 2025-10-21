@@ -307,5 +307,5 @@ If you need more control, you can work directly with the document ID from `task.
 - [Files](./files) - File attachments
 - [Comments](./comments) - Task discussions
 - [Documents](./documents) - Document lists and management
-- [Examples](../examples) - Code examples
+- [Examples](../patterns/introduction) - Code examples
 

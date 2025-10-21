@@ -153,5 +153,5 @@ for event in response.payload.histories:
 
 - [Tasks API](./tasks) - Task operations
 - [Profile](./profile) - User information
-- [Examples](../examples) - More examples
+- [Examples](../patterns/introduction) - More examples
 

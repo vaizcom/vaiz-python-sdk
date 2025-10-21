@@ -249,4 +249,4 @@ response = client.create_task(task)
 
 - [Custom Fields](./custom-fields) - Add custom data to tasks
 - [Tasks API](./tasks) - Task operations
-- [Examples](../examples) - More examples
+- [Examples](../patterns/introduction) - More examples

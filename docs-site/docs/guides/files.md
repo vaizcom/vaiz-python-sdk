@@ -133,5 +133,5 @@ response = client.post_comment(
 
 - [Tasks API](./tasks)
 - [Comments API](./comments)
-- [Examples](../examples)
+- [Examples](../patterns/introduction)
 

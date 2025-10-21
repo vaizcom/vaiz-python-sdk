@@ -40,7 +40,21 @@ const sidebars: SidebarsConfig = {
         'api-reference/enums',
       ],
     },
-    'examples',
+    {
+      type: 'category',
+      label: 'Patterns & Best Practices',
+      items: [
+        'patterns/introduction',
+        'patterns/environment-setup',
+        'patterns/common-patterns',
+        'patterns/documents',
+        'patterns/real-world',
+        'patterns/performance',
+        'patterns/integrations',
+        'patterns/error-handling',
+        'patterns/ready-to-run',
+      ],
+    },
   ],
 };
 

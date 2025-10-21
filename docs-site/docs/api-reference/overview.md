@@ -30,7 +30,7 @@ Complete reference documentation for all Vaiz SDK methods, models, and enums.
 ## Quick Links
 
 - [Guides](../guides/overview) - Usage guides with examples
-- [Examples](../examples) - Ready-to-use code examples
+- [Examples](../patterns/introduction) - Ready-to-use code examples
 
 :::tip
 For practical usage examples, check out the [Guides](../guides/overview) section. The API Reference focuses on technical specifications.

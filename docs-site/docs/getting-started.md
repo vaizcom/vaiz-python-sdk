@@ -77,7 +77,7 @@ Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 - 📜 [History Events](./guides/history) - Change tracking
 - 🔗 [Task Blockers](./guides/blockers) - Manage task dependencies
 - 🛠️ [Helper Functions](./guides/helpers) - Utility functions for common tasks
-- 💡 [Examples](./examples) - Ready-to-use code examples
+- 💡 [Examples](./patterns/introduction) - Ready-to-use code examples
 
 ## Useful Links
 
