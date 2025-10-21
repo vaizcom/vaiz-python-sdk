@@ -37,6 +37,7 @@ Follow this checklist to ensure completeness:
 3. **Documentation:**
    - [ ] Create guide page in `docs-site/docs/guides/` with usage examples
    - [ ] Create API reference page in `docs-site/docs/api-reference/` with technical specs
+   - [ ] **Document ALL models** in API reference: Request, Response, Payload, and all related models
    - [ ] Add both pages to `docs-site/sidebars.ts` in appropriate sections
    - [ ] Update `docs-site/docs/api-reference/overview.md` with new section link
    - [ ] Add example to `docs-site/docs/patterns/ready-to-run.md`
