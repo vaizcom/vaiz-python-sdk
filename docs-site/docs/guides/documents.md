@@ -56,7 +56,7 @@ for doc in project_docs.payload.documents:
     print(f"  Followers: {doc.followers}")
 ```
 
-See [API Reference](./methods#document-models) for complete Document model definition.
+See [API Reference](../api-reference/documents) for complete Document model definition.
 
 ## Creating Documents
 
