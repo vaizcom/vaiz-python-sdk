@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 import json
 
 from vaiz.api.base import BaseAPIClient
@@ -9,7 +9,6 @@ from vaiz.models.documents import (
     GetDocumentsRequest,
     GetDocumentsResponse
 )
-
 
 class DocumentsAPIClient(BaseAPIClient):
     """API client for document content operations."""

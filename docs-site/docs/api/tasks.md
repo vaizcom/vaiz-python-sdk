@@ -173,7 +173,7 @@ for task in response.payload.tasks:
 
 ## Task Descriptions
 
-Tasks store descriptions as structured JSON documents. The SDK provides convenient methods to work with task descriptions.
+Tasks store descriptions as structured JSON documents. The SDK provides convenient methods to work with descriptions directly from Task objects.
 
 ### Get Task Description
 
@@ -296,6 +296,10 @@ def add_status_update(task_id: str, status: str):
 # Usage
 add_status_update("PRJ-123", "Design phase completed")
 ```
+
+:::info Advanced Usage
+If you need more control, you can work directly with the document ID from `task.document` field using the [Documents API Methods](./documents#api-methods-reference).
+:::
 
 ## See Also
 

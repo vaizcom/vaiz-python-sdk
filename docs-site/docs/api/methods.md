@@ -491,12 +491,24 @@ Get current user's profile information.
 get_documents(request: GetDocumentsRequest) -> GetDocumentsResponse
 ```
 
-Get list of documents by kind and kind ID.
+Get list of documents filtered by scope (Space/Member/Project) and scope ID.
 
 **Parameters:**
-- `request` - Request with kind (Space/Member/Project) and kind_id
+- `request` - GetDocumentsRequest with kind and kind_id
 
 **Returns:** `GetDocumentsResponse` with list of documents
+
+**Example:**
+```python
+from vaiz.models import GetDocumentsRequest, Kind
+
+docs = client.get_documents(
+    GetDocumentsRequest(
+        kind=Kind.Project,
+        kind_id="project_id"
+    )
+)
+```
 
 ---
 
@@ -506,12 +518,23 @@ Get list of documents by kind and kind ID.
 get_document_body(document_id: str) -> Dict[str, Any]
 ```
 
-Get document content as JSON.
+Get the JSON content of a specific document.
 
 **Parameters:**
 - `document_id` - Document ID
 
-**Returns:** Dictionary with document JSON structure
+**Returns:** `Dict[str, Any]` - Parsed JSON structure
+
+**Example:**
+```python
+# Get document content
+content = client.get_document_body("document_id")
+print(content)
+
+# Get task description
+task = client.get_task("PRJ-123")
+description = client.get_document_body(task.payload["task"]["document"])
+```
 
 ---
 
@@ -524,13 +547,26 @@ replace_document(
 ) -> ReplaceDocumentResponse
 ```
 
-Replace document content completely.
+Replace the entire content of a document.
 
 **Parameters:**
 - `document_id` - Document ID
-- `description` - New content (plain text)
+- `description` - New content (plain text or markdown-style)
 
 **Returns:** `ReplaceDocumentResponse`
+
+**Example:**
+```python
+# Replace document content
+client.replace_document(
+    document_id="doc_id",
+    description="""
+# Updated Content
+
+New document content here.
+"""
+)
+```
 
 ---
 
@@ -749,6 +785,21 @@ class GetDocumentsRequest:
     kind_id: str                        # Required - ID of space/member/project
 ```
 
+#### GetDocumentsResponse
+
+```python
+class GetDocumentsResponse:
+    payload: GetDocumentsPayload        # Response payload
+    type: str                           # Response type ("GetDocuments")
+```
+
+#### GetDocumentsPayload
+
+```python
+class GetDocumentsPayload:
+    documents: List[Document]           # List of documents
+```
+
 #### GetDocumentRequest
 
 ```python
@@ -762,6 +813,14 @@ class GetDocumentRequest:
 class ReplaceDocumentRequest:
     document_id: str                    # Required - Document ID
     description: str                    # Required - New document content
+```
+
+#### ReplaceDocumentResponse
+
+```python
+class ReplaceDocumentResponse:
+    # Empty response on success
+    pass
 ```
 
 ### File Models

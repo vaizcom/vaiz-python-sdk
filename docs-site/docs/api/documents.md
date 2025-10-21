@@ -106,6 +106,106 @@ print(f"Active: {len(active_docs)}")
 print(f"Recent 10: {len(recent_docs)}")
 ```
 
+## Working with Document Content
+
+In addition to listing documents, you can work with their content using document API methods.
+
+### Get Document Content
+
+Retrieve the JSON content of any document:
+
+```python
+# Get document content by ID
+content = client.get_document_body("document_id")
+print(content)  # Returns parsed JSON structure
+```
+
+This method is universal and works for:
+- Task descriptions
+- Standalone documents
+- Any document by its ID
+
+### Replace Document Content
+
+Replace the entire content of a document:
+
+```python
+# Replace document content
+client.replace_document(
+    document_id="document_id",
+    description="New content here"
+)
+```
+
+**Use cases:**
+- Updating task descriptions programmatically
+- Bulk content updates
+- Template-based content generation
+
+### Example: Update Project Document
+
+```python
+from vaiz.models import GetDocumentsRequest, Kind
+
+# 1. Get all project documents
+docs = client.get_documents(
+    GetDocumentsRequest(
+        kind=Kind.Project,
+        kind_id="project_id"
+    )
+)
+
+# 2. Find specific document
+target_doc = next(
+    (doc for doc in docs.payload.documents if doc.title == "Meeting Notes"),
+    None
+)
+
+if target_doc:
+    # 3. Get current content
+    current_content = client.get_document_body(target_doc.id)
+    print(f"Current size: {target_doc.size} bytes")
+    
+    # 4. Update content
+    new_content = """
+# Meeting Notes - Updated
+
+## Attendees
+- John Doe
+- Jane Smith
+
+## Action Items
+- Review design mockups
+- Update documentation
+"""
+    
+    client.replace_document(target_doc.id, new_content)
+    print(f"✅ Updated: {target_doc.title}")
+```
+
+### Document Content Format
+
+Documents are stored as structured JSON. When you use `replace_document`, the content is converted to the appropriate format:
+
+```python
+# Plain text
+client.replace_document(doc_id, "Simple text")
+
+# Markdown-style formatting
+client.replace_document(
+    doc_id,
+    """
+# Header
+## Subheader
+
+- List item 1
+- List item 2
+
+**Bold** and *italic* text
+"""
+)
+```
+
 ## See Also
 
 - [Tasks](./tasks) - Task operations and descriptions
