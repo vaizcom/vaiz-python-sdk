@@ -6,6 +6,76 @@ sidebar_position: 3
 
 Essential patterns for everyday SDK usage.
 
+## Working with Typed Objects
+
+The SDK uses strongly-typed Pydantic models. Always use attribute access, not dict-style indexing:
+
+### ✅ Correct - Attribute Access
+
+```python
+# Get response
+response = client.get_task("PRJ-123")
+
+# Use typed properties
+task = response.task              # ✅ Typed access
+print(task.name)                  # ✅ Attribute access
+print(task.hrid)                  # ✅ IDE autocomplete works
+document_id = task.document       # ✅ Type-safe
+
+# Get profile
+profile_response = client.get_profile()
+profile = profile_response.profile   # ✅ Typed property
+user_name = profile.full_name        # ✅ Attribute access
+user_id = profile.id                 # ✅ Type-safe
+
+# Get board
+board_response = client.get_board("board_id")
+board = board_response.board         # ✅ Typed property
+for group in board.groups or []:     # ✅ Attribute access
+    print(group.name)                # ✅ Type-safe
+```
+
+### ❌ Incorrect - Dict-Style Access
+
+```python
+# ❌ DON'T DO THIS - Will fail at runtime!
+response = client.get_task("PRJ-123")
+task = response.payload["task"]      # ❌ Bypasses typing
+print(task["name"])                  # ❌ KeyError - not a dict!
+
+# ❌ DON'T DO THIS
+profile = client.get_profile()
+name = profile.payload["profile"]["name"]  # ❌ Wrong field name
+email = profile.get("email")                # ❌ No .get() method
+
+# ❌ DON'T DO THIS
+board = response.payload["board"]
+groups = board.get("groups", [])     # ❌ Not a dict!
+```
+
+### Why Attribute Access?
+
+1. **Type Safety** - IDE autocomplete and type checking
+2. **Correct Field Names** - `full_name`, not `name`
+3. **Runtime Safety** - Pydantic validates data
+4. **Better Errors** - Clear AttributeError vs confusing KeyError
+
+### Convenience Properties
+
+All Response objects provide convenience properties:
+
+```python
+# Instead of accessing payload manually
+task_response.payload["task"]        # Works but not typed
+task_response.task                   # ✅ Better - typed property
+
+# All responses have convenience properties
+boards_response.boards               # List[Board]
+project_response.project             # Project
+profile_response.profile             # Profile
+comments_response.comments           # List[Comment]
+```
+
 ## Pagination
 
 Handle large result sets with pagination:

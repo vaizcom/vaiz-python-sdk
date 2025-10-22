@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Union, Dict, Any
 from datetime import datetime
 from .base import VaizBaseModel, ColorInfo
 from .enums import AvatarMode
@@ -12,7 +12,7 @@ class Space(VaizBaseModel):
     color: ColorInfo
     avatar_mode: AvatarMode = Field(..., alias="avatarMode")
     avatar: Optional[str] = None
-    creator: str
+    creator: Union[str, Dict[str, Any]]  # Can be string ID or user object
     plan: str
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")

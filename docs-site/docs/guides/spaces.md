@@ -17,30 +17,22 @@ print(f"   Color: {space.color.color}")
 print(f"   Created: {space.created_at}")
 ```
 
-## Space Model
-
-```python
-class Space:
-    id: str                    # Space ID
-    name: str                  # Space name
-    color: ColorInfo           # Color configuration
-    avatar_mode: AvatarMode    # Avatar display mode
-    avatar: Optional[str]      # Avatar URL
-    creator: str               # Creator ID
-    plan: str                  # Plan ID
-    created_at: datetime       # Creation timestamp
-    updated_at: datetime       # Last update timestamp
-    is_foreign: bool           # Whether this is a foreign space
-```
+:::tip Model Definition
+See the [Spaces API Reference](../api-reference/spaces) for the complete Space model definition.
+:::
 
 ## Color Configuration
 
-The space color includes both the color code and whether it's a dark theme:
+The space color includes the hex code and a brightness flag for UI contrast:
 
 ```python
 space_color = space.color
 print(f"Color: {space_color.color}")      # e.g., "#98a8e8"
-print(f"Is Dark: {space_color.is_dark}")  # True/False
+print(f"Is Dark: {space_color.is_dark}")  # True if color is dark
+
+# Use is_dark to determine text color for contrast
+text_color = "white" if space_color.is_dark else "black"
+print(f"Use {text_color} text on {space_color.color} background")
 ```
 
 ## Complete Example
@@ -64,7 +56,7 @@ print("=== Space Information ===")
 print(f"Name: {space.name}")
 print(f"ID: {space.id}")
 print(f"Color: {space.color.color}")
-print(f"Dark Theme: {space.color.is_dark}")
+print(f"Color is dark: {space.color.is_dark}")
 print(f"Created: {space.created_at}")
 print(f"Plan: {space.plan}")
 ```
@@ -85,14 +77,17 @@ except Exception as e:
 
 ```python
 def get_workspace_info(space_id: str):
-    """Get formatted workspace information."""
+    """Get formatted workspace information for UI."""
     response = client.get_space(space_id)
     space = response.space
     
+    # Determine text color for contrast
+    text_color = "#FFFFFF" if space.color.is_dark else "#000000"
+    
     return {
         "name": space.name,
-        "color": space.color.color,
-        "theme": "dark" if space.color.is_dark else "light",
+        "background_color": space.color.color,
+        "text_color": text_color,
         "avatar": space.avatar,
         "created": space.created_at.strftime("%Y-%m-%d")
     }
@@ -100,7 +95,7 @@ def get_workspace_info(space_id: str):
 # Use in your app
 info = get_workspace_info(space_id)
 print(f"Workspace: {info['name']}")
-print(f"Theme: {info['theme']}")
+print(f"Style: color {info['background_color']} with {info['text_color']} text")
 ```
 
 ### Check Space Details

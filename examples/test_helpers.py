@@ -23,7 +23,6 @@ def create_test_task_and_get_document_id(task_name="Test Task for Comment Exampl
         name=task_name,
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.High,
         completed=False,
         types=[],

@@ -15,7 +15,6 @@ def create_task():
         name="Test task 123",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         priority=TaskPriority.High,
         completed=True,
         types=[],
@@ -39,7 +38,6 @@ def create_task():
             description="Task with specific start and end dates",
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             priority=TaskPriority.Medium,
             completed=False,
             due_start=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM

@@ -19,13 +19,18 @@ client = VaizClient(api_key="...", space_id="...")
 task = CreateTaskRequest(
     name="Implement user authentication",
     board="board_id",
-    group="group_id",
+    group="group_id",  # Optional - specify if board has groups
     priority=TaskPriority.High
 )
 
 response = client.create_task(task)
 print(f"Created: {response.task.id}")
 ```
+
+:::tip Optional Fields
+- `group` - Optional if board doesn't use groups
+- `project` - Optional, API determines from board
+:::
 
 ### Task with Description
 
@@ -122,7 +127,6 @@ task = CreateTaskRequest(
     name="Implement Feature",
     board="board_id",
     group="group_id",
-    project="project_id",
     blockers=["design_task_id"]  # This task depends on design task
 )
 
@@ -152,7 +156,7 @@ response = client.edit_task(edit)
 
 ```python
 response = client.get_task("PRJ-123")
-task = response.payload["task"]
+task = response.task
 ```
 
 ### Multiple Tasks
@@ -244,8 +248,7 @@ from vaiz.models import CreateTaskRequest
 task = CreateTaskRequest(
     name="Documentation Task",
     board="board_id",
-    group="group_id",
-    project="project_id"
+    group="group_id"
 )
 
 response = client.create_task(
@@ -276,8 +279,8 @@ def add_status_update(task_id: str, status: str):
     """Append status update to task description"""
     
     # Get task
-    task = client.get_task(task_id)
-    doc_id = task.payload["task"]["document"]
+    task_response = client.get_task(task_id)
+    doc_id = task_response.task.document
     
     # Get current content
     current = client.get_document_body(doc_id)

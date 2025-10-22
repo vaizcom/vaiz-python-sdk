@@ -123,8 +123,8 @@ from vaiz.models.enums import Kind
 client = VaizClient(api_key="...", space_id="...")
 
 # Get task
-task = client.get_task("PRJ-123")
-task_id = task.payload["task"]["_id"]
+task_response = client.get_task("PRJ-123")
+task_id = task_response.task.id
 
 # Get all history
 request = GetHistoryRequest(

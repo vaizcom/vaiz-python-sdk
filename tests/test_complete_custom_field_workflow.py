@@ -56,21 +56,16 @@ class TestCompleteCustomFieldWorkflow:
     def test_complete_workflow_all_field_types(self):
         """Test creating all types of custom fields and tasks with values."""
         print("\n🚀 Starting complete custom field workflow test...")
-        
         # Step 1: Create different types of custom fields
         field_data = self._create_all_field_types()
-        
         # Step 2: Create tasks with values for each field type
         tasks_data = self._create_tasks_with_values(field_data)
-        
         # Step 3: Verify the tasks were created correctly
         self._verify_tasks_and_values(tasks_data, field_data)
-        
         print(f"✅ Complete workflow test successful!")
         print(f"Created {len(field_data)} custom fields")
         print(f"Created {len(tasks_data)} tasks with custom field values")
         print(f"Check the board at: {TEST_BOARD_ID}")
-        
         # Print field IDs for inspection
         for field_name, field_info in field_data.items():
             print(f"  📋 {field_name}: {field_info['id']} ({field_info['type']})")
@@ -78,9 +73,7 @@ class TestCompleteCustomFieldWorkflow:
     def _create_all_field_types(self):
         """Create one field of each type."""
         print("📝 Creating custom fields...")
-        
         field_data = {}
-        
         # Text field
         text_field = make_text_field(
             name="🏢 Company Name",
@@ -95,7 +88,6 @@ class TestCompleteCustomFieldWorkflow:
         }
         self.created_field_ids.append(response.custom_field.id)
         print(f"  ✅ Created text field: {response.custom_field.id}")
-        
         # Number field
         number_field = make_number_field(
             name="💰 Budget Amount",
@@ -110,7 +102,6 @@ class TestCompleteCustomFieldWorkflow:
         }
         self.created_field_ids.append(response.custom_field.id)
         print(f"  ✅ Created number field: {response.custom_field.id}")
-        
         # Checkbox field
         checkbox_field = make_checkbox_field(
             name="✅ Client Approved",
@@ -125,7 +116,6 @@ class TestCompleteCustomFieldWorkflow:
         }
         self.created_field_ids.append(response.custom_field.id)
         print(f"  ✅ Created checkbox field: {response.custom_field.id}")
-        
         # Date field
         date_field = make_date_field(
             name="📅 Launch Date",
@@ -140,7 +130,6 @@ class TestCompleteCustomFieldWorkflow:
         }
         self.created_field_ids.append(response.custom_field.id)
         print(f"  ✅ Created date field: {response.custom_field.id}")
-        
         # URL field
         url_field = make_url_field(
             name="🔗 Project Link",
@@ -155,7 +144,6 @@ class TestCompleteCustomFieldWorkflow:
         }
         self.created_field_ids.append(response.custom_field.id)
         print(f"  ✅ Created URL field: {response.custom_field.id}")
-        
         # Select field with options
         priority_options = [
             make_select_option("🔥 Critical", Color.Red, Icon.Fire),
@@ -163,7 +151,6 @@ class TestCompleteCustomFieldWorkflow:
             make_select_option("📋 Medium", Color.Blue, Icon.Circle),
             make_select_option("🌱 Low", Color.Green, Icon.Target)
         ]
-        
         select_field = make_select_field(
             name="🎯 Priority Level",
             board_id=TEST_BOARD_ID,
@@ -179,15 +166,12 @@ class TestCompleteCustomFieldWorkflow:
         }
         self.created_field_ids.append(response.custom_field.id)
         print(f"  ✅ Created select field: {response.custom_field.id}")
-        
         return field_data
     
     def _create_tasks_with_values(self, field_data):
         """Create tasks with different custom field values."""
         print("📋 Creating tasks with custom field values...")
-        
         tasks_data = []
-        
         # Task 1: E-commerce project
         ecommerce_fields = [
             CustomField(
@@ -215,17 +199,15 @@ class TestCompleteCustomFieldWorkflow:
                 value=[list(field_data['priority']['options'].values())[0]]  # Critical
             )
         ]
-        
         ecommerce_task = CreateTaskRequest(
             name="🛒 E-commerce Platform Development",
             group=TEST_GROUP_ID,
             board=TEST_BOARD_ID,
-            project=TEST_PROJECT_ID,
+            
             description="Build a modern e-commerce platform with payment integration",
             priority=TaskPriority.High,
             custom_fields=ecommerce_fields
         )
-        
         response = self.client.create_task(ecommerce_task)
         tasks_data.append({
             'id': response.task.id,
@@ -234,7 +216,6 @@ class TestCompleteCustomFieldWorkflow:
         })
         self.created_task_ids.append(response.task.id)
         print(f"  ✅ Created task: {response.task.name} ({response.task.id})")
-        
         # Task 2: Mobile app project
         mobile_fields = [
             CustomField(
@@ -262,17 +243,15 @@ class TestCompleteCustomFieldWorkflow:
                 value=[list(field_data['priority']['options'].values())[2]]  # Medium
             )
         ]
-        
         mobile_task = CreateTaskRequest(
             name="📱 Mobile App Development",
             group=TEST_GROUP_ID,
             board=TEST_BOARD_ID,
-            project=TEST_PROJECT_ID,
+            
             description="Native mobile app for iOS and Android",
             priority=TaskPriority.Medium,
             custom_fields=mobile_fields
         )
-        
         response = self.client.create_task(mobile_task)
         tasks_data.append({
             'id': response.task.id,
@@ -281,7 +260,6 @@ class TestCompleteCustomFieldWorkflow:
         })
         self.created_task_ids.append(response.task.id)
         print(f"  ✅ Created task: {response.task.name} ({response.task.id})")
-        
         # Task 3: Website redesign
         website_fields = [
             CustomField(
@@ -309,17 +287,15 @@ class TestCompleteCustomFieldWorkflow:
                 value=[list(field_data['priority']['options'].values())[1]]  # High
             )
         ]
-        
         website_task = CreateTaskRequest(
             name="🎨 Website Redesign Project",
             group=TEST_GROUP_ID,
             board=TEST_BOARD_ID,
-            project=TEST_PROJECT_ID,
+            
             description="Complete website redesign with modern UI/UX",
             priority=TaskPriority.High,
             custom_fields=website_fields
         )
-        
         response = self.client.create_task(website_task)
         tasks_data.append({
             'id': response.task.id,
@@ -328,13 +304,11 @@ class TestCompleteCustomFieldWorkflow:
         })
         self.created_task_ids.append(response.task.id)
         print(f"  ✅ Created task: {response.task.name} ({response.task.id})")
-        
         return tasks_data
     
     def _verify_tasks_and_values(self, tasks_data, field_data):
         """Verify that tasks were created with correct custom field values."""
         print("🔍 Verifying tasks and custom field values...")
-        
         for task_info in tasks_data:
             # Get the task from API
             task = self.client.get_task(task_info['id']).task

@@ -13,8 +13,8 @@ response = client.get_projects()
 
 for project in response.projects:
     print(f"📁 {project.name}")
+    print(f"   Slug: {project.slug}")
     print(f"   Color: {project.color}")
-    print(f"   Boards: {len(project.boards)}")
 ```
 
 ## Get Single Project
@@ -25,20 +25,8 @@ project = response.project
 
 print(f"Project: {project.name}")
 print(f"Description: {project.description}")
-print(f"Boards: {project.boards}")
-```
-
-## Project Model
-
-```python
-class Project:
-    id: str                      # Project ID
-    name: str                    # Project name
-    color: str                   # Color enum
-    description: Optional[str]   # Description
-    boards: List[str]            # Board IDs
-    created_at: datetime         # Creation date
-    updated_at: datetime         # Last update
+print(f"Slug: {project.slug}")
+print(f"Team: {len(project.team)} members")
 ```
 
 ## Project Colors
@@ -58,14 +46,21 @@ The `color` field accepts predefined enum values from the `Color` enum.
 
 ## Working with Project Boards
 
-```python
-response = client.get_project("project_id")
-project = response.project
+To get boards in a project, use `get_boards()`:
 
-# Get all boards in project
-for board_id in project.boards:
-    board = client.get_board(board_id)
-    print(f"Board: {board.payload['board']['name']}")
+```python
+# Get all boards in workspace
+boards_response = client.get_boards()
+
+# Filter boards by project
+project_id = "project_id"
+project_boards = [
+    board for board in boards_response.boards 
+    if board.project == project_id
+]
+
+for board in project_boards:
+    print(f"Board: {board.name}")
 ```
 
 ## Filtering Tasks by Project
@@ -95,15 +90,22 @@ client = VaizClient(api_key="...", space_id="...")
 projects = client.get_projects()
 print("Projects:")
 for project in projects.projects:
-    print(f"  - {project.name} ({project.color})")
+    print(f"  - {project.name} ({project.slug})")
+    print(f"    Color: {project.color}")
+    print(f"    Team: {len(project.team)} members")
     
-    # Get project details
-    details = client.get_project(project.id)
-    print(f"    Boards: {len(details.project.boards)}")
+# Get specific project
+project_response = client.get_project("project_id")
+project = project_response.project
+print(f"\nProject Details:")
+print(f"  Name: {project.name}")
+print(f"  Description: {project.description}")
+print(f"  Icon: {project.icon}")
 ```
 
 ## See Also
 
+- [Projects API Reference](../api-reference/projects) - Complete API documentation and model definitions
 - [Boards API](./boards) - Board management
 - [Tasks API](./tasks) - Task operations
 - [Examples](../patterns/introduction) - More examples

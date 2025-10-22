@@ -145,7 +145,6 @@ def demonstrate_task_relations():
             name=task_name,
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             description=f"Task for {task_name}",
             priority=TaskPriority.Medium
         )
@@ -179,7 +178,6 @@ def demonstrate_task_relations():
         name="🎯 Main Project Task",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         description="Main task with related subtasks",
         priority=TaskPriority.High,
         custom_fields=[relations_custom_field]
@@ -234,7 +232,6 @@ def demonstrate_member_fields():
         name="👥 Task with Reviewers",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         description="Task that requires review from team members",
         priority=TaskPriority.High,
         custom_fields=[member_custom_field]
@@ -284,7 +281,6 @@ def demonstrate_date_fields():
         name="📅 Scheduled Launch Task",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         description="Task with specific launch date",
         priority=TaskPriority.High,
         custom_fields=[date_custom_field]
@@ -345,7 +341,6 @@ def demonstrate_value_formatting():
         name="🎨 Task with Formatted Values",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         description="Task demonstrating proper value formatting",
         priority=TaskPriority.Medium,
         custom_fields=custom_fields

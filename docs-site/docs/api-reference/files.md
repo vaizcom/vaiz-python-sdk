@@ -52,6 +52,8 @@ Upload a file from URL.
 
 ### UploadedFile
 
+Main uploaded file model.
+
 ```python
 class UploadedFile:
     id: str                             # File ID
@@ -87,6 +89,31 @@ class TaskFile:
 class TaskUploadFile:
     path: str                           # Path to file
     type: Optional[UploadFileType]     # File type (auto-detected if not provided)
+```
+
+---
+
+## Response Models
+
+### UploadFileResponse
+
+```python
+class UploadFileResponse:
+    type: str                           # Response type
+    payload: UploadFilePayload          # Response payload
+    
+    @property
+    def file(self) -> UploadedFile:    # Convenience property
+        ...
+```
+
+---
+
+### UploadFilePayload
+
+```python
+class UploadFilePayload:
+    file: UploadedFile                 # Uploaded file object
 ```
 
 ---

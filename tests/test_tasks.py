@@ -17,7 +17,6 @@ def task_id(client):
         name="Test Task with DateTime",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.High,
         completed=False,
         due_start=datetime(2025, 2, 1, 9, 0, 0),    # February 1st, 9:00 AM
@@ -102,7 +101,6 @@ def test_task_get_description_method_with_initial_content(client):
         name="Task for Description Test - Initial",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.General,
         description=initial_description
     )
@@ -140,7 +138,6 @@ def test_task_update_description_method(client):
         name="Task for Update Description Test",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.General,
         description="Initial description"
     )

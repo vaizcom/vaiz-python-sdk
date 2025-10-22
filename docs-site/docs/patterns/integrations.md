@@ -70,7 +70,6 @@ def sync_github_issues(repo_owner: str, repo_name: str, github_token: str):
             name=f"[#{issue['number']}] {issue['title']}",
             board=board_id,
             group=group_id,
-            project=project_id,
             priority=priority,
             description=f"{issue['body']}\n\n[View on GitHub]({issue['html_url']})"
         )

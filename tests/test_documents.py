@@ -19,7 +19,6 @@ def get_or_create_test_document(client, kind: Kind, kind_id: str, title_prefix: 
         kind: Document scope (Space/Member/Project)
         kind_id: ID of space/member/project
         title_prefix: Prefix for created document title
-        
     Returns:
         Document: Existing or newly created document
     """
@@ -55,7 +54,6 @@ def ensure_test_documents_exist(client, kind: Kind, kind_id: str, min_count: int
         kind: Document scope
         kind_id: ID of scope
         min_count: Minimum number of documents needed
-        
     Returns:
         list[Document]: List of documents (existing + newly created)
     """
@@ -117,7 +115,6 @@ def test_get_document_fetches_json(client):
         name="SDK Test - GetDocument",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.General,
         description="Initial document content for get_document test",
         completed=False,
@@ -141,7 +138,6 @@ def test_replace_document_content(client):
         name="SDK Test - ReplaceDocument",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.General,
         description="Initial content that will be replaced"
     )
@@ -574,7 +570,6 @@ def test_all_scopes_document_workflow(client):
     
     for kind, kind_id, scope_name in scopes_to_test:
         print(f"\n=== Testing {scope_name} documents ===")
-        
         try:
             # Ensure document exists
             doc = get_or_create_test_document(client, kind, kind_id, f"{scope_name} Workflow Test")
@@ -836,7 +831,6 @@ def test_create_multiple_child_documents(client):
                 parent_document_id=parent_doc.id
             )
         )
-        
         child_doc = child_response.payload.document
         created_children.append(child_doc)
         print(f"✅ Created child {idx + 1}: {child_doc.title} (ID: {child_doc.id})")

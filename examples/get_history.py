@@ -22,7 +22,6 @@ task = CreateTaskRequest(
     name="Example Task for History",
     group=str(GROUP_ID),
     board=str(BOARD_ID),
-    project=str(PROJECT_ID),
     priority=TaskPriority.Medium,
     completed=False
 )

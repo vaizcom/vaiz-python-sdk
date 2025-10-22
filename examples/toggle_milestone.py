@@ -81,7 +81,6 @@ def demo_toggle_milestone():
         name="Demo Task for Milestone Toggle",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         priority=TaskPriority.Medium,
         completed=False
     )

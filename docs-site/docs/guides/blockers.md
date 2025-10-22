@@ -30,7 +30,6 @@ task = CreateTaskRequest(
     name="Feature Implementation",
     board="board_id",
     group="group_id",
-    project="project_id",
     blockers=["design_task_id"],     # This task is blocked by design task
     blocking=["testing_task_id"]     # This task blocks testing task
 )
@@ -78,8 +77,7 @@ for blocked_id in task.blocking:
 design_task = CreateTaskRequest(
     name="Design UI Mockups",
     board="board_id",
-    group="group_id",
-    project="project_id"
+    group="group_id"
 )
 design_response = client.create_task(design_task)
 
@@ -88,7 +86,6 @@ implementation_task = CreateTaskRequest(
     name="Implement UI",
     board="board_id",
     group="group_id",
-    project="project_id",
     blockers=[design_response.task.id]  # Blocked by design task
 )
 impl_response = client.create_task(implementation_task)
@@ -98,7 +95,6 @@ testing_task = CreateTaskRequest(
     name="Test UI",
     board="board_id",
     group="group_id",
-    project="project_id",
     blockers=[impl_response.task.id]  # Blocked by implementation
 )
 test_response = client.create_task(testing_task)

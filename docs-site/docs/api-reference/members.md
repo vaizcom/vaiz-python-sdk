@@ -34,7 +34,7 @@ for member in response.members:
 
 ### Member
 
-Represents a member in the space.
+Main member model representing a space member.
 
 ```python
 class Member:
@@ -52,6 +52,20 @@ class Member:
 ```
 
 ---
+
+### ColorInfo
+
+Color configuration shared across spaces, members, and profiles.
+
+```python
+class ColorInfo:
+    color: str        # Hex color code (e.g., "#a8f8b8")
+    is_dark: bool     # Brightness flag - True if color is dark (for UI text contrast)
+```
+
+---
+
+## Response Models
 
 ### GetSpaceMembersResponse
 
@@ -76,18 +90,6 @@ Payload wrapper for members list.
 ```python
 class GetSpaceMembersPayload:
     members: List[Member]      # List of space members
-```
-
----
-
-### ColorInfo
-
-Color configuration shared across spaces, members, and profiles.
-
-```python
-class ColorInfo:
-    color: str        # Hex color code (e.g., "#a8f8b8")
-    is_dark: bool     # Whether the color is dark
 ```
 
 ---

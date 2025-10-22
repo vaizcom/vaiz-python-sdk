@@ -10,7 +10,7 @@ def get_profile():
     
     try:
         response = client.get_profile()
-        profile = response.payload["profile"]
+        profile = response.profile
         
         print("Profile retrieved successfully!")
         print(f"ID: {profile.id}")

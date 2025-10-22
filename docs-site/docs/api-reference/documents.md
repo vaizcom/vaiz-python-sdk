@@ -87,8 +87,8 @@ content = client.get_document_body("document_id")
 print(content)
 
 # Get task description
-task = client.get_task("PRJ-123")
-description = client.get_document_body(task.payload["task"]["document"])
+task_response = client.get_task("PRJ-123")
+description = client.get_document_body(task_response.task.document)
 ```
 
 ---
@@ -129,6 +129,8 @@ New document content here.
 
 ### Document
 
+Main document model representing a document in the system.
+
 ```python
 class Document:
     id: str                             # Document ID
@@ -149,6 +151,8 @@ class Document:
 
 ---
 
+## Request Models
+
 ### CreateDocumentRequest
 
 ```python
@@ -161,6 +165,8 @@ class CreateDocumentRequest:
 ```
 
 ---
+
+## Response Models
 
 ### CreateDocumentResponse
 

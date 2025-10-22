@@ -21,11 +21,11 @@ for board in response.boards:
 
 ```python
 response = client.get_board("board_id")
-board = response.payload["board"]
+board = response.board
 
-print(f"Board: {board['name']}")
-print(f"Groups: {len(board.get('groups', []))}")
-print(f"Types: {len(board.get('types', []))}")
+print(f"Board: {board.name}")
+print(f"Groups: {len(board.groups or [])}")
+print(f"Types: {len(board.types_list or [])}")
 ```
 
 ## Board Types
@@ -210,16 +210,16 @@ for name, description in groups:
 
 ```python
 response = client.get_board("board_id")
-board = response.payload["board"]
+board = response.board
 
-print(f"Board: {board['name']}")
+print(f"Board: {board.name}")
 print("\nGroups:")
-for group in board.get("groups", []):
-    print(f"  - {group['name']}")
+for group in board.groups or []:
+    print(f"  - {group.name}")
 
 print("\nTypes:")
-for type_item in board.get("types", []):
-    print(f"  - {type_item['label']} ({type_item['color']})")
+for type_item in board.types_list or []:
+    print(f"  - {type_item.label} ({type_item.color})")
 ```
 
 ### Create Tasks with Types
@@ -229,10 +229,10 @@ from vaiz.models import CreateTaskRequest
 
 # Get board to find type IDs
 board_response = client.get_board("board_id")
-board = board_response.payload["board"]
+board = board_response.board
 
 # Find bug type
-bug_type = next(t for t in board["types"] if t["label"] == "Bug")
+bug_type = next(t for t in board.types_list if t.label == "Bug")
 
 # Create bug task
 task = CreateTaskRequest(

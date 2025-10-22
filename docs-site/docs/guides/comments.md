@@ -143,7 +143,7 @@ for comment in response.comments:
 ```python
 # From task
 task_response = client.get_task("PRJ-123")
-document_id = task_response.payload["task"]["document"]
+document_id = task_response.task.document
 
 # When creating task
 task = CreateTaskRequest(name="Task", board="...", group="...")

@@ -156,7 +156,6 @@ def create_task_with_multi_select_values(custom_field_id: str, country_options: 
             name="International Marketing Campaign",
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             description="Plan and execute marketing campaign for multiple international markets",
             priority=TaskPriority.High,
             custom_fields=[custom_field]
