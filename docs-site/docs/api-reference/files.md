@@ -52,6 +52,8 @@ Upload a file from URL.
 
 ### UploadedFile
 
+Main uploaded file model.
+
 ```python
 class UploadedFile:
     id: str                             # File ID
@@ -90,6 +92,8 @@ class TaskUploadFile:
 ```
 
 ---
+
+## Response Models
 
 ### UploadFileResponse
 

@@ -24,6 +24,8 @@ Get current user's profile information.
 
 ### Profile
 
+Main profile model representing the current user.
+
 ```python
 class Profile:
     id: str                              # User ID
@@ -71,6 +73,8 @@ class ProfileColor:
 ```
 
 ---
+
+## Response Models
 
 ### ProfileResponse
 

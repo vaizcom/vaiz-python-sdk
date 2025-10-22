@@ -25,38 +25,9 @@ Get change history for an entity.
 
 ## Models
 
-### GetHistoryRequest
-
-```python
-class GetHistoryRequest:
-    kind: Kind                         # Required - Entity type (Task, Project, etc.)
-    kindId: str                         # Required - Entity ID
-    excludeKeys: Optional[List[str]]    # Keys to exclude from history
-    lastLoadedDate: Optional[int]       # Timestamp for pagination (default: 0)
-```
-
----
-
-### GetHistoryResponse
-
-```python
-class GetHistoryResponse:
-    type: str                        # Response type ("GetHistory")
-    payload: GetHistoryPayload       # Response payload
-```
-
----
-
-### GetHistoryPayload
-
-```python
-class GetHistoryPayload:
-    histories: List[HistoryItem]     # List of history events
-```
-
----
-
 ### HistoryItem
+
+Main history event model.
 
 ```python
 class HistoryItem:
@@ -92,6 +63,41 @@ class HistoryData:
 :::info Dynamic Fields
 `HistoryData` accepts arbitrary additional fields using `extra="allow"` configuration, as different change types include different data fields.
 :::
+
+---
+
+## Request Models
+
+### GetHistoryRequest
+
+```python
+class GetHistoryRequest:
+    kind: Kind                         # Required - Entity type (Task, Project, etc.)
+    kindId: str                         # Required - Entity ID
+    excludeKeys: Optional[List[str]]    # Keys to exclude from history
+    lastLoadedDate: Optional[int]       # Timestamp for pagination (default: 0)
+```
+
+---
+
+## Response Models
+
+### GetHistoryResponse
+
+```python
+class GetHistoryResponse:
+    type: str                        # Response type ("GetHistory")
+    payload: GetHistoryPayload       # Response payload
+```
+
+---
+
+### GetHistoryPayload
+
+```python
+class GetHistoryPayload:
+    histories: List[HistoryItem]     # List of history events
+```
 
 ---
 

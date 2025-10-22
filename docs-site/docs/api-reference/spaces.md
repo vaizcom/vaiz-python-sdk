@@ -38,7 +38,7 @@ print(f"Created: {space.created_at}")
 
 ### Space
 
-Represents a space in the system.
+Main space model representing a workspace in the system.
 
 ```python
 class Space:
@@ -55,6 +55,20 @@ class Space:
 ```
 
 ---
+
+### ColorInfo
+
+Color configuration shared across spaces, members, and profiles.
+
+```python
+class ColorInfo:
+    color: str        # Hex color code (e.g., "#98a8e8")
+    is_dark: bool     # Whether the color is dark
+```
+
+---
+
+## Response Models
 
 ### GetSpaceResponse
 
@@ -79,18 +93,6 @@ Payload wrapper for space data.
 ```python
 class GetSpacePayload:
     space: Space               # Space object
-```
-
----
-
-### ColorInfo
-
-Color configuration shared across spaces, members, and profiles.
-
-```python
-class ColorInfo:
-    color: str        # Hex color code (e.g., "#98a8e8")
-    is_dark: bool     # Whether the color is dark
 ```
 
 ---

@@ -129,6 +129,8 @@ New document content here.
 
 ### Document
 
+Main document model representing a document in the system.
+
 ```python
 class Document:
     id: str                             # Document ID
@@ -149,6 +151,8 @@ class Document:
 
 ---
 
+## Request Models
+
 ### CreateDocumentRequest
 
 ```python
@@ -161,6 +165,8 @@ class CreateDocumentRequest:
 ```
 
 ---
+
+## Response Models
 
 ### CreateDocumentResponse
 

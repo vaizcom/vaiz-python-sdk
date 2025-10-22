@@ -39,6 +39,8 @@ Get a single project by ID.
 
 ### Project
 
+Main project model representing a project in the system.
+
 ```python
 class Project:
     id: str                      # Project ID
@@ -57,6 +59,8 @@ class Project:
 ```
 
 ---
+
+## Response Models
 
 ### ProjectResponse
 

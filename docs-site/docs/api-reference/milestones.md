@@ -82,6 +82,42 @@ Attach/detach milestones to/from a task.
 
 ## Models
 
+### Milestone
+
+Main milestone model representing a milestone in the system.
+
+```python
+class Milestone:
+    id: str                             # Milestone ID
+    name: str                           # Milestone name
+    description: Optional[str]          # Description
+    board: str                          # Board ID
+    project: str                        # Project ID
+    document: Optional[str]             # Document ID
+    due_start: Optional[datetime]       # Start date
+    due_end: Optional[datetime]         # End date
+    total: Optional[int]                # Total tasks count
+    completed: Optional[int]            # Completed tasks count
+    tags: List[str]                     # Tags
+    color: Optional[str]                # Color
+    is_archived: bool                   # Archive status
+    is_active: bool                     # Active status
+    is_completed: bool                  # Completion status
+    creator: str                        # Creator user ID
+    editor: Optional[str]               # Last editor user ID
+    archiver: Optional[str]             # Archiver user ID (if archived)
+    deleter: Optional[str]              # Deleter user ID (if deleted)
+    created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Last update timestamp
+    archived_at: Optional[datetime]     # Archive timestamp
+    deleted_at: Optional[datetime]      # Deletion timestamp
+    followers: Optional[Dict[str, str]] # Follower mapping
+```
+
+---
+
+## Request Models
+
 ### CreateMilestoneRequest
 
 ```python
@@ -123,37 +159,7 @@ class ToggleMilestoneRequest:
 
 ---
 
-### Milestone
-
-```python
-class Milestone:
-    id: str                             # Milestone ID
-    name: str                           # Milestone name
-    description: Optional[str]          # Description
-    board: str                          # Board ID
-    project: str                        # Project ID
-    document: Optional[str]             # Document ID
-    due_start: Optional[datetime]       # Start date
-    due_end: Optional[datetime]         # End date
-    total: Optional[int]                # Total tasks count
-    completed: Optional[int]            # Completed tasks count
-    tags: List[str]                     # Tags
-    color: Optional[str]                # Color
-    is_archived: bool                   # Archive status
-    is_active: bool                     # Active status
-    is_completed: bool                  # Completion status
-    creator: str                        # Creator user ID
-    editor: Optional[str]               # Last editor user ID
-    archiver: Optional[str]             # Archiver user ID (if archived)
-    deleter: Optional[str]              # Deleter user ID (if deleted)
-    created_at: datetime                # Creation timestamp
-    updated_at: datetime                # Last update timestamp
-    archived_at: Optional[datetime]     # Archive timestamp
-    deleted_at: Optional[datetime]      # Deletion timestamp
-    followers: Optional[Dict[str, str]] # Follower mapping
-```
-
----
+## Response Models
 
 ### MilestonesResponse
 

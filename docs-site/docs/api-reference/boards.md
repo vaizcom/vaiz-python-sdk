@@ -125,9 +125,11 @@ Edit an existing custom field.
 
 ---
 
-## Models & Interfaces
+## Models
 
 ### Board
+
+Main board model representing a board in the system.
 
 ```python
 class Board:
@@ -189,6 +191,8 @@ class BoardCustomField:
 ```
 
 ---
+
+## Response Models
 
 ### BoardResponse
 
