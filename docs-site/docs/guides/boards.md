@@ -239,7 +239,7 @@ task = CreateTaskRequest(
     name="Fix login issue",
     board="board_id",
     group="group_id",
-    types=[bug_type["_id"]]
+    types=[bug_type.id]  # Use .id attribute, not dictionary access
 )
 
 response = client.create_task(task)

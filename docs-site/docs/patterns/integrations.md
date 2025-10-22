@@ -138,7 +138,12 @@ def sync_with_jira(jira_url: str, jira_token: str):
     # Sync each task
     for task in vaiz_tasks:
         # Check if Jira issue exists (stored in custom field)
-        jira_id = task.custom_fields.get('jira_id')
+        # custom_fields is a list, so we need to search for the field
+        jira_custom_field = next(
+            (cf for cf in task.custom_fields if cf.id == 'jira_id_field_id'),
+            None
+        )
+        jira_id = jira_custom_field.value if jira_custom_field else None
         
         if jira_id:
             # Update existing Jira issue

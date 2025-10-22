@@ -12,7 +12,7 @@ Handle file upload errors gracefully:
 
 ```python
 import os
-from requests.exceptions import HTTPError
+from vaiz.api.base import VaizSDKError
 from vaiz.models.enums import UploadFileType
 
 def safe_upload(file_path, file_type):
@@ -29,8 +29,8 @@ def safe_upload(file_path, file_type):
         print(f"✅ Uploaded: {response.file.name}")
         return response.file
         
-    except HTTPError as e:
-        print(f"❌ HTTP Error {e.response.status_code}: {e.response.text}")
+    except VaizSDKError as e:
+        print(f"❌ SDK Error: {e}")
         return None
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -46,7 +46,7 @@ Implement automatic retry with exponential backoff:
 
 ```python
 import time
-from requests.exceptions import HTTPError
+from vaiz.api.base import VaizSDKError
 
 def create_task_with_retry(task_request, max_retries=3):
     """Create task with automatic retry on failure"""
@@ -56,10 +56,11 @@ def create_task_with_retry(task_request, max_retries=3):
             print(f"✅ Task created: {response.task.id}")
             return response
             
-        except HTTPError as e:
-            if e.response.status_code >= 500 and attempt < max_retries - 1:
+        except VaizSDKError as e:
+            # Retry on SDK errors (can check specific error types if needed)
+            if attempt < max_retries - 1:
                 wait_time = 2 ** attempt  # Exponential backoff
-                print(f"⚠️ Server error, retrying in {wait_time}s...")
+                print(f"⚠️ Error, retrying in {wait_time}s...")
                 time.sleep(wait_time)
             else:
                 raise
@@ -72,7 +73,15 @@ def create_task_with_retry(task_request, max_retries=3):
 Handle all common error scenarios:
 
 ```python
-from requests.exceptions import HTTPError, ConnectionError, Timeout
+from pydantic import ValidationError
+from vaiz.api.base import (
+    VaizSDKError,
+    VaizAuthError,
+    VaizValidationError,
+    VaizNotFoundError,
+    VaizPermissionError,
+    VaizRateLimitError
+)
 from vaiz.models import CreateTaskRequest
 
 def safe_create_task(task_data: dict):
@@ -87,35 +96,30 @@ def safe_create_task(task_data: dict):
         print(f"❌ Validation Error: {e}")
         return {"success": False, "error": "Invalid task data"}
         
-    except HTTPError as e:
-        # HTTP errors from API
-        status = e.response.status_code
-        if status == 400:
-            print(f"❌ Bad Request: {e.response.json()}")
-            return {"success": False, "error": "Invalid request"}
-        elif status == 401:
-            print("❌ Authentication failed")
-            return {"success": False, "error": "Authentication error"}
-        elif status == 403:
-            print("❌ Permission denied")
-            return {"success": False, "error": "Permission denied"}
-        elif status == 404:
-            print("❌ Resource not found")
-            return {"success": False, "error": "Not found"}
-        elif status >= 500:
-            print(f"❌ Server error: {status}")
-            return {"success": False, "error": "Server error"}
-        else:
-            print(f"❌ HTTP Error: {status}")
-            return {"success": False, "error": f"HTTP {status}"}
-            
-    except ConnectionError:
-        print("❌ Connection error - check network")
-        return {"success": False, "error": "Connection error"}
+    except VaizAuthError as e:
+        print(f"❌ Authentication failed: {e}")
+        return {"success": False, "error": "Authentication error"}
         
-    except Timeout:
-        print("❌ Request timeout")
-        return {"success": False, "error": "Timeout"}
+    except VaizValidationError as e:
+        print(f"❌ Validation error from API: {e}")
+        return {"success": False, "error": "Invalid request"}
+        
+    except VaizPermissionError as e:
+        print(f"❌ Permission denied: {e}")
+        return {"success": False, "error": "Permission denied"}
+        
+    except VaizNotFoundError as e:
+        print(f"❌ Resource not found: {e}")
+        return {"success": False, "error": "Not found"}
+        
+    except VaizRateLimitError as e:
+        print(f"❌ Rate limit exceeded: {e}")
+        return {"success": False, "error": "Rate limit exceeded"}
+        
+    except VaizSDKError as e:
+        # Catch-all for other SDK errors
+        print(f"❌ SDK Error: {e}")
+        return {"success": False, "error": "SDK error"}
         
     except Exception as e:
         print(f"❌ Unexpected error: {e}")
@@ -161,10 +165,12 @@ def bulk_create_tasks(tasks_data: list):
 
 ```python
 # ✅ Good - Handle all errors
+from vaiz.api.base import VaizSDKError
+
 try:
     response = client.create_task(task)
     return response.task
-except HTTPError as e:
+except VaizSDKError as e:
     logger.error(f"Failed to create task: {e}")
     return None
 
@@ -177,6 +183,7 @@ return response.task
 
 ```python
 import logging
+from vaiz.api.base import VaizSDKError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -187,9 +194,9 @@ def create_task_with_logging(task_request):
         response = client.create_task(task_request)
         logger.info(f"Task created: {response.task.hrid}")
         return response
-    except HTTPError as e:
+    except VaizSDKError as e:
         logger.error(
-            f"Failed to create task: {e.response.status_code}",
+            f"Failed to create task: {e}",
             extra={"task_name": task_request.name}
         )
         raise

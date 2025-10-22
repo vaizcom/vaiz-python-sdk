@@ -106,15 +106,17 @@ response = client.edit_comment(
 ### Managing Files
 
 ```python
-# Add files
-client.edit_comment(
+# Add files (must include content)
+response = client.edit_comment(
     comment_id="comment_id",
+    content="<p>Updated content</p>",
     add_file_ids=["new_file_id"]
 )
 
-# Remove files
-client.edit_comment(
+# Remove files (must include content)
+response = client.edit_comment(
     comment_id="comment_id",
+    content="<p>Updated content</p>",
     remove_file_ids=["file_id"]
 )
 ```

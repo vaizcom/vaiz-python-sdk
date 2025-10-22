@@ -70,7 +70,7 @@ from vaiz.models import CreateTaskRequest
 task = CreateTaskRequest(
     name="Task",           # Required - will error if missing
     board="board_id",      # Required
-    group="group_id",      # Required
+    group="group_id",      # Optional
     priority=TaskPriority.High,  # Optional
     assignees=["user_id"]  # Optional
 )
@@ -84,19 +84,23 @@ task = CreateTaskRequest(
 ### Error Handling
 
 ```python
-from requests.exceptions import HTTPError
+from vaiz.api.base import (
+    VaizSDKError,
+    VaizAuthError,
+    VaizValidationError,
+    VaizNotFoundError
+)
 
 try:
     response = client.create_task(task)
-except HTTPError as e:
-    if e.response.status_code == 400:
-        print("Validation error:", e.response.json())
-    elif e.response.status_code == 401:
-        print("Authentication failed")
-    elif e.response.status_code == 404:
-        print("Resource not found")
-    else:
-        print(f"Error: {e}")
+except VaizAuthError as e:
+    print(f"Authentication failed: {e}")
+except VaizValidationError as e:
+    print(f"Validation error: {e}")
+except VaizNotFoundError as e:
+    print(f"Resource not found: {e}")
+except VaizSDKError as e:
+    print(f"SDK error: {e}")
 ```
 
 ### Pagination
@@ -194,17 +198,17 @@ client = VaizClient(
 
 ```python
 # ✅ Good
-from vaiz.models import Task
+from vaiz.models import Task, GetTasksRequest
 from typing import List
 
-def get_high_priority_tasks() -> List[Task]:
-    request = GetTasksRequest(priority=[3])
+def get_completed_tasks() -> List[Task]:
+    request = GetTasksRequest(completed=True)
     response = client.get_tasks(request)
     return response.payload.tasks
 
 # ❌ Bad
 def get_tasks():  # No type hints
-    request = GetTasksRequest(priority=[3])
+    request = GetTasksRequest(completed=True)
     return client.get_tasks(request).payload.tasks
 ```
 
@@ -212,10 +216,12 @@ def get_tasks():  # No type hints
 
 ```python
 # ✅ Good
+from vaiz.api.base import VaizSDKError
+
 try:
     response = client.create_task(task)
     return response.task
-except HTTPError as e:
+except VaizSDKError as e:
     logger.error(f"Failed to create task: {e}")
     return None
 
