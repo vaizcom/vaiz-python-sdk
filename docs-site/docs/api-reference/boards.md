@@ -202,10 +202,6 @@ class BoardResponse:
         ...
 ```
 
-:::info Payload Structure
-`BoardResponse.payload` is a dict with key `"board"` containing the Board object. Use the convenience property `response.board` for typed access.
-:::
-
 ---
 
 ### BoardsResponse

@@ -135,6 +135,7 @@ client.add_reaction(
 - 📖 [API Reference](./api-reference/overview) - Complete reference of methods, models, and enums
 - 📚 [Guides](./guides/basics) - Detailed guides for each API category
 - 💡 [Examples](./patterns/introduction) - Ready-to-use code examples
+- ⚡ [Common Patterns](./patterns/common-patterns) - Best practices and type-safe patterns
 
 ## Requirements
 
