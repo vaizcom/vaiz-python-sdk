@@ -23,12 +23,16 @@ See the [Members API Reference](../api-reference/members) for the complete Membe
 
 ## Color Configuration
 
-The member color includes both the color code and theme:
+The member color includes the hex code and a brightness flag for UI contrast:
 
 ```python
 member_color = member.color
 print(f"Color: {member_color.color}")      # e.g., "#a8f8b8"
-print(f"Is Dark: {member_color.is_dark}")  # True/False
+print(f"Is Dark: {member_color.is_dark}")  # True if color is dark
+
+# Use is_dark to choose contrasting text color
+text_color = "white" if member_color.is_dark else "black"
+print(f"Display member with {member_color.color} background and {text_color} text")
 ```
 
 ## Complete Example

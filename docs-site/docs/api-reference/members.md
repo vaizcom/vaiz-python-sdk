@@ -60,7 +60,7 @@ Color configuration shared across spaces, members, and profiles.
 ```python
 class ColorInfo:
     color: str        # Hex color code (e.g., "#a8f8b8")
-    is_dark: bool     # Whether the color is dark
+    is_dark: bool     # Brightness flag - True if color is dark (for UI text contrast)
 ```
 
 ---

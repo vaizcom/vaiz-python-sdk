@@ -69,7 +69,7 @@ class ProfileEmail:
 ```python
 class ProfileColor:
     color: Optional[str]      # Color hex code (e.g., "#a8f8b8")
-    is_dark: Optional[bool]   # Dark theme flag
+    is_dark: Optional[bool]   # Brightness flag - True if color is dark (for UI text contrast)
 ```
 
 ---
