@@ -55,7 +55,7 @@ def test_replace_json_document():
     assert response is not None
     
     # Verify content was updated by fetching it
-    updated_content = client.get_document_body(document_id)
+    updated_content = client.get_json_document(document_id)
     assert updated_content is not None
     
     print(f"✅ Successfully replaced document {document_id} with JSON content")
@@ -170,7 +170,7 @@ def test_replace_json_document_with_rich_content():
     assert response is not None
     
     # Verify content was updated
-    updated_content = client.get_document_body(document_id)
+    updated_content = client.get_json_document(document_id)
     assert updated_content is not None
     
     print(f"✅ Successfully replaced document {document_id} with rich JSON content")
@@ -631,7 +631,7 @@ def test_replace_json_document_complex_structure():
     assert response is not None
     
     # Verify content was updated
-    updated_content = client.get_document_body(document_id)
+    updated_content = client.get_json_document(document_id)
     assert updated_content is not None
     
     print(f"✅ Successfully replaced document {document_id} with complex structure")
@@ -664,7 +664,7 @@ def test_replace_json_document_complete_replacement():
     document_id = task_response.task.document
     
     # Verify initial content exists
-    initial_content = client.get_document_body(document_id)
+    initial_content = client.get_json_document(document_id)
     initial_text = str(initial_content)
     assert "OLD_CONTENT_MARKER" in initial_text, "Initial content should contain marker"
     
@@ -763,7 +763,7 @@ def test_replace_json_document_complete_replacement():
     assert response is not None
     
     # Retrieve and STRICTLY verify replacement
-    saved_content = client.get_document_body(document_id)
+    saved_content = client.get_json_document(document_id)
     saved_text = str(saved_content)
     
     # CRITICAL: Old content MUST be completely gone
@@ -822,7 +822,7 @@ def test_replace_document_complete_replacement():
     document_id = task_response.task.document
     
     # Verify initial content exists
-    initial_content = client.get_document_body(document_id)
+    initial_content = client.get_json_document(document_id)
     initial_text = str(initial_content)
     assert "PLAIN_OLD_MARKER" in initial_text, "Initial content should contain marker"
     
@@ -837,7 +837,7 @@ def test_replace_document_complete_replacement():
     assert response is not None
     
     # Retrieve and STRICTLY verify replacement
-    saved_content = client.get_document_body(document_id)
+    saved_content = client.get_json_document(document_id)
     saved_text = str(saved_content)
     
     # CRITICAL: Old content MUST be completely gone

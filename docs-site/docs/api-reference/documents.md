@@ -67,10 +67,10 @@ docs = client.get_documents(
 
 ---
 
-### `get_document_body`
+### `get_json_document`
 
 ```python
-get_document_body(document_id: str) -> Dict[str, Any]
+get_json_document(document_id: str) -> Dict[str, Any]
 ```
 
 Get the JSON content of a specific document.
@@ -83,12 +83,12 @@ Get the JSON content of a specific document.
 **Example:**
 ```python
 # Get document content
-content = client.get_document_body("document_id")
+content = client.get_json_document("document_id")
 print(content)
 
 # Get task description
 task_response = client.get_task("PRJ-123")
-description = client.get_document_body(task_response.task.document)
+description = client.get_json_document(task_response.task.document)
 ```
 
 ---

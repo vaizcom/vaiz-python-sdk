@@ -440,7 +440,7 @@ def main():
         print("   ✓ Emoji icons for visual appeal\n")
         
         # Verify the change
-        updated_content = client.get_document_body(document_id)
+        updated_content = client.get_json_document(document_id)
         print(f"🎉 Document {document_id} now contains comprehensive structured content!")
         print(f"📏 Total content blocks: {len(complex_content)}")
         

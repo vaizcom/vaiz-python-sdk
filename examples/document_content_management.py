@@ -4,7 +4,7 @@ Example: Working with Document Content in Vaiz
 
 This example demonstrates how to:
 1. Get a list of documents (Space/Member/Project)
-2. Read document content using get_document_body()
+2. Read document content using get_json_document()
 3. Update document content using replace_document()
 """
 
@@ -44,7 +44,7 @@ def main():
             print(f"   Document ID: {doc.id}")
             
             # Get current content
-            content = client.get_document_body(doc.id)
+            content = client.get_json_document(doc.id)
             print(f"   Current content keys: {list(content.keys())}")
             
             # Update content
@@ -90,7 +90,7 @@ This is a shared document accessible to all space members.
             print(f"   Document ID: {doc.id}")
             
             # Get current content
-            content = client.get_document_body(doc.id)
+            content = client.get_json_document(doc.id)
             print(f"   Current size: {doc.size} bytes")
             
             # Update content with personal notes
@@ -142,7 +142,7 @@ This is a private document visible only to me.
                 print(f"   Contributors: {len(doc.contributor_ids)}")
                 
                 # Get current content
-                content = client.get_document_body(doc.id)
+                content = client.get_json_document(doc.id)
                 print("   Retrieved content")
                 
                 # Update with project status
@@ -185,7 +185,7 @@ Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         for doc in project_docs.payload.documents[:3]:  # Update first 3 documents
             try:
                 # Add timestamp footer to each document
-                content = client.get_document_body(doc.id)
+                content = client.get_json_document(doc.id)
                 
                 new_content = f"""
 Document: {doc.title}

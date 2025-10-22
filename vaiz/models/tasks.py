@@ -78,7 +78,7 @@ class Task(VaizBaseModel):
         Returns:
             Dict[str, Any]: Parsed JSON document body for this task's description
         """
-        return client.get_document_body(self.document)
+        return client.get_json_document(self.document)
 
     def update_task_description(
         self,

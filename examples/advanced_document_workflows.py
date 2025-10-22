@@ -125,7 +125,7 @@ Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
             for doc in docs.payload.documents[:5]:  # Limit to 5 docs
                 try:
                     # Get current content
-                    content = client.get_document_body(doc.id)
+                    content = client.get_json_document(doc.id)
                     
                     # Add standard header
                     standardized = standard_header + f"Document: {doc.title}\n\n[Content]"
@@ -154,7 +154,7 @@ Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         )
         
         for doc in docs.payload.documents[:3]:  # Backup first 3
-            content = client.get_document_body(doc.id)
+            content = client.get_json_document(doc.id)
             
             backup_data.append({
                 'id': doc.id,

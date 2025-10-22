@@ -267,7 +267,7 @@ Retrieve the JSON content of any document:
 
 ```python
 # Get document content by ID
-content = client.get_document_body("document_id")
+content = client.get_json_document("document_id")
 print(content)  # Returns parsed JSON structure
 ```
 
@@ -426,7 +426,7 @@ target_doc = next(
 
 if target_doc:
     # 3. Get current content
-    current_content = client.get_document_body(target_doc.id)
+    current_content = client.get_json_document(target_doc.id)
     print(f"Current size: {target_doc.size} bytes")
     
     # 4. Update content

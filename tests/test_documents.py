@@ -122,7 +122,7 @@ def test_get_document_fetches_json(client):
     task_response = client.create_task(task)
     document_id = task_response.task.document
 
-    doc = client.get_document_body(document_id)
+    doc = client.get_json_document(document_id)
 
     # API may return an empty document for newly created tasks
     assert isinstance(doc, dict)
@@ -149,7 +149,7 @@ def test_replace_document_content(client):
     document_id = task_response.task.document
 
     # Get initial content
-    initial_content = client.get_document_body(document_id)
+    initial_content = client.get_json_document(document_id)
     print(f"Initial content: {initial_content}")
 
     # API currently supports PLAIN TEXT description only
@@ -172,7 +172,7 @@ def test_replace_document_content(client):
     assert isinstance(replace_response, ReplaceDocumentResponse)
 
     # Get updated content and verify it changed
-    updated_content = client.get_document_body(document_id)
+    updated_content = client.get_json_document(document_id)
     print(f"Updated content: {updated_content}")
 
     # For now, just verify the API call was successful and returned proper response
@@ -432,7 +432,7 @@ def test_space_document_content_workflow(client):
     print(f"Testing Space document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
-    content = client.get_document_body(test_document.id)
+    content = client.get_json_document(test_document.id)
     assert isinstance(content, dict)
     print(f"✅ Retrieved Space document content: {type(content)}")
     
@@ -456,7 +456,7 @@ Document Title: {test_document.title}
     print("✅ Replaced Space document content")
     
     # 5. Verify content was updated
-    updated_content = client.get_document_body(test_document.id)
+    updated_content = client.get_json_document(test_document.id)
     assert isinstance(updated_content, dict)
     print("✅ Retrieved updated Space document content")
 
@@ -473,7 +473,7 @@ def test_member_document_content_workflow(client):
     print(f"Testing Member document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
-    content = client.get_document_body(test_document.id)
+    content = client.get_json_document(test_document.id)
     assert isinstance(content, dict)
     print(f"✅ Retrieved Member document content: {type(content)}")
     
@@ -497,7 +497,7 @@ Document Title: {test_document.title}
     print("✅ Replaced Member document content")
     
     # 5. Verify content was updated
-    updated_content = client.get_document_body(test_document.id)
+    updated_content = client.get_json_document(test_document.id)
     assert isinstance(updated_content, dict)
     print("✅ Retrieved updated Member document content")
 
@@ -515,7 +515,7 @@ def test_project_document_content_workflow(client):
     print(f"Testing Project document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
-    content = client.get_document_body(test_document.id)
+    content = client.get_json_document(test_document.id)
     assert isinstance(content, dict)
     print(f"✅ Retrieved Project document content: {type(content)}")
     
@@ -543,7 +543,7 @@ Document Title: {test_document.title}
     print("✅ Replaced Project document content")
     
     # 5. Verify content was updated
-    updated_content = client.get_document_body(test_document.id)
+    updated_content = client.get_json_document(test_document.id)
     assert isinstance(updated_content, dict)
     print("✅ Retrieved updated Project document content")
 
@@ -576,7 +576,7 @@ def test_all_scopes_document_workflow(client):
             print(f"Document: {doc.title} (ID: {doc.id})")
             
             # Get content
-            content = client.get_document_body(doc.id)
+            content = client.get_json_document(doc.id)
             assert isinstance(content, dict)
             print(f"✅ Got {scope_name} document content")
             
@@ -694,7 +694,7 @@ This document was created via SDK and immediately updated with content.
     print("✅ Added content to document")
     
     # 3. Verify content
-    retrieved_content = client.get_document_body(document.id)
+    retrieved_content = client.get_json_document(document.id)
     assert isinstance(retrieved_content, dict)
     print("✅ Retrieved and verified document content")
     

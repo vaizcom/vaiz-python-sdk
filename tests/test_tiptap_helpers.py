@@ -207,7 +207,7 @@ def test_replace_json_document_with_helpers():
     assert response is not None
     
     # Verify
-    updated_content = client.get_document_body(document_id)
+    updated_content = client.get_json_document(document_id)
     assert updated_content is not None
     
     print(f"✅ Successfully created document with helper functions")

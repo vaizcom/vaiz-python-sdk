@@ -190,7 +190,7 @@ task = task_response.task
 document_id = task.document
 
 # Get document content
-description = client.get_document_body(document_id)
+description = client.get_json_document(document_id)
 print(description)  # JSON structure
 ```
 
@@ -323,7 +323,7 @@ def add_status_update(task_id: str, status: str):
     doc_id = task_response.task.document
     
     # Get current content
-    current = client.get_document_body(doc_id)
+    current = client.get_json_document(doc_id)
     
     # Add status update
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")

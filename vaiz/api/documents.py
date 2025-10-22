@@ -23,7 +23,7 @@ except ImportError:
 class DocumentsAPIClient(BaseAPIClient):
     """API client for document content operations."""
 
-    def get_document_body(self, document_id: str) -> Dict[str, Any]:
+    def get_json_document(self, document_id: str) -> Dict[str, Any]:
         """
         Fetch JSON document content by document ID.
 

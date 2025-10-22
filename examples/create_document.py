@@ -158,7 +158,7 @@ This document was created and populated automatically via SDK.
             print("✅ Document populated with content")
             
             # Verify
-            retrieved = client.get_document_body(doc.id)
+            retrieved = client.get_json_document(doc.id)
             print(f"✅ Content verified (keys: {list(retrieved.keys())})")
         else:
             print("No projects available")

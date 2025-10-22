@@ -26,7 +26,7 @@ def main():
         print(f"Created task with document ID: {document_id}")
         
         # Get initial document content
-        initial_content = client.get_document_body(document_id)
+        initial_content = client.get_json_document(document_id)
         print(f"Initial content: {json.dumps(initial_content, indent=2)}")
         
         # Create new content as PLAIN TEXT (current API supports plain text only)
@@ -54,7 +54,7 @@ def main():
         print("✅ Document content replaced successfully!")
         
         # Verify the change
-        updated_content = client.get_document_body(document_id)
+        updated_content = client.get_json_document(document_id)
         print(f"\nUpdated content: {json.dumps(updated_content, indent=2)}")
         
         print(f"\n🎉 Document {document_id} content successfully replaced!")
