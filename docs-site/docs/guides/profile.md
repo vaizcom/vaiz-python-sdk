@@ -10,21 +10,25 @@ Get information about the current authenticated user.
 
 ```python
 response = client.get_profile()
-profile = response.payload["profile"]
+profile = response.profile
 
-print(f"User: {profile['name']}")
-print(f"Email: {profile['email']}")
-print(f"ID: {profile['_id']}")
+print(f"User: {profile.full_name or profile.nick_name}")
+print(f"Email: {profile.email}")
+print(f"ID: {profile.id}")
 ```
 
 ## Profile Information
 
 The profile includes:
 
-- **Personal Info**: Name, email, avatar
+- **Personal Info**: Full name, nickname, email, avatar
 - **Account Details**: User ID, registration date
-- **Workspace**: Current space information
-- **Preferences**: User settings
+- **Security**: Recovery codes, password changes
+- **Status**: Email confirmation, incomplete onboarding steps
+
+:::tip Model Definition
+See the [Profile API Reference](../api-reference/profile) for the complete Profile model definition.
+:::
 
 ## Example: Check Current User
 
@@ -32,13 +36,13 @@ The profile includes:
 def get_current_user():
     """Get current authenticated user info"""
     response = client.get_profile()
-    profile = response.payload["profile"]
+    profile = response.profile
     
     return {
-        "id": profile["_id"],
-        "name": profile.get("name", "Unknown"),
-        "email": profile.get("email", ""),
-        "registered": profile.get("registeredDate")
+        "id": profile.id,
+        "name": profile.full_name or profile.nick_name or "Unknown",
+        "email": profile.email,
+        "registered": profile.registered_date
     }
 
 user = get_current_user()
@@ -61,8 +65,8 @@ except Exception as e:
 
 ```python
 # Get current user ID
-profile = client.get_profile()
-my_id = profile.payload["profile"]["_id"]
+profile_response = client.get_profile()
+my_id = profile_response.profile.id
 
 # Assign tasks to yourself
 from vaiz.models import EditTaskRequest
@@ -78,12 +82,15 @@ client.edit_task(edit)
 
 ```python
 profile_response = client.get_profile()
-profile = profile_response.payload["profile"]
+profile = profile_response.profile
 
 print("👤 User Profile")
-print(f"Name: {profile.get('name', 'N/A')}")
-print(f"Email: {profile.get('email', 'N/A')}")
-print(f"Registered: {profile.get('registeredDate', 'N/A')}")
+print(f"Full Name: {profile.full_name or 'N/A'}")
+print(f"Nickname: {profile.nick_name or 'N/A'}")
+print(f"Email: {profile.email}")
+print(f"Registered: {profile.registered_date}")
+print(f"Avatar: {profile.avatar or 'No avatar'}")
+print(f"Email Confirmed: {profile.is_email_confirmed}")
 ```
 
 ## See Also

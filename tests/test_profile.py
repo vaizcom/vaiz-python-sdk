@@ -18,8 +18,8 @@ def test_get_profile():
     client = get_test_client()
     response = client.get_profile()
     assert isinstance(response, ProfileResponse)
-    assert isinstance(response.payload["profile"], Profile)
-    profile = response.payload["profile"]
+    assert isinstance(response.profile, Profile)
+    profile = response.profile
     assert isinstance(profile.id, str)
     assert isinstance(profile.full_name, str)
     assert isinstance(profile.nick_name, str)

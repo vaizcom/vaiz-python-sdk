@@ -156,7 +156,7 @@ response = client.edit_task(edit)
 
 ```python
 response = client.get_task("PRJ-123")
-task = response.payload["task"]
+task = response.task
 ```
 
 ### Multiple Tasks
@@ -279,8 +279,8 @@ def add_status_update(task_id: str, status: str):
     """Append status update to task description"""
     
     # Get task
-    task = client.get_task(task_id)
-    doc_id = task.payload["task"]["document"]
+    task_response = client.get_task(task_id)
+    doc_id = task_response.task.document
     
     # Get current content
     current = client.get_document_body(doc_id)
