@@ -18,7 +18,6 @@ def edit_task_with_files():
         name="Task to be edited",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         priority=TaskPriority.Medium,
         completed=True
     )
@@ -94,7 +93,6 @@ def edit_task_add_multiple_files():
         name="Task for Multiple Real Files",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         priority=TaskPriority.High,
         completed=True
     )
@@ -175,7 +173,6 @@ def edit_task_update_description_only():
         name="Task for Description Update",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         priority=TaskPriority.Low,
         completed=True
     )

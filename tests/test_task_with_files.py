@@ -16,7 +16,6 @@ def test_create_task_with_description():
         name="Test Task with Description",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.Medium,
         completed=True,
         description="This is a test task with a description."
@@ -43,7 +42,6 @@ def test_create_task_with_real_file():
     try:
         upload_response = client.upload_file(file_path, file_type=UploadFileType.Pdf)
         uploaded_file = upload_response.file
-        
         # Create TaskFile object from uploaded file
         task_file = TaskFile(
             url=uploaded_file.url,
@@ -53,27 +51,23 @@ def test_create_task_with_real_file():
             _id=uploaded_file.id,
             type=uploaded_file.type
         )
-        
         task = CreateTaskRequest(
             name="Test Task with Real File",
             group=TEST_GROUP_ID,
             board=TEST_BOARD_ID,
-            project=TEST_PROJECT_ID,
+            
             priority=TaskPriority.High,
             completed=True,
             description="This task includes a real file from assets for testing.",
             files=[task_file]
         )
-        
         response = client.create_task(task)
-        
         assert response.type == "CreateTask"
         assert response.payload["task"]["name"] == "Test Task with Real File"
         # API accepts files but doesn't return them in response
         # Files are stored but not included in the task response
         assert "document" in response.payload["task"]
         assert response.payload["task"]["document"] is not None
-        
     except Exception as e:
         pytest.fail(f"Failed to upload file or create task: {e}")
 
@@ -92,7 +86,6 @@ def test_create_task_with_multiple_real_files():
     for file_path, file_type in files_to_upload:
         if not os.path.exists(file_path):
             pytest.skip(f"Test file {file_path} not found")
-        
         try:
             upload_response = client.upload_file(file_path, file_type=file_type)
             uploaded_file = upload_response.file
@@ -116,7 +109,6 @@ def test_create_task_with_multiple_real_files():
         name="Test Task with Multiple Real Files",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.Low,
         completed=True,
         description="This task has multiple real files from assets folder.",
@@ -139,7 +131,6 @@ def test_task_has_document_field():
         name="Test Task Document Field",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.General,
         completed=True
     )
@@ -160,7 +151,6 @@ def test_create_task_with_file_pdf(client):
         name="Test Task with PDF",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         completed=True
     )
     file = TaskUploadFile(path=file_path, type=UploadFileType.Pdf)
@@ -179,7 +169,6 @@ def test_create_task_with_file_png(client):
         name="Test Task with PNG",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         completed=True
     )
     file = TaskUploadFile(path=file_path, type=UploadFileType.Image)
@@ -198,7 +187,6 @@ def test_create_task_with_file_mp4(client):
         name="Test Task with MP4",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         completed=True
     )
     file = TaskUploadFile(path=file_path, type=UploadFileType.Video)
@@ -213,7 +201,6 @@ def test_create_task_with_description_only(client):
         name="Test Task without File",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         completed=True
     )
     response = client.create_task(task, description="Task without file")
@@ -231,7 +218,6 @@ def test_create_task_with_description_and_file(client):
         name="Test Task with Description and File",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.High,
         completed=True
     )
@@ -252,7 +238,6 @@ def test_create_task_with_auto_detection(client):
         name="Test Task with Auto-Detection",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         completed=True
     )
     file = TaskUploadFile(path=file_path, type=UploadFileType.Pdf)
@@ -271,12 +256,11 @@ def test_task_file_has_correct_fields_for_different_types(client):
             name="Test PDF Fields",
             group=TEST_GROUP_ID,
             board=TEST_BOARD_ID,
-            project=TEST_PROJECT_ID,
+            
             completed=True
         )
         file = TaskUploadFile(path=pdf_path, type=UploadFileType.Pdf)
         response = client.create_task(task, file=file)
-        
         # Check that task was created successfully
         assert response.task.completed is True
         assert isinstance(response.task.document, str)
@@ -288,12 +272,11 @@ def test_task_file_has_correct_fields_for_different_types(client):
             name="Test PNG Fields",
             group=TEST_GROUP_ID,
             board=TEST_BOARD_ID,
-            project=TEST_PROJECT_ID,
+            
             completed=True
         )
         file = TaskUploadFile(path=png_path, type=UploadFileType.Image)
         response = client.create_task(task, file=file)
-        
         # Check that task was created successfully
         assert response.task.completed is True
         assert isinstance(response.task.document, str) 

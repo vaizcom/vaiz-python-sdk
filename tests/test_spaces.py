@@ -48,8 +48,12 @@ def test_get_space():
         assert isinstance(space.avatar, str)
         assert len(space.avatar) > 0
     
-    assert isinstance(space.creator, str)
-    assert len(space.creator) > 0
+    # Creator can be either string ID or user object
+    assert space.creator is not None
+    if isinstance(space.creator, str):
+        assert len(space.creator) > 0
+    elif isinstance(space.creator, dict):
+        assert '_id' in space.creator
     
     assert isinstance(space.plan, str)
     assert len(space.plan) > 0

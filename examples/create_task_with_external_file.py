@@ -60,7 +60,6 @@ def create_task_with_external_image():
             name="Design Review Task",
             group="YOUR_GROUP_ID",      # Replace with actual group ID
             board="YOUR_BOARD_ID",      # Replace with actual board ID
-            project="YOUR_PROJECT_ID",  # Replace with actual project ID
             priority=TaskPriority.High,
             completed=False,
             description=f"Please review the design mockup. Original source: {external_image_url}",
@@ -147,7 +146,6 @@ def create_task_with_multiple_external_files():
             name="Multi-Asset Review Task", 
             group="YOUR_GROUP_ID",      # Replace with actual group ID
             board="YOUR_BOARD_ID",      # Replace with actual board ID
-            project="YOUR_PROJECT_ID",  # Replace with actual project ID
             priority=TaskPriority.Medium,
             completed=False,
             description="Review all attached assets and provide feedback. All files were downloaded from external sources.",
@@ -211,8 +209,7 @@ def create_task_with_auto_detected_file():
         task_request = CreateTaskRequest(
             name="Auto-Detected File Task",
             group="YOUR_GROUP_ID",      # Replace with actual group ID
-            board="YOUR_BOARD_ID",      # Replace with actual board ID  
-            project="YOUR_PROJECT_ID",  # Replace with actual project ID
+            board="YOUR_BOARD_ID",      # Replace with actual board ID
             priority=TaskPriority.Low,
             completed=False,
             description=f"Task created with auto-detected file type: {uploaded_file.type}",

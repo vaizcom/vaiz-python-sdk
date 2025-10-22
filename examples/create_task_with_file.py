@@ -28,7 +28,6 @@ def main():
             name="Task with Description",
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             completed=True
         )
         
@@ -55,7 +54,6 @@ def main():
             name="Task with Auto-Uploaded PDF",
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             completed=True
         )
         
@@ -87,7 +85,6 @@ def main():
             name="Task with Explicit File Type",
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             completed=True
         )
         
@@ -119,7 +116,6 @@ def main():
             name="Task with Video File",
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             priority=TaskPriority.High,
             completed=True
         )
@@ -153,7 +149,6 @@ def main():
             name="Simple Task",
             group=GROUP_ID,
             board=BOARD_ID,
-            project=PROJECT_ID,
             completed=True
         )
         

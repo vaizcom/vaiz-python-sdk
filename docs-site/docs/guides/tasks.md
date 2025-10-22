@@ -122,7 +122,6 @@ task = CreateTaskRequest(
     name="Implement Feature",
     board="board_id",
     group="group_id",
-    project="project_id",
     blockers=["design_task_id"]  # This task depends on design task
 )
 
@@ -244,8 +243,7 @@ from vaiz.models import CreateTaskRequest
 task = CreateTaskRequest(
     name="Documentation Task",
     board="board_id",
-    group="group_id",
-    project="project_id"
+    group="group_id"
 )
 
 response = client.create_task(

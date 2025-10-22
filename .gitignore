@@ -54,3 +54,5 @@ docs-site/.cache-loader/
 dist/
 *.whl
 *.tar.gz
+
+shared/

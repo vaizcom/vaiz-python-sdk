@@ -33,7 +33,6 @@ def create_task_from_github_issue(issue_data: dict):
         name=issue_data["title"],
         board=board_id,
         group=group_id,
-        project=project_id,
         priority=priority,
         description=f"""
 # GitHub Issue #{issue_data['number']}

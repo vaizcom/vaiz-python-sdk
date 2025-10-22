@@ -16,7 +16,6 @@ def main():
         name="Task for Document Replacement Demo",
         group=client.space_id,  # Using space_id as fallback for demo
         board="your_board_id",
-        project="your_project_id",
         priority=TaskPriority.General,
         description="Initial description that will be replaced"
     )

@@ -164,7 +164,6 @@ def test_toggle_milestone(client):
         name="Test Task for Milestone Toggle",
         group=TEST_GROUP_ID,
         board=TEST_BOARD_ID,
-        project=TEST_PROJECT_ID,
         priority=TaskPriority.Medium,
         completed=False
     )

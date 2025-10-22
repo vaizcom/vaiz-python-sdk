@@ -250,7 +250,6 @@ def create_task_with_custom_fields(custom_fields):
         name="E-commerce Platform Redesign",
         group=GROUP_ID,
         board=BOARD_ID,
-        project=PROJECT_ID,
         description="Complete redesign of the e-commerce platform with modern UI/UX",
         priority=TaskPriority.High,
         custom_fields=task_custom_fields
