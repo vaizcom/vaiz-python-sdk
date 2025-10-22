@@ -115,8 +115,9 @@ class TaskResponse(BaseModel):
 
 class CreateTaskRequest(VaizBaseModel):
     name: str
-    group: str
     board: str
+    group: Optional[str] = None
+    project: Optional[str] = None
     description: Optional[str] = None
     parent_task: Optional[str] = Field(default=None, alias="parentTask")
     types: List[str] = []

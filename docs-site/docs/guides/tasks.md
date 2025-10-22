@@ -19,13 +19,18 @@ client = VaizClient(api_key="...", space_id="...")
 task = CreateTaskRequest(
     name="Implement user authentication",
     board="board_id",
-    group="group_id",
+    group="group_id",  # Optional - specify if board has groups
     priority=TaskPriority.High
 )
 
 response = client.create_task(task)
 print(f"Created: {response.task.id}")
 ```
+
+:::tip Optional Fields
+- `group` - Optional if board doesn't use groups
+- `project` - Optional, API determines from board
+:::
 
 ### Task with Description
 

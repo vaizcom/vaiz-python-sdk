@@ -21,7 +21,7 @@ create_task(
 Create a new task with optional description and file upload.
 
 **Parameters:**
-- `task` - Task configuration (name, board, group required)
+- `task` - Task configuration (name, board required; group, project optional)
 - `description` - Optional task description
 - `file` - Optional file to upload and attach
 
@@ -94,7 +94,8 @@ Clear the get_tasks() cache manually.
 class CreateTaskRequest:
     name: str                           # Required - Task name
     board: str                          # Required - Board ID
-    group: str                          # Required - Group ID
+    group: Optional[str]                # Optional - Group ID
+    project: Optional[str]              # Optional - Project ID
     description: Optional[str]          # Task description
     priority: TaskPriority              # Priority (default: General)
     completed: bool                     # Completion status (default: False)
