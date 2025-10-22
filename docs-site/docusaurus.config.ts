@@ -13,7 +13,7 @@ const config: Config = {
     [
       "docusaurus-plugin-plausible",
       {
-        domain: "docs-python-sdk.vaiz.com/",
+        domain: "docs-python-sdk.vaiz.com",
       },
     ],
   ],
