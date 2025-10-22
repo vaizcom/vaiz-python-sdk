@@ -194,7 +194,7 @@ class BoardCustomField:
 
 ```python
 class BoardResponse:
-    type: str                   # Response type
+    type: str                   # Response type ("GetBoard")
     payload: Dict[str, Board]   # Response payload
     
     @property
@@ -202,18 +202,31 @@ class BoardResponse:
         ...
 ```
 
+:::info Payload Structure
+`BoardResponse.payload` is a dict with key `"board"` containing the Board object. Use the convenience property `response.board` for typed access.
+:::
+
 ---
 
 ### BoardsResponse
 
 ```python
 class BoardsResponse:
-    type: str                    # Response type
+    type: str                    # Response type ("GetBoards")
     payload: BoardsPayload       # Response payload
     
     @property
     def boards(self) -> List[Board]:  # Convenience property
         ...
+```
+
+---
+
+### BoardsPayload
+
+```python
+class BoardsPayload:
+    boards: List[Board]         # List of boards
 ```
 
 ---

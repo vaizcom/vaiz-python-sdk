@@ -62,7 +62,7 @@ class Project:
 
 ```python
 class ProjectResponse:
-    type: str                    # Response type
+    type: str                    # Response type ("GetProject")
     payload: ProjectPayload      # Response payload
     
     @property
@@ -72,16 +72,34 @@ class ProjectResponse:
 
 ---
 
+### ProjectPayload
+
+```python
+class ProjectPayload:
+    project: Project             # Project object
+```
+
+---
+
 ### ProjectsResponse
 
 ```python
 class ProjectsResponse:
-    type: str                    # Response type
+    type: str                    # Response type ("GetProjects")
     payload: ProjectsPayload     # Response payload
     
     @property
     def projects(self) -> List[Project]:  # Convenience property
         ...
+```
+
+---
+
+### ProjectsPayload
+
+```python
+class ProjectsPayload:
+    projects: List[Project]      # List of projects
 ```
 
 ---
