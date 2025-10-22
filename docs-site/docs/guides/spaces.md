@@ -17,21 +17,9 @@ print(f"   Color: {space.color.color}")
 print(f"   Created: {space.created_at}")
 ```
 
-## Space Model
-
-```python
-class Space:
-    id: str                    # Space ID
-    name: str                  # Space name
-    color: ColorInfo           # Color configuration
-    avatar_mode: AvatarMode    # Avatar display mode
-    avatar: Optional[str]      # Avatar URL
-    creator: str               # Creator ID
-    plan: str                  # Plan ID
-    created_at: datetime       # Creation timestamp
-    updated_at: datetime       # Last update timestamp
-    is_foreign: bool           # Whether this is a foreign space
-```
+:::tip Model Definition
+See the [Spaces API Reference](../api-reference/spaces) for the complete Space model definition.
+:::
 
 ## Color Configuration
 

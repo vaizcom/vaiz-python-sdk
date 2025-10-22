@@ -17,22 +17,9 @@ for member in response.members:
     print(f"   Status: {member.status}")
 ```
 
-## Member Model
-
-```python
-class Member:
-    id: str                    # Member ID
-    nick_name: Optional[str]   # Nickname
-    full_name: Optional[str]   # Full name
-    email: str                 # Email address
-    avatar: Optional[str]      # Avatar URL
-    avatar_mode: AvatarMode    # Avatar display mode
-    color: ColorInfo           # Color configuration
-    space: str                 # Space ID
-    status: str                # Member status (Active, etc.)
-    joined_date: str           # Join date string
-    updated_at: str            # Last update date string
-```
+:::tip Model Definition
+See the [Members API Reference](../api-reference/members) for the complete Member model definition.
+:::
 
 ## Color Configuration
 
