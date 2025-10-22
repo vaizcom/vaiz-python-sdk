@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.9.0] - 2025-10-22
+
+### Added
+
+- **📝 Document Content API**: New methods for working with rich document content
+  - `get_json_document(document_id)` - Get document JSON content (renamed from `get_document_body`)
+  - `replace_json_document(document_id, content)` - Replace with structured content
+  - `append_document(document_id, description, files)` - Append plain text
+  - `append_json_document(document_id, content)` - Append structured content
+  
+- **🛠 Document Structure Helpers**: 11 type-safe builder functions for creating rich content
+  - Text & paragraphs: `text()`, `paragraph()`, `heading()`
+  - Lists: `bullet_list()`, `ordered_list()`, `list_item()`
+  - Tables: `table()`, `table_row()`, `table_cell()`
+  - Utilities: `link_text()`, `separator()`
+
+### Changed
+
+- **🔧 Breaking**: Renamed `get_document_body()` → `get_json_document()` for API consistency
+  - Migration: Update `client.get_document_body(id)` to `client.get_json_document(id)`
+
+---
+
 ## [0.8.1] - 2025-10-21
 
 ### Fixed
