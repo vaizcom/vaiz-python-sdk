@@ -34,6 +34,7 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`replace_json_document_complex.py`** - Complex document with nested lists, inline code, links, and more
 - **`replace_json_document_with_helpers.py`** - Type-safe content creation using document structure helper functions
 - **`replace_json_document_with_table.py`** - Creating documents with tables for status reports and metrics
+- **`append_json_document.py`** - Appending content to existing documents (incremental updates)
 
 ### Advanced Workflows
 - **`document_hierarchy.py`** - Build nested document structures
@@ -92,25 +93,25 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 
 ## Running the Examples
 
-1. **Clone the repository:**
+**1. Clone the repository:**
    ```bash
    git clone https://github.com/vaizcom/vaiz-python-sdk.git
    cd vaiz-python-sdk
    ```
 
-2. **Install dependencies:**
+**2. Install dependencies:**
    ```bash
    pip install -e .
    pip install python-dotenv
    ```
 
-3. **Configure environment:**
+**3. Configure environment:**
    ```bash
    cp example.env .env
    # Edit .env with your credentials
    ```
 
-4. **Run an example:**
+**4. Run an example:**
    ```bash
    cd examples
    python create_task.py

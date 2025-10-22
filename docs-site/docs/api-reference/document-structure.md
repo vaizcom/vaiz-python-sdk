@@ -126,6 +126,95 @@ See [Document Structure Helpers Guide](../guides/document-structure-helpers) for
 
 ---
 
+### `append_document`
+
+```python
+append_document(
+    document_id: str,
+    description: str = None,
+    files: List[Any] = None
+) -> AppendDocumentResponse
+```
+
+Append plain text content to an existing document without removing existing content.
+
+**Parameters:**
+- `document_id` - Document ID
+- `description` - Plain text to append (optional)
+- `files` - Files to attach (optional)
+
+**Returns:** `AppendDocumentResponse`
+
+**Example:**
+```python
+# Append text to existing document
+client.append_document(
+    document_id="doc_id",
+    description="\n\nUpdate: Task completed successfully"
+)
+```
+
+---
+
+### `append_json_document`
+
+```python
+append_json_document(
+    document_id: str,
+    content: List[Dict[str, Any]]
+) -> AppendJSONDocumentResponse
+```
+
+Append structured JSON content to an existing document without removing existing content.
+
+**Parameters:**
+- `document_id` - Document ID
+- `content` - JSONContent array (see format below)
+
+**Returns:** `AppendJSONDocumentResponse`
+
+**Example with raw JSON:**
+```python
+new_section = [
+    {
+        "type": "heading",
+        "attrs": {"level": 2},
+        "content": [{"type": "text", "text": "Update"}]
+    },
+    {
+        "type": "paragraph",
+        "content": [{"type": "text", "text": "Additional notes"}]
+    }
+]
+
+client.append_json_document("doc_id", new_section)
+```
+
+**Example with helpers:**
+```python
+from vaiz import heading, paragraph, text
+
+updates = [
+    heading(2, "Update"),
+    paragraph("Additional ", text("notes", bold=True))
+]
+
+client.append_json_document("doc_id", updates)
+```
+
+---
+
+## Method Comparison
+
+| Method | Clears Existing? | Format | Use Case |
+|--------|------------------|--------|----------|
+| `replace_document` | ✅ Yes | Plain text | Complete replacement with plain text |
+| `replace_json_document` | ✅ Yes | JSON structure | Complete replacement with rich content |
+| `append_document` | ❌ No | Plain text | Add to existing plain text |
+| `append_json_document` | ❌ No | JSON structure | Add to existing rich content |
+
+---
+
 ## Format Overview
 
 Documents consist of an array of **nodes**. Each node has a `type` and optional `content` or `attrs`:

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 import json
 
 from vaiz.api.base import BaseAPIClient
@@ -8,6 +8,10 @@ from vaiz.models.documents import (
     ReplaceDocumentResponse,
     ReplaceJSONDocumentRequest,
     ReplaceJSONDocumentResponse,
+    AppendDocumentRequest,
+    AppendDocumentResponse,
+    AppendJSONDocumentRequest,
+    AppendJSONDocumentResponse,
     GetDocumentsRequest,
     GetDocumentsResponse,
     CreateDocumentRequest,
@@ -124,6 +128,88 @@ class DocumentsAPIClient(BaseAPIClient):
         
         response_data = self._make_request("replaceJSONDocument", json_data=request.model_dump())
         return ReplaceJSONDocumentResponse(**response_data)
+
+    def append_document(
+        self,
+        document_id: str,
+        description: Optional[str] = None,
+        files: Optional[List[Any]] = None
+    ) -> AppendDocumentResponse:
+        """
+        Append plain text content to an existing document.
+        
+        This method adds content to the end of the document without removing existing content.
+
+        Args:
+            document_id: The document ID to append content to
+            description: Plain text content to append (optional)
+            files: Files to attach (optional)
+
+        Returns:
+            AppendDocumentResponse: Empty response object on success
+
+        Raises:
+            VaizSDKError: If the API request fails
+            
+        Example:
+            >>> client.append_document(
+            ...     document_id="doc_id",
+            ...     description="Additional content to add"
+            ... )
+        """
+        request = AppendDocumentRequest(
+            document_id=document_id,
+            description=description,
+            files=files
+        )
+        
+        response_data = self._make_request("appendDocument", json_data=request.model_dump())
+        return AppendDocumentResponse(**response_data)
+
+    def append_json_document(
+        self,
+        document_id: str,
+        content: Union[List[DocumentNode], List[Dict[str, Any]]]
+    ) -> AppendJSONDocumentResponse:
+        """
+        Append structured JSON content to an existing document.
+        
+        This method adds content to the end of the document without removing existing content.
+        Use document structure builder functions for type-safe content creation.
+
+        Args:
+            document_id: The document ID to append content to
+            content: JSONContent array in document structure format
+
+        Returns:
+            AppendJSONDocumentResponse: Empty response object on success
+
+        Raises:
+            VaizSDKError: If the API request fails
+            
+        Example with raw JSON:
+            >>> content = [
+            ...     {
+            ...         "type": "paragraph",
+            ...         "content": [{"type": "text", "text": "Added content"}]
+            ...     }
+            ... ]
+            >>> client.append_json_document(document_id, content)
+            
+        Example with helpers:
+            >>> from vaiz import paragraph, text
+            >>> content = [
+            ...     paragraph("Added ", text("content", bold=True))
+            ... ]
+            >>> client.append_json_document(document_id, content)
+        """
+        request = AppendJSONDocumentRequest(
+            document_id=document_id,
+            content=content
+        )
+        
+        response_data = self._make_request("appendJSONDocument", json_data=request.model_dump())
+        return AppendJSONDocumentResponse(**response_data)
 
     def get_documents(self, request: GetDocumentsRequest) -> GetDocumentsResponse:
         """
