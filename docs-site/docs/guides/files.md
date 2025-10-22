@@ -8,16 +8,7 @@ Files in Vaiz are always attached to either [tasks](./tasks) or [comments](./com
 
 ## File Types
 
-Choose the right type for proper display:
-
-```python
-from vaiz.models.enums import UploadFileType
-
-UploadFileType.Image    # Shows preview thumbnail
-UploadFileType.Video    # Shows embedded player
-UploadFileType.Pdf      # Shows document viewer
-UploadFileType.File     # Shows download link
-```
+Choose the right type for proper display. See [`UploadFileType`](../api-reference/enums#uploadfiletype) for all available file types.
 
 :::tip File Type Matters
 The same file uploaded as `Image` shows a preview, while `File` shows only a download button. Choose based on how you want users to see it.

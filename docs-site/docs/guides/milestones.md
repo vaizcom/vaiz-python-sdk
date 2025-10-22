@@ -103,24 +103,6 @@ The `toggle_milestone` method works as a switch:
 - If milestone is not attached → it attaches
 :::
 
-## Request Models
-
-### CreateMilestoneRequest
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | `str` | Yes | Milestone name |
-| `board` | `str` | Yes | Board ID |
-| `project` | `str` | Yes | Project ID |
-| `description` | `str` | No | Description |
-| `due_start` | `datetime` | No | Start date |
-| `due_end` | `datetime` | No | End date |
-| `color` | `str` | No | Color name |
-
-### EditMilestoneRequest
-
-All fields except `milestone_id` are optional. Only provide fields you want to update.
-
 ## Examples
 
 ### Create Quarterly Milestones
@@ -161,6 +143,7 @@ for milestone in response.milestones:
 
 ## See Also
 
+- [Milestones API Reference](../api-reference/milestones) - Complete API documentation and models
 - [Tasks](./tasks) - Task operations
 - [Projects](./projects) - Project management
 - [Examples](../patterns/introduction) - More examples

@@ -276,12 +276,12 @@ This method is universal and works for:
 - Standalone documents
 - Any document by its ID
 
-### Replace Document Content
+### Replace Document Content (Plain Text)
 
-Replace the entire content of a document:
+Replace the entire content of a document with plain text:
 
 ```python
-# Replace document content
+# Replace document content with plain text
 client.replace_document(
     document_id="document_id",
     description="New content here"
@@ -292,6 +292,118 @@ client.replace_document(
 - Updating task descriptions programmatically
 - Bulk content updates
 - Template-based content generation
+
+### Replace Document Content (Rich JSON)
+
+Replace document content with structured rich content.
+
+**💡 Tip:** Use [Document Structure helper functions](./document-structure-helpers) for type-safe, readable content creation!
+
+```python
+# Replace with rich formatted content
+json_content = [
+    {
+        "type": "heading",
+        "attrs": {"level": 1},
+        "content": [
+            {"type": "text", "text": "Project Overview"}
+        ]
+    },
+    {
+        "type": "paragraph",
+        "content": [
+            {"type": "text", "text": "This is "},
+            {
+                "type": "text",
+                "marks": [{"type": "bold"}],
+                "text": "bold text"
+            },
+            {"type": "text", "text": " and this is "},
+            {
+                "type": "text",
+                "marks": [{"type": "italic"}],
+                "text": "italic text"
+            }
+        ]
+    },
+    {
+        "type": "bulletList",
+        "content": [
+            {
+                "type": "listItem",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {"type": "text", "text": "First item"}
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "listItem",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {"type": "text", "text": "Second item"}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
+
+client.replace_json_document(
+    document_id="document_id",
+    content=json_content
+)
+```
+
+**Document Structure Format features:**
+- **Rich text formatting**: Bold, italic, underline, strikethrough, code
+- **Headings**: Multiple levels (h1-h6)
+- **Lists**: Bullet lists, numbered lists, task lists
+- **Links**: Hyperlinks with custom attributes
+- **Code blocks**: Syntax highlighted code
+- **Tables**: Structured tabular data
+- **And more**: Blockquotes, horizontal rules, mentions, etc.
+
+**Use cases:**
+- Creating structured documentation programmatically
+- Importing content from other systems with formatting
+- Generating reports with rich formatting
+- Building document templates with complex layouts
+
+**With helper functions (recommended):**
+```python
+from vaiz import heading, paragraph, text, bullet_list, link_text, separator
+
+content = [
+    heading(1, "📚 Documentation"),
+    paragraph(
+        "Welcome to our ",
+        text("project docs", bold=True),
+        "!"
+    ),
+    separator(),
+    heading(2, "Features"),
+    bullet_list(
+        "Easy to use",
+        "Type-safe",
+        "Well documented"
+    ),
+    paragraph(
+        "Learn more at ",
+        link_text("our docs", "https://docs.vaiz.app")
+    )
+]
+
+client.replace_json_document(document_id, content)
+```
+
+See [Document Structure Helpers Guide](./document-structure-helpers) for complete documentation.
 
 ### Update Project Document
 
@@ -342,7 +454,7 @@ Documents are stored as structured JSON. When you use `replace_document`, the co
 # Plain text
 client.replace_document(doc_id, "Simple text")
 
-# Markdown-style formatting
+# Markdown-style formatting (as plain text)
 client.replace_document(
     doc_id,
     """
@@ -355,6 +467,50 @@ client.replace_document(
 **Bold** and *italic* text
 """
 )
+
+# Rich JSON format (with actual formatting)
+json_content = [
+    {
+        "type": "heading",
+        "attrs": {"level": 1},
+        "content": [{"type": "text", "text": "Header"}]
+    },
+    {
+        "type": "heading",
+        "attrs": {"level": 2},
+        "content": [{"type": "text", "text": "Subheader"}]
+    },
+    {
+        "type": "bulletList",
+        "content": [
+            {
+                "type": "listItem",
+                "content": [{
+                    "type": "paragraph",
+                    "content": [{"type": "text", "text": "List item 1"}]
+                }]
+            },
+            {
+                "type": "listItem",
+                "content": [{
+                    "type": "paragraph",
+                    "content": [{"type": "text", "text": "List item 2"}]
+                }]
+            }
+        ]
+    },
+    {
+        "type": "paragraph",
+        "content": [
+            {"type": "text", "marks": [{"type": "bold"}], "text": "Bold"},
+            {"type": "text", "text": " and "},
+            {"type": "text", "marks": [{"type": "italic"}], "text": "italic"},
+            {"type": "text", "text": " text"}
+        ]
+    }
+]
+
+client.replace_json_document(doc_id, json_content)
 ```
 
 ## See Also

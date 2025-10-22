@@ -179,6 +179,8 @@ for task in response.payload.tasks:
 
 Tasks store descriptions as structured JSON documents. The SDK provides convenient methods to work with descriptions directly from Task objects.
 
+**Important:** Task descriptions support rich content using the same [document structure format](../api-reference/document-structure) as standalone documents. You can use `replace_json_document` to create formatted task descriptions with headings, lists, links, and more.
+
 ### Get Task Description
 
 ```python
@@ -218,6 +220,44 @@ client.replace_document(
     description=new_content
 )
 ```
+
+### Rich Formatted Descriptions
+
+For rich content with formatting, lists, and links, use `replace_json_document`:
+
+```python
+from vaiz import heading, paragraph, text, bullet_list
+
+# Get task
+task_response = client.get_task("PRJ-123")
+document_id = task_response.task.document
+
+# Create rich content
+content = [
+    heading(1, "Task Overview"),
+    paragraph(
+        "This task requires ",
+        text("immediate attention", bold=True),
+        "."
+    ),
+    heading(2, "Requirements"),
+    bullet_list(
+        "Review design mockups",
+        "Update documentation",
+        "Test functionality"
+    ),
+    paragraph(
+        "See ",
+        text("project docs", link="https://docs.example.com"),
+        " for details."
+    )
+]
+
+# Replace with rich content
+client.replace_json_document(document_id, content)
+```
+
+See [Document Structure](../api-reference/document-structure) for complete format reference and [Document Structure Helpers](./document-structure-helpers) for helper functions.
 
 ### Using Task Helper Methods
 

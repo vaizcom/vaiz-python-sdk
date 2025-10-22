@@ -95,36 +95,6 @@ Edit an existing board group.
 
 ---
 
-### `create_board_custom_field`
-
-```python
-create_board_custom_field(request: CreateBoardCustomFieldRequest) -> CreateBoardCustomFieldResponse
-```
-
-Create a custom field on a board.
-
-**Parameters:**
-- `request` - Field configuration (use helper functions like `make_text_field`)
-
-**Returns:** `CreateBoardCustomFieldResponse` with created field
-
----
-
-### `edit_board_custom_field`
-
-```python
-edit_board_custom_field(request: EditBoardCustomFieldRequest) -> EditBoardCustomFieldResponse
-```
-
-Edit an existing custom field.
-
-**Parameters:**
-- `request` - Edit request (use helper functions like `edit_custom_field_name`)
-
-**Returns:** `EditBoardCustomFieldResponse` with updated field
-
----
-
 ## Models
 
 ### Board
@@ -174,20 +144,6 @@ class BoardType:
     color: Union[str, Color]   # Type color
     description: Optional[str] # Description
     hidden: Optional[bool]     # Hidden status
-```
-
----
-
-### BoardCustomField
-
-```python
-class BoardCustomField:
-    id: str                         # Field ID
-    name: Optional[str]             # Field name
-    type: CustomFieldType           # Field type
-    description: Optional[str]      # Description
-    options: Optional[List[Any]]    # Options (for SELECT type)
-    hidden: Optional[bool]          # Hidden status
 ```
 
 ---
@@ -285,58 +241,6 @@ class EditBoardGroupRequest:
 
 ---
 
-### CreateBoardCustomFieldRequest
-
-```python
-class CreateBoardCustomFieldRequest:
-    name: str                           # Required - Field name
-    type: CustomFieldType               # Required - Field type
-    board_id: str                       # Required - Board ID
-    description: Optional[str]          # Description
-    hidden: bool                        # Hidden status (default: False)
-    options: Optional[List[Any]]        # Options (for SELECT type)
-```
-
----
-
-### EditBoardCustomFieldRequest
-
-```python
-class EditBoardCustomFieldRequest:
-    field_id: str                       # Required - Field ID
-    board_id: str                       # Required - Board ID
-    name: Optional[str]                 # New field name
-    hidden: Optional[bool]              # Hidden status
-    description: Optional[str]          # New description
-    options: Optional[List[Any]]        # New options (for SELECT type)
-```
-
----
-
-### CustomField
-
-```python
-class CustomField:
-    id: str                             # Field ID
-    value: Any                          # Field value (use helper functions)
-```
-
----
-
-### SelectOption
-
-```python
-class SelectOption:
-    id: str                             # Option ID
-    label: str                          # Option label
-    color: Color                       # Option color
-    icon: Icon                         # Option icon
-```
-
----
-
-## Response Models
-
 ### CreateBoardTypeResponse
 
 ```python
@@ -429,56 +333,9 @@ class EditBoardGroupPayload:
 
 ---
 
-### CreateBoardCustomFieldResponse
-
-```python
-class CreateBoardCustomFieldResponse:
-    type: str                           # Response type
-    payload: CreateBoardCustomFieldPayload  # Response payload
-    
-    @property
-    def custom_field(self) -> BoardCustomField:  # Convenience property
-        ...
-```
-
----
-
-### CreateBoardCustomFieldPayload
-
-```python
-class CreateBoardCustomFieldPayload:
-    customField: BoardCustomField       # Created custom field
-```
-
----
-
-### EditBoardCustomFieldResponse
-
-```python
-class EditBoardCustomFieldResponse:
-    type: str                           # Response type
-    payload: EditBoardCustomFieldPayload  # Response payload
-    
-    @property
-    def custom_field(self) -> BoardCustomField:  # Convenience property
-        ...
-```
-
----
-
-### EditBoardCustomFieldPayload
-
-```python
-class EditBoardCustomFieldPayload:
-    customField: BoardCustomField       # Edited custom field
-```
-
----
-
 ## See Also
 
 - [Boards Guide](../guides/boards) - Usage examples and patterns
-- [Custom Fields Guide](../guides/custom-fields) - Custom field management
-- [Helpers](../guides/helpers) - Helper functions for custom fields
+- [Custom Fields](./custom-fields) - Custom field management API
+- [Custom Fields Guide](../guides/custom-fields) - Custom field usage examples
 - [Enums](./enums) - Icon, Color, and CustomFieldType enums
-

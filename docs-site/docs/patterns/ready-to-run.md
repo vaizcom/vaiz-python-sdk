@@ -29,7 +29,10 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`get_documents.py`** - List documents by scope (Space/Member/Project)
 - **`create_document.py`** - Create new documents
 - **`get_document.py`** - Get single document
-- **`replace_document.py`** - Replace document content
+- **`replace_document.py`** - Replace document content with plain text
+- **`replace_json_document.py`** - Replace document content with rich JSON (document structure format)
+- **`replace_json_document_complex.py`** - Complex document with nested lists, inline code, links, and more
+- **`replace_json_document_with_helpers.py`** - Type-safe content creation using document structure helper functions
 
 ### Advanced Workflows
 - **`document_hierarchy.py`** - Build nested document structures

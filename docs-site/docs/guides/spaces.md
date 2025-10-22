@@ -133,9 +133,7 @@ elif space.avatar_mode == AvatarMode.Generated:
     print("Generated avatar")
 ```
 
-Available avatar modes:
-- `AvatarMode.Uploaded` (0) - Custom uploaded avatar
-- `AvatarMode.Generated` (2) - Auto-generated avatar
+See [`AvatarMode`](../api-reference/enums#avatarmode) for available avatar modes.
 
 ## See Also
 

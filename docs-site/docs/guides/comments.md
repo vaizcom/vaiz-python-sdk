@@ -86,13 +86,7 @@ client.add_reaction(
 
 ### Available Reactions
 
-- `CommentReactionType.THUMBS_UP` - 👍
-- `CommentReactionType.HEART` - ❤️
-- `CommentReactionType.LAUGHING` - 😂
-- `CommentReactionType.WOW` - 😮
-- `CommentReactionType.CRYING` - 😢
-- `CommentReactionType.ANGRY` - 😡
-- `CommentReactionType.PARTY` - 🎉
+See [`CommentReactionType`](../api-reference/enums#commentreactiontype) for all available reactions.
 
 ## Editing Comments
 

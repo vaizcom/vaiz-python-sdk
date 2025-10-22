@@ -49,8 +49,7 @@ def main():
         print("\n=== Replacing Document Content ===")
         replace_response = client.replace_document(
             document_id=document_id,
-            description=new_description_text,
-            files=[]  # No files for this example
+            description=new_description_text
         )
         print("✅ Document content replaced successfully!")
         

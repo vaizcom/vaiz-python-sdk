@@ -33,6 +33,23 @@ class ReplaceDocumentResponse(BaseModel):
     pass
 
 
+class ReplaceJSONDocumentRequest(BaseModel):
+    """Request model for replacing document content with JSON content."""
+    document_id: str = Field(..., alias="documentId")
+    content: List[Dict[str, Any]] = Field(..., description="JSONContent array in document structure format")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):  # type: ignore[override]
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class ReplaceJSONDocumentResponse(BaseModel):
+    """Response model for JSON document replacement - returns empty object on success."""
+    pass
+
+
 class Document(VaizBaseModel):
     """Model representing a Vaiz document."""
     id: str = Field(..., alias="_id")

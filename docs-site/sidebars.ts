@@ -15,6 +15,7 @@ const sidebars: SidebarsConfig = {
         'guides/documents',
         'guides/files',
         'guides/helpers',
+        'guides/document-structure-helpers',
         'guides/history',
         'guides/members',
         'guides/milestones',
@@ -31,8 +32,10 @@ const sidebars: SidebarsConfig = {
       items: [
         'api-reference/overview',
         'api-reference/boards',
+        'api-reference/custom-fields',
         'api-reference/comments',
         'api-reference/documents',
+        'api-reference/document-structure',
         'api-reference/enums',
         'api-reference/files',
         'api-reference/history',

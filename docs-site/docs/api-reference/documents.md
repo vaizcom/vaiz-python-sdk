@@ -102,7 +102,7 @@ replace_document(
 ) -> ReplaceDocumentResponse
 ```
 
-Replace the entire content of a document.
+Replace the entire content of a document with plain text.
 
 **Parameters:**
 - `document_id` - Document ID
@@ -122,6 +122,82 @@ New document content here.
 """
 )
 ```
+
+---
+
+### `replace_json_document`
+
+```python
+replace_json_document(
+    document_id: str,
+    content: List[Dict[str, Any]]
+) -> ReplaceJSONDocumentResponse
+```
+
+Replace the entire content of a document with structured JSON content.
+
+This method works for:
+- **Task descriptions** - Update task description content
+- **Standalone documents** - Project, Space, Member documents
+- **Any document** - Universal method for all document types
+
+**Parameters:**
+- `document_id` - Document ID (from task or standalone document)
+- `content` - JSONContent array in [document structure format](./document-structure)
+
+**Returns:** `ReplaceJSONDocumentResponse`
+
+**Example with raw JSON:**
+```python
+# Replace with rich formatted content
+json_content = [
+    {
+        "type": "heading",
+        "attrs": {"level": 1},
+        "content": [{"type": "text", "text": "Project Overview"}]
+    },
+    {
+        "type": "paragraph",
+        "content": [
+            {"type": "text", "text": "This is "},
+            {"type": "text", "marks": [{"type": "bold"}], "text": "bold text"}
+        ]
+    },
+    {
+        "type": "bulletList",
+        "content": [
+            {
+                "type": "listItem",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [{"type": "text", "text": "First item"}]
+                    }
+                ]
+            }
+        ]
+    }
+]
+
+client.replace_json_document("doc_id", json_content)
+```
+
+**Example with helper functions:**
+```python
+from vaiz import heading, paragraph, text, bullet_list
+
+content = [
+    heading(1, "Project Overview"),
+    paragraph("This is ", text("bold text", bold=True)),
+    bullet_list("First item", "Second item")
+]
+
+client.replace_json_document("doc_id", content)
+```
+
+**Learn more:**
+- See [Document Structure](./document-structure) for complete format reference
+- See [Document Structure Helpers](../guides/document-structure-helpers) for helper functions
 
 ---
 
@@ -239,6 +315,26 @@ class ReplaceDocumentRequest:
 
 ```python
 class ReplaceDocumentResponse:
+    # Empty response on success
+    pass
+```
+
+---
+
+### ReplaceJSONDocumentRequest
+
+```python
+class ReplaceJSONDocumentRequest:
+    document_id: str                    # Required - Document ID
+    content: List[Dict[str, Any]]       # Required - JSONContent array in document structure format
+```
+
+---
+
+### ReplaceJSONDocumentResponse
+
+```python
+class ReplaceJSONDocumentResponse:
     # Empty response on success
     pass
 ```

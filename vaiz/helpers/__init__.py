@@ -50,7 +50,50 @@ from .custom_fields import (
     make_url_value,
 )
 
+from .document_structure import (
+    # Document structure node builders
+    text,
+    paragraph,
+    heading,
+    list_item,
+    bullet_list,
+    ordered_list,
+    link_text,
+    separator,
+    
+    # Document structure types
+    DocumentNode,
+    TextNode,
+    ParagraphNode,
+    HeadingNode,
+    BulletListNode,
+    OrderedListNode,
+    ListItemNode,
+    Mark,
+)
+
 __all__ = [
+    # Document structure builders
+    'text',
+    'paragraph', 
+    'heading',
+    'list_item',
+    'bullet_list',
+    'ordered_list',
+    'link_text',
+    'separator',
+    
+    # Document structure types
+    'DocumentNode',
+    'TextNode',
+    'ParagraphNode',
+    'HeadingNode',
+    'BulletListNode',
+    'OrderedListNode',
+    'ListItemNode',
+    'Mark',
+    
+    # Custom fields (existing)
     # Field creation helpers
     'make_text_field',
     'make_number_field', 

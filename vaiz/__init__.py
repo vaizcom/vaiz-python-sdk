@@ -36,6 +36,13 @@ from .models import (
     ToggleMilestoneResponse,
     UploadedFile,
     UploadFileResponse,
+    Document,
+    ReplaceDocumentRequest,
+    ReplaceDocumentResponse,
+    ReplaceJSONDocumentRequest,
+    ReplaceJSONDocumentResponse,
+    CreateDocumentRequest,
+    CreateDocumentResponse,
     Comment,
     CommentReaction,
     PostCommentRequest,
@@ -102,6 +109,16 @@ from .helpers import (
     make_number_value,
     make_checkbox_value,
     make_url_value,
+    
+    # Document structure builders
+    text,
+    paragraph,
+    heading,
+    list_item,
+    bullet_list,
+    ordered_list,
+    link_text,
+    separator,
 )
 
 __all__ = [
@@ -134,6 +151,13 @@ __all__ = [
     'ToggleMilestoneResponse',
     'UploadedFile',
     'UploadFileResponse',
+    'Document',
+    'ReplaceDocumentRequest',
+    'ReplaceDocumentResponse',
+    'ReplaceJSONDocumentRequest',
+    'ReplaceJSONDocumentResponse',
+    'CreateDocumentRequest',
+    'CreateDocumentResponse',
     'Comment',
     'CommentReaction',
     'PostCommentRequest',
@@ -195,4 +219,14 @@ __all__ = [
     'make_number_value',
     'make_checkbox_value',
     'make_url_value',
+    
+    # Document structure builders
+    'text',
+    'paragraph',
+    'heading',
+    'list_item',
+    'bullet_list',
+    'ordered_list',
+    'link_text',
+    'separator',
 ]

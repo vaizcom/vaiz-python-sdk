@@ -22,10 +22,12 @@ Create a new task with optional description and file upload.
 
 **Parameters:**
 - `task` - Task configuration (name, board required; group, project optional)
-- `description` - Optional task description
+- `description` - Optional task description (plain text). For rich content, use `replace_json_document` with [document structure format](./document-structure)
 - `file` - Optional file to upload and attach
 
 **Returns:** `TaskResponse` with created task
+
+**Note:** To add rich formatted content to task descriptions, create the task first, then use `replace_json_document(task.document, content)`. See [Document Structure](./document-structure) for details.
 
 ---
 
@@ -279,5 +281,6 @@ class GetTasksPayload:
 ## See Also
 
 - [Tasks Guide](../guides/tasks) - Usage examples and patterns
+- [Document Structure](./document-structure) - Format for task descriptions with rich content
 - [Enums](./enums) - TaskPriority and other enums
 

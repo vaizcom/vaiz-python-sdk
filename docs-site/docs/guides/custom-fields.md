@@ -8,19 +8,7 @@ Add custom data fields to your tasks.
 
 ## Available Field Types
 
-```python
-from vaiz.models.enums import CustomFieldType
-
-CustomFieldType.TEXT           # Text input
-CustomFieldType.NUMBER         # Number input
-CustomFieldType.CHECKBOX       # Checkbox
-CustomFieldType.DATE           # Date picker
-CustomFieldType.MEMBER         # User selector
-CustomFieldType.TASK_RELATIONS # Task links
-CustomFieldType.SELECT         # Dropdown
-CustomFieldType.URL            # URL input
-CustomFieldType.ESTIMATION     # Time estimation
-```
+See [`CustomFieldType`](../api-reference/enums#customfieldtype) for all available field types.
 
 ## Creating Custom Fields
 
