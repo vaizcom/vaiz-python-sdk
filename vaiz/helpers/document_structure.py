@@ -62,7 +62,7 @@ class OrderedListAttrs(TypedDict):
 
 
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode']
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode']
 
 
 class ParagraphNode(TypedDict):
@@ -97,8 +97,48 @@ class OrderedListNode(TypedDict):
     content: List[ListItemNode]
 
 
+# Table-related attributes
+class TableCellAttrs(TypedDict):
+    """Attributes for table cell."""
+    colspan: NotRequired[int]
+    rowspan: NotRequired[int]
+
+
+class TableRowAttrs(TypedDict):
+    """Attributes for table row."""
+    showRowNumbers: NotRequired[bool]
+
+
+class ExtensionTableAttrs(TypedDict):
+    """Attributes for extension-table."""
+    uid: NotRequired[str]
+    showRowNumbers: NotRequired[bool]
+
+
+# Table-related nodes
+class TableCellNode(TypedDict):
+    """Table cell node."""
+    type: Literal["tableCell"]
+    attrs: NotRequired[TableCellAttrs]
+    content: NotRequired[List[DocumentContent]]
+
+
+class TableRowNode(TypedDict):
+    """Table row node containing cells."""
+    type: Literal["tableRow"]
+    attrs: NotRequired[TableRowAttrs]
+    content: List[TableCellNode]
+
+
+class TableNode(TypedDict):
+    """Extension table node containing rows."""
+    type: Literal["extension-table"]
+    attrs: NotRequired[ExtensionTableAttrs]
+    content: List[TableRowNode]
+
+
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode]
 
 
 # Helper functions
@@ -305,6 +345,93 @@ def separator(char: str = "━", length: int = 43) -> ParagraphNode:
     return paragraph(char * length)
 
 
+def table_cell(*content: Union[ParagraphNode, str], colspan: int = 1, rowspan: int = 1) -> TableCellNode:
+    """
+    Create a table cell node.
+    
+    Args:
+        *content: Paragraphs or strings (strings will be wrapped in paragraphs)
+        colspan: Number of columns to span (default: 1)
+        rowspan: Number of rows to span (default: 1)
+    
+    Returns:
+        TableCellNode: A valid table cell node
+        
+    Example:
+        >>> table_cell("Cell content")
+        {'type': 'tableCell', 'attrs': {'colspan': 1, 'rowspan': 1}, 'content': [...]}
+    """
+    node: TableCellNode = {
+        "type": "tableCell",
+        "attrs": {"colspan": colspan, "rowspan": rowspan}
+    }
+    if content:
+        node["content"] = [
+            item if isinstance(item, dict) else paragraph(item)
+            for item in content
+        ]
+    return node
+
+
+def table_row(*cells: Union[TableCellNode, str], show_row_numbers: bool = False) -> TableRowNode:
+    """
+    Create a table row node.
+    
+    Args:
+        *cells: Table cell nodes or strings (strings will be wrapped in cells)
+        show_row_numbers: Show row numbers (default: False)
+    
+    Returns:
+        TableRowNode: A valid table row node
+        
+    Example:
+        >>> table_row("Cell 1", "Cell 2", "Cell 3")
+        {'type': 'tableRow', 'attrs': {'showRowNumbers': False}, 'content': [...]}
+    """
+    content: List[TableCellNode] = []
+    for cell in cells:
+        if isinstance(cell, str):
+            content.append(table_cell(cell))
+        else:
+            content.append(cell)
+    
+    return {
+        "type": "tableRow",
+        "attrs": {"showRowNumbers": show_row_numbers},
+        "content": content
+    }
+
+
+def table(*rows: TableRowNode, show_row_numbers: bool = False) -> TableNode:
+    """
+    Create an extension-table node.
+    
+    Args:
+        *rows: Table row nodes
+        show_row_numbers: Show row numbers (default: False)
+    
+    Returns:
+        TableNode: A valid extension-table node
+        
+    Example:
+        >>> table(
+        ...     table_row("Name", "Status"),
+        ...     table_row("Task 1", "Done"),
+        ...     table_row("Task 2", "In Progress")
+        ... )
+        {'type': 'extension-table', 'attrs': {'showRowNumbers': False}, 'content': [...]}
+    """
+    import uuid
+    return {
+        "type": "extension-table",
+        "attrs": {
+            "uid": str(uuid.uuid4())[:12].replace('-', ''),
+            "showRowNumbers": show_row_numbers
+        },
+        "content": list(rows)
+    }
+
+
 # Convenience exports
 __all__ = [
     # Types
@@ -315,6 +442,9 @@ __all__ = [
     'BulletListNode',
     'OrderedListNode',
     'ListItemNode',
+    'TableNode',
+    'TableRowNode',
+    'TableCellNode',
     'Mark',
     
     # Builders
@@ -326,5 +456,8 @@ __all__ = [
     'ordered_list',
     'link_text',
     'separator',
+    'table',
+    'table_row',
+    'table_cell',
 ]
 

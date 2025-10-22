@@ -33,6 +33,7 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`replace_json_document.py`** - Replace document content with rich JSON (document structure format)
 - **`replace_json_document_complex.py`** - Complex document with nested lists, inline code, links, and more
 - **`replace_json_document_with_helpers.py`** - Type-safe content creation using document structure helper functions
+- **`replace_json_document_with_table.py`** - Creating documents with tables for status reports and metrics
 
 ### Advanced Workflows
 - **`document_hierarchy.py`** - Build nested document structures

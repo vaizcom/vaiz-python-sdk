@@ -60,6 +60,9 @@ from .document_structure import (
     ordered_list,
     link_text,
     separator,
+    table,
+    table_row,
+    table_cell,
     
     # Document structure types
     DocumentNode,
@@ -69,6 +72,9 @@ from .document_structure import (
     BulletListNode,
     OrderedListNode,
     ListItemNode,
+    TableNode,
+    TableRowNode,
+    TableCellNode,
     Mark,
 )
 
@@ -82,6 +88,9 @@ __all__ = [
     'ordered_list',
     'link_text',
     'separator',
+    'table',
+    'table_row',
+    'table_cell',
     
     # Document structure types
     'DocumentNode',
@@ -91,6 +100,9 @@ __all__ = [
     'BulletListNode',
     'OrderedListNode',
     'ListItemNode',
+    'TableNode',
+    'TableRowNode',
+    'TableCellNode',
     'Mark',
     
     # Custom fields (existing)

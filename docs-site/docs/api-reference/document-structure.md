@@ -237,6 +237,122 @@ Multiple marks can be combined:
 }
 ```
 
+## Tables
+
+Tables use the `extension-table` type and consist of rows and cells.
+
+### Extension Table
+
+Table with rows and cells.
+
+```json
+{
+  "type": "extension-table",
+  "attrs": {
+    "uid": "uniqueId123",
+    "showRowNumbers": false
+  },
+  "content": [
+    {
+      "type": "tableRow",
+      "attrs": {"showRowNumbers": false},
+      "content": [
+        {
+          "type": "tableCell",
+          "attrs": {"colspan": 1, "rowspan": 1},
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{"type": "text", "text": "Name"}]
+            }
+          ]
+        },
+        {
+          "type": "tableCell",
+          "attrs": {"colspan": 1, "rowspan": 1},
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{"type": "text", "text": "Status"}]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "tableRow",
+      "attrs": {"showRowNumbers": false},
+      "content": [
+        {
+          "type": "tableCell",
+          "attrs": {"colspan": 1, "rowspan": 1},
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{"type": "text", "text": "Task 1"}]
+            }
+          ]
+        },
+        {
+          "type": "tableCell",
+          "attrs": {"colspan": 1, "rowspan": 1},
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{"type": "text", "text": "Done"}]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Table Row
+
+Row in a table containing cells.
+
+```json
+{
+  "type": "tableRow",
+  "attrs": {"showRowNumbers": false},
+  "content": [
+    {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]},
+    {"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}
+  ]
+}
+```
+
+**Attributes:**
+- `showRowNumbers` - Display row numbers (optional, default: false)
+
+### Table Cell
+
+Table cell containing content.
+
+```json
+{
+  "type": "tableCell",
+  "attrs": {
+    "colspan": 1,
+    "rowspan": 1
+  },
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [{"type": "text", "text": "Cell content"}]
+    }
+  ]
+}
+```
+
+**Attributes:**
+- `colspan` - Number of columns to span (default: 1)
+- `rowspan` - Number of rows to span (default: 1)
+
+**Note:** The first row is typically used as table headers in the UI.
+
 ## Nested Structures
 
 Lists can be nested within list items:
@@ -387,6 +503,9 @@ See [Document Structure Helpers Guide](../guides/document-structure-helpers) for
 | `bulletList` | Unordered list | `{"type": "bulletList", "content": [...]}` |
 | `orderedList` | Numbered list | `{"type": "orderedList", "content": [...]}` |
 | `listItem` | List item | `{"type": "listItem", "content": [...]}` |
+| `extension-table` | Table with rows | `{"type": "extension-table", "attrs": {"uid": "..."}, "content": [...]}` |
+| `tableRow` | Table row with cells | `{"type": "tableRow", "attrs": {"showRowNumbers": false}, "content": [...]}` |
+| `tableCell` | Table cell (data or header) | `{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
 
 ### Marks
 

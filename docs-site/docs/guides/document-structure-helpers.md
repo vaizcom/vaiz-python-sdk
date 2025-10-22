@@ -187,6 +187,69 @@ bullet_list(
 )
 ```
 
+## Tables
+
+### Simple Table
+
+Create tables with headers and data rows:
+
+```python
+from vaiz import table, table_row
+
+# Simple status table
+# Note: First row is typically displayed as headers in UI
+status_table = table(
+    table_row("Task", "Status", "Priority"),  # Header row
+    table_row("Design mockups", "Done", "High"),
+    table_row("API development", "In Progress", "High"),
+    table_row("Documentation", "Todo", "Medium")
+)
+```
+
+### Table with Formatting
+
+Add formatting to table content:
+
+```python
+from vaiz import table, table_row, table_cell, text, paragraph
+
+formatted_table = table(
+    table_row(
+        table_cell(paragraph(text("Name", bold=True))),
+        table_cell(paragraph(text("Status", bold=True)))
+    ),
+    table_row(
+        table_cell(paragraph(text("Task 1", bold=True))),
+        table_cell("✅ Done")
+    ),
+    table_row(
+        "Task 2",
+        table_cell(paragraph(text("In Progress", italic=True)))
+    )
+)
+```
+
+### Complex Table Example
+
+```python
+from vaiz import heading, paragraph, table, table_row, text
+
+content = [
+    heading(1, "📊 Project Metrics"),
+    
+    paragraph("Current sprint status:"),
+    
+    table(
+        table_row("Metric", "Count", "Percentage"),  # Header row
+        table_row("Completed", "28", "60%"),
+        table_row("In Progress", "12", "26%"),
+        table_row("Todo", "7", "14%")
+    ),
+    
+    paragraph(text("Total: 47 tasks", bold=True))
+]
+```
+
 ## Visual Elements
 
 ### Separator
@@ -286,6 +349,9 @@ All helper functions create nodes compatible with the document editor:
 - ✅ `bullet_list()` - Unordered lists
 - ✅ `ordered_list()` - Numbered lists
 - ✅ `list_item()` - List items with content
+- ✅ `table()` - Tables with rows and cells
+- ✅ `table_row()` - Table row
+- ✅ `table_cell()` - Table cell (use for both data and headers)
 
 ### Marks (Formatting)
 - ✅ `bold=True` - Bold text

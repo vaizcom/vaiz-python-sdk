@@ -119,6 +119,9 @@ from .helpers import (
     ordered_list,
     link_text,
     separator,
+    table,
+    table_row,
+    table_cell,
 )
 
 __all__ = [
@@ -229,4 +232,7 @@ __all__ = [
     'ordered_list',
     'link_text',
     'separator',
+    'table',
+    'table_row',
+    'table_cell',
 ]

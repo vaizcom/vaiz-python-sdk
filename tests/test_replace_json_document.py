@@ -638,11 +638,227 @@ def test_replace_json_document_complex_structure():
     print(f"   Structure includes: headings, lists (nested), inline code, links, and formatting")
 
 
+def test_replace_json_document_complete_replacement():
+    """Test that replace_json_document COMPLETELY replaces old content (strict test)."""
+    client = get_test_client()
+    
+    # Get first board
+    boards = client.get_boards()
+    if not boards or not boards.boards:
+        pytest.skip("No boards available for testing")
+    
+    board = boards.boards[0]
+    
+    # Create a test task with SPECIFIC initial content
+    from vaiz.models import CreateTaskRequest, TaskPriority
+    
+    task_request = CreateTaskRequest(
+        name="Test Complete JSON Replacement",
+        group=client.space_id,
+        board=board.id,
+        priority=TaskPriority.General,
+        description="OLD_CONTENT_MARKER - This text should be completely removed after replacement"
+    )
+    
+    task_response = client.create_task(task_request)
+    document_id = task_response.task.document
+    
+    # Verify initial content exists
+    initial_content = client.get_document_body(document_id)
+    initial_text = str(initial_content)
+    assert "OLD_CONTENT_MARKER" in initial_text, "Initial content should contain marker"
+    
+    # Replace with completely NEW content
+    new_content = [
+        # Heading with NEW marker
+        {
+            "type": "heading",
+            "attrs": {"level": 1},
+            "content": [
+                {"type": "text", "text": "NEW_CONTENT_MARKER - Verified Structure"}
+            ]
+        },
+        # Paragraph with formatting
+        {
+            "type": "paragraph",
+            "content": [
+                {"type": "text", "text": "Text with "},
+                {"type": "text", "marks": [{"type": "bold"}], "text": "bold"},
+                {"type": "text", "text": ", "},
+                {"type": "text", "marks": [{"type": "italic"}], "text": "italic"},
+                {"type": "text", "text": ", and "},
+                {"type": "text", "marks": [{"type": "code"}], "text": "code"}
+            ]
+        },
+        # Link
+        {
+            "type": "paragraph",
+            "content": [
+                {
+                    "type": "text",
+                    "marks": [
+                        {"type": "link", "attrs": {"href": "https://vaiz.app", "target": "_blank"}}
+                    ],
+                    "text": "Link to Vaiz"
+                }
+            ]
+        },
+        # Bullet list
+        {
+            "type": "bulletList",
+            "content": [
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "content": [{"type": "text", "text": "Bullet item 1"}]
+                        }
+                    ]
+                },
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "content": [{"type": "text", "text": "Bullet item 2"}]
+                        }
+                    ]
+                }
+            ]
+        },
+        # Ordered list
+        {
+            "type": "orderedList",
+            "attrs": {"start": 1},
+            "content": [
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "content": [{"type": "text", "text": "Ordered step 1"}]
+                        }
+                    ]
+                },
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "content": [{"type": "text", "text": "Ordered step 2"}]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+    
+    # Replace
+    response = client.replace_json_document(
+        document_id=document_id,
+        content=new_content
+    )
+    
+    assert response is not None
+    
+    # Retrieve and STRICTLY verify replacement
+    saved_content = client.get_document_body(document_id)
+    saved_text = str(saved_content)
+    
+    # CRITICAL: Old content MUST be completely gone
+    assert "OLD_CONTENT_MARKER" not in saved_text, "OLD CONTENT STILL EXISTS! API did not replace, it appended!"
+    
+    # CRITICAL: New content MUST be present
+    assert "NEW_CONTENT_MARKER" in saved_text, "New content not found"
+    assert "Verified Structure" in saved_text, "New heading not found"
+    
+    # Verify structure elements are saved correctly
+    saved_blocks = saved_content.get("default", {}).get("content", [])
+    
+    # Verify we have all expected block types
+    block_types = [block.get("type") for block in saved_blocks]
+    assert "heading" in block_types, "Heading not saved"
+    assert "paragraph" in block_types, "Paragraph not saved"
+    assert "bulletList" in block_types, "Bullet list not saved"
+    assert "orderedList" in block_types, "Ordered list not saved"
+    
+    # Verify marks are preserved
+    assert "bold" in saved_text, "Bold formatting not preserved"
+    assert "italic" in saved_text, "Italic formatting not preserved"
+    assert "code" in saved_text, "Code formatting not preserved"
+    assert "vaiz.app" in saved_text, "Link not preserved"
+    
+    print(f"✅ STRICT TEST PASSED: Complete replacement verified")
+    print(f"   ✓ Old content removed (OLD_CONTENT_MARKER not found)")
+    print(f"   ✓ New content present (NEW_CONTENT_MARKER found)")
+    print(f"   ✓ All structure elements preserved")
+    print(f"   ✓ All formatting marks preserved")
+
+
+def test_replace_document_complete_replacement():
+    """Test that replace_document COMPLETELY replaces old content (strict test)."""
+    client = get_test_client()
+    
+    # Get first board
+    boards = client.get_boards()
+    if not boards or not boards.boards:
+        pytest.skip("No boards available for testing")
+    
+    board = boards.boards[0]
+    
+    # Create a test task with SPECIFIC initial content
+    from vaiz.models import CreateTaskRequest, TaskPriority
+    
+    task_request = CreateTaskRequest(
+        name="Test Complete Plain Text Replacement",
+        group=client.space_id,
+        board=board.id,
+        priority=TaskPriority.General,
+        description="PLAIN_OLD_MARKER - This plain text should be completely removed"
+    )
+    
+    task_response = client.create_task(task_request)
+    document_id = task_response.task.document
+    
+    # Verify initial content exists
+    initial_content = client.get_document_body(document_id)
+    initial_text = str(initial_content)
+    assert "PLAIN_OLD_MARKER" in initial_text, "Initial content should contain marker"
+    
+    # Replace with completely NEW plain text
+    new_description = "PLAIN_NEW_MARKER - This is the new content. The old content should be gone."
+    
+    response = client.replace_document(
+        document_id=document_id,
+        description=new_description
+    )
+    
+    assert response is not None
+    
+    # Retrieve and STRICTLY verify replacement
+    saved_content = client.get_document_body(document_id)
+    saved_text = str(saved_content)
+    
+    # CRITICAL: Old content MUST be completely gone
+    assert "PLAIN_OLD_MARKER" not in saved_text, "OLD CONTENT STILL EXISTS! API did not replace, it appended!"
+    
+    # CRITICAL: New content MUST be present
+    assert "PLAIN_NEW_MARKER" in saved_text, "New content not found"
+    assert "new content" in saved_text, "New description text not found"
+    
+    print(f"✅ STRICT TEST PASSED: Complete plain text replacement verified")
+    print(f"   ✓ Old content removed (PLAIN_OLD_MARKER not found)")
+    print(f"   ✓ New content present (PLAIN_NEW_MARKER found)")
+
+
 if __name__ == "__main__":
     print("Running replace_json_document tests...")
     test_replace_json_document()
     test_replace_json_document_with_rich_content()
     test_replace_json_document_empty_content()
     test_replace_json_document_complex_structure()
+    test_replace_json_document_complete_replacement()
+    test_replace_document_complete_replacement()
     print("All tests passed! ✅")
 
