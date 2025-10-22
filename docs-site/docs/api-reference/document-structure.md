@@ -6,6 +6,126 @@ sidebar_position: 3
 
 Technical reference for the document structure JSON format.
 
+## Content Methods
+
+These methods work with document content for both task descriptions and standalone documents.
+
+### `get_json_document`
+
+```python
+get_json_document(document_id: str) -> Dict[str, Any]
+```
+
+Get the JSON content of a specific document or task description.
+
+**Parameters:**
+- `document_id` - Document ID (from task or standalone document)
+
+**Returns:** `Dict[str, Any]` - Parsed JSON structure
+
+**Example:**
+```python
+# Get standalone document content
+content = client.get_json_document("document_id")
+print(content)
+
+# Get task description
+task_response = client.get_task("PRJ-123")
+description = client.get_json_document(task_response.task.document)
+```
+
+---
+
+### `replace_document`
+
+```python
+replace_document(
+    document_id: str,
+    description: str
+) -> ReplaceDocumentResponse
+```
+
+Replace document content with plain text.
+
+**Parameters:**
+- `document_id` - Document ID
+- `description` - New content (plain text or markdown-style)
+
+**Returns:** `ReplaceDocumentResponse`
+
+**Example:**
+```python
+# Replace with plain text
+client.replace_document(
+    document_id="doc_id",
+    description="""
+# Updated Content
+
+New document content here.
+"""
+)
+```
+
+---
+
+### `replace_json_document`
+
+```python
+replace_json_document(
+    document_id: str,
+    content: List[Dict[str, Any]]
+) -> ReplaceJSONDocumentResponse
+```
+
+Replace document content with structured JSON content.
+
+**Works for:**
+- Task descriptions
+- Standalone documents (Project, Space, Member)
+- Any document type
+
+**Parameters:**
+- `document_id` - Document ID
+- `content` - JSONContent array (see format below)
+
+**Returns:** `ReplaceJSONDocumentResponse`
+
+**Example with raw JSON:**
+```python
+json_content = [
+    {
+        "type": "heading",
+        "attrs": {"level": 1},
+        "content": [{"type": "text", "text": "Title"}]
+    },
+    {
+        "type": "paragraph",
+        "content": [
+            {"type": "text", "text": "This is "},
+            {"type": "text", "marks": [{"type": "bold"}], "text": "bold"}
+        ]
+    }
+]
+
+client.replace_json_document("doc_id", json_content)
+```
+
+**Example with helpers (recommended):**
+```python
+from vaiz import heading, paragraph, text
+
+content = [
+    heading(1, "Title"),
+    paragraph("This is ", text("bold", bold=True))
+]
+
+client.replace_json_document("doc_id", content)
+```
+
+See [Document Structure Helpers Guide](../guides/document-structure-helpers) for all helper functions.
+
+---
+
 ## Format Overview
 
 Documents consist of an array of **nodes**. Each node has a `type` and optional `content` or `attrs`:

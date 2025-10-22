@@ -383,6 +383,7 @@ All helper functions create nodes compatible with the document editor:
 ## See Also
 
 - [Documents Guide](./documents) - Document management
-- [API Reference: Documents](../api-reference/documents) - Document API details
+- [API Reference: Document Structure](../api-reference/document-structure) - Content methods and format reference
+- [API Reference: Documents](../api-reference/documents) - Document management API
 - [Ready-to-Run Examples](../patterns/ready-to-run) - Complete examples
 
