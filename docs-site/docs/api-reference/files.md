@@ -91,6 +91,29 @@ class TaskUploadFile:
 
 ---
 
+### UploadFileResponse
+
+```python
+class UploadFileResponse:
+    type: str                           # Response type
+    payload: UploadFilePayload          # Response payload
+    
+    @property
+    def file(self) -> UploadedFile:    # Convenience property
+        ...
+```
+
+---
+
+### UploadFilePayload
+
+```python
+class UploadFilePayload:
+    file: UploadedFile                 # Uploaded file object
+```
+
+---
+
 ## See Also
 
 - [Files Guide](../guides/files) - Usage examples and patterns

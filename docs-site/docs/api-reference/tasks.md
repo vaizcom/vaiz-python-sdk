@@ -195,12 +195,77 @@ class Task:
     custom_fields: List[TaskCustomField]  # Custom field values
     document: str                       # Document ID
     creator: str                        # Creator ID
+    editor: Optional[str]               # Last editor ID
+    archiver: Optional[str]             # Archiver ID (if archived)
+    deleter: Optional[str]              # Deleter ID (if deleted)
     created_at: datetime                # Creation timestamp
     updated_at: datetime                # Last update timestamp
     completed_at: Optional[datetime]    # Completion timestamp
     archived_at: Optional[datetime]     # Archive timestamp
     deleted_at: Optional[datetime]      # Deletion timestamp
     followers: Dict[str, str]           # Follower mapping
+```
+
+---
+
+### TaskCustomField
+
+```python
+class TaskCustomField:
+    id: str                             # Custom field ID
+    value: Any                          # Field value
+    _id: str                            # Database ID
+```
+
+---
+
+### GetTasksResponse
+
+```python
+class GetTasksResponse:
+    type: str                           # Response type ("GetTasks")
+    payload: GetTasksPayload            # Response payload
+```
+
+---
+
+### GetTasksPayload
+
+```python
+class GetTasksPayload:
+    tasks: List[Task]                   # List of tasks
+```
+
+---
+
+### TaskFile
+
+```python
+class TaskFile:
+    id: str                             # File ID
+    url: str                            # File URL
+    name: str                           # Filename
+    ext: str                            # File extension
+    type: UploadFileType               # File type
+    dimension: Optional[List[int]]      # Dimensions [width, height]
+    size: Optional[int]                 # File size in bytes
+    dominant_color: Optional[Dict]      # Dominant color info
+    mime: Optional[str]                 # MIME type
+    original_name: Optional[str]        # Original filename
+    date: Optional[datetime]            # Upload date
+    owner: Optional[str]                # Owner ID
+    access_kind: Optional[str]          # Access kind
+    access_kind_id: Optional[str]       # Access kind ID
+```
+
+---
+
+### TaskUploadFile
+
+```python
+class TaskUploadFile:
+    path: str                           # File path
+    type: Optional[UploadFileType]     # File type (auto-detected if not provided)
 ```
 
 ---

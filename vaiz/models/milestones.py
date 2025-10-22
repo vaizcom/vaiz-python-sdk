@@ -36,7 +36,6 @@ class Milestone(VaizBaseModel):
     is_archived: bool = Field(False, alias="isArchived")
     is_active: bool = Field(True, alias="isActive")
     is_completed: bool = Field(False, alias="isCompleted")
-    hrid: Optional[str] = None
     color: Optional[Union[str, Color]] = None
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")

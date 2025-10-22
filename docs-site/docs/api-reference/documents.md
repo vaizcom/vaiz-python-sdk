@@ -87,8 +87,8 @@ content = client.get_document_body("document_id")
 print(content)
 
 # Get task description
-task = client.get_task("PRJ-123")
-description = client.get_document_body(task.payload["task"]["document"])
+task_response = client.get_task("PRJ-123")
+description = client.get_document_body(task_response.task.document)
 ```
 
 ---

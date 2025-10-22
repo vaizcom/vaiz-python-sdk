@@ -203,11 +203,95 @@ class Comment:
     author_id: str                      # Author user ID
     document_id: str                    # Document ID
     created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Last update timestamp
     edited_at: Optional[datetime]       # Edit timestamp
     deleted_at: Optional[datetime]      # Deletion timestamp
     reply_to: Optional[str]             # Parent comment ID
     files: List[UploadedFile]           # Attached files
     reactions: List[CommentReaction]    # Reactions
+    has_removed_files: bool             # Whether files were removed
+```
+
+---
+
+### CommentReaction
+
+```python
+class CommentReaction:
+    reaction_db_id: str                 # Reaction database ID
+    emoji_id: str                       # Emoji ID
+    native: Optional[str]               # Emoji character
+    member_ids: List[str]               # Members who reacted
+```
+
+---
+
+### PostCommentResponse
+
+```python
+class PostCommentResponse:
+    type: str                           # Response type ("PostComment")
+    payload: Dict[str, Comment]         # Response payload
+    
+    @property
+    def comment(self) -> Comment:      # Convenience property
+        ...
+```
+
+---
+
+### GetCommentsResponse
+
+```python
+class GetCommentsResponse:
+    type: str                           # Response type ("GetComments")
+    payload: Dict[str, List[Comment]]   # Response payload
+    
+    @property
+    def comments(self) -> List[Comment]:  # Convenience property
+        ...
+```
+
+---
+
+### EditCommentResponse
+
+```python
+class EditCommentResponse:
+    type: str                           # Response type ("EditComment")
+    payload: Dict[str, Comment]         # Response payload
+    
+    @property
+    def comment(self) -> Comment:      # Convenience property
+        ...
+```
+
+---
+
+### DeleteCommentResponse
+
+```python
+class DeleteCommentResponse:
+    type: str                           # Response type ("DeleteComment")
+    payload: Dict[str, Comment]         # Response payload
+    
+    @property
+    def comment(self) -> Comment:      # Convenience property
+        ...
+```
+
+---
+
+### ReactToCommentResponse
+
+```python
+class ReactToCommentResponse:
+    type: str                           # Response type ("ReactToComment")
+    payload: Dict[str, List[CommentReaction]]  # Response payload
+    
+    @property
+    def reactions(self) -> List[CommentReaction]:  # Convenience property
+        ...
 ```
 
 ---

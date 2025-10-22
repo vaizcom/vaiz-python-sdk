@@ -128,23 +128,144 @@ class ToggleMilestoneRequest:
 ```python
 class Milestone:
     id: str                             # Milestone ID
-    name: str                           # Name
+    name: str                           # Milestone name
     description: Optional[str]          # Description
     board: str                          # Board ID
     project: str                        # Project ID
-    total: int                          # Total tasks
-    completed: int                      # Completed tasks
-    creator: str                        # Creator ID
-    editor: Optional[str]               # Editor ID
-    created_at: datetime                # Creation timestamp
-    updated_at: datetime                # Update timestamp
+    document: Optional[str]             # Document ID
     due_start: Optional[datetime]       # Start date
     due_end: Optional[datetime]         # End date
+    total: Optional[int]                # Total tasks count
+    completed: Optional[int]            # Completed tasks count
     tags: List[str]                     # Tags
     color: Optional[str]                # Color
     is_archived: bool                   # Archive status
     is_active: bool                     # Active status
     is_completed: bool                  # Completion status
+    creator: str                        # Creator user ID
+    editor: Optional[str]               # Last editor user ID
+    archiver: Optional[str]             # Archiver user ID (if archived)
+    deleter: Optional[str]              # Deleter user ID (if deleted)
+    created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Last update timestamp
+    archived_at: Optional[datetime]     # Archive timestamp
+    deleted_at: Optional[datetime]      # Deletion timestamp
+    followers: Optional[Dict[str, str]] # Follower mapping
+```
+
+---
+
+### MilestonesResponse
+
+```python
+class MilestonesResponse:
+    type: str                           # Response type ("GetMilestones")
+    payload: MilestonesPayload          # Response payload
+    
+    @property
+    def milestones(self) -> List[Milestone]:  # Convenience property
+        ...
+```
+
+---
+
+### MilestonesPayload
+
+```python
+class MilestonesPayload:
+    milestones: List[Milestone]         # List of milestones
+```
+
+---
+
+### GetMilestoneResponse
+
+```python
+class GetMilestoneResponse:
+    type: str                           # Response type ("GetMilestone")
+    payload: GetMilestonePayload        # Response payload
+    
+    @property
+    def milestone(self) -> Milestone:  # Convenience property
+        ...
+```
+
+---
+
+### GetMilestonePayload
+
+```python
+class GetMilestonePayload:
+    milestone: Milestone                # Milestone object
+```
+
+---
+
+### CreateMilestoneResponse
+
+```python
+class CreateMilestoneResponse:
+    type: str                           # Response type ("CreateMilestone")
+    payload: CreateMilestonePayload     # Response payload
+    
+    @property
+    def milestone(self) -> Milestone:  # Convenience property
+        ...
+```
+
+---
+
+### CreateMilestonePayload
+
+```python
+class CreateMilestonePayload:
+    milestone: Milestone                # Created milestone
+```
+
+---
+
+### EditMilestoneResponse
+
+```python
+class EditMilestoneResponse:
+    type: str                           # Response type ("EditMilestone")
+    payload: EditMilestonePayload       # Response payload
+    
+    @property
+    def milestone(self) -> Milestone:  # Convenience property
+        ...
+```
+
+---
+
+### EditMilestonePayload
+
+```python
+class EditMilestonePayload:
+    milestone: Milestone                # Edited milestone
+```
+
+---
+
+### ToggleMilestoneResponse
+
+```python
+class ToggleMilestoneResponse:
+    type: str                           # Response type ("ToggleMilestone")
+    payload: ToggleMilestonePayload     # Response payload
+    
+    @property
+    def task(self) -> Task:            # Convenience property
+        ...
+```
+
+---
+
+### ToggleMilestonePayload
+
+```python
+class ToggleMilestonePayload:
+    task: Dict[str, Any]               # Task with updated milestones
 ```
 
 ---

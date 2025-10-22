@@ -125,7 +125,100 @@ Edit an existing custom field.
 
 ---
 
-## Models
+## Models & Interfaces
+
+### Board
+
+```python
+class Board:
+    id: str                              # Board ID
+    name: str                            # Board name
+    project: Optional[str]               # Project ID
+    groups: Optional[List[BoardGroup]]   # Board groups (columns)
+    types_list: Optional[List[BoardType]]  # Task types
+    custom_fields: Optional[List[BoardCustomField]]  # Custom fields
+    task_order_by_groups: Optional[Dict[str, List[str]]]  # Task ordering
+    creator: Optional[str]               # Creator ID
+    archiver: Optional[str]              # Archiver ID (if archived)
+    deleter: Optional[str]               # Deleter ID (if deleted)
+    archived_at: Optional[datetime]      # Archive timestamp
+    created_at: Optional[datetime]       # Creation timestamp
+    updated_at: Optional[datetime]       # Last update timestamp
+    deleted_at: Optional[datetime]       # Deletion timestamp
+```
+
+---
+
+### BoardGroup
+
+```python
+class BoardGroup:
+    id: str                    # Group ID
+    name: str                  # Group name
+    description: Optional[str] # Description
+    limit: Optional[int]       # Task limit for group
+    hidden: Optional[bool]     # Hidden status
+```
+
+---
+
+### BoardType
+
+```python
+class BoardType:
+    id: str                    # Type ID
+    label: str                 # Type label
+    icon: Icon                 # Type icon
+    color: Union[str, Color]   # Type color
+    description: Optional[str] # Description
+    hidden: Optional[bool]     # Hidden status
+```
+
+---
+
+### BoardCustomField
+
+```python
+class BoardCustomField:
+    id: str                         # Field ID
+    name: Optional[str]             # Field name
+    type: CustomFieldType           # Field type
+    description: Optional[str]      # Description
+    options: Optional[List[Any]]    # Options (for SELECT type)
+    hidden: Optional[bool]          # Hidden status
+```
+
+---
+
+### BoardResponse
+
+```python
+class BoardResponse:
+    type: str                   # Response type
+    payload: Dict[str, Board]   # Response payload
+    
+    @property
+    def board(self) -> Board:  # Convenience property
+        ...
+```
+
+---
+
+### BoardsResponse
+
+```python
+class BoardsResponse:
+    type: str                    # Response type
+    payload: BoardsPayload       # Response payload
+    
+    @property
+    def boards(self) -> List[Board]:  # Convenience property
+        ...
+```
+
+---
+
+## Request Models
 
 ### CreateBoardTypeRequest
 
@@ -225,6 +318,146 @@ class SelectOption:
     label: str                          # Option label
     color: Color                       # Option color
     icon: Icon                         # Option icon
+```
+
+---
+
+## Response Models
+
+### CreateBoardTypeResponse
+
+```python
+class CreateBoardTypeResponse:
+    type: str                           # Response type
+    payload: CreateBoardTypePayload     # Response payload
+    
+    @property
+    def board_type(self) -> BoardType: # Convenience property
+        ...
+```
+
+---
+
+### CreateBoardTypePayload
+
+```python
+class CreateBoardTypePayload:
+    boardType: BoardType                # Created board type
+```
+
+---
+
+### EditBoardTypeResponse
+
+```python
+class EditBoardTypeResponse:
+    type: str                           # Response type
+    payload: EditBoardTypePayload       # Response payload
+    
+    @property
+    def board_type(self) -> BoardType: # Convenience property
+        ...
+```
+
+---
+
+### EditBoardTypePayload
+
+```python
+class EditBoardTypePayload:
+    boardType: BoardType                # Edited board type
+```
+
+---
+
+### CreateBoardGroupResponse
+
+```python
+class CreateBoardGroupResponse:
+    type: str                           # Response type
+    payload: CreateBoardGroupPayload    # Response payload
+    
+    @property
+    def board_groups(self) -> List[BoardGroup]:  # Convenience property
+        ...
+```
+
+---
+
+### CreateBoardGroupPayload
+
+```python
+class CreateBoardGroupPayload:
+    boardGroups: List[BoardGroup]       # All board groups
+```
+
+---
+
+### EditBoardGroupResponse
+
+```python
+class EditBoardGroupResponse:
+    type: str                           # Response type
+    payload: EditBoardGroupPayload      # Response payload
+    
+    @property
+    def board_groups(self) -> List[BoardGroup]:  # Convenience property
+        ...
+```
+
+---
+
+### EditBoardGroupPayload
+
+```python
+class EditBoardGroupPayload:
+    boardGroups: List[BoardGroup]       # All board groups
+```
+
+---
+
+### CreateBoardCustomFieldResponse
+
+```python
+class CreateBoardCustomFieldResponse:
+    type: str                           # Response type
+    payload: CreateBoardCustomFieldPayload  # Response payload
+    
+    @property
+    def custom_field(self) -> BoardCustomField:  # Convenience property
+        ...
+```
+
+---
+
+### CreateBoardCustomFieldPayload
+
+```python
+class CreateBoardCustomFieldPayload:
+    customField: BoardCustomField       # Created custom field
+```
+
+---
+
+### EditBoardCustomFieldResponse
+
+```python
+class EditBoardCustomFieldResponse:
+    type: str                           # Response type
+    payload: EditBoardCustomFieldPayload  # Response payload
+    
+    @property
+    def custom_field(self) -> BoardCustomField:  # Convenience property
+        ...
+```
+
+---
+
+### EditBoardCustomFieldPayload
+
+```python
+class EditBoardCustomFieldPayload:
+    customField: BoardCustomField       # Edited custom field
 ```
 
 ---
