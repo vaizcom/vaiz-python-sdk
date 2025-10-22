@@ -1,13 +1,22 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
+import { themes as prismThemes } from "prism-react-renderer";
+import type { Config } from "@docusaurus/types";
+import type * as Preset from "@docusaurus/preset-classic";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Vaiz Python SDK',
-  tagline: 'Official Python SDK for the Vaiz platform',
-  favicon: 'img/favicon.ico',
+  title: "Vaiz Python SDK",
+  tagline: "Official Python SDK for the Vaiz platform",
+  favicon: "img/favicon.ico",
+
+  plugins: [
+    [
+      "docusaurus-plugin-plausible",
+      {
+        domain: "docs-python-sdk.vaiz.com/",
+      },
+    ],
+  ],
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -15,38 +24,38 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://docs-python-sdk.vaiz.com',
+  url: "https://docs-python-sdk.vaiz.com",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'vaizcom', // Usually your GitHub org/user name.
-  projectName: 'vaiz-python-sdk', // Usually your repo name.
+  organizationName: "vaizcom", // Usually your GitHub org/user name.
+  projectName: "vaiz-python-sdk", // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: "throw",
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
 
   presets: [
     [
-      'classic',
+      "classic",
       {
         docs: {
-          sidebarPath: './sidebars.ts',
-          routeBasePath: '/',  // Docs at root instead of /docs
+          sidebarPath: "./sidebars.ts",
+          routeBasePath: "/", // Docs at root instead of /docs
           // editUrl: 'https://github.com/vaizcom/vaiz-python-sdk/tree/main/docs-site/', // Disabled to hide "Edit this page" button
         },
         blog: false,
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: "./src/css/custom.css",
         },
       } satisfies Preset.Options,
     ],
@@ -54,127 +63,132 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: "img/docusaurus-social-card.jpg",
     colorMode: {
       respectPrefersColorScheme: true,
     },
     // Algolia DocSearch configuration
     algolia: {
       // Application ID provided by Algolia
-      appId: '55Y6IM29JE',
-      
+      appId: "55Y6IM29JE",
+
       // Public API key: it is safe to commit it
-      apiKey: 'e3a005e6dcc969173ae27b34390db823',
-      
+      apiKey: "e3a005e6dcc969173ae27b34390db823",
+
       // Index name
-      indexName: 'docs_python_sdk_vaiz_com_55y6im29je_docs',
-      
+      indexName: "docs_python_sdk_vaiz_com_55y6im29je_docs",
+
       // Optional: see doc section below
       contextualSearch: true,
-      
+
       // Optional: Specify domains where the navigation should occur through window.location instead of history.push
       // externalUrlRegex: 'external\\.com|domain\\.com',
-      
+
       // Optional: Replace parts of the item URLs from Algolia
       // replaceSearchResultPathname: {
       //   from: '/docs/', // or as RegExp: /\/docs\//
       //   to: '/',
       // },
-      
+
       // Optional: Algolia search parameters
       searchParameters: {
         // Show more content in snippets
-        attributesToSnippet: ['content:30'],
+        attributesToSnippet: ["content:30"],
         // Retrieve hierarchy for better context
         attributesToRetrieve: [
-          'hierarchy.lvl0',
-          'hierarchy.lvl1', 
-          'hierarchy.lvl2',
-          'hierarchy.lvl3',
-          'content',
-          'url',
-          'type',
+          "hierarchy.lvl0",
+          "hierarchy.lvl1",
+          "hierarchy.lvl2",
+          "hierarchy.lvl3",
+          "content",
+          "url",
+          "type",
         ],
         // Highlight matching terms
-        attributesToHighlight: ['hierarchy.lvl1', 'hierarchy.lvl2', 'hierarchy.lvl3', 'content'],
+        attributesToHighlight: [
+          "hierarchy.lvl1",
+          "hierarchy.lvl2",
+          "hierarchy.lvl3",
+          "content",
+        ],
       },
-      
+
       // Optional: path for search page that enabled by default (`false` to disable it)
-      searchPagePath: 'search',
-      
+      searchPagePath: "search",
+
       // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
       insights: false,
     },
     navbar: {
-      title: 'Vaiz Python SDK',
+      title: "Vaiz Python SDK",
       logo: {
-        alt: 'Vaiz Logo',
-        src: 'img/logo.svg',
+        alt: "Vaiz Logo",
+        src: "img/logo.svg",
       },
       items: [
         {
-          label: 'v0.8.1',
-          href: 'https://pypi.org/project/vaiz-sdk/0.8.1/',
-          position: 'left',
+          label: "v0.8.1",
+          href: "https://pypi.org/project/vaiz-sdk/0.8.1/",
+          position: "left",
         },
         {
-          href: 'https://github.com/vaizcom/vaiz-python-sdk',
-          label: 'GitHub',
-          position: 'right',
+          href: "https://github.com/vaizcom/vaiz-python-sdk",
+          label: "GitHub",
+          position: "right",
         },
       ],
     },
     footer: {
-      style: 'dark',
+      style: "dark",
       links: [
         {
-          title: 'Documentation',
+          title: "Documentation",
           items: [
             {
-              label: 'Getting Started',
-              to: '/',
+              label: "Getting Started",
+              to: "/",
             },
             {
-              label: 'Introduction',
-              to: '/intro',
+              label: "Introduction",
+              to: "/intro",
             },
             {
-              label: 'API Reference',
-              to: '/api-reference/overview',
+              label: "API Reference",
+              to: "/api-reference/overview",
             },
           ],
         },
         {
-          title: 'Community',
+          title: "Community",
           items: [
             {
-              label: 'PyPI Package',
-              href: 'https://pypi.org/project/vaiz-sdk/',
+              label: "PyPI Package",
+              href: "https://pypi.org/project/vaiz-sdk/",
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/vaizcom/vaiz-python-sdk',
+              label: "GitHub",
+              href: "https://github.com/vaizcom/vaiz-python-sdk",
             },
             {
-              label: 'Vaiz App',
-              href: 'https://vaiz.com',
+              label: "Vaiz App",
+              href: "https://vaiz.com",
             },
           ],
         },
         {
-          title: 'More',
+          title: "More",
           items: [
             {
-              label: 'Examples',
-              to: '/patterns/introduction',
+              label: "Examples",
+              to: "/patterns/introduction",
             },
             {
-              label: 'Contributing',
-              href: 'https://github.com/vaizcom/vaiz-python-sdk/blob/main/CONTRIBUTING.md',
+              label: "Contributing",
+              href: "https://github.com/vaizcom/vaiz-python-sdk/blob/main/CONTRIBUTING.md",
             },
             {
-              label: 'Changelog',
-              href: 'https://github.com/vaizcom/vaiz-python-sdk/blob/main/CHANGELOG.md',
+              label: "Changelog",
+              href: "https://github.com/vaizcom/vaiz-python-sdk/blob/main/CHANGELOG.md",
             },
           ],
         },
@@ -184,7 +198,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
-      additionalLanguages: ['python', 'bash'],
+      additionalLanguages: ["python", "bash"],
     },
   } satisfies Preset.ThemeConfig,
 };
