@@ -7,7 +7,6 @@ combining them with other document elements for rich content.
 
 from examples.config import get_client, PROJECT_ID, BOARD_ID
 from vaiz import (
-    VaizClient,
     CreateTaskRequest,
     TaskPriority,
     # Document structure builders
@@ -143,7 +142,7 @@ def main():
                 )
             )
         ),
-    ]
+    ])
     
     try:
         # Note: You need to provide valid PROJECT_ID and BOARD_ID in .env
@@ -265,11 +264,11 @@ def main():
             mention_user(current_member_id),
             text(" on 2025-10-23", italic=True)
         )
-    ]
+    ])
     
     try:
         client.replace_json_document(document_id, update_content)
-        print(f"✅ Document updated successfully!")
+        print("✅ Document updated successfully!")
         print(f"\n🔗 View at: https://vaiz.app/document/{document_id}")
         
         # Verify mentions were created
@@ -313,4 +312,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
