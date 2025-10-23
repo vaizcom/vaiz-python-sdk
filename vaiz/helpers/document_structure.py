@@ -170,7 +170,9 @@ def text(content: str, bold: bool = False, italic: bool = False,
         >>> text("Hello World", bold=True)
         {'type': 'text', 'text': 'Hello World', 'marks': [{'type': 'bold'}]}
     """
-    node: TextNode = {"type": "text", "text": content}
+    # Normalize empty text to a single space to avoid server validation errors
+    normalized_content = " " if content == "" else content
+    node: TextNode = {"type": "text", "text": normalized_content}
     marks: List[Mark] = []
     
     if bold:
