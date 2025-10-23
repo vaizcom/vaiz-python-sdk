@@ -206,17 +206,43 @@ status_table = table(
 )
 ```
 
+### Table with Header Cells
+
+Use `table_header()` to create proper header cells (`<th>` in HTML):
+
+```python
+from vaiz import table, table_row, table_header
+
+# Table with semantic header cells
+status_table = table(
+    table_row(
+        table_header("Task"),
+        table_header("Status"),
+        table_header("Priority")
+    ),
+    table_row("Design mockups", "Done", "High"),
+    table_row("API development", "In Progress", "High"),
+    table_row("Documentation", "Todo", "Medium")
+)
+```
+
+**Benefits of `table_header()`:**
+- Semantic HTML structure (`<th>` vs `<td>`)
+- Better accessibility for screen readers
+- Consistent header styling
+- Support for colspan/rowspan on headers
+
 ### Table with Formatting
 
 Add formatting to table content:
 
 ```python
-from vaiz import table, table_row, table_cell, text, paragraph
+from vaiz import table, table_row, table_cell, table_header, text, paragraph
 
 formatted_table = table(
     table_row(
-        table_cell(paragraph(text("Name", bold=True))),
-        table_cell(paragraph(text("Status", bold=True)))
+        table_header(paragraph(text("Name", bold=True))),
+        table_header(paragraph(text("Status", bold=True)))
     ),
     table_row(
         table_cell(paragraph(text("Task 1", bold=True))),
@@ -232,7 +258,7 @@ formatted_table = table(
 ### Complex Table Example
 
 ```python
-from vaiz import heading, paragraph, table, table_row, text
+from vaiz import heading, paragraph, table, table_row, table_header, text
 
 content = [
     heading(1, "📊 Project Metrics"),
@@ -240,7 +266,11 @@ content = [
     paragraph("Current sprint status:"),
     
     table(
-        table_row("Metric", "Count", "Percentage"),  # Header row
+        table_row(
+            table_header("Metric"),
+            table_header("Count"),
+            table_header("Percentage")
+        ),
         table_row("Completed", "28", "60%"),
         table_row("In Progress", "12", "26%"),
         table_row("Todo", "7", "14%")
@@ -248,6 +278,31 @@ content = [
     
     paragraph(text("Total: 47 tasks", bold=True))
 ]
+```
+
+### Table with Merged Headers (colspan/rowspan)
+
+```python
+from vaiz import table, table_row, table_header, table_cell, text, paragraph
+
+# Quarterly report table with merged header
+quarterly_table = table(
+    # Main header spanning all columns
+    table_row(
+        table_header(paragraph(text("Q1-Q4 Performance", bold=True)), colspan=5)
+    ),
+    # Subheaders
+    table_row(
+        table_header("Metric"),
+        table_header("Q1"),
+        table_header("Q2"),
+        table_header("Q3"),
+        table_header("Q4")
+    ),
+    # Data rows
+    table_row("Revenue", "$100K", "$120K", "$150K", "$180K"),
+    table_row("Users", "1,000", "1,500", "2,200", "3,000")
+)
 ```
 
 ## Visual Elements

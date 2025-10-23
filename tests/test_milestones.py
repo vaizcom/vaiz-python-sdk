@@ -69,11 +69,18 @@ def test_create_milestone(client):
 
 
 def test_get_milestone(client):
-    # First get all milestones to have a valid milestone ID
-    milestones_response = client.get_milestones()
-    assert milestones_response.milestones, "No milestones available for testing"
+    # First create a milestone to ensure we have one to get
+    create_request = CreateMilestoneRequest(
+        name="Test Milestone for Get",
+        board=TEST_BOARD_ID,
+        project=TEST_PROJECT_ID,
+        description="Test milestone for get operation"
+    )
     
-    milestone_id = milestones_response.milestones[0].id
+    create_response = client.create_milestone(create_request)
+    milestone_id = create_response.milestone.id
+    
+    # Now get the milestone by ID
     response = client.get_milestone(milestone_id)
     
     assert response.type == "GetMilestone"

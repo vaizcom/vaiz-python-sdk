@@ -5,7 +5,7 @@ This module provides type-safe builders for document nodes and marks,
 ensuring only validated elements are used with the replace_json_document API.
 """
 
-from typing import List, Dict, Any, Optional, Literal, Union
+from typing import List, Optional, Literal, Union
 from typing_extensions import TypedDict, NotRequired
 
 
@@ -123,11 +123,22 @@ class TableCellNode(TypedDict):
     content: NotRequired[List[DocumentContent]]
 
 
+class TableHeaderNode(TypedDict):
+    """Table header cell node (th)."""
+    type: Literal["tableHeader"]
+    attrs: NotRequired[TableCellAttrs]
+    content: NotRequired[List[DocumentContent]]
+
+
+# Union type for table cells (both data and header cells)
+TableCellOrHeader = Union[TableCellNode, TableHeaderNode]
+
+
 class TableRowNode(TypedDict):
-    """Table row node containing cells."""
+    """Table row node containing cells or headers."""
     type: Literal["tableRow"]
     attrs: NotRequired[TableRowAttrs]
-    content: List[TableCellNode]
+    content: List[TableCellOrHeader]
 
 
 class TableNode(TypedDict):
@@ -377,12 +388,40 @@ def table_cell(*content: Union[ParagraphNode, str], colspan: int = 1, rowspan: i
     return node
 
 
-def table_row(*cells: Union[TableCellNode, str], show_row_numbers: bool = False) -> TableRowNode:
+def table_header(*content: Union[ParagraphNode, str], colspan: int = 1, rowspan: int = 1) -> TableHeaderNode:
+    """
+    Create a table header cell node (th).
+    
+    Args:
+        *content: Paragraphs or strings (strings will be wrapped in paragraphs)
+        colspan: Number of columns to span (default: 1)
+        rowspan: Number of rows to span (default: 1)
+    
+    Returns:
+        TableHeaderNode: A valid table header cell node
+        
+    Example:
+        >>> table_header("Column Name")
+        {'type': 'tableHeader', 'attrs': {'colspan': 1, 'rowspan': 1}, 'content': [...]}
+    """
+    node: TableHeaderNode = {
+        "type": "tableHeader",
+        "attrs": {"colspan": colspan, "rowspan": rowspan}
+    }
+    if content:
+        node["content"] = [
+            item if isinstance(item, dict) else paragraph(item)
+            for item in content
+        ]
+    return node
+
+
+def table_row(*cells: Union[TableCellNode, TableHeaderNode, str], show_row_numbers: bool = False) -> TableRowNode:
     """
     Create a table row node.
     
     Args:
-        *cells: Table cell nodes or strings (strings will be wrapped in cells)
+        *cells: Table cell nodes, table header nodes, or strings (strings will be wrapped in cells)
         show_row_numbers: Show row numbers (default: False)
     
     Returns:
@@ -391,8 +430,11 @@ def table_row(*cells: Union[TableCellNode, str], show_row_numbers: bool = False)
     Example:
         >>> table_row("Cell 1", "Cell 2", "Cell 3")
         {'type': 'tableRow', 'attrs': {'showRowNumbers': False}, 'content': [...]}
+        
+        >>> table_row(table_header("Name"), table_header("Status"))
+        {'type': 'tableRow', 'attrs': {'showRowNumbers': False}, 'content': [<headers>]}
     """
-    content: List[TableCellNode] = []
+    content: List[TableCellOrHeader] = []
     for cell in cells:
         if isinstance(cell, str):
             content.append(table_cell(cell))
@@ -449,6 +491,8 @@ __all__ = [
     'TableNode',
     'TableRowNode',
     'TableCellNode',
+    'TableHeaderNode',
+    'TableCellOrHeader',
     'HorizontalRuleNode',
     'Mark',
     
@@ -464,5 +508,6 @@ __all__ = [
     'table',
     'table_row',
     'table_cell',
+    'table_header',
 ]
 

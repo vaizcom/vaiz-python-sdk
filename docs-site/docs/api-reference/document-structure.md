@@ -538,7 +538,7 @@ Row in a table containing cells.
 
 ### Table Cell
 
-Table cell containing content.
+Table cell containing content (data cell).
 
 ```json
 {
@@ -560,7 +560,35 @@ Table cell containing content.
 - `colspan` - Number of columns to span (default: 1)
 - `rowspan` - Number of rows to span (default: 1)
 
-**Note:** The first row is typically used as table headers in the UI.
+### Table Header
+
+Table header cell (`<th>` in HTML). Use for semantic table headers.
+
+```json
+{
+  "type": "tableHeader",
+  "attrs": {
+    "colspan": 1,
+    "rowspan": 1
+  },
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [{"type": "text", "text": "Header Name"}]
+    }
+  ]
+}
+```
+
+**Attributes:**
+- `colspan` - Number of columns to span (default: 1)
+- `rowspan` - Number of rows to span (default: 1)
+
+**Benefits:**
+- Semantic HTML structure
+- Better accessibility for screen readers
+- Consistent styling
+- Supports colspan/rowspan like table cells
 
 ## Nested Structures
 
@@ -675,7 +703,7 @@ Lists can be nested within list items:
 Instead of manually constructing JSON, use the built-in helper functions:
 
 ```python
-from vaiz import heading, paragraph, text, bullet_list, link_text
+from vaiz import heading, paragraph, text, bullet_list, link_text, table, table_row, table_header
 
 content = [
     heading(1, "Project Documentation"),
@@ -690,6 +718,14 @@ content = [
     bullet_list(
         "Easy to use",
         "Type-safe"
+    ),
+    table(
+        table_row(
+            table_header("Feature"),
+            table_header("Status")
+        ),
+        table_row("Document helpers", "✅"),
+        table_row("Table headers", "✅")
     ),
     paragraph(
         "Learn more at ",
@@ -713,8 +749,9 @@ See [Document Structure Helpers Guide](../guides/document-structure-helpers) for
 | `orderedList` | Numbered list | `{"type": "orderedList", "content": [...]}` |
 | `listItem` | List item | `{"type": "listItem", "content": [...]}` |
 | `extension-table` | Table with rows | `{"type": "extension-table", "attrs": {"uid": "..."}, "content": [...]}` |
-| `tableRow` | Table row with cells | `{"type": "tableRow", "attrs": {"showRowNumbers": false}, "content": [...]}` |
-| `tableCell` | Table cell (data or header) | `{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
+| `tableRow` | Table row with cells/headers | `{"type": "tableRow", "attrs": {"showRowNumbers": false}, "content": [...]}` |
+| `tableCell` | Table data cell | `{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
+| `tableHeader` | Table header cell (th) | `{"type": "tableHeader", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
 | `horizontalRule` | Horizontal divider line | `{"type": "horizontalRule"}` |
 
 ### Marks

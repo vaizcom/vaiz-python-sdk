@@ -5,7 +5,7 @@ Tests for complex table structures with colspan, rowspan, and multiple columns.
 import pytest
 from tests.test_config import get_test_client
 from vaiz.models import CreateTaskRequest, TaskPriority
-from vaiz import heading, paragraph, text, table, table_row, table_cell, horizontal_rule
+from vaiz import heading, paragraph, text, table, table_row, table_cell, table_header, horizontal_rule
 
 
 def test_create_complex_table_with_colspan():
@@ -38,18 +38,18 @@ def test_create_complex_table_with_colspan():
         paragraph("Quarterly performance metrics:"),
         
         table(
-            # Header row with merged cell
+            # Header row with merged cell using table_header
             table_row(
-                table_cell(paragraph(text("Metric", bold=True))),
-                table_cell(paragraph(text("Q1-Q4 Performance", bold=True)), colspan=4)  # Spans 4 columns
+                table_header(paragraph(text("Metric", bold=True))),
+                table_header(paragraph(text("Q1-Q4 Performance", bold=True)), colspan=4)  # Spans 4 columns
             ),
             # Subheader row
             table_row(
-                table_cell(paragraph(text("Category", bold=True))),
-                table_cell("Q1"),
-                table_cell("Q2"),
-                table_cell("Q3"),
-                table_cell("Q4")
+                table_header(paragraph(text("Category", bold=True))),
+                table_header("Q1"),
+                table_header("Q2"),
+                table_header("Q3"),
+                table_header("Q4")
             ),
             # Data rows
             table_row("Revenue", "$100K", "$120K", "$150K", "$180K"),
@@ -105,12 +105,12 @@ def test_create_complex_table_with_rowspan():
         heading(1, "Team Structure"),
         
         table(
-            # Header
+            # Header row using table_header
             table_row(
-                table_cell("Department"),
-                table_cell("Role"),
-                table_cell("Name"),
-                table_cell("Status")
+                table_header("Department"),
+                table_header("Role"),
+                table_header("Name"),
+                table_header("Status")
             ),
             # Engineering department (3 rows)
             table_row(
@@ -188,13 +188,13 @@ def test_create_large_table_many_columns():
         paragraph("Monthly metrics for 2025:"),
         
         table(
-            # Header row - 12 months
+            # Header row - 12 months using table_header
             table_row(
-                table_cell(paragraph(text("Metric", bold=True))),
-                table_cell("Jan"), table_cell("Feb"), table_cell("Mar"),
-                table_cell("Apr"), table_cell("May"), table_cell("Jun"),
-                table_cell("Jul"), table_cell("Aug"), table_cell("Sep"),
-                table_cell("Oct"), table_cell("Nov"), table_cell("Dec")
+                table_header(paragraph(text("Metric", bold=True))),
+                table_header("Jan"), table_header("Feb"), table_header("Mar"),
+                table_header("Apr"), table_header("May"), table_header("Jun"),
+                table_header("Jul"), table_header("Aug"), table_header("Sep"),
+                table_header("Oct"), table_header("Nov"), table_header("Dec")
             ),
             # Revenue row
             table_row(
@@ -272,17 +272,17 @@ def test_create_complex_table_with_formatting():
         heading(1, "Project Status Matrix"),
         
         table(
-            # Header with merged cell
+            # Header with merged cell using table_header
             table_row(
-                table_cell(paragraph(text("Project Dashboard", bold=True)), colspan=5)
+                table_header(paragraph(text("Project Dashboard", bold=True)), colspan=5)
             ),
-            # Subheader
+            # Subheader using table_header
             table_row(
-                table_cell(paragraph(text("Phase", bold=True))),
-                table_cell(paragraph(text("Tasks", bold=True))),
-                table_cell(paragraph(text("Status", bold=True))),
-                table_cell(paragraph(text("Owner", bold=True))),
-                table_cell(paragraph(text("Due", bold=True)))
+                table_header(paragraph(text("Phase", bold=True))),
+                table_header(paragraph(text("Tasks", bold=True))),
+                table_header(paragraph(text("Status", bold=True))),
+                table_header(paragraph(text("Owner", bold=True))),
+                table_header(paragraph(text("Due", bold=True)))
             ),
             # Phase 1 - 3 tasks (rowspan for phase)
             table_row(
@@ -404,11 +404,11 @@ def test_append_multiple_complex_tables():
         heading(2, "👥 Team Allocation"),
         table(
             table_row(
-                table_cell("Team"),
-                table_cell("Frontend"),
-                table_cell("Backend"),
-                table_cell("QA"),
-                table_cell("Total")
+                table_header("Team"),
+                table_header("Frontend"),
+                table_header("Backend"),
+                table_header("QA"),
+                table_header("Total")
             ),
             table_row("Team A", "3", "2", "1", "6"),
             table_row("Team B", "2", "3", "1", "6"),
@@ -429,13 +429,13 @@ def test_append_multiple_complex_tables():
         heading(2, "💰 Budget Breakdown"),
         table(
             table_row(
-                table_cell(paragraph(text("Category", bold=True))),
-                table_cell(paragraph(text("2025 Budget", bold=True)), colspan=2)
+                table_header(paragraph(text("Category", bold=True))),
+                table_header(paragraph(text("2025 Budget", bold=True)), colspan=2)
             ),
             table_row(
-                table_cell(""),
-                table_cell("Planned"),
-                table_cell("Actual")
+                table_header(""),
+                table_header("Planned"),
+                table_header("Actual")
             ),
             table_row("Development", "$200K", "$180K"),
             table_row("Marketing", "$100K", "$95K"),
@@ -508,7 +508,14 @@ def test_create_nested_table_structure():
         heading(2, "Current Sprint Tasks"),
         
         table(
-            table_row("ID", "Task", "Assignee", "Priority", "Status", "Hours"),
+            table_row(
+                table_header("ID"),
+                table_header("Task"),
+                table_header("Assignee"),
+                table_header("Priority"),
+                table_header("Status"),
+                table_header("Hours")
+            ),
             table_row("T-001", "API Integration", "John", "High", "✅ Done", "8"),
             table_row("T-002", "UI Polish", "Jane", "Medium", "⏳ Progress", "12"),
             table_row("T-003", "Documentation", "Mike", "Low", "📋 Todo", "6"),

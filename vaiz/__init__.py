@@ -126,6 +126,7 @@ from .helpers import (
     table,
     table_row,
     table_cell,
+    table_header,
 )
 
 __all__ = [
@@ -243,4 +244,5 @@ __all__ = [
     'table',
     'table_row',
     'table_cell',
+    'table_header',
 ]

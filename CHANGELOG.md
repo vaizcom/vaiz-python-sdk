@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.0] - 2025-10-23
+
+### Added
+
+- **📊 Table Headers**: New `table_header()` function for creating semantic table header cells
+
+### Fixed
+
+- **🐛 Test Improvements**: Fixed `test_get_milestone` to create milestone before fetching (no longer depends on existing data)
+
+---
+
 ## [0.9.1] - 2025-10-22
 
 ### Added

@@ -63,6 +63,7 @@ from .document_structure import (
     table,
     table_row,
     table_cell,
+    table_header,
     
     # Document structure types
     DocumentNode,
@@ -75,6 +76,8 @@ from .document_structure import (
     TableNode,
     TableRowNode,
     TableCellNode,
+    TableHeaderNode,
+    TableCellOrHeader,
     HorizontalRuleNode,
     Mark,
 )
@@ -92,6 +95,7 @@ __all__ = [
     'table',
     'table_row',
     'table_cell',
+    'table_header',
     
     # Document structure types
     'DocumentNode',
@@ -104,6 +108,8 @@ __all__ = [
     'TableNode',
     'TableRowNode',
     'TableCellNode',
+    'TableHeaderNode',
+    'TableCellOrHeader',
     'HorizontalRuleNode',
     'Mark',
     
