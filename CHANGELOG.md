@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.1] - 2025-10-22
+
+### Added
+
+- **📏 Horizontal Rule**: Added `horizontal_rule()` helper for creating horizontal dividers
+
+### Changed
+
+- **🔧 Breaking**: Removed `separator()` - use `horizontal_rule()` instead for true HTML-style dividers
+  - Migration: Replace `separator()` with `horizontal_rule()`
+
+---
+
 ## [0.9.0] - 2025-10-22
 
 ### Added
