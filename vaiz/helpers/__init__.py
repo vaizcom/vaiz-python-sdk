@@ -61,6 +61,9 @@ from .document_structure import (
     link_text,
     horizontal_rule,
     blockquote,
+    details,
+    details_summary,
+    details_content,
     table,
     table_row,
     table_cell,
@@ -81,6 +84,9 @@ from .document_structure import (
     TableCellOrHeader,
     HorizontalRuleNode,
     BlockquoteNode,
+    DetailsNode,
+    DetailsSummaryNode,
+    DetailsContentNode,
     Mark,
 )
 
@@ -95,6 +101,9 @@ __all__ = [
     'link_text',
     'horizontal_rule',
     'blockquote',
+    'details',
+    'details_summary',
+    'details_content',
     'table',
     'table_row',
     'table_cell',
@@ -115,6 +124,9 @@ __all__ = [
     'TableCellOrHeader',
     'HorizontalRuleNode',
     'BlockquoteNode',
+    'DetailsNode',
+    'DetailsSummaryNode',
+    'DetailsContentNode',
     'Mark',
     
     # Custom fields (existing)

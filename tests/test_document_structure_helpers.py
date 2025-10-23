@@ -7,8 +7,8 @@ from tests.test_config import get_test_client
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz.helpers.document_structure import (
     text, paragraph, heading, bullet_list, ordered_list,
-    list_item, link_text, horizontal_rule, blockquote, table, table_row, 
-    table_cell
+    list_item, link_text, horizontal_rule, blockquote, details, 
+    details_summary, details_content, table, table_row, table_cell
 )
 
 
@@ -160,6 +160,72 @@ def test_document_structure_blockquote_builder():
     )
     assert node["type"] == "blockquote"
     assert node["content"][0]["content"][0]["marks"][0]["type"] == "bold"
+
+
+def test_document_structure_details_builder():
+    """Test details (collapsible section) builder."""
+    # Simple details with string summary
+    node = details("Click to expand", paragraph("Hidden content"))
+    assert node["type"] == "details"
+    assert len(node["content"]) == 2
+    assert node["content"][0]["type"] == "detailsSummary"
+    assert node["content"][0]["content"][0]["text"] == "Click to expand"
+    assert node["content"][1]["type"] == "detailsContent"
+    
+    # Details with formatted summary
+    node = details(
+        details_summary(text("Additional Info", bold=True)),
+        details_content(paragraph("More information here"))
+    )
+    assert node["type"] == "details"
+    assert node["content"][0]["type"] == "detailsSummary"
+    assert node["content"][0]["content"][0]["marks"][0]["type"] == "bold"
+    assert node["content"][1]["type"] == "detailsContent"
+    
+    # Details with multiple paragraphs in content
+    node = details(
+        "Summary",
+        details_content(
+            paragraph("First paragraph"),
+            paragraph("Second paragraph")
+        )
+    )
+    assert node["type"] == "details"
+    assert node["content"][1]["type"] == "detailsContent"
+    assert len(node["content"][1]["content"]) == 2
+    
+    # Details with simple string content (auto-wrapped)
+    node = details("Summary", paragraph("Content"))
+    assert node["type"] == "details"
+    assert node["content"][1]["type"] == "detailsContent"
+
+
+def test_document_structure_details_summary_builder():
+    """Test details summary builder."""
+    node = details_summary("Click to expand")
+    assert node["type"] == "detailsSummary"
+    assert node["content"][0]["text"] == "Click to expand"
+    
+    # With formatted text
+    node = details_summary(text("Important", bold=True), " info")
+    assert node["type"] == "detailsSummary"
+    assert len(node["content"]) == 2
+    assert node["content"][0]["marks"][0]["type"] == "bold"
+
+
+def test_document_structure_details_content_builder():
+    """Test details content builder."""
+    node = details_content(paragraph("Hidden content"))
+    assert node["type"] == "detailsContent"
+    assert node["content"][0]["type"] == "paragraph"
+    
+    # With multiple paragraphs
+    node = details_content(
+        paragraph("First"),
+        paragraph("Second")
+    )
+    assert node["type"] == "detailsContent"
+    assert len(node["content"]) == 2
 
 
 def test_document_structure_table_builders():
@@ -397,7 +463,7 @@ def test_create_comprehensive_document_with_all_features():
         heading, paragraph, text, 
         bullet_list, ordered_list, list_item,
         table, table_row, table_cell, table_header,
-        horizontal_rule, blockquote, link_text
+        horizontal_rule, blockquote, details, link_text
     )
     
     client = get_test_client()
@@ -654,6 +720,36 @@ def test_create_comprehensive_document_with_all_features():
         
         horizontal_rule(),
         
+        # Details (collapsible) section
+        heading(2, "📂 Collapsible Sections (Details)"),
+        
+        paragraph("Simple collapsible section:"),
+        
+        details(
+            "Click to expand",
+            paragraph("This content is hidden by default and can be expanded.")
+        ),
+        
+        paragraph("Details with formatted content:"),
+        
+        details(
+            "Technical Details",
+            paragraph(
+                text("API Endpoint: ", bold=True),
+                text("/api/v1/documents", code=True)
+            ),
+            paragraph(
+                text("Method: ", bold=True),
+                "POST"
+            ),
+            paragraph(
+                text("Authentication: ", bold=True),
+                "Bearer token required"
+            )
+        ),
+        
+        horizontal_rule(),
+        
         # Blockquote section
         heading(2, "💬 Blockquotes"),
         
@@ -730,6 +826,7 @@ def test_create_comprehensive_document_with_all_features():
             "Bullet lists (simple and nested)",
             "Ordered lists (with custom start numbers)",
             "Blockquotes (simple and multi-paragraph)",
+            "Details (collapsible sections)",
             "Tables with header cells (table_header)",
             "Complex tables with colspan and rowspan",
             "Wide tables with many columns",
@@ -767,6 +864,7 @@ def test_create_comprehensive_document_with_all_features():
     ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "orderedList")
     hrs = sum(1 for b in saved_blocks if b.get("type") == "horizontalRule")
     blockquotes = sum(1 for b in saved_blocks if b.get("type") == "blockquote")
+    details_blocks = sum(1 for b in saved_blocks if b.get("type") == "details")
     
     # Verify we have a good variety of content
     assert headings >= 8, f"Expected at least 8 headings, got {headings}"
@@ -776,6 +874,7 @@ def test_create_comprehensive_document_with_all_features():
     assert ordered_lists >= 2, f"Expected at least 2 ordered lists, got {ordered_lists}"
     assert hrs >= 5, f"Expected at least 5 horizontal rules, got {hrs}"
     assert blockquotes >= 2, f"Expected at least 2 blockquotes, got {blockquotes}"
+    assert details_blocks >= 2, f"Expected at least 2 details blocks, got {details_blocks}"
     
     # Verify table headers are used correctly
     found_table_headers = False
@@ -802,6 +901,7 @@ def test_create_comprehensive_document_with_all_features():
     print(f"   Bullet lists: {bullet_lists}")
     print(f"   Ordered lists: {ordered_lists}")
     print(f"   Blockquotes: {blockquotes}")
+    print(f"   Details (collapsible): {details_blocks}")
     print(f"   Horizontal rules: {hrs}")
     print(f"   Document ID: {document_id}")
 
@@ -817,6 +917,9 @@ if __name__ == "__main__":
     test_document_structure_link_text_builder()
     test_document_structure_horizontal_rule_builder()
     test_document_structure_blockquote_builder()
+    test_document_structure_details_builder()
+    test_document_structure_details_summary_builder()
+    test_document_structure_details_content_builder()
     test_document_structure_table_builders()
     test_document_structure_table_with_formatting()
     test_replace_json_document_with_helpers()

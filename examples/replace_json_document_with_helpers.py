@@ -11,7 +11,7 @@ from vaiz.models import CreateTaskRequest, TaskPriority
 # Import document structure builder functions
 from vaiz import (
     text, paragraph, heading, bullet_list, ordered_list, 
-    list_item, link_text, horizontal_rule, blockquote
+    list_item, link_text, horizontal_rule, blockquote, details
 )
 
 
@@ -110,6 +110,24 @@ def main():
                 ),
                 paragraph(
                     "— The Pragmatic Programmer"
+                )
+            ),
+            
+            # Collapsible details section
+            heading(2, "🔍 Advanced Usage"),
+            details(
+                "Click to expand: API Configuration",
+                paragraph(
+                    text("Endpoint: ", bold=True),
+                    text("https://api.vaiz.app/v1", code=True)
+                ),
+                paragraph(
+                    text("Authentication: ", bold=True),
+                    "Bearer token required"
+                ),
+                paragraph(
+                    text("Rate Limit: ", bold=True),
+                    "1000 requests per hour"
                 )
             ),
             

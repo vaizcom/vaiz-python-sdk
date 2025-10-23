@@ -62,7 +62,7 @@ class OrderedListAttrs(TypedDict):
 
 
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode']
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode']
 
 
 class ParagraphNode(TypedDict):
@@ -161,8 +161,27 @@ class BlockquoteNode(TypedDict):
     content: NotRequired[List[DocumentContent]]
 
 
+# Details (collapsible) nodes
+class DetailsSummaryNode(TypedDict):
+    """Details summary node (always visible header)."""
+    type: Literal["detailsSummary"]
+    content: NotRequired[List[DocumentContent]]
+
+
+class DetailsContentNode(TypedDict):
+    """Details content node (collapsible body)."""
+    type: Literal["detailsContent"]
+    content: NotRequired[List[DocumentContent]]
+
+
+class DetailsNode(TypedDict):
+    """Details node (collapsible section with summary and content)."""
+    type: Literal["details"]
+    content: List[Union[DetailsSummaryNode, DetailsContentNode]]
+
+
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode]
 
 
 # Helper functions
@@ -393,6 +412,105 @@ def blockquote(*content: Union[ParagraphNode, str]) -> BlockquoteNode:
     return node
 
 
+def details_summary(*content: Union[TextNode, str]) -> DetailsSummaryNode:
+    """
+    Create a details summary node (always visible header of collapsible section).
+    
+    Args:
+        *content: Text nodes or strings (strings will be converted to text nodes)
+    
+    Returns:
+        DetailsSummaryNode: A valid details summary node
+        
+    Example:
+        >>> details_summary("Click to expand")
+        {'type': 'detailsSummary', 'content': [{'type': 'text', 'text': 'Click to expand'}]}
+    """
+    node: DetailsSummaryNode = {"type": "detailsSummary"}
+    if content:
+        node["content"] = [
+            item if isinstance(item, dict) else text(item)
+            for item in content
+        ]
+    return node
+
+
+def details_content(*content: Union[ParagraphNode, str]) -> DetailsContentNode:
+    """
+    Create a details content node (collapsible body).
+    
+    Args:
+        *content: Paragraphs or strings (strings will be wrapped in paragraphs)
+    
+    Returns:
+        DetailsContentNode: A valid details content node
+        
+    Example:
+        >>> details_content(paragraph("Hidden content"))
+        {'type': 'detailsContent', 'content': [{'type': 'paragraph', ...}]}
+    """
+    node: DetailsContentNode = {"type": "detailsContent"}
+    if content:
+        node["content"] = [
+            item if isinstance(item, dict) else paragraph(item)
+            for item in content
+        ]
+    return node
+
+
+def details(summary: Union[DetailsSummaryNode, str], *content: Union[DetailsContentNode, ParagraphNode, str]) -> DetailsNode:
+    """
+    Create a collapsible details section (HTML <details> element).
+    
+    Args:
+        summary: Summary node or string (always visible header)
+        *content: Content nodes, paragraphs, or strings (collapsible body)
+    
+    Returns:
+        DetailsNode: A valid details node
+        
+    Example:
+        >>> details("Click to expand", paragraph("Hidden content"))
+        {'type': 'details', 'content': [{'type': 'detailsSummary', ...}, {'type': 'detailsContent', ...}]}
+        
+        >>> details(
+        ...     details_summary(text("Additional Info", bold=True)),
+        ...     details_content(
+        ...         paragraph("Here is more information"),
+        ...         paragraph("With multiple paragraphs")
+        ...     )
+        ... )
+    """
+    # Create summary node if string provided
+    summary_node: DetailsSummaryNode
+    if isinstance(summary, str):
+        summary_node = details_summary(summary)
+    else:
+        summary_node = summary
+    
+    # Create content node
+    content_items: List[DocumentContent] = []
+    for item in content:
+        if isinstance(item, dict):
+            # If it's already a DetailsContentNode, use it; otherwise wrap in paragraph
+            if item.get("type") == "detailsContent":
+                content_items.append(item)
+            else:
+                content_items.append(item)
+        else:
+            # String - wrap in paragraph
+            content_items.append(paragraph(item))
+    
+    # Wrap content in detailsContent if not already wrapped
+    if content_items and all(item.get("type") != "detailsContent" for item in content_items):
+        content_node = details_content(*content_items)
+        result_content: List[Union[DetailsSummaryNode, DetailsContentNode]] = [summary_node, content_node]
+    else:
+        result_content = [summary_node] + [item for item in content_items if item.get("type") == "detailsContent"]
+    
+    return {"type": "details", "content": result_content}
+
+
 def table_cell(*content: Union[ParagraphNode, str], colspan: int = 1, rowspan: int = 1) -> TableCellNode:
     """
     Create a table cell node.
@@ -528,6 +646,9 @@ __all__ = [
     'TableCellOrHeader',
     'HorizontalRuleNode',
     'BlockquoteNode',
+    'DetailsNode',
+    'DetailsSummaryNode',
+    'DetailsContentNode',
     'Mark',
     
     # Builders
@@ -540,6 +661,9 @@ __all__ = [
     'link_text',
     'horizontal_rule',
     'blockquote',
+    'details',
+    'details_summary',
+    'details_content',
     'table',
     'table_row',
     'table_cell',
