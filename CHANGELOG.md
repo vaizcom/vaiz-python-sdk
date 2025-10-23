@@ -15,12 +15,6 @@
   - `details_content()` - Hidden content that expands on click
   - Great for FAQs, technical details, and optional information
 
-### Documentation
-
-- Updated Document Structure guide with blockquote and details examples
-- Updated API Reference with new node types
-- Added comprehensive examples demonstrating all new features
-
 ---
 
 ## [0.10.0] - 2025-10-23
