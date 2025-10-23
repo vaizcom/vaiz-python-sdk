@@ -62,7 +62,7 @@ class OrderedListAttrs(TypedDict):
 
 
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode']
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode']
 
 
 class ParagraphNode(TypedDict):
@@ -137,8 +137,14 @@ class TableNode(TypedDict):
     content: List[TableRowNode]
 
 
+# Horizontal rule node
+class HorizontalRuleNode(TypedDict):
+    """Horizontal rule (divider line)."""
+    type: Literal["horizontalRule"]
+
+
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode]
 
 
 # Helper functions
@@ -327,22 +333,18 @@ def link_text(content: str, href: str, target: str = "_blank",
     return text(content, bold=bold, italic=italic, link=href, link_target=target)
 
 
-def separator(char: str = "━", length: int = 43) -> ParagraphNode:
+def horizontal_rule() -> HorizontalRuleNode:
     """
-    Create a visual separator paragraph.
-    
-    Args:
-        char: Character to use for separator (default: "━")
-        length: Length of the separator (default: 43)
+    Create a horizontal rule (divider line).
     
     Returns:
-        ParagraphNode: A paragraph with separator line
+        HorizontalRuleNode: A horizontal rule node
         
     Example:
-        >>> separator()
-        {'type': 'paragraph', 'content': [{'type': 'text', 'text': '━━━...'}]}
+        >>> horizontal_rule()
+        {'type': 'horizontalRule'}
     """
-    return paragraph(char * length)
+    return {"type": "horizontalRule"}
 
 
 def table_cell(*content: Union[ParagraphNode, str], colspan: int = 1, rowspan: int = 1) -> TableCellNode:
@@ -445,6 +447,7 @@ __all__ = [
     'TableNode',
     'TableRowNode',
     'TableCellNode',
+    'HorizontalRuleNode',
     'Mark',
     
     # Builders
@@ -455,7 +458,7 @@ __all__ = [
     'bullet_list',
     'ordered_list',
     'link_text',
-    'separator',
+    'horizontal_rule',
     'table',
     'table_row',
     'table_cell',

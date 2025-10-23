@@ -59,7 +59,7 @@ from .document_structure import (
     bullet_list,
     ordered_list,
     link_text,
-    separator,
+    horizontal_rule,
     table,
     table_row,
     table_cell,
@@ -75,6 +75,7 @@ from .document_structure import (
     TableNode,
     TableRowNode,
     TableCellNode,
+    HorizontalRuleNode,
     Mark,
 )
 
@@ -87,7 +88,7 @@ __all__ = [
     'bullet_list',
     'ordered_list',
     'link_text',
-    'separator',
+    'horizontal_rule',
     'table',
     'table_row',
     'table_cell',
@@ -103,6 +104,7 @@ __all__ = [
     'TableNode',
     'TableRowNode',
     'TableCellNode',
+    'HorizontalRuleNode',
     'Mark',
     
     # Custom fields (existing)

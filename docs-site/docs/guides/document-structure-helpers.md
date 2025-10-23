@@ -252,20 +252,17 @@ content = [
 
 ## Visual Elements
 
-### Separator
+### Horizontal Rule
 
-Create visual separator lines:
+Create a horizontal divider line:
 
 ```python
-from vaiz import separator
+from vaiz import horizontal_rule
 
-# Default separator (━━━━━━...)
-separator()
-
-# Custom character and length
-separator("—", 50)
-separator("*", 30)
+# Horizontal rule (native HTML <hr> style)
+horizontal_rule()
 ```
+
 
 ## Complete Example
 
@@ -275,7 +272,7 @@ Build a full document with helpers:
 from vaiz import (
     VaizClient, text, paragraph, heading, 
     bullet_list, ordered_list, list_item, 
-    link_text, separator
+    link_text, horizontal_rule
 )
 
 client = VaizClient(token="your_token")
@@ -291,7 +288,7 @@ content = [
         text("Active", bold=True)
     ),
     
-    separator(),
+    horizontal_rule(),
     
     # Overview
     heading(2, "Overview"),
@@ -327,7 +324,7 @@ content = [
     ),
     
     # Footer
-    separator(),
+    horizontal_rule(),
     paragraph(
         text("Built with ", italic=True),
         text("document structure helpers", code=True)
@@ -360,7 +357,7 @@ All helper functions create nodes compatible with the document editor:
 - ✅ `link="url"` - Hyperlinks
 
 ### Utilities
-- ✅ `separator()` - Visual dividers
+- ✅ `horizontal_rule()` - Horizontal divider line
 - ✅ `link_text()` - Formatted hyperlinks
 
 ## Benefits

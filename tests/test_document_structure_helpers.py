@@ -7,7 +7,7 @@ from tests.test_config import get_test_client
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz.helpers.document_structure import (
     text, paragraph, heading, bullet_list, ordered_list,
-    list_item, link_text, separator, table, table_row, 
+    list_item, link_text, horizontal_rule, table, table_row, 
     table_cell
 )
 
@@ -128,15 +128,13 @@ def test_document_structure_link_text_builder():
     assert len(node["marks"]) == 2  # link + bold
 
 
-def test_document_structure_separator_builder():
-    """Test separator builder."""
-    node = separator()
-    assert node["type"] == "paragraph"
-    assert "━" in node["content"][0]["text"]
-    
-    # Custom separator
-    node = separator("—", 10)
-    assert node["content"][0]["text"] == "—" * 10
+def test_document_structure_horizontal_rule_builder():
+    """Test horizontal rule builder."""
+    node = horizontal_rule()
+    assert node["type"] == "horizontalRule"
+    assert node == {"type": "horizontalRule"}
+
+
 
 
 def test_document_structure_table_builders():
@@ -242,15 +240,15 @@ def test_replace_json_document_with_helpers():
         heading(2, "🔗 Links"),
         paragraph(
             "Visit ",
-            link_text("Vaiz", "https://vaiz.app", bold=True)
+        link_text("Vaiz", "https://vaiz.app", bold=True)
         ),
         
-        separator(),
+        horizontal_rule(),
         
-    paragraph(
-        text("Built with ", italic=True),
-        text("document structure helpers", code=True)
-    )
+        paragraph(
+            text("Built with ", italic=True),
+            text("document structure helpers", code=True)
+        )
     ]
     
     # Replace document
@@ -328,7 +326,7 @@ if __name__ == "__main__":
     test_document_structure_ordered_list_builder()
     test_document_structure_nested_lists()
     test_document_structure_link_text_builder()
-    test_document_structure_separator_builder()
+    test_document_structure_horizontal_rule_builder()
     test_document_structure_table_builders()
     test_document_structure_table_with_formatting()
     test_replace_json_document_with_helpers()

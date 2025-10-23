@@ -9,7 +9,7 @@ from examples.config import get_client
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz import (
     heading, paragraph, text, table, table_row,
-    table_cell, separator
+    table_cell, horizontal_rule
 )
 
 
@@ -40,7 +40,7 @@ def main():
                 "2025-10-22"
             ),
             
-            separator(),
+            horizontal_rule(),
             
             heading(2, "Task Progress"),
             
@@ -90,7 +90,7 @@ def main():
                 table_row("Overdue", "4")
             ),
             
-            separator(),
+            horizontal_rule(),
             
             paragraph(
                 text("Generated with ", italic=True),

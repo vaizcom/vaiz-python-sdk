@@ -715,6 +715,7 @@ See [Document Structure Helpers Guide](../guides/document-structure-helpers) for
 | `extension-table` | Table with rows | `{"type": "extension-table", "attrs": {"uid": "..."}, "content": [...]}` |
 | `tableRow` | Table row with cells | `{"type": "tableRow", "attrs": {"showRowNumbers": false}, "content": [...]}` |
 | `tableCell` | Table cell (data or header) | `{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
+| `horizontalRule` | Horizontal divider line | `{"type": "horizontalRule"}` |
 
 ### Marks
 

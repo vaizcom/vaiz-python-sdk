@@ -11,7 +11,7 @@ from vaiz.models import CreateTaskRequest, TaskPriority
 # Import document structure builder functions
 from vaiz import (
     text, paragraph, heading, bullet_list, ordered_list, 
-    list_item, link_text, separator
+    list_item, link_text, horizontal_rule
 )
 
 
@@ -45,7 +45,7 @@ def main():
             ),
             
             # Separator
-            separator(),
+            horizontal_rule(),
             
             # Overview section
             heading(2, "📋 Overview"),
@@ -110,7 +110,7 @@ def main():
             ),
             
             # Footer
-            separator(),
+            horizontal_rule(),
             paragraph(
                 text("Generated with ", italic=True),
                 text("replace_json_document", code=True),

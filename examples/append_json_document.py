@@ -7,7 +7,7 @@ removing existing content - useful for incremental updates, logs, and notes.
 
 from examples.config import get_client
 from vaiz.models import CreateTaskRequest, TaskPriority
-from vaiz import heading, paragraph, text, bullet_list, separator
+from vaiz import heading, paragraph, text, bullet_list, horizontal_rule
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
         # Append first update
         print("\n=== Appending Update #1 ===")
         update1 = [
-            separator(),
+            horizontal_rule(),
             heading(2, "Update #1 - Design Phase"),
             paragraph(
                 text("Status: ", bold=True),
@@ -54,7 +54,7 @@ def main():
         # Append second update
         print("\n=== Appending Update #2 ===")
         update2 = [
-            separator(),
+            horizontal_rule(),
             heading(2, "Update #2 - Development Progress"),
             paragraph(
                 text("Status: ", bold=True),
@@ -73,7 +73,7 @@ def main():
         # Append third update
         print("\n=== Appending Update #3 ===")
         update3 = [
-            separator(),
+            horizontal_rule(),
             heading(2, "Update #3 - Final Notes"),
             paragraph(
                 text("Conclusion: ", bold=True),

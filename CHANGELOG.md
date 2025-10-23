@@ -14,7 +14,7 @@
   - Text & paragraphs: `text()`, `paragraph()`, `heading()`
   - Lists: `bullet_list()`, `ordered_list()`, `list_item()`
   - Tables: `table()`, `table_row()`, `table_cell()`
-  - Utilities: `link_text()`, `separator()`
+  - Utilities: `link_text()`, `horizontal_rule()`
 
 ### Changed
 

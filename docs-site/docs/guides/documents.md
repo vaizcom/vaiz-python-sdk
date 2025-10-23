@@ -378,7 +378,7 @@ client.replace_json_document(
 
 **With helper functions (recommended):**
 ```python
-from vaiz import heading, paragraph, text, bullet_list, link_text, separator
+from vaiz import heading, paragraph, text, bullet_list, link_text, horizontal_rule
 
 content = [
     heading(1, "📚 Documentation"),
@@ -387,7 +387,7 @@ content = [
         text("project docs", bold=True),
         "!"
     ),
-    separator(),
+    horizontal_rule(),
     heading(2, "Features"),
     bullet_list(
         "Easy to use",
