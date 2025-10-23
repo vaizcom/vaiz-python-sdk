@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+sidebar_label: Introduction
 title: Patterns & Examples — Best Practices | Vaiz Python SDK
 description: Practical examples, design patterns, and best practices for using the Vaiz Python SDK effectively. Learn common patterns and real-world use cases.
 ---

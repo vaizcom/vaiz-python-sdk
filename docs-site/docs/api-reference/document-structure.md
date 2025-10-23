@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+sidebar_label: Document Structure
 title: Document Structure — JSON Format & Block Types | Vaiz Python SDK
 description: Technical reference for the Vaiz document structure JSON format. Learn about blocks, marks, paragraphs, headings, lists, tables, and rich-text formatting.
 ---

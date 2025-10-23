@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+sidebar_label: Files
 title: Working with Files — Upload & Attach Files | Vaiz Python SDK
 description: Learn how to upload and manage files in Vaiz using the Python SDK. Supports local files, URLs, images, videos, PDFs, and attachments to tasks and comments.
 ---

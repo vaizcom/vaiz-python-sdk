@@ -1,5 +1,6 @@
 ---
 sidebar_position: 12
+sidebar_label: Helper Functions
 title: Helper Functions — Simplify Common Operations | Vaiz Python SDK
 description: Learn how to use built-in helper functions for custom fields, document formatting, and common operations in the Vaiz Python SDK.
 ---

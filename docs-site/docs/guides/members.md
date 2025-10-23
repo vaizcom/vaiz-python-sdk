@@ -1,5 +1,6 @@
 ---
 sidebar_position: 10
+sidebar_label: Members
 title: Working with Members — Team & User Information | Vaiz Python SDK
 description: Learn how to retrieve space members, user information, and team details using the Vaiz Python SDK. Complete guide with examples.
 ---

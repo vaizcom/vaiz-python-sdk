@@ -1,5 +1,6 @@
 ---
 sidebar_position: 6
+sidebar_label: Boards
 title: Working with Boards — Types, Groups & Fields | Vaiz Python SDK
 description: Learn how to manage boards, create types and groups, and configure custom fields using the Vaiz Python SDK. Complete guide with examples.
 ---

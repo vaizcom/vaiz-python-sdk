@@ -1,5 +1,6 @@
 ---
 sidebar_position: 7
+sidebar_label: Custom Fields
 title: Custom Fields API — Manage Board Custom Fields | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to create, edit, and manage custom fields on boards. Supports text, number, date, select, and multi-select fields.
 ---

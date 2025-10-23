@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+sidebar_label: Environment Setup
 title: Environment Setup — Configuration & Best Practices | Vaiz Python SDK
 description: Learn how to configure your development environment for the Vaiz Python SDK. Includes environment variables, credentials, and security best practices.
 ---

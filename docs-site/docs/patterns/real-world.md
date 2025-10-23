@@ -1,5 +1,6 @@
 ---
 sidebar_position: 5
+sidebar_label: Real-World Scenarios
 title: Real-World Scenarios — Complete Use Cases | Vaiz Python SDK
 description: Explore complete examples for common real-world use cases with the Vaiz Python SDK. Includes automation, integrations, and production workflows.
 ---

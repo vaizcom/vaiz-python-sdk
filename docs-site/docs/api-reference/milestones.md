@@ -1,5 +1,6 @@
 ---
 sidebar_position: 5
+sidebar_label: Milestones
 title: Milestones API — Create & Track Project Milestones | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to create, edit, toggle, and track milestones in your Vaiz projects. Complete API reference with examples.
 ---

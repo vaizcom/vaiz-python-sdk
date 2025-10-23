@@ -1,5 +1,6 @@
 ---
 sidebar_position: 9
+sidebar_label: Documents
 title: Working with Documents — Rich Content & Formatting | Vaiz Python SDK
 description: Learn how to create and manage rich-text documents in Vaiz using the Python SDK. Includes JSON format, blocks, tables, mentions, and formatting.
 ---

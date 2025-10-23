@@ -1,5 +1,6 @@
 ---
 sidebar_position: 5
+sidebar_label: Milestones
 title: Working with Milestones — Track Project Progress | Vaiz Python SDK
 description: Learn how to create, edit, and manage milestones in your Vaiz projects using the Python SDK. Track progress, set dates, and organize your workflow.
 ---

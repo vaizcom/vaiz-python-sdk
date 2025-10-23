@@ -1,5 +1,6 @@
 ---
 sidebar_position: 6
+sidebar_label: Performance Tips
 title: Performance Tips — Optimize SDK Usage | Vaiz Python SDK
 description: Learn how to optimize your Vaiz Python SDK usage for better performance. Includes batch operations, caching strategies, and efficiency tips.
 ---

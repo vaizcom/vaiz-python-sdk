@@ -1,5 +1,6 @@
 ---
 sidebar_position: 8
+sidebar_label: Profile
 title: Working with Profile — User Info & Settings | Vaiz Python SDK
 description: Learn how to retrieve the authenticated user's profile information using the Vaiz Python SDK. Get name, email, avatar, and account settings.
 ---

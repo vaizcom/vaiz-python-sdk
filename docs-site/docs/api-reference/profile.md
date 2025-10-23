@@ -1,5 +1,6 @@
 ---
 sidebar_position: 8
+sidebar_label: Profile
 title: Profile API — Get Current User Profile | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to retrieve the authenticated user's profile information, including name, email, and avatar settings.
 ---

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 10
+sidebar_label: History
 title: History API — Track Document & Task Changes | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to retrieve change history for documents and tasks. Track edits, authors, timestamps, and more.
 ---

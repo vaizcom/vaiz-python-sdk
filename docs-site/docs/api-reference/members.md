@@ -1,5 +1,6 @@
 ---
 sidebar_position: 10
+sidebar_label: Members
 title: Members API — Retrieve Team Members & User Info | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to retrieve space members, user information, and team details. Complete API reference with examples.
 ---

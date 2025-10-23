@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+sidebar_label: SDK Basics
 title: SDK Basics — Setup & Core Concepts | Vaiz Python SDK
 description: Learn the basics of the Vaiz Python SDK including client initialization, authentication, error handling, and core concepts for working with tasks and documents.
 ---

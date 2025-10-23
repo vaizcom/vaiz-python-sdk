@@ -1,5 +1,6 @@
 ---
 sidebar_position: 7
+sidebar_label: Projects
 title: Working with Projects — Organize Your Workspace | Vaiz Python SDK
 description: Learn how to retrieve and manage projects and lists in your Vaiz workspace using the Python SDK. Complete guide with examples.
 ---

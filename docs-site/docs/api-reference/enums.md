@@ -1,5 +1,6 @@
 ---
 sidebar_position: 11
+sidebar_label: Enums
 title: Enums — Task Priority, Avatar Mode & More | Vaiz Python SDK
 description: Complete reference for all enum types and values in the Vaiz Python SDK. Includes TaskPriority, AvatarMode, and other enumeration types.
 ---

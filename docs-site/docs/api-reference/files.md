@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+sidebar_label: Files
 title: Files API — Upload & Manage Files | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to upload files, manage attachments, and work with external URLs. Supports images, videos, PDFs, and more.
 ---

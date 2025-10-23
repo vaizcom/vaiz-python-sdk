@@ -1,5 +1,6 @@
 ---
 sidebar_position: 16
+sidebar_label: Document Structure Helpers
 title: Document Structure Helpers — Type-Safe Content Building | Vaiz Python SDK
 description: Learn how to use type-safe helper functions to build valid document content with the Vaiz Python SDK. Includes paragraphs, headings, lists, tables, and more.
 ---

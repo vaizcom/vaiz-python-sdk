@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+sidebar_label: Tasks
 title: Working with Tasks — Complete Guide | Vaiz Python SDK
 description: Learn how to create, edit, and manage tasks using the Vaiz Python SDK. Includes custom fields, file attachments, priorities, assignees, and rich-text descriptions.
 ---

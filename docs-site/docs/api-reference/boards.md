@@ -1,5 +1,6 @@
 ---
 sidebar_position: 6
+sidebar_label: Boards
 title: Boards API — Manage Boards, Groups & Types | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to manage boards, groups, types, and custom fields in your Vaiz workspace. Complete API reference with examples.
 ---

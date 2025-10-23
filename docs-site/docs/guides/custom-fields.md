@@ -1,5 +1,6 @@
 ---
 sidebar_position: 7
+sidebar_label: Custom Fields
 title: Working with Custom Fields — Text, Numbers, Dates & More | Vaiz Python SDK
 description: Learn how to create and manage custom fields on tasks using the Vaiz Python SDK. Supports text, number, date, select, and multi-select field types.
 ---

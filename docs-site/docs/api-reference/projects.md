@@ -1,5 +1,6 @@
 ---
 sidebar_position: 7
+sidebar_label: Projects
 title: Projects API — Manage Projects & Lists | Vaiz Python SDK
 description: Learn how to use the Vaiz Python SDK to retrieve projects, lists, and organize your workspace structure. Complete API reference with examples.
 ---
