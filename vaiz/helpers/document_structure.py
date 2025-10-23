@@ -61,8 +61,35 @@ class OrderedListAttrs(TypedDict):
     start: NotRequired[int]
 
 
+# Type definitions for mention blocks
+class MentionItem(TypedDict):
+    """Item reference in mention block."""
+    id: str
+    kind: Literal["User", "Document", "Task", "Milestone"]
+
+
+class MentionData(TypedDict):
+    """Data for mention block."""
+    item: MentionItem
+
+
+class MentionAttrs(TypedDict):
+    """Attributes for mention block."""
+    uid: str
+    custom: Literal[1]
+    inline: Literal[True]
+    data: MentionData
+
+
+class MentionNode(TypedDict):
+    """Mention node for referencing users, documents, tasks, or milestones."""
+    type: Literal["custom-mention"]
+    attrs: MentionAttrs
+    content: List[TextNode]
+
+
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode']
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode]
 
 
 class ParagraphNode(TypedDict):
@@ -629,6 +656,110 @@ def table(*rows: TableRowNode, show_row_numbers: bool = False) -> TableNode:
     }
 
 
+def mention(item_id: str, kind: Literal["User", "Document", "Task", "Milestone"]) -> MentionNode:
+    """
+    Create a mention node for referencing users, documents, tasks, or milestones.
+    
+    Args:
+        item_id: The ID of the item to mention
+        kind: The type of item ("User", "Document", "Task", or "Milestone")
+    
+    Returns:
+        MentionNode: A valid mention node
+        
+    Example:
+        >>> mention("68fa5e14cdb30e1c96755975", "User")
+        {'type': 'custom-mention', 'attrs': {'uid': ..., 'custom': 1, 'inline': True, 'data': {'item': {'id': '68fa5e14cdb30e1c96755975', 'kind': 'User'}}}, 'content': [{'type': 'text', 'text': ' '}]}
+        
+        >>> mention("68fa67d262f676bcd1bc162f", "Task")
+        {'type': 'custom-mention', 'attrs': {..., 'data': {'item': {'id': '68fa67d262f676bcd1bc162f', 'kind': 'Task'}}}, ...}
+    """
+    import uuid
+    return {
+        "type": "custom-mention",
+        "attrs": {
+            "uid": str(uuid.uuid4())[:12].replace('-', ''),
+            "custom": 1,
+            "inline": True,
+            "data": {
+                "item": {
+                    "id": item_id,
+                    "kind": kind
+                }
+            }
+        },
+        "content": [{"type": "text", "text": " "}]
+    }
+
+
+def mention_user(user_id: str) -> MentionNode:
+    """
+    Create a mention node for a user.
+    
+    Args:
+        user_id: The user ID to mention
+    
+    Returns:
+        MentionNode: A valid user mention node
+        
+    Example:
+        >>> mention_user("68fa5e14cdb30e1c96755975")
+        {'type': 'custom-mention', 'attrs': {..., 'data': {'item': {'id': '68fa5e14cdb30e1c96755975', 'kind': 'User'}}}, ...}
+    """
+    return mention(user_id, "User")
+
+
+def mention_document(document_id: str) -> MentionNode:
+    """
+    Create a mention node for a document.
+    
+    Args:
+        document_id: The document ID to mention
+    
+    Returns:
+        MentionNode: A valid document mention node
+        
+    Example:
+        >>> mention_document("68fa6c7b62f676bcd1bcecae")
+        {'type': 'custom-mention', 'attrs': {..., 'data': {'item': {'id': '68fa6c7b62f676bcd1bcecae', 'kind': 'Document'}}}, ...}
+    """
+    return mention(document_id, "Document")
+
+
+def mention_task(task_id: str) -> MentionNode:
+    """
+    Create a mention node for a task.
+    
+    Args:
+        task_id: The task ID to mention
+    
+    Returns:
+        MentionNode: A valid task mention node
+        
+    Example:
+        >>> mention_task("68fa67d262f676bcd1bc162f")
+        {'type': 'custom-mention', 'attrs': {..., 'data': {'item': {'id': '68fa67d262f676bcd1bc162f', 'kind': 'Task'}}}, ...}
+    """
+    return mention(task_id, "Task")
+
+
+def mention_milestone(milestone_id: str) -> MentionNode:
+    """
+    Create a mention node for a milestone.
+    
+    Args:
+        milestone_id: The milestone ID to mention
+    
+    Returns:
+        MentionNode: A valid milestone mention node
+        
+    Example:
+        >>> mention_milestone("68fa650bcdb30e1c9677562e")
+        {'type': 'custom-mention', 'attrs': {..., 'data': {'item': {'id': '68fa650bcdb30e1c9677562e', 'kind': 'Milestone'}}}, ...}
+    """
+    return mention(milestone_id, "Milestone")
+
+
 # Convenience exports
 __all__ = [
     # Types
@@ -650,6 +781,10 @@ __all__ = [
     'DetailsSummaryNode',
     'DetailsContentNode',
     'Mark',
+    'MentionNode',
+    'MentionAttrs',
+    'MentionData',
+    'MentionItem',
     
     # Builders
     'text',
@@ -668,5 +803,10 @@ __all__ = [
     'table_row',
     'table_cell',
     'table_header',
+    'mention',
+    'mention_user',
+    'mention_document',
+    'mention_task',
+    'mention_milestone',
 ]
 

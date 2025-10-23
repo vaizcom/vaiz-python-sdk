@@ -131,6 +131,11 @@ from .helpers import (
     table_row,
     table_cell,
     table_header,
+    mention,
+    mention_user,
+    mention_document,
+    mention_task,
+    mention_milestone,
 )
 
 __all__ = [
@@ -253,4 +258,9 @@ __all__ = [
     'table_row',
     'table_cell',
     'table_header',
+    'mention',
+    'mention_user',
+    'mention_document',
+    'mention_task',
+    'mention_milestone',
 ]

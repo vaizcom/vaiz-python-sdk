@@ -68,6 +68,11 @@ from .document_structure import (
     table_row,
     table_cell,
     table_header,
+    mention,
+    mention_user,
+    mention_document,
+    mention_task,
+    mention_milestone,
     
     # Document structure types
     DocumentNode,
@@ -88,6 +93,10 @@ from .document_structure import (
     DetailsSummaryNode,
     DetailsContentNode,
     Mark,
+    MentionNode,
+    MentionAttrs,
+    MentionData,
+    MentionItem,
 )
 
 __all__ = [
@@ -108,6 +117,11 @@ __all__ = [
     'table_row',
     'table_cell',
     'table_header',
+    'mention',
+    'mention_user',
+    'mention_document',
+    'mention_task',
+    'mention_milestone',
     
     # Document structure types
     'DocumentNode',
@@ -128,6 +142,10 @@ __all__ = [
     'DetailsSummaryNode',
     'DetailsContentNode',
     'Mark',
+    'MentionNode',
+    'MentionAttrs',
+    'MentionData',
+    'MentionItem',
     
     # Custom fields (existing)
     # Field creation helpers

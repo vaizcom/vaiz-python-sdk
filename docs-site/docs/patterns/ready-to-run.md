@@ -40,6 +40,8 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`document_hierarchy.py`** - Build nested document structures
 - **`document_content_management.py`** - Work with document content
 - **`advanced_document_workflows.py`** - Complex document scenarios
+- **`mention_blocks.py`** - Create documents with user, task, document, and milestone mentions
+- **`advanced_mention_usage.py`** - Advanced usage of mentions in tables, lists, and complex documents
 
 ## Custom Fields
 

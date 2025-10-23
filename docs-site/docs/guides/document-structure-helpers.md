@@ -341,6 +341,238 @@ blockquote(
 - API documentation notes
 - User testimonials or feedback
 
+## Mention Blocks
+
+Create interactive mentions to reference users, documents, tasks, and milestones.
+
+### Overview
+
+Mention blocks create clickable references to entities in your workspace. When mentioned, users receive notifications and can click to navigate to the referenced item.
+
+### User Mentions
+
+Reference team members:
+
+```python
+from vaiz import mention_user, paragraph, text
+
+# Get user ID from profile
+profile = client.get_profile()
+user_id = profile.profile.member_id
+
+# Mention a user
+paragraph(
+    text("Assigned to "),
+    mention_user(user_id)
+)
+```
+
+### Document Mentions
+
+Link to other documents:
+
+```python
+from vaiz import mention_document, paragraph, text
+
+# Get document ID
+from vaiz import GetDocumentsRequest, Kind
+
+docs = client.get_documents(
+    GetDocumentsRequest(kind=Kind.Space, kind_id=space_id)
+)
+doc_id = docs.payload.documents[0].id
+
+# Mention a document
+paragraph(
+    text("See "),
+    mention_document(doc_id),
+    text(" for details")
+)
+```
+
+### Task Mentions
+
+Reference tasks:
+
+```python
+from vaiz import mention_task, paragraph, text, GetTasksRequest
+
+# Get task ID
+tasks = client.get_tasks(GetTasksRequest())
+task_id = tasks.payload.tasks[0].id
+
+# Mention a task
+paragraph(
+    text("Related to "),
+    mention_task(task_id)
+)
+```
+
+### Milestone Mentions
+
+Link to milestones:
+
+```python
+from vaiz import mention_milestone, paragraph, text
+
+# Get milestone ID
+milestones = client.get_milestones()
+milestone_id = milestones.milestones[0].id
+
+# Mention a milestone
+paragraph(
+    text("Part of "),
+    mention_milestone(milestone_id)
+)
+```
+
+### Multiple Mentions
+
+Combine multiple mentions in one paragraph:
+
+```python
+from vaiz import paragraph, text, mention_user, mention_task, mention_milestone
+
+paragraph(
+    text("User "),
+    mention_user(user_id),
+    text(" is assigned to "),
+    mention_task(task_id),
+    text(" in milestone "),
+    mention_milestone(milestone_id)
+)
+```
+
+### Mentions in Lists
+
+Use mentions in bullet or ordered lists:
+
+```python
+from vaiz import bullet_list, list_item, paragraph, text, mention_user, mention_task
+
+bullet_list(
+    list_item(paragraph(
+        text("Assignee: "),
+        mention_user(user_id)
+    )),
+    list_item(paragraph(
+        text("Related task: "),
+        mention_task(task_id)
+    ))
+)
+```
+
+### Mentions in Tables
+
+Create tables with mention references:
+
+```python
+from vaiz import table, table_row, table_header, table_cell, paragraph
+from vaiz import mention_user, mention_task
+
+table(
+    table_row(
+        table_header("Assignee"),
+        table_header("Task"),
+        table_header("Status")
+    ),
+    table_row(
+        table_cell(paragraph(mention_user(user_id))),
+        table_cell(paragraph(mention_task(task_id))),
+        table_cell("In Progress")
+    )
+)
+```
+
+### Generic Mention Function
+
+Use the generic `mention()` function for any entity type:
+
+```python
+from vaiz import mention
+
+# Explicitly specify the kind
+user_mention = mention(user_id, "User")
+doc_mention = mention(doc_id, "Document")
+task_mention = mention(task_id, "Task")
+milestone_mention = mention(milestone_id, "Milestone")
+```
+
+### Supported Mention Types
+
+| Function | Entity Type | Description |
+|----------|-------------|-------------|
+| `mention_user(id)` | User | Mention a team member |
+| `mention_document(id)` | Document | Reference a document |
+| `mention_task(id)` | Task | Reference a task |
+| `mention_milestone(id)` | Milestone | Reference a milestone |
+| `mention(id, kind)` | Any | Generic mention with explicit kind |
+
+### Complete Example with Mentions
+
+```python
+from vaiz import VaizClient, GetDocumentsRequest, GetTasksRequest, Kind
+from vaiz import (
+    heading, paragraph, text, bullet_list, list_item,
+    table, table_row, table_header, table_cell,
+    mention_user, mention_task, mention_document
+)
+
+client = VaizClient(api_key="...", space_id="...")
+
+# Get entity IDs
+profile = client.get_profile()
+user_id = profile.profile.member_id
+
+tasks = client.get_tasks(GetTasksRequest())
+task_id = tasks.payload.tasks[0].id
+
+docs = client.get_documents(
+    GetDocumentsRequest(kind=Kind.Space, kind_id=client.space_id)
+)
+doc_id = docs.payload.documents[0].id
+
+# Create document with mentions
+content = [
+    heading(1, "Meeting Notes"),
+    
+    paragraph(
+        text("Attendees: "),
+        mention_user(user_id)
+    ),
+    
+    heading(2, "Action Items"),
+    
+    bullet_list(
+        list_item(paragraph(
+            mention_user(user_id),
+            text(" will complete "),
+            mention_task(task_id)
+        )),
+        list_item(paragraph(
+            text("Update "),
+            mention_document(doc_id)
+        ))
+    ),
+    
+    heading(2, "Task Assignments"),
+    
+    table(
+        table_row(
+            table_header("Assignee"),
+            table_header("Task")
+        ),
+        table_row(
+            table_cell(paragraph(mention_user(user_id))),
+            table_cell(paragraph(mention_task(task_id)))
+        )
+    )
+]
+
+# Update document
+client.replace_json_document(document_id, content)
+```
+
 ## Complete Example
 
 Build a full document with helpers:
@@ -436,6 +668,11 @@ All helper functions create nodes compatible with the document editor:
 - ✅ `table_row()` - Table row
 - ✅ `table_cell()` - Table cell (use for both data and headers)
 - ✅ `table_header()` - Table header cell (semantic th)
+- ✅ `mention_user()` - Mention a user
+- ✅ `mention_document()` - Reference a document
+- ✅ `mention_task()` - Reference a task
+- ✅ `mention_milestone()` - Reference a milestone
+- ✅ `mention(id, kind)` - Generic mention
 
 ### Marks (Formatting)
 - ✅ `bold=True` - Bold text

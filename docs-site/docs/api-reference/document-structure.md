@@ -758,6 +758,114 @@ content = [
 
 See [Document Structure Helpers Guide](../guides/document-structure-helpers) for complete documentation.
 
+## Mention Blocks
+
+Mention blocks create interactive references to users, documents, tasks, and milestones.
+
+### Structure
+
+```json
+{
+  "type": "custom-mention",
+  "attrs": {
+    "uid": "unique_id",
+    "custom": 1,
+    "inline": true,
+    "data": {
+      "item": {
+        "id": "entity_id",
+        "kind": "User"  // User | Document | Task | Milestone
+      }
+    }
+  },
+  "content": [
+    {"type": "text", "text": " "}
+  ]
+}
+```
+
+### Using Helpers (Recommended)
+
+```python
+from vaiz import mention_user, mention_document, mention_task, mention_milestone
+
+# Mention a user
+mention_user("68fa7d4462f676bcd1c054b0")
+
+# Mention a document
+mention_document("68fa7d5762f676bcd1c055da")
+
+# Mention a task
+mention_task("68f2081feda35a3b34ac0318")
+
+# Mention a milestone
+mention_milestone("68fa739962f676bcd1beda2d")
+```
+
+### In Paragraphs
+
+```python
+from vaiz import paragraph, text, mention_user, mention_task
+
+paragraph(
+    text("Assigned to "),
+    mention_user("user_id"),
+    text(" - task "),
+    mention_task("task_id")
+)
+```
+
+### In Tables
+
+```python
+from vaiz import table, table_row, table_header, table_cell, paragraph
+from vaiz import mention_user, mention_task
+
+table(
+    table_row(
+        table_header("Assignee"),
+        table_header("Task")
+    ),
+    table_row(
+        table_cell(paragraph(mention_user("user_id"))),
+        table_cell(paragraph(mention_task("task_id")))
+    )
+)
+```
+
+### Supported Mention Types
+
+| Kind | Helper Function | Description |
+|------|----------------|-------------|
+| `User` | `mention_user(id)` | Mention a team member |
+| `Document` | `mention_document(id)` | Reference a document |
+| `Task` | `mention_task(id)` | Reference a task |
+| `Milestone` | `mention_milestone(id)` | Reference a milestone |
+
+### Getting Entity IDs
+
+```python
+# Get user ID
+profile = client.get_profile()
+user_id = profile.profile.member_id
+
+# Get document ID
+from vaiz import GetDocumentsRequest, Kind
+docs = client.get_documents(
+    GetDocumentsRequest(kind=Kind.Space, kind_id=space_id)
+)
+doc_id = docs.payload.documents[0].id
+
+# Get task ID
+from vaiz import GetTasksRequest
+tasks = client.get_tasks(GetTasksRequest())
+task_id = tasks.payload.tasks[0].id
+
+# Get milestone ID
+milestones = client.get_milestones()
+milestone_id = milestones.milestones[0].id
+```
+
 ## Supported Elements
 
 ### Blocks
@@ -776,6 +884,7 @@ See [Document Structure Helpers Guide](../guides/document-structure-helpers) for
 | `tableCell` | Table data cell | `{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
 | `tableHeader` | Table header cell (th) | `{"type": "tableHeader", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
 | `horizontalRule` | Horizontal divider line | `{"type": "horizontalRule"}` |
+| `custom-mention` | Mention user/doc/task/milestone | `{"type": "custom-mention", "attrs": {"uid": "...", "custom": 1, "inline": true, "data": {"item": {"id": "...", "kind": "User"}}}}` |
 
 ### Marks
 
