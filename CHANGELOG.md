@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.12.0] - 2025-10-23
+
+### Added
+
+- **👤 Mention Blocks**: Create interactive references to users, documents, tasks, and milestones
+  - `mention_user(id)` - Mention a team member
+  - `mention_document(id)` - Reference a document
+  - `mention_task(id)` - Reference a task
+  - `mention_milestone(id)` - Reference a milestone
+  - `mention(id, kind)` - Generic mention with explicit kind
+  - Mentions work in paragraphs, lists, tables, and all document structures
+  - Full type safety with TypedDict definitions
+
+- **📸 Image Blocks**: Embed images in documents
+  - `image_block()` - Create image block with uploaded file
+  - Support for dimensions, captions, and custom width
+  - Automatic aspect ratio calculation
+  - Works with uploaded images via `upload_file()`
+
+- **📎 Files Blocks**: Attach files to documents
+  - `files_block()` - Create files block with multiple attachments
+  - Support for PDFs, images, videos, and other file types
+  - Automatic unique ID generation for each file
+  - Works with uploaded files via `upload_file()`
+
+---
+
 ## [0.11.0] - 2025-10-23
 
 ### Added

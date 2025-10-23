@@ -1,6 +1,6 @@
 [project]
 name = "vaiz-sdk"
-version = "0.11.0"
+version = "0.12.0"
 description = "Official SDK for interacting with the Vaiz API"
 authors = [{ name = "Vaiz", email = "mail@vaiz.com" }]
 license = "MIT"
