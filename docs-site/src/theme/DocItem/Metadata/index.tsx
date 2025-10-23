@@ -2,8 +2,8 @@ import React from 'react';
 import { useDoc } from '@docusaurus/plugin-content-docs/client';
 import Head from '@docusaurus/Head';
 
-export default function DocItemMetadata(): JSX.Element {
-  const { metadata, frontMatter } = useDoc();
+export default function DocItemMetadata() {
+  const { metadata } = useDoc();
   const { permalink, title, description } = metadata;
 
   // Skip if no title or description
