@@ -1,5 +1,7 @@
 ---
 sidebar_position: 7
+title: Integration Patterns — Connect External Systems | Vaiz Python SDK
+description: Learn how to integrate the Vaiz Python SDK with external systems and services. Includes webhooks, APIs, databases, and automation patterns.
 ---
 
 # Integration Patterns

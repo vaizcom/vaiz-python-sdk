@@ -1,5 +1,7 @@
 ---
 sidebar_position: 9
+title: Ready-to-Run Examples — Complete Code Samples | Vaiz Python SDK
+description: Browse complete, runnable code examples from the Vaiz Python SDK repository. Copy and adapt examples for tasks, documents, boards, comments, and more.
 ---
 
 # Ready-to-Run Examples

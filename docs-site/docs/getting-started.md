@@ -1,6 +1,8 @@
 ---
 sidebar_position: 2
 slug: /
+title: Getting Started — Installation & Setup | Vaiz Python SDK
+description: Learn how to install and configure the Vaiz Python SDK. Quick start guide with installation instructions, authentication setup, and your first API call.
 ---
 
 # Getting Started

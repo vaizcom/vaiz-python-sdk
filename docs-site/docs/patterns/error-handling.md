@@ -1,5 +1,7 @@
 ---
 sidebar_position: 8
+title: Error Handling — Robust Production Strategies | Vaiz Python SDK
+description: Learn robust error handling strategies for production applications using the Vaiz Python SDK. Includes retry logic, validation, and exception handling.
 ---
 
 # Error Handling

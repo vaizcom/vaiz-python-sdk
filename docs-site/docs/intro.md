@@ -1,5 +1,7 @@
 ---
 sidebar_position: 1
+title: Introduction — Official Python SDK for Vaiz Platform | Vaiz Python SDK
+description: Welcome to the Vaiz Python SDK documentation. Learn about the official Python library for Vaiz platform API with full type support, validation, and rich content management.
 ---
 
 # Introduction

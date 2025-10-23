@@ -1,5 +1,7 @@
 ---
 sidebar_position: 4
+title: Document Patterns — Management & Hierarchies | Vaiz Python SDK
+description: Learn patterns for document management and hierarchies in the Vaiz Python SDK. Includes mentions, nested content, and document organization strategies.
 ---
 
 # Working with Documents

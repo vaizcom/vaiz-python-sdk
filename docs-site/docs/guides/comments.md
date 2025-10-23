@@ -1,5 +1,7 @@
 ---
 sidebar_position: 3
+title: Working with Comments — Post, Reply & React | Vaiz Python SDK
+description: Learn how to create comments, replies, and manage reactions in your Vaiz projects using the Python SDK. Includes HTML formatting and file attachments.
 ---
 
 # Comments

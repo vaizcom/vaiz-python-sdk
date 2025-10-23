@@ -1,5 +1,7 @@
 ---
 sidebar_position: 11
+title: Working with Task Blockers — Dependencies & Relationships | Vaiz Python SDK
+description: Learn how to manage blocking relationships and dependencies between tasks using the Vaiz Python SDK. Create and track task blockers.
 ---
 
 # Task Blockers

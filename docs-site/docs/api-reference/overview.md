@@ -1,5 +1,7 @@
 ---
 sidebar_position: 1
+title: API Reference Overview — Complete SDK Documentation | Vaiz Python SDK
+description: Complete API reference documentation for all Vaiz Python SDK methods, models, and enums. Access tasks, documents, boards, comments, files, and more.
 ---
 
 # Overview

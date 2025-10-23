@@ -1,5 +1,7 @@
 ---
 sidebar_position: 10
+title: Working with History — Track Changes & Events | Vaiz Python SDK
+description: Learn how to retrieve and track change history for tasks and documents using the Vaiz Python SDK. Monitor edits, authors, timestamps, and activity logs.
 ---
 
 # History Events

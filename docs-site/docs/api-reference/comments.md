@@ -1,5 +1,7 @@
 ---
 sidebar_position: 3
+title: Comments API — Manage Comments, Replies & Reactions | Vaiz Python SDK
+description: Learn how to use the Vaiz Python SDK to manage comments, replies, and reactions in your Vaiz projects. Includes examples, endpoints, and usage patterns.
 ---
 
 # Comments

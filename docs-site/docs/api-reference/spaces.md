@@ -1,5 +1,7 @@
 ---
 sidebar_position: 11
+title: Spaces API — Retrieve Workspace & Space Info | Vaiz Python SDK
+description: Learn how to use the Vaiz Python SDK to retrieve space information, settings, and workspace details. Complete API reference with examples.
 ---
 
 # Spaces

@@ -1,5 +1,7 @@
 ---
 sidebar_position: 9
+title: Documents API — Create & Edit Rich Documents | Vaiz Python SDK
+description: Learn how to use the Vaiz Python SDK to create, edit, and manage rich-text documents with structured content. Includes JSON format, blocks, and formatting.
 ---
 
 # Documents

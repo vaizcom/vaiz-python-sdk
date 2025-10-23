@@ -1,5 +1,7 @@
 ---
 sidebar_position: 2
+title: Tasks API — Create, Edit & Manage Tasks | Vaiz Python SDK
+description: Learn how to use the Vaiz Python SDK to create, edit, and manage tasks in your Vaiz projects. Includes custom fields, priorities, assignees, and file attachments.
 ---
 
 # Tasks

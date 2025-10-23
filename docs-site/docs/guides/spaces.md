@@ -1,5 +1,7 @@
 ---
 sidebar_position: 9
+title: Working with Spaces — Workspace Information | Vaiz Python SDK
+description: Learn how to retrieve space information, settings, and workspace details using the Vaiz Python SDK. Complete guide with examples.
 ---
 
 # Spaces

@@ -1,5 +1,7 @@
 ---
 sidebar_position: 3
+title: Common Patterns — Essential SDK Usage Patterns | Vaiz Python SDK
+description: Learn essential patterns for everyday Vaiz Python SDK usage. Includes typed objects, helpers, async operations, and best practices.
 ---
 
 # Common Patterns
