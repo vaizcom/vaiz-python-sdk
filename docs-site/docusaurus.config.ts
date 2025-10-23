@@ -16,6 +16,26 @@ const config: Config = {
         domain: "docs-python-sdk.vaiz.com",
       },
     ],
+    // Inject additional <head> tags
+    function () {
+      return {
+        name: "custom-apple-touch-icon",
+        injectHtmlTags() {
+          return {
+            headTags: [
+              {
+                tagName: "link",
+                attributes: {
+                  rel: "apple-touch-icon",
+                  href: "/apple-touch-icon.png",
+                  sizes: "180x180",
+                },
+              },
+            ],
+          };
+        },
+      };
+    },
   ],
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
