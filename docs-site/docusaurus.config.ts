@@ -45,6 +45,15 @@ const config: Config = {
                 attributes: {
                   rel: "icon",
                   type: "image/png",
+                  sizes: "96x96",
+                  href: "/favicon-96x96.png",
+                },
+              },
+              {
+                tagName: "link",
+                attributes: {
+                  rel: "icon",
+                  type: "image/png",
                   sizes: "32x32",
                   href: "/favicon-32x32.png",
                 },
@@ -63,6 +72,14 @@ const config: Config = {
                 attributes: {
                   rel: "manifest",
                   href: "/site.webmanifest",
+                },
+              },
+              {
+                tagName: "link",
+                attributes: {
+                  rel: "icon",
+                  type: "image/x-icon",
+                  href: "/favicon.ico",
                 },
               },
             ],
