@@ -35,7 +35,7 @@ def test_mention_with_other_document_helpers():
         list_item,
     )
     
-    user_id = "test_user_123"
+    member_id = "test_member_123"
     task_id = "test_task_456"
     
     # Create document with mentions mixed with other elements
@@ -43,7 +43,7 @@ def test_mention_with_other_document_helpers():
         heading(1, "Task Assignment"),
         paragraph(
             text("User "),
-            mention_user(user_id),
+            mention_user(member_id),
             text(" is assigned to "),
             mention_task(task_id)
         ),
@@ -51,7 +51,7 @@ def test_mention_with_other_document_helpers():
             list_item(paragraph(text("Priority: High"))),
             list_item(paragraph(
                 text("Assignee: "),
-                mention_user(user_id)
+                mention_user(member_id)
             ))
         )
     ]

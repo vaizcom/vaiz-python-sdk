@@ -356,14 +356,14 @@ Reference team members:
 ```python
 from vaiz import mention_user, paragraph, text
 
-# Get user ID from profile
+# Get member ID from profile
 profile = client.get_profile()
-user_id = profile.profile.member_id
+member_id = profile.profile.member_id
 
 # Mention a user
 paragraph(
     text("Assigned to "),
-    mention_user(user_id)
+    mention_user(member_id)
 )
 ```
 
@@ -435,7 +435,7 @@ from vaiz import paragraph, text, mention_user, mention_task, mention_milestone
 
 paragraph(
     text("User "),
-    mention_user(user_id),
+    mention_user(member_id),
     text(" is assigned to "),
     mention_task(task_id),
     text(" in milestone "),
@@ -453,7 +453,7 @@ from vaiz import bullet_list, list_item, paragraph, text, mention_user, mention_
 bullet_list(
     list_item(paragraph(
         text("Assignee: "),
-        mention_user(user_id)
+        mention_user(member_id)
     )),
     list_item(paragraph(
         text("Related task: "),
@@ -477,7 +477,7 @@ table(
         table_header("Status")
     ),
     table_row(
-        table_cell(paragraph(mention_user(user_id))),
+        table_cell(paragraph(mention_user(member_id))),
         table_cell(paragraph(mention_task(task_id))),
         table_cell("In Progress")
     )
@@ -492,7 +492,7 @@ Use the generic `mention()` function for any entity type:
 from vaiz import mention
 
 # Explicitly specify the kind
-user_mention = mention(user_id, "User")
+user_mention = mention(member_id, "User")
 doc_mention = mention(doc_id, "Document")
 task_mention = mention(task_id, "Task")
 milestone_mention = mention(milestone_id, "Milestone")
@@ -502,7 +502,7 @@ milestone_mention = mention(milestone_id, "Milestone")
 
 | Function | Entity Type | Description |
 |----------|-------------|-------------|
-| `mention_user(id)` | User | Mention a team member |
+| `mention_user(member_id)` | User | Mention a team member |
 | `mention_document(id)` | Document | Reference a document |
 | `mention_task(id)` | Task | Reference a task |
 | `mention_milestone(id)` | Milestone | Reference a milestone |
@@ -522,7 +522,7 @@ client = VaizClient(api_key="...", space_id="...")
 
 # Get entity IDs
 profile = client.get_profile()
-user_id = profile.profile.member_id
+member_id = profile.profile.member_id
 
 tasks = client.get_tasks(GetTasksRequest())
 task_id = tasks.payload.tasks[0].id
@@ -538,14 +538,14 @@ content = [
     
     paragraph(
         text("Attendees: "),
-        mention_user(user_id)
+        mention_user(member_id)
     ),
     
     heading(2, "Action Items"),
     
     bullet_list(
         list_item(paragraph(
-            mention_user(user_id),
+            mention_user(member_id),
             text(" will complete "),
             mention_task(task_id)
         )),
@@ -563,7 +563,7 @@ content = [
             table_header("Task")
         ),
         table_row(
-            table_cell(paragraph(mention_user(user_id))),
+            table_cell(paragraph(mention_user(member_id))),
             table_cell(paragraph(mention_task(task_id)))
         )
     )

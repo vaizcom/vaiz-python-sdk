@@ -809,7 +809,7 @@ from vaiz import paragraph, text, mention_user, mention_task
 
 paragraph(
     text("Assigned to "),
-    mention_user("user_id"),
+    mention_user("member_id"),
     text(" - task "),
     mention_task("task_id")
 )
@@ -827,7 +827,7 @@ table(
         table_header("Task")
     ),
     table_row(
-        table_cell(paragraph(mention_user("user_id"))),
+        table_cell(paragraph(mention_user("member_id"))),
         table_cell(paragraph(mention_task("task_id")))
     )
 )
@@ -837,7 +837,7 @@ table(
 
 | Kind | Helper Function | Description |
 |------|----------------|-------------|
-| `User` | `mention_user(id)` | Mention a team member |
+| `User` | `mention_user(member_id)` | Mention a team member |
 | `Document` | `mention_document(id)` | Reference a document |
 | `Task` | `mention_task(id)` | Reference a task |
 | `Milestone` | `mention_milestone(id)` | Reference a milestone |
@@ -845,9 +845,13 @@ table(
 ### Getting Entity IDs
 
 ```python
-# Get user ID
+# Get member ID
 profile = client.get_profile()
-user_id = profile.profile.member_id
+member_id = profile.profile.member_id
+
+# Or get from space members
+members = client.get_space_members(space_id)
+member_id = members.members[0].id
 
 # Get document ID
 from vaiz import GetDocumentsRequest, Kind

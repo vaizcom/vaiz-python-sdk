@@ -18,14 +18,14 @@ from tests.test_config import get_test_client, TEST_SPACE_ID
 
 
 def test_mention_user():
-    """Test creating a user mention."""
-    user_id = "68fa5e14cdb30e1c96755975"
-    result = mention_user(user_id)
+    """Test creating a user mention with member_id."""
+    member_id = "68fa5e14cdb30e1c96755975"
+    result = mention_user(member_id)
     
     assert result["type"] == "custom-mention"
     assert result["attrs"]["custom"] == 1
     assert result["attrs"]["inline"] is True
-    assert result["attrs"]["data"]["item"]["id"] == user_id
+    assert result["attrs"]["data"]["item"]["id"] == member_id
     assert result["attrs"]["data"]["item"]["kind"] == "User"
     assert "uid" in result["attrs"]
     assert len(result["content"]) == 1
@@ -74,12 +74,12 @@ def test_mention_generic():
 
 def test_mention_in_paragraph():
     """Test using mentions in a paragraph."""
-    user_id = "68fa5e14cdb30e1c96755975"
+    member_id = "68fa5e14cdb30e1c96755975"
     task_id = "68fa67d262f676bcd1bc162f"
     
     para = paragraph(
         text("User "),
-        mention_user(user_id),
+        mention_user(member_id),
         text(" is assigned to "),
         mention_task(task_id)
     )
@@ -92,9 +92,9 @@ def test_mention_in_paragraph():
 
 def test_mention_unique_uids():
     """Test that each mention gets a unique UID."""
-    user_id = "68fa5e14cdb30e1c96755975"
-    mention1 = mention_user(user_id)
-    mention2 = mention_user(user_id)
+    member_id = "68fa5e14cdb30e1c96755975"
+    mention1 = mention_user(member_id)
+    mention2 = mention_user(member_id)
     
     assert mention1["attrs"]["uid"] != mention2["attrs"]["uid"]
 
@@ -137,7 +137,7 @@ def test_create_document_with_real_mentions():
     
     # Get real IDs from API
     profile = client.get_profile()
-    user_id = profile.profile.member_id
+    member_id = profile.profile.member_id
     
     # Get real document ID
     docs_response = client.get_documents(
@@ -176,7 +176,7 @@ def test_create_document_with_real_mentions():
             heading(1, "Test Mention Blocks"),
             paragraph(
                 text("User mention: "),
-                mention_user(user_id)
+                mention_user(member_id)
             )
         ]
         
@@ -238,7 +238,7 @@ def test_create_document_with_real_mentions():
         mention_ids = [item["id"] for item in mention_items]
         mention_kinds = [item["kind"] for item in mention_items]
         
-        assert user_id in mention_ids, "User mention not found in document"
+        assert member_id in mention_ids, "User mention not found in document"
         assert "User" in mention_kinds, "User kind not found"
         
         if document_id:

@@ -39,8 +39,8 @@ def main():
     print("Step 1: Getting entity IDs...")
     
     profile = client.get_profile()
-    user_id = profile.profile.member_id
-    print(f"✓ User ID: {user_id}")
+    member_id = profile.profile.member_id
+    print(f"✓ Member ID: {member_id}")
     
     docs_response = client.get_documents(
         GetDocumentsRequest(kind=Kind.Space, kind_id=SPACE_ID)
@@ -92,7 +92,7 @@ def main():
         paragraph(
             text("Report Date: 2025-10-23", bold=True),
             text(" | Prepared by: "),
-            mention_user(user_id) if user_id else text("Team")
+            mention_user(member_id) if member_id else text("Team")
         ),
         
         horizontal_rule(),
@@ -102,12 +102,12 @@ def main():
         
         paragraph(
             text("Current assignee: "),
-            mention_user(user_id) if user_id else text("TBD")
+            mention_user(member_id) if member_id else text("TBD")
         ),
     ]
     
     # Add table with mentions if task available
-    if task_id and user_id:
+    if task_id and member_id:
         content.extend([
             paragraph(text("Task assignments table:")),
             
@@ -118,7 +118,7 @@ def main():
                     table_header("Status")
                 ),
                 table_row(
-                    table_cell(paragraph(mention_user(user_id))),
+                    table_cell(paragraph(mention_user(member_id))),
                     table_cell(paragraph(mention_task(task_id))),
                     table_cell("In Progress")
                 )
@@ -216,7 +216,7 @@ def main():
         
         paragraph(
             text("Last updated by "),
-            mention_user(user_id) if user_id else text("System"),
+            mention_user(member_id) if member_id else text("System"),
             text(" on 2025-10-23", italic=True)
         )
     ])

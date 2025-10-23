@@ -757,12 +757,12 @@ def mention(item_id: str, kind: Literal["User", "Document", "Task", "Milestone"]
     }
 
 
-def mention_user(user_id: str) -> MentionNode:
+def mention_user(member_id: str) -> MentionNode:
     """
-    Create a mention node for a user.
+    Create a mention node for a user (team member).
     
     Args:
-        user_id: The user ID to mention
+        member_id: The member ID to mention
     
     Returns:
         MentionNode: A valid user mention node
@@ -771,7 +771,7 @@ def mention_user(user_id: str) -> MentionNode:
         >>> mention_user("68fa5e14cdb30e1c96755975")
         {'type': 'custom-mention', 'attrs': {..., 'data': {'item': {'id': '68fa5e14cdb30e1c96755975', 'kind': 'User'}}}, ...}
     """
-    return mention(user_id, "User")
+    return mention(member_id, "User")
 
 
 def mention_document(document_id: str) -> MentionNode:

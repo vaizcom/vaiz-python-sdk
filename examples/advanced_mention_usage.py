@@ -38,10 +38,10 @@ def main():
     # Get real IDs from API
     print("Getting real IDs from API...")
     
-    # Get user profile for current user ID
+    # Get user profile for current member ID
     profile = client.get_profile()
-    current_user_id = profile.profile.member_id
-    print(f"✓ User ID: {current_user_id}")
+    current_member_id = profile.profile.member_id
+    print(f"✓ Member ID: {current_member_id}")
     
     # Get real IDs
     from vaiz.models import GetDocumentsRequest, Kind
@@ -82,7 +82,7 @@ def main():
         
         paragraph(
             text("This task is assigned to "),
-            mention_user(current_user_id),
+            mention_user(current_member_id),
             text(" and requires coordination with the team.")
         ),
         
@@ -95,7 +95,7 @@ def main():
             list_item(
                 paragraph(
                     text("Coordinate with "),
-                    mention_user(current_user_id)
+                    mention_user(current_member_id)
                 )
             )
         ),
@@ -133,13 +133,13 @@ def main():
             table_row(
                 table_cell("Lead"),
                 table_cell(
-                    paragraph(mention_user(current_user_id))
+                    paragraph(mention_user(current_member_id))
                 )
             ),
             table_row(
                 table_cell("Reviewer"),
                 table_cell(
-                    paragraph(mention_user(current_user_id))
+                    paragraph(mention_user(current_member_id))
                 )
             )
         ),
@@ -199,8 +199,8 @@ def main():
         
         heading(2, "Attendees"),
         bullet_list(
-            list_item(paragraph(mention_user(current_user_id))),
-            list_item(paragraph(mention_user(current_user_id))),
+            list_item(paragraph(mention_user(current_member_id))),
+            list_item(paragraph(mention_user(current_member_id))),
         ),
         
         horizontal_rule(),
@@ -221,14 +221,14 @@ def main():
                     paragraph(mention_task(task_id))
                 ),
                 table_cell(
-                    paragraph(mention_user(current_user_id))
+                    paragraph(mention_user(current_member_id))
                 ),
                 table_cell("In Progress")
             ),
             table_row(
                 table_cell("Update documentation"),
                 table_cell(
-                    paragraph(mention_user(current_user_id))
+                    paragraph(mention_user(current_member_id))
                 ),
                 table_cell("Pending")
             )
@@ -262,7 +262,7 @@ def main():
         
         paragraph(
             text("Last updated by "),
-            mention_user(current_user_id),
+            mention_user(current_member_id),
             text(" on 2025-10-23", italic=True)
         )
     ]

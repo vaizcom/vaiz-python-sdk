@@ -26,10 +26,10 @@ def main():
     # Get real IDs from API
     print("Getting real IDs from API...")
     
-    # Get current user ID
+    # Get current member ID (for user mentions)
     profile = client.get_profile()
-    user_id = profile.profile.member_id
-    print(f"✓ User ID: {user_id}")
+    member_id = profile.profile.member_id
+    print(f"✓ Member ID: {member_id}")
     
     # Get a document ID
     from vaiz.models import GetDocumentsRequest, Kind, CreateDocumentRequest
@@ -83,7 +83,7 @@ def main():
         # Mention a user
         paragraph(
             text("User mention: "),
-            mention_user(user_id),
+            mention_user(member_id),
             text(" - this mentions a user")
         ),
     ]
@@ -117,7 +117,7 @@ def main():
     
     multiple_mentions_para = [
         text("You can mention multiple items: "),
-        mention_user(user_id),
+        mention_user(member_id),
     ]
     
     if task_id:

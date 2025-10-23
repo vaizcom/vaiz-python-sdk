@@ -1,11 +1,22 @@
 # Changelog
 
+## [0.13.0] - 2025-10-23
+
+### Changed
+
+- **🔧 Breaking**: `mention_user()` now accepts `member_id` instead of `user_id`
+  - **Migration**: Update your code to use `member_id` from `get_profile().profile.member_id` or `get_space_members()`
+  - **Why**: Clarifies that the parameter should be member ID, not user ID
+  - **Example**: `mention_user(profile.profile.member_id)`
+
+---
+
 ## [0.12.0] - 2025-10-23
 
 ### Added
 
 - **👤 Mention Blocks**: Create interactive references to users, documents, tasks, and milestones
-  - `mention_user(id)` - Mention a team member
+  - `mention_user(member_id)` - Mention a team member
   - `mention_document(id)` - Reference a document
   - `mention_task(id)` - Reference a task
   - `mention_milestone(id)` - Reference a milestone

@@ -13,9 +13,9 @@ def test_verify_mention_structure_after_creation():
     """Verify that mentions are correctly saved and retrieved from API."""
     client = get_test_client()
     
-    # Get real IDs
+    # Get real IDs (member_id for user mentions)
     profile = client.get_profile()
-    user_id = profile.profile.member_id
+    member_id = profile.profile.member_id
     
     docs_response = client.get_documents(
         GetDocumentsRequest(kind=Kind.Space, kind_id=TEST_SPACE_ID)
@@ -47,8 +47,8 @@ def test_verify_mention_structure_after_creation():
         sent_mentions = []
         
         # User mention
-        user_mention = mention_user(user_id)
-        sent_mentions.append(("User", user_id, user_mention))
+        user_mention = mention_user(member_id)
+        sent_mentions.append(("User", member_id, user_mention))
         
         content = [
             heading(1, "Mention Structure Test"),
