@@ -62,7 +62,7 @@ class OrderedListAttrs(TypedDict):
 
 
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode']
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode']
 
 
 class ParagraphNode(TypedDict):
@@ -154,8 +154,15 @@ class HorizontalRuleNode(TypedDict):
     type: Literal["horizontalRule"]
 
 
+# Blockquote node
+class BlockquoteNode(TypedDict):
+    """Blockquote node for quoted text."""
+    type: Literal["blockquote"]
+    content: NotRequired[List[DocumentContent]]
+
+
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode]
 
 
 # Helper functions
@@ -360,6 +367,32 @@ def horizontal_rule() -> HorizontalRuleNode:
     return {"type": "horizontalRule"}
 
 
+def blockquote(*content: Union[ParagraphNode, str]) -> BlockquoteNode:
+    """
+    Create a blockquote node for quoted text.
+    
+    Args:
+        *content: Paragraphs or strings (strings will be wrapped in paragraphs)
+    
+    Returns:
+        BlockquoteNode: A valid blockquote node
+        
+    Example:
+        >>> blockquote("This is a quote")
+        {'type': 'blockquote', 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'This is a quote'}]}]}
+        
+        >>> blockquote(paragraph("First line"), paragraph("Second line"))
+        {'type': 'blockquote', 'content': [{'type': 'paragraph', ...}, {'type': 'paragraph', ...}]}
+    """
+    node: BlockquoteNode = {"type": "blockquote"}
+    if content:
+        node["content"] = [
+            item if isinstance(item, dict) else paragraph(item)
+            for item in content
+        ]
+    return node
+
+
 def table_cell(*content: Union[ParagraphNode, str], colspan: int = 1, rowspan: int = 1) -> TableCellNode:
     """
     Create a table cell node.
@@ -494,6 +527,7 @@ __all__ = [
     'TableHeaderNode',
     'TableCellOrHeader',
     'HorizontalRuleNode',
+    'BlockquoteNode',
     'Mark',
     
     # Builders
@@ -505,6 +539,7 @@ __all__ = [
     'ordered_list',
     'link_text',
     'horizontal_rule',
+    'blockquote',
     'table',
     'table_row',
     'table_cell',

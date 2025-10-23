@@ -7,7 +7,7 @@ removing existing content - useful for incremental updates, logs, and notes.
 
 from examples.config import get_client
 from vaiz.models import CreateTaskRequest, TaskPriority
-from vaiz import heading, paragraph, text, bullet_list, horizontal_rule
+from vaiz import heading, paragraph, text, bullet_list, horizontal_rule, blockquote
 
 
 def main():
@@ -80,6 +80,12 @@ def main():
                 "All updates have been ",
                 text("successfully appended", italic=True),
                 " to the original content."
+            ),
+            blockquote(
+                paragraph(
+                    text("Key Insight: ", bold=True),
+                    "Incremental updates preserve document history while keeping content organized."
+                )
             )
         ]
         

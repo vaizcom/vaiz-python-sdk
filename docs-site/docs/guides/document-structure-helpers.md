@@ -318,6 +318,28 @@ from vaiz import horizontal_rule
 horizontal_rule()
 ```
 
+### Blockquote
+
+Create blockquotes for quoted text or callouts:
+
+```python
+from vaiz import blockquote, paragraph, text
+
+# Blockquote with formatting
+blockquote(
+    paragraph(
+        text("Important: ", bold=True),
+        "This is a critical note that stands out."
+    )
+)
+```
+
+**Use cases for blockquotes:**
+- Quotations from external sources
+- Important callouts or warnings
+- Key insights or takeaways
+- API documentation notes
+- User testimonials or feedback
 
 ## Complete Example
 
@@ -327,7 +349,7 @@ Build a full document with helpers:
 from vaiz import (
     VaizClient, text, paragraph, heading, 
     bullet_list, ordered_list, list_item, 
-    link_text, horizontal_rule
+    link_text, horizontal_rule, blockquote
 )
 
 client = VaizClient(token="your_token")
@@ -353,6 +375,14 @@ content = [
         " for task management. Visit ",
         link_text("docs", "https://docs.vaiz.app"),
         " to learn more."
+    ),
+    
+    # Important note
+    blockquote(
+        paragraph(
+            text("Note: ", bold=True),
+            "This SDK provides type-safe helpers for building document content."
+        )
     ),
     
     # Features
@@ -401,9 +431,11 @@ All helper functions create nodes compatible with the document editor:
 - ✅ `bullet_list()` - Unordered lists
 - ✅ `ordered_list()` - Numbered lists
 - ✅ `list_item()` - List items with content
+- ✅ `blockquote()` - Blockquotes for quotes and callouts
 - ✅ `table()` - Tables with rows and cells
 - ✅ `table_row()` - Table row
 - ✅ `table_cell()` - Table cell (use for both data and headers)
+- ✅ `table_header()` - Table header cell (semantic th)
 
 ### Marks (Formatting)
 - ✅ `bold=True` - Bold text

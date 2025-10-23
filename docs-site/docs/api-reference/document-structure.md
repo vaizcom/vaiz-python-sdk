@@ -367,6 +367,22 @@ Individual item in a list. Can contain paragraphs and nested lists.
 }
 ```
 
+### Blockquote Node
+
+Blockquote for quoted text or callouts.
+
+```json
+{
+  "type": "blockquote",
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [{"type": "text", "text": "This is a quote"}]
+    }
+  ]
+}
+```
+
 ## Text Formatting Marks
 
 Marks are applied to text nodes to add formatting:
@@ -703,7 +719,7 @@ Lists can be nested within list items:
 Instead of manually constructing JSON, use the built-in helper functions:
 
 ```python
-from vaiz import heading, paragraph, text, bullet_list, link_text, table, table_row, table_header
+from vaiz import heading, paragraph, text, bullet_list, blockquote, link_text, table, table_row, table_header
 
 content = [
     heading(1, "Project Documentation"),
@@ -718,6 +734,12 @@ content = [
     bullet_list(
         "Easy to use",
         "Type-safe"
+    ),
+    blockquote(
+        paragraph(
+            text("Important: ", bold=True),
+            "Always use type-safe helpers for better code quality."
+        )
     ),
     table(
         table_row(
@@ -748,6 +770,7 @@ See [Document Structure Helpers Guide](../guides/document-structure-helpers) for
 | `bulletList` | Unordered list | `{"type": "bulletList", "content": [...]}` |
 | `orderedList` | Numbered list | `{"type": "orderedList", "content": [...]}` |
 | `listItem` | List item | `{"type": "listItem", "content": [...]}` |
+| `blockquote` | Blockquote for quotes/callouts | `{"type": "blockquote", "content": [...]}` |
 | `extension-table` | Table with rows | `{"type": "extension-table", "attrs": {"uid": "..."}, "content": [...]}` |
 | `tableRow` | Table row with cells/headers | `{"type": "tableRow", "attrs": {"showRowNumbers": false}, "content": [...]}` |
 | `tableCell` | Table data cell | `{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |

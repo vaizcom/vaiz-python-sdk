@@ -60,6 +60,7 @@ from .document_structure import (
     ordered_list,
     link_text,
     horizontal_rule,
+    blockquote,
     table,
     table_row,
     table_cell,
@@ -79,6 +80,7 @@ from .document_structure import (
     TableHeaderNode,
     TableCellOrHeader,
     HorizontalRuleNode,
+    BlockquoteNode,
     Mark,
 )
 
@@ -92,6 +94,7 @@ __all__ = [
     'ordered_list',
     'link_text',
     'horizontal_rule',
+    'blockquote',
     'table',
     'table_row',
     'table_cell',
@@ -111,6 +114,7 @@ __all__ = [
     'TableHeaderNode',
     'TableCellOrHeader',
     'HorizontalRuleNode',
+    'BlockquoteNode',
     'Mark',
     
     # Custom fields (existing)

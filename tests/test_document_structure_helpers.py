@@ -7,7 +7,7 @@ from tests.test_config import get_test_client
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz.helpers.document_structure import (
     text, paragraph, heading, bullet_list, ordered_list,
-    list_item, link_text, horizontal_rule, table, table_row, 
+    list_item, link_text, horizontal_rule, blockquote, table, table_row, 
     table_cell
 )
 
@@ -135,6 +135,31 @@ def test_document_structure_horizontal_rule_builder():
     assert node == {"type": "horizontalRule"}
 
 
+def test_document_structure_blockquote_builder():
+    """Test blockquote builder."""
+    # Simple blockquote
+    node = blockquote("This is a quote")
+    assert node["type"] == "blockquote"
+    assert node["content"][0]["type"] == "paragraph"
+    assert node["content"][0]["content"][0]["text"] == "This is a quote"
+    
+    # Blockquote with multiple paragraphs
+    node = blockquote(
+        paragraph("First line"),
+        paragraph("Second line")
+    )
+    assert node["type"] == "blockquote"
+    assert len(node["content"]) == 2
+    
+    # Blockquote with formatted text
+    node = blockquote(
+        paragraph(
+            text("Important: ", bold=True),
+            "This is a critical note"
+        )
+    )
+    assert node["type"] == "blockquote"
+    assert node["content"][0]["content"][0]["marks"][0]["type"] == "bold"
 
 
 def test_document_structure_table_builders():
@@ -372,7 +397,7 @@ def test_create_comprehensive_document_with_all_features():
         heading, paragraph, text, 
         bullet_list, ordered_list, list_item,
         table, table_row, table_cell, table_header,
-        horizontal_rule, link_text
+        horizontal_rule, blockquote, link_text
     )
     
     client = get_test_client()
@@ -629,6 +654,36 @@ def test_create_comprehensive_document_with_all_features():
         
         horizontal_rule(),
         
+        # Blockquote section
+        heading(2, "💬 Blockquotes"),
+        
+        paragraph("Simple blockquote:"),
+        
+        blockquote(
+            paragraph(
+                text("Note: ", bold=True),
+                "This is an important callout or quote that stands out from regular content."
+            )
+        ),
+        
+        paragraph("Blockquote with multiple paragraphs:"),
+        
+        blockquote(
+            paragraph(
+                text("First principle: ", bold=True),
+                "Always write clean, maintainable code."
+            ),
+            paragraph(
+                text("Second principle: ", bold=True),
+                "Documentation is as important as the code itself."
+            ),
+            paragraph(
+                "— The Clean Code Philosophy"
+            )
+        ),
+        
+        horizontal_rule(),
+        
         # Mixed content section
         heading(2, "🎨 Mixed Content"),
         
@@ -674,6 +729,7 @@ def test_create_comprehensive_document_with_all_features():
             "Text formatting: bold, italic, code, links",
             "Bullet lists (simple and nested)",
             "Ordered lists (with custom start numbers)",
+            "Blockquotes (simple and multi-paragraph)",
             "Tables with header cells (table_header)",
             "Complex tables with colspan and rowspan",
             "Wide tables with many columns",
@@ -710,6 +766,7 @@ def test_create_comprehensive_document_with_all_features():
     bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "bulletList")
     ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "orderedList")
     hrs = sum(1 for b in saved_blocks if b.get("type") == "horizontalRule")
+    blockquotes = sum(1 for b in saved_blocks if b.get("type") == "blockquote")
     
     # Verify we have a good variety of content
     assert headings >= 8, f"Expected at least 8 headings, got {headings}"
@@ -718,6 +775,7 @@ def test_create_comprehensive_document_with_all_features():
     assert bullet_lists >= 2, f"Expected at least 2 bullet lists, got {bullet_lists}"
     assert ordered_lists >= 2, f"Expected at least 2 ordered lists, got {ordered_lists}"
     assert hrs >= 5, f"Expected at least 5 horizontal rules, got {hrs}"
+    assert blockquotes >= 2, f"Expected at least 2 blockquotes, got {blockquotes}"
     
     # Verify table headers are used correctly
     found_table_headers = False
@@ -743,6 +801,7 @@ def test_create_comprehensive_document_with_all_features():
     print(f"   Tables: {tables}")
     print(f"   Bullet lists: {bullet_lists}")
     print(f"   Ordered lists: {ordered_lists}")
+    print(f"   Blockquotes: {blockquotes}")
     print(f"   Horizontal rules: {hrs}")
     print(f"   Document ID: {document_id}")
 
@@ -757,6 +816,7 @@ if __name__ == "__main__":
     test_document_structure_nested_lists()
     test_document_structure_link_text_builder()
     test_document_structure_horizontal_rule_builder()
+    test_document_structure_blockquote_builder()
     test_document_structure_table_builders()
     test_document_structure_table_with_formatting()
     test_replace_json_document_with_helpers()

@@ -11,7 +11,7 @@ from vaiz.models import CreateTaskRequest, TaskPriority
 # Import document structure builder functions
 from vaiz import (
     text, paragraph, heading, bullet_list, ordered_list, 
-    list_item, link_text, horizontal_rule
+    list_item, link_text, horizontal_rule, blockquote
 )
 
 
@@ -99,6 +99,18 @@ def main():
             paragraph(
                 text("Security Notice: ", bold=True),
                 "Always store your API token securely using environment variables."
+            ),
+            
+            # Quote section
+            heading(2, "📝 Philosophy"),
+            blockquote(
+                paragraph(
+                    text("Good software is like a good joke: ", italic=True),
+                    text("it needs no explanation.", bold=True, italic=True)
+                ),
+                paragraph(
+                    "— The Pragmatic Programmer"
+                )
             ),
             
             # Links section
