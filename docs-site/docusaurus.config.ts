@@ -70,6 +70,14 @@ const config: Config = {
               {
                 tagName: "link",
                 attributes: {
+                  rel: "icon",
+                  type: "image/svg+xml",
+                  href: "/favicon.svg",
+                },
+              },
+              {
+                tagName: "link",
+                attributes: {
                   rel: "manifest",
                   href: "/site.webmanifest",
                 },
