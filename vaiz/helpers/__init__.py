@@ -73,6 +73,8 @@ from .document_structure import (
     mention_document,
     mention_task,
     mention_milestone,
+    image_block,
+    files_block,
     
     # Document structure types
     DocumentNode,
@@ -97,6 +99,13 @@ from .document_structure import (
     MentionAttrs,
     MentionData,
     MentionItem,
+    ImageBlockNode,
+    ImageBlockAttrs,
+    ImageBlockData,
+    FilesBlockNode,
+    FilesBlockAttrs,
+    FilesBlockData,
+    FileItem,
 )
 
 __all__ = [
@@ -122,6 +131,8 @@ __all__ = [
     'mention_document',
     'mention_task',
     'mention_milestone',
+    'image_block',
+    'files_block',
     
     # Document structure types
     'DocumentNode',
@@ -146,6 +157,13 @@ __all__ = [
     'MentionAttrs',
     'MentionData',
     'MentionItem',
+    'ImageBlockNode',
+    'ImageBlockAttrs',
+    'ImageBlockData',
+    'FilesBlockNode',
+    'FilesBlockAttrs',
+    'FilesBlockData',
+    'FileItem',
     
     # Custom fields (existing)
     # Field creation helpers

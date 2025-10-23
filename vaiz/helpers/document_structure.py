@@ -61,6 +61,71 @@ class OrderedListAttrs(TypedDict):
     start: NotRequired[int]
 
 
+# Type definitions for file and image blocks
+class ImageBlockData(TypedDict):
+    """Data for image block (stored as JSON string in content)."""
+    id: str
+    src: str
+    thumbSrc: NotRequired[str]
+    fileName: str
+    caption: NotRequired[str]
+    fileType: str
+    extension: str
+    title: str
+    aspectRatio: NotRequired[float]
+    fileSize: int
+    dimensions: NotRequired[List[int]]
+    fileId: str
+    dominantColor: NotRequired[dict]
+
+
+class ImageBlockAttrs(TypedDict):
+    """Attributes for image block."""
+    uid: str
+    custom: Literal[1]
+    contenteditable: Literal["false"]
+    widthPercent: NotRequired[int]
+
+
+class ImageBlockNode(TypedDict):
+    """Image block node for displaying images."""
+    type: Literal["image-block"]
+    attrs: ImageBlockAttrs
+    content: List[TextNode]
+
+
+class FileItem(TypedDict):
+    """Individual file item in files block."""
+    id: str
+    fileId: str
+    createAt: int
+    url: str
+    extension: str
+    name: str
+    size: int
+    type: str  # Pdf, Image, Video, etc.
+    dominantColor: NotRequired[dict]
+
+
+class FilesBlockData(TypedDict):
+    """Data for files block (stored as JSON string in content)."""
+    files: List[FileItem]
+
+
+class FilesBlockAttrs(TypedDict):
+    """Attributes for files block."""
+    uid: str
+    custom: Literal[1]
+    contenteditable: Literal["false"]
+
+
+class FilesBlockNode(TypedDict):
+    """Files block node for displaying file attachments."""
+    type: Literal["files"]
+    attrs: FilesBlockAttrs
+    content: List[TextNode]
+
+
 # Type definitions for mention blocks
 class MentionItem(TypedDict):
     """Item reference in mention block."""
@@ -89,7 +154,7 @@ class MentionNode(TypedDict):
 
 
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode]
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode, ImageBlockNode, FilesBlockNode]
 
 
 class ParagraphNode(TypedDict):
@@ -208,7 +273,7 @@ class DetailsNode(TypedDict):
 
 
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode, ImageBlockNode, FilesBlockNode, MentionNode]
 
 
 # Helper functions
@@ -760,6 +825,178 @@ def mention_milestone(milestone_id: str) -> MentionNode:
     return mention(milestone_id, "Milestone")
 
 
+def image_block(
+    file_id: str,
+    src: str,
+    file_name: str,
+    file_size: int,
+    file_type: str = "image/png",
+    extension: str = "png",
+    width_percent: int = 100,
+    dimensions: Optional[List[int]] = None,
+    caption: str = "",
+    aspect_ratio: Optional[float] = None,
+    dominant_color: Optional[dict] = None
+) -> ImageBlockNode:
+    """
+    Create an image block node.
+    
+    Args:
+        file_id: The file ID from upload_file response
+        src: The URL of the uploaded image
+        file_name: Name of the file
+        file_size: Size of the file in bytes
+        file_type: MIME type (default: "image/png")
+        extension: File extension (default: "png")
+        width_percent: Width as percentage (default: 100)
+        dimensions: [width, height] of the image
+        caption: Optional image caption
+        aspect_ratio: Aspect ratio (width/height)
+        dominant_color: Dominant color dict with 'color' and 'isDark' keys
+    
+    Returns:
+        ImageBlockNode: A valid image block node
+        
+    Example:
+        >>> # First, upload the image
+        >>> uploaded = client.upload_file("path/to/image.png")
+        >>> file_id = uploaded.file.id
+        >>> 
+        >>> # Then create image block
+        >>> image_block(
+        ...     file_id=file_id,
+        ...     src=uploaded.file.url,
+        ...     file_name="image.png",
+        ...     file_size=12345,
+        ...     dimensions=[800, 600]
+        ... )
+    """
+    import uuid
+    import json
+    
+    # Generate unique IDs
+    block_uid = str(uuid.uuid4())[:12].replace('-', '')
+    image_id = str(uuid.uuid4())[:12].replace('-', '')
+    
+    # Build image data
+    image_data: ImageBlockData = {
+        "id": image_id,
+        "src": src,
+        "fileName": file_name,
+        "fileType": file_type,
+        "extension": extension,
+        "title": file_name,
+        "fileSize": file_size,
+        "fileId": file_id,
+    }
+    
+    if dimensions:
+        image_data["dimensions"] = dimensions
+        if len(dimensions) == 2 and dimensions[1] > 0:
+            image_data["aspectRatio"] = dimensions[0] / dimensions[1]
+    elif aspect_ratio is not None:
+        image_data["aspectRatio"] = aspect_ratio
+    
+    if caption:
+        image_data["caption"] = caption
+    
+    if dominant_color:
+        image_data["dominantColor"] = dominant_color
+    
+    # Create image block node
+    return {
+        "type": "image-block",
+        "attrs": {
+            "uid": block_uid,
+            "custom": 1,
+            "contenteditable": "false",
+            "widthPercent": width_percent
+        },
+        "content": [
+            {"type": "text", "text": json.dumps(image_data, ensure_ascii=False)}
+        ]
+    }
+
+
+def files_block(*file_items: dict) -> FilesBlockNode:
+    """
+    Create a files block node with one or more file attachments.
+    
+    Args:
+        *file_items: File item dictionaries with file metadata
+    
+    Returns:
+        FilesBlockNode: A valid files block node
+        
+    Example:
+        >>> # First, upload files
+        >>> uploaded1 = client.upload_file("document.pdf")
+        >>> uploaded2 = client.upload_file("image.png")
+        >>> 
+        >>> # Create file items
+        >>> file1 = {
+        ...     "fileId": uploaded1.file.id,
+        ...     "url": uploaded1.file.url,
+        ...     "name": "document.pdf",
+        ...     "size": uploaded1.file.size,
+        ...     "extension": "pdf",
+        ...     "type": "Pdf"
+        ... }
+        >>> 
+        >>> file2 = {
+        ...     "fileId": uploaded2.file.id,
+        ...     "url": uploaded2.file.url,
+        ...     "name": "image.png",
+        ...     "size": uploaded2.file.size,
+        ...     "extension": "png",
+        ...     "type": "Image"
+        ... }
+        >>> 
+        >>> # Create files block
+        >>> files_block(file1, file2)
+    """
+    import uuid
+    import json
+    import time
+    
+    block_uid = str(uuid.uuid4())[:12].replace('-', '')
+    current_timestamp = int(time.time() * 1000)
+    
+    # Build file items list
+    files_list = []
+    for item in file_items:
+        file_item: FileItem = {
+            "id": str(uuid.uuid4())[:12].replace('-', ''),
+            "fileId": item["fileId"],
+            "createAt": current_timestamp,
+            "url": item["url"],
+            "extension": item["extension"],
+            "name": item["name"],
+            "size": item["size"],
+            "type": item["type"],
+        }
+        
+        if "dominantColor" in item:
+            file_item["dominantColor"] = item["dominantColor"]
+        
+        files_list.append(file_item)
+    
+    # Create files block node
+    files_data: FilesBlockData = {"files": files_list}
+    
+    return {
+        "type": "files",
+        "attrs": {
+            "uid": block_uid,
+            "custom": 1,
+            "contenteditable": "false"
+        },
+        "content": [
+            {"type": "text", "text": json.dumps(files_data, ensure_ascii=False)}
+        ]
+    }
+
+
 # Convenience exports
 __all__ = [
     # Types
@@ -785,6 +1022,13 @@ __all__ = [
     'MentionAttrs',
     'MentionData',
     'MentionItem',
+    'ImageBlockNode',
+    'ImageBlockAttrs',
+    'ImageBlockData',
+    'FilesBlockNode',
+    'FilesBlockAttrs',
+    'FilesBlockData',
+    'FileItem',
     
     # Builders
     'text',
@@ -808,5 +1052,7 @@ __all__ = [
     'mention_document',
     'mention_task',
     'mention_milestone',
+    'image_block',
+    'files_block',
 ]
 

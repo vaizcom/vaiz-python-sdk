@@ -136,6 +136,8 @@ from .helpers import (
     mention_document,
     mention_task,
     mention_milestone,
+    image_block,
+    files_block,
 )
 
 __all__ = [
@@ -263,4 +265,6 @@ __all__ = [
     'mention_document',
     'mention_task',
     'mention_milestone',
+    'image_block',
+    'files_block',
 ]
