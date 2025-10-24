@@ -1242,6 +1242,231 @@ client.replace_json_document(document_id, content)
 
 ---
 
+## Image Block
+
+Embedded images in documents and task descriptions.
+
+**Structure:**
+```json
+{
+  "type": "image-block",
+  "attrs": {
+    "uid": "uniqueIdXYZ",
+    "custom": 1,
+    "contenteditable": "false",
+    "widthPercent": 100
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"id\":\"img123\",\"src\":\"https://...\",\"fileName\":\"screenshot.png\",\"fileType\":\"image/png\",\"extension\":\"png\",\"title\":\"screenshot.png\",\"fileSize\":123456,\"fileId\":\"file_id\",\"dimensions\":[800,600],\"aspectRatio\":1.33,\"caption\":\"Screenshot\"}"
+    }
+  ]
+}
+```
+
+**Image Data Fields:**
+- `id` - Unique image ID (generated)
+- `src` - Image URL (from upload_file)
+- `fileName` - File name
+- `fileType` - MIME type (e.g., "image/png", "image/jpeg")
+- `extension` - File extension (e.g., "png", "jpg")
+- `title` - Image title (usually same as fileName)
+- `fileSize` - File size in bytes
+- `fileId` - File ID from upload_file response
+- `dimensions` - Optional [width, height] array
+- `aspectRatio` - Optional aspect ratio (width/height)
+- `caption` - Optional caption text
+- `dominantColor` - Optional color object
+
+**Attributes:**
+- `uid` - Unique block identifier
+- `custom` - Always 1 for custom blocks
+- `contenteditable` - Should be "false"
+- `widthPercent` - Display width percentage (1-100)
+
+**Using Helper (Recommended):**
+```python
+from vaiz import image_block, heading, paragraph
+
+# Upload image first
+uploaded = client.upload_file("photo.jpg")
+
+# Create image block
+image = image_block(
+    file_id=uploaded.file.id,
+    src=uploaded.file.url,
+    file_name="photo.jpg",
+    file_size=uploaded.file.size,
+    extension="jpg",
+    file_type="image/jpeg",
+    dimensions=[1920, 1080],
+    caption="Product photo",
+    width_percent=75
+)
+
+content = [
+    heading(1, "Gallery"),
+    paragraph("Check out our latest product:"),
+    image
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Common Use Cases:**
+- Screenshots in bug reports
+- Product images in documentation
+- Diagrams and flowcharts
+- Photo galleries
+- Visual examples in guides
+
+---
+
+## Files Block
+
+File attachments (PDFs, documents, archives, etc.) in documents.
+
+**Structure:**
+```json
+{
+  "type": "files",
+  "attrs": {
+    "uid": "uniqueIdDEF",
+    "custom": 1,
+    "contenteditable": "false"
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"files\":[{\"id\":\"fileItem1\",\"fileId\":\"uploaded_file_id\",\"createAt\":1234567890000,\"url\":\"https://...\",\"extension\":\"pdf\",\"name\":\"Report.pdf\",\"size\":245678,\"type\":\"Pdf\"}]}"
+    }
+  ]
+}
+```
+
+**Files Data Structure:**
+- `files` - Array of file items
+
+**File Item Fields:**
+- `id` - Unique file item ID (generated)
+- `fileId` - File ID from upload_file response
+- `createAt` - Timestamp in milliseconds
+- `url` - File download URL
+- `extension` - File extension
+- `name` - Display name
+- `size` - File size in bytes
+- `type` - File type category (see below)
+- `dominantColor` - Optional color object
+
+**File Type Categories:**
+- `Pdf` - PDF documents
+- `Image` - Images (prefer image_block instead)
+- `Video` - Video files
+- `Excel` - Spreadsheets (.xlsx, .xls, .csv)
+- `PowerPoint` - Presentations (.pptx, .ppt)
+- `Word` - Word documents (.docx, .doc)
+- `Archive` - Compressed files (.zip, .rar, .tar.gz)
+- `Text` - Text files (.txt, .md)
+- `Code` - Source code files
+- `Other` - Generic files
+
+**Using Helper (Recommended):**
+```python
+from vaiz import files_block, heading, paragraph
+
+# Upload files
+pdf = client.upload_file("report.pdf")
+excel = client.upload_file("data.xlsx")
+
+# Create file items
+files = [
+    {
+        "fileId": pdf.file.id,
+        "url": pdf.file.url,
+        "name": "Q4 Report.pdf",
+        "size": pdf.file.size,
+        "extension": "pdf",
+        "type": "Pdf"
+    },
+    {
+        "fileId": excel.file.id,
+        "url": excel.file.url,
+        "name": "Sales Data.xlsx",
+        "size": excel.file.size,
+        "extension": "xlsx",
+        "type": "Excel"
+    }
+]
+
+content = [
+    heading(1, "Quarterly Report"),
+    paragraph("Attached documents:"),
+    files_block(*files)
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Common Use Cases:**
+- Report attachments
+- Source code archives
+- Documentation PDFs
+- Data exports (CSV, Excel)
+- Log files
+- Configuration files
+
+**Combining Images and Files:**
+```python
+from vaiz import heading, paragraph, image_block, files_block, horizontal_rule
+
+# Upload files
+screenshot = client.upload_file("app.png")
+manual = client.upload_file("manual.pdf")
+source = client.upload_file("source.zip")
+
+content = [
+    heading(1, "Release v2.0"),
+    
+    # Image
+    paragraph("New interface:"),
+    image_block(
+        file_id=screenshot.file.id,
+        src=screenshot.file.url,
+        file_name="app.png",
+        file_size=screenshot.file.size,
+        caption="Main screen"
+    ),
+    
+    horizontal_rule(),
+    
+    # Files
+    paragraph("Download resources:"),
+    files_block(
+        {
+            "fileId": manual.file.id,
+            "url": manual.file.url,
+            "name": "User Manual.pdf",
+            "size": manual.file.size,
+            "extension": "pdf",
+            "type": "Pdf"
+        },
+        {
+            "fileId": source.file.id,
+            "url": source.file.url,
+            "name": "Source Code.zip",
+            "size": source.file.size,
+            "extension": "zip",
+            "type": "Archive"
+        }
+    )
+]
+
+client.replace_json_document(document_id, content)
+```
+
+---
+
 ## Supported Elements
 
 ### Blocks

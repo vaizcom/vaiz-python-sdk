@@ -655,6 +655,369 @@ content = [
 client.replace_json_document("document_id", content)
 ```
 
+## Files and Images
+
+### Image Block
+
+Embed images in documents and task descriptions:
+
+```python
+from vaiz import image_block, heading, paragraph
+
+# First, upload the image
+uploaded = client.upload_file("screenshots/dashboard.png")
+
+# Create image block
+image = image_block(
+    file_id=uploaded.file.id,
+    src=uploaded.file.url,
+    file_name="dashboard.png",
+    file_size=uploaded.file.size,
+    extension="png",
+    file_type="image/png",
+    caption="Main dashboard view"
+)
+
+content = [
+    heading(1, "App Screenshots"),
+    paragraph("Here's our main dashboard:"),
+    image
+]
+
+client.replace_json_document(document_id, content)
+```
+
+### Image with Dimensions
+
+Specify image dimensions and aspect ratio:
+
+```python
+from vaiz import image_block, paragraph
+from PIL import Image
+
+# Get image dimensions
+img = Image.open("photo.jpg")
+width, height = img.size
+
+# Upload image
+uploaded = client.upload_file("photo.jpg")
+
+# Create image block with dimensions
+image = image_block(
+    file_id=uploaded.file.id,
+    src=uploaded.file.url,
+    file_name="photo.jpg",
+    file_size=uploaded.file.size,
+    extension="jpg",
+    file_type="image/jpeg",
+    dimensions=[width, height],  # Automatically calculates aspect ratio
+    caption="Product photo",
+    width_percent=75  # Display at 75% width
+)
+
+content = [
+    paragraph("Product image:"),
+    image
+]
+```
+
+### Multiple Images
+
+Add multiple images to a document:
+
+```python
+from vaiz import image_block, heading, paragraph
+
+# Upload images
+screenshot1 = client.upload_file("screen1.png")
+screenshot2 = client.upload_file("screen2.png")
+screenshot3 = client.upload_file("screen3.png")
+
+content = [
+    heading(1, "Feature Gallery"),
+    
+    paragraph("Login screen:"),
+    image_block(
+        file_id=screenshot1.file.id,
+        src=screenshot1.file.url,
+        file_name="login.png",
+        file_size=screenshot1.file.size,
+        caption="User authentication"
+    ),
+    
+    paragraph("Dashboard:"),
+    image_block(
+        file_id=screenshot2.file.id,
+        src=screenshot2.file.url,
+        file_name="dashboard.png",
+        file_size=screenshot2.file.size,
+        caption="Main dashboard view"
+    ),
+    
+    paragraph("Settings:"),
+    image_block(
+        file_id=screenshot3.file.id,
+        src=screenshot3.file.url,
+        file_name="settings.png",
+        file_size=screenshot3.file.size,
+        caption="Configuration panel"
+    )
+]
+
+client.replace_json_document(document_id, content)
+```
+
+### Files Block
+
+Attach files (PDFs, documents, etc.) to documents:
+
+```python
+from vaiz import files_block, heading, paragraph
+
+# Upload files
+pdf = client.upload_file("report.pdf")
+excel = client.upload_file("data.xlsx")
+
+# Create file items
+file1 = {
+    "fileId": pdf.file.id,
+    "url": pdf.file.url,
+    "name": "Q4 Report.pdf",
+    "size": pdf.file.size,
+    "extension": "pdf",
+    "type": "Pdf"
+}
+
+file2 = {
+    "fileId": excel.file.id,
+    "url": excel.file.url,
+    "name": "Sales Data.xlsx",
+    "size": excel.file.size,
+    "extension": "xlsx",
+    "type": "Excel"
+}
+
+content = [
+    heading(1, "Quarterly Report"),
+    paragraph("Attached documents:"),
+    files_block(file1, file2)
+]
+
+client.replace_json_document(document_id, content)
+```
+
+### Single File Attachment
+
+Attach a single file:
+
+```python
+from vaiz import files_block, paragraph
+
+# Upload document
+uploaded = client.upload_file("presentation.pptx")
+
+# Create file item
+file_item = {
+    "fileId": uploaded.file.id,
+    "url": uploaded.file.url,
+    "name": "Product Presentation.pptx",
+    "size": uploaded.file.size,
+    "extension": "pptx",
+    "type": "PowerPoint"
+}
+
+content = [
+    paragraph("Download the presentation:"),
+    files_block(file_item)
+]
+```
+
+### Mixed File Types
+
+Attach various file types together:
+
+```python
+from vaiz import files_block, heading, paragraph
+
+# Upload different file types
+pdf = client.upload_file("manual.pdf")
+video = client.upload_file("demo.mp4")
+zip_file = client.upload_file("source.zip")
+
+files = [
+    {
+        "fileId": pdf.file.id,
+        "url": pdf.file.url,
+        "name": "User Manual.pdf",
+        "size": pdf.file.size,
+        "extension": "pdf",
+        "type": "Pdf"
+    },
+    {
+        "fileId": video.file.id,
+        "url": video.file.url,
+        "name": "Product Demo.mp4",
+        "size": video.file.size,
+        "extension": "mp4",
+        "type": "Video"
+    },
+    {
+        "fileId": zip_file.file.id,
+        "url": zip_file.file.url,
+        "name": "Source Code.zip",
+        "size": zip_file.file.size,
+        "extension": "zip",
+        "type": "Archive"
+    }
+]
+
+content = [
+    heading(1, "Release Package"),
+    paragraph("Download all release materials:"),
+    files_block(*files)  # Unpack list
+]
+
+client.replace_json_document(document_id, content)
+```
+
+### Supported File Types
+
+The `type` field in file items can be:
+
+| Type | Extension Examples | Description |
+|------|-------------------|-------------|
+| `Pdf` | `.pdf` | PDF documents |
+| `Image` | `.png`, `.jpg`, `.gif`, `.webp` | Images (use `image_block` instead) |
+| `Video` | `.mp4`, `.mov`, `.avi` | Video files |
+| `Excel` | `.xlsx`, `.xls`, `.csv` | Spreadsheets |
+| `PowerPoint` | `.pptx`, `.ppt` | Presentations |
+| `Word` | `.docx`, `.doc` | Word documents |
+| `Archive` | `.zip`, `.rar`, `.tar.gz` | Compressed archives |
+| `Text` | `.txt`, `.md` | Text files |
+| `Code` | `.py`, `.js`, `.java`, etc. | Source code files |
+| `Other` | Any other extension | Generic files |
+
+### Complete Files and Images Example
+
+```python
+from vaiz import (
+    VaizClient, heading, paragraph, text,
+    image_block, files_block, horizontal_rule
+)
+
+client = VaizClient(api_key="...", space_id="...")
+
+# Upload all files
+logo = client.upload_file("company_logo.png")
+screenshot = client.upload_file("app_screen.png")
+report_pdf = client.upload_file("annual_report.pdf")
+data_csv = client.upload_file("data_export.csv")
+
+# Build document with mixed content
+content = [
+    heading(1, "📊 Annual Report 2024"),
+    
+    # Logo image
+    image_block(
+        file_id=logo.file.id,
+        src=logo.file.url,
+        file_name="logo.png",
+        file_size=logo.file.size,
+        width_percent=50,  # Display at 50% width
+        caption="Company Logo"
+    ),
+    
+    horizontal_rule(),
+    
+    # Report content
+    heading(2, "Executive Summary"),
+    paragraph("Our annual performance and achievements..."),
+    
+    # Screenshot
+    heading(2, "New Features"),
+    paragraph("We launched a redesigned application:"),
+    image_block(
+        file_id=screenshot.file.id,
+        src=screenshot.file.url,
+        file_name="app_screen.png",
+        file_size=screenshot.file.size,
+        caption="New dashboard interface"
+    ),
+    
+    horizontal_rule(),
+    
+    # Downloadable files
+    heading(2, "📎 Attachments"),
+    paragraph(text("Download the full report and data:", bold=True)),
+    files_block(
+        {
+            "fileId": report_pdf.file.id,
+            "url": report_pdf.file.url,
+            "name": "Annual Report 2024.pdf",
+            "size": report_pdf.file.size,
+            "extension": "pdf",
+            "type": "Pdf"
+        },
+        {
+            "fileId": data_csv.file.id,
+            "url": data_csv.file.url,
+            "name": "Financial Data.csv",
+            "size": data_csv.file.size,
+            "extension": "csv",
+            "type": "Excel"
+        }
+    )
+]
+
+# Update document
+client.replace_json_document(document_id, content)
+```
+
+### Using with Task Descriptions
+
+Images and files work great in task descriptions:
+
+```python
+from vaiz import CreateTaskRequest, image_block, files_block, heading, paragraph
+
+# Upload files
+screenshot = client.upload_file("bug_screenshot.png")
+log_file = client.upload_file("error_log.txt")
+
+# Build description with image and file
+description_content = [
+    heading(2, "Bug Report"),
+    paragraph("Application crashes when clicking submit button."),
+    
+    heading(3, "Screenshot"),
+    image_block(
+        file_id=screenshot.file.id,
+        src=screenshot.file.url,
+        file_name="error.png",
+        file_size=screenshot.file.size,
+        caption="Error state"
+    ),
+    
+    heading(3, "Logs"),
+    files_block({
+        "fileId": log_file.file.id,
+        "url": log_file.file.url,
+        "name": "error.log",
+        "size": log_file.file.size,
+        "extension": "txt",
+        "type": "Text"
+    })
+]
+
+# Create task with rich description
+task = CreateTaskRequest(
+    name="Fix submit button crash",
+    description_json=description_content
+)
+
+client.create_task(task)
+```
+
 ## Navigation Blocks
 
 ### TOC Block - Table of Contents
@@ -855,12 +1218,12 @@ All helper functions create nodes compatible with the document editor:
 - ✅ `mention(id, kind)` - Generic mention
 - ✅ `image_block()` - Embed images
 - ✅ `files_block()` - Attach files
+- ✅ `code_block()` - Code with syntax highlighting
 
-### Navigation & Special Blocks
+### Navigation Blocks
 - ✅ `toc_block()` - Automatic table of contents
 - ✅ `anchors_block()` - Related documents and backlinks
 - ✅ `siblings_block()` - Same-level documents navigation
-- ✅ `code_block()` - Code with syntax highlighting
 
 ### Marks (Formatting)
 - ✅ `bold=True` - Bold text
