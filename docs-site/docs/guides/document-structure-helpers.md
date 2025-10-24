@@ -667,14 +667,9 @@ from vaiz import image_block, heading, paragraph
 # First, upload the image
 uploaded = client.upload_file("screenshots/dashboard.png")
 
-# Create image block
+# Create image block - simple! Just pass the file
 image = image_block(
-    file_id=uploaded.file.id,
-    src=uploaded.file.url,
-    file_name="dashboard.png",
-    file_size=uploaded.file.size,
-    extension="png",
-    file_type="image/png",
+    file=uploaded.file,
     caption="Main dashboard view"
 )
 
@@ -702,15 +697,9 @@ width, height = img.size
 # Upload image
 uploaded = client.upload_file("photo.jpg")
 
-# Create image block with dimensions
+# Create image block with custom width
 image = image_block(
-    file_id=uploaded.file.id,
-    src=uploaded.file.url,
-    file_name="photo.jpg",
-    file_size=uploaded.file.size,
-    extension="jpg",
-    file_type="image/jpeg",
-    dimensions=[width, height],  # Automatically calculates aspect ratio
+    file=uploaded.file,
     caption="Product photo",
     width_percent=75  # Display at 75% width
 )
@@ -738,28 +727,19 @@ content = [
     
     paragraph("Login screen:"),
     image_block(
-        file_id=screenshot1.file.id,
-        src=screenshot1.file.url,
-        file_name="login.png",
-        file_size=screenshot1.file.size,
+        file=screenshot1.file,
         caption="User authentication"
     ),
     
     paragraph("Dashboard:"),
     image_block(
-        file_id=screenshot2.file.id,
-        src=screenshot2.file.url,
-        file_name="dashboard.png",
-        file_size=screenshot2.file.size,
+        file=screenshot2.file,
         caption="Main dashboard view"
     ),
     
     paragraph("Settings:"),
     image_block(
-        file_id=screenshot3.file.id,
-        src=screenshot3.file.url,
-        file_name="settings.png",
-        file_size=screenshot3.file.size,
+        file=screenshot3.file,
         caption="Configuration panel"
     )
 ]
@@ -919,10 +899,7 @@ content = [
     
     # Logo image
     image_block(
-        file_id=logo.file.id,
-        src=logo.file.url,
-        file_name="logo.png",
-        file_size=logo.file.size,
+        file=logo.file,
         width_percent=50,  # Display at 50% width
         caption="Company Logo"
     ),
@@ -937,10 +914,7 @@ content = [
     heading(2, "New Features"),
     paragraph("We launched a redesigned application:"),
     image_block(
-        file_id=screenshot.file.id,
-        src=screenshot.file.url,
-        file_name="app_screen.png",
-        file_size=screenshot.file.size,
+        file=screenshot.file,
         caption="New dashboard interface"
     ),
     
@@ -991,10 +965,7 @@ description_content = [
     
     heading(3, "Screenshot"),
     image_block(
-        file_id=screenshot.file.id,
-        src=screenshot.file.url,
-        file_name="error.png",
-        file_size=screenshot.file.size,
+        file=screenshot.file,
         caption="Error state"
     ),
     

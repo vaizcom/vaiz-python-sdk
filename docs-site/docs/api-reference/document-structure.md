@@ -1292,15 +1292,9 @@ from vaiz import image_block, heading, paragraph
 # Upload image first
 uploaded = client.upload_file("photo.jpg")
 
-# Create image block
+# Create image block - simple! Just pass the file
 image = image_block(
-    file_id=uploaded.file.id,
-    src=uploaded.file.url,
-    file_name="photo.jpg",
-    file_size=uploaded.file.size,
-    extension="jpg",
-    file_type="image/jpeg",
-    dimensions=[1920, 1080],
+    file=uploaded.file,
     caption="Product photo",
     width_percent=75
 )
@@ -1431,10 +1425,7 @@ content = [
     # Image
     paragraph("New interface:"),
     image_block(
-        file_id=screenshot.file.id,
-        src=screenshot.file.url,
-        file_name="app.png",
-        file_size=screenshot.file.size,
+        file=screenshot.file,
         caption="Main screen"
     ),
     

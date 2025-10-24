@@ -134,14 +134,9 @@ def main():
             
             paragraph(text("Project screenshot:")),
             
+            # New simple API - just pass the file!
             image_block(
-                file_id=image_uploaded.file.id,
-                src=image_uploaded.file.url,
-                file_name=image_uploaded.file.name,
-                file_size=image_uploaded.file.size,
-                extension=image_uploaded.file.ext,
-                file_type=image_uploaded.file.mime or "image/png",
-                dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None,
+                file=image_uploaded.file,
                 caption="Project Screenshot",
                 width_percent=80
             ),

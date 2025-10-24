@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.16.0] - 2025-10-24
+
+### Changed
+
+- **🔧 Breaking**: Simplified `image_block()` API - now accepts file object directly
+  - **Old API** (deprecated): `image_block(file_id=..., src=..., file_name=..., file_size=..., extension=..., dimensions=...)`
+  - **New API**: `image_block(file=uploaded.file, caption="...", width_percent=100)`
+  - Reduces code by 80% - just pass the file object!
+  - All file metadata extracted automatically from uploaded file
+  - MIME type auto-detected from extension or file.mime
+  - Aspect ratio auto-calculated from dimensions
+  - Migration: Replace multiple parameters with single `file=uploaded.file` parameter
+
 ## [0.15.0] - 2025-10-24
 
 ### Added

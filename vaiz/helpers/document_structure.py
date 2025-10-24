@@ -976,53 +976,54 @@ def mention_milestone(milestone_id: str) -> MentionNode:
 
 
 def image_block(
-    file_id: str,
-    src: str,
-    file_name: str,
-    file_size: int,
-    file_type: str = "image/png",
-    extension: str = "png",
+    file,
     width_percent: int = 100,
-    dimensions: Optional[List[int]] = None,
-    caption: str = "",
-    aspect_ratio: Optional[float] = None,
-    dominant_color: Optional[dict] = None
+    caption: str = ""
 ) -> ImageBlockNode:
     """
-    Create an image block node.
+    Create an image block node from an uploaded file.
     
     Args:
-        file_id: The file ID from upload_file response
-        src: The URL of the uploaded image
-        file_name: Name of the file
-        file_size: Size of the file in bytes
-        file_type: MIME type (default: "image/png")
-        extension: File extension (default: "png")
+        file: UploadedFile object from client.upload_file() response (use uploaded.file)
         width_percent: Width as percentage (default: 100)
-        dimensions: [width, height] of the image
         caption: Optional image caption
-        aspect_ratio: Aspect ratio (width/height)
-        dominant_color: Dominant color dict with 'color' and 'isDark' keys
     
     Returns:
         ImageBlockNode: A valid image block node
         
     Example:
-        >>> # First, upload the image
+        >>> # Upload image and create block in one flow
         >>> uploaded = client.upload_file("path/to/image.png")
-        >>> file_id = uploaded.file.id
         >>> 
-        >>> # Then create image block
+        >>> # Simple usage - just pass the file object!
+        >>> image_block(file=uploaded.file)
+        >>> 
+        >>> # With optional parameters
         >>> image_block(
-        ...     file_id=file_id,
-        ...     src=uploaded.file.url,
-        ...     file_name="image.png",
-        ...     file_size=12345,
-        ...     dimensions=[800, 600]
+        ...     file=uploaded.file,
+        ...     caption="Product photo",
+        ...     width_percent=75
         ... )
     """
     import uuid
     import json
+    import mimetypes
+    
+    # Extract data from uploaded file object
+    file_id = file.id
+    src = file.url
+    file_name = file.name
+    file_size = file.size
+    extension = file.ext
+    dimensions = file.dimension if hasattr(file, 'dimension') and file.dimension else None
+    dominant_color = file.dominant_color if hasattr(file, 'dominant_color') and file.dominant_color else None
+    
+    # Auto-detect MIME type from extension or use mime from file
+    if hasattr(file, 'mime') and file.mime:
+        file_type = file.mime
+    else:
+        mime_type = mimetypes.guess_type(f"file.{extension}")[0]
+        file_type = mime_type if mime_type else "image/png"
     
     # Generate unique IDs
     block_uid = str(uuid.uuid4())[:12].replace('-', '')
@@ -1040,12 +1041,11 @@ def image_block(
         "fileId": file_id,
     }
     
+    # Auto-calculate aspect ratio from dimensions
     if dimensions:
         image_data["dimensions"] = dimensions
         if len(dimensions) == 2 and dimensions[1] > 0:
             image_data["aspectRatio"] = dimensions[0] / dimensions[1]
-    elif aspect_ratio is not None:
-        image_data["aspectRatio"] = aspect_ratio
     
     if caption:
         image_data["caption"] = caption

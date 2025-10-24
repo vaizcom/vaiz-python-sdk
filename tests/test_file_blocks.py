@@ -16,17 +16,32 @@ from tests.test_config import get_test_client, TEST_SPACE_ID
 import json
 
 
+# Mock file class for testing
+class MockUploadedFile:
+    """Mock uploaded file for testing."""
+    def __init__(self, id, url, name, size, ext, mime=None, dimension=None, dominant_color=None):
+        self.id = id
+        self.url = url
+        self.name = name
+        self.size = size
+        self.ext = ext
+        self.mime = mime
+        self.dimension = dimension
+        self.dominant_color = dominant_color
+
+
 def test_image_block_structure():
-    """Test creating an image block with correct structure."""
-    result = image_block(
-        file_id="test_file_id",
-        src="http://example.com/image.png",
-        file_name="test.png",
-        file_size=12345,
-        extension="png",
-        file_type="image/png",
-        dimensions=[800, 600]
+    """Test creating an image block with new simple API."""
+    mock_file = MockUploadedFile(
+        id="test_file_id",
+        url="http://example.com/image.png",
+        name="test.png",
+        size=12345,
+        ext="png",
+        dimension=[800, 600]
     )
+    
+    result = image_block(file=mock_file)
     
     assert result["type"] == "image-block"
     assert result["attrs"]["custom"] == 1
@@ -48,13 +63,15 @@ def test_image_block_structure():
 
 def test_image_block_with_caption():
     """Test creating an image block with caption."""
-    result = image_block(
-        file_id="test_id",
-        src="http://example.com/image.png",
-        file_name="test.png",
-        file_size=1000,
-        caption="Test caption"
+    mock_file = MockUploadedFile(
+        id="test_id",
+        url="http://example.com/image.png",
+        name="test.png",
+        size=1000,
+        ext="png"
     )
+    
+    result = image_block(file=mock_file, caption="Test caption")
     
     content_text = result["content"][0]["text"]
     image_data = json.loads(content_text)
@@ -64,15 +81,81 @@ def test_image_block_with_caption():
 
 def test_image_block_custom_width():
     """Test creating an image block with custom width."""
-    result = image_block(
-        file_id="test_id",
-        src="http://example.com/image.png",
-        file_name="test.png",
-        file_size=1000,
-        width_percent=50
+    mock_file = MockUploadedFile(
+        id="test_id",
+        url="http://example.com/image.png",
+        name="test.png",
+        size=1000,
+        ext="png"
     )
     
+    result = image_block(file=mock_file, width_percent=50)
+    
     assert result["attrs"]["widthPercent"] == 50
+
+
+def test_image_block_auto_mime_detection():
+    """Test that MIME type is automatically detected from extension."""
+    # Test PNG
+    mock_png = MockUploadedFile(
+        id="test_id",
+        url="http://example.com/image.png",
+        name="test.png",
+        size=1000,
+        ext="png"
+    )
+    result_png = image_block(file=mock_png)
+    content_png = json.loads(result_png["content"][0]["text"])
+    assert content_png["fileType"] == "image/png"
+    
+    # Test JPEG
+    mock_jpg = MockUploadedFile(
+        id="test_id",
+        url="http://example.com/image.jpg",
+        name="test.jpg",
+        size=1000,
+        ext="jpg"
+    )
+    result_jpg = image_block(file=mock_jpg)
+    content_jpg = json.loads(result_jpg["content"][0]["text"])
+    assert content_jpg["fileType"] == "image/jpeg"
+    
+    # Test GIF
+    mock_gif = MockUploadedFile(
+        id="test_id",
+        url="http://example.com/image.gif",
+        name="test.gif",
+        size=1000,
+        ext="gif"
+    )
+    result_gif = image_block(file=mock_gif)
+    content_gif = json.loads(result_gif["content"][0]["text"])
+    assert content_gif["fileType"] == "image/gif"
+    
+    # Test WEBP
+    mock_webp = MockUploadedFile(
+        id="test_id",
+        url="http://example.com/image.webp",
+        name="test.webp",
+        size=1000,
+        ext="webp"
+    )
+    result_webp = image_block(file=mock_webp)
+    content_webp = json.loads(result_webp["content"][0]["text"])
+    assert content_webp["fileType"] == "image/webp"
+    
+    # Test with explicit MIME from file
+    mock_with_mime = MockUploadedFile(
+        id="test_id",
+        url="http://example.com/image.png",
+        name="test.png",
+        size=1000,
+        ext="png",
+        mime="image/custom"
+    )
+    result_with_mime = image_block(file=mock_with_mime)
+    content_with_mime = json.loads(result_with_mime["content"][0]["text"])
+    assert content_with_mime["fileType"] == "image/custom"
 
 
 def test_files_block_single_file():
@@ -205,15 +288,8 @@ def test_create_document_with_file_blocks():
             
             paragraph(text("Image block:")),
             
-            image_block(
-                file_id=image_uploaded.file.id,
-                src=image_uploaded.file.url,
-                file_name=image_uploaded.file.name,
-                file_size=image_uploaded.file.size,
-                extension=image_uploaded.file.ext,
-                file_type=image_uploaded.file.mime or "image/png",
-                dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None
-            ),
+            # New simple API - just pass the file object!
+            image_block(file=image_uploaded.file),
             
             paragraph(text("Files block:")),
             
@@ -296,14 +372,9 @@ def test_add_images_with_captions_to_existing_document():
         
         heading(2, "Image 1: With Caption"),
         
+        # New simple API - just pass file and optional parameters!
         image_block(
-            file_id=image_uploaded.file.id,
-            src=image_uploaded.file.url,
-            file_name=image_uploaded.file.name,
-            file_size=image_uploaded.file.size,
-            extension=image_uploaded.file.ext,
-            file_type=image_uploaded.file.mime or "image/png",
-            dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None,
+            file=image_uploaded.file,
             caption="This is a test image with a caption"
         ),
         
@@ -312,13 +383,7 @@ def test_add_images_with_captions_to_existing_document():
         heading(2, "Image 2: With Different Caption"),
         
         image_block(
-            file_id=image_uploaded.file.id,
-            src=image_uploaded.file.url,
-            file_name=image_uploaded.file.name,
-            file_size=image_uploaded.file.size,
-            extension=image_uploaded.file.ext,
-            file_type=image_uploaded.file.mime or "image/png",
-            dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None,
+            file=image_uploaded.file,
             caption="Another caption example with description",
             width_percent=75
         ),
@@ -328,13 +393,7 @@ def test_add_images_with_captions_to_existing_document():
         heading(2, "Image 3: Full Width with Long Caption"),
         
         image_block(
-            file_id=image_uploaded.file.id,
-            src=image_uploaded.file.url,
-            file_name=image_uploaded.file.name,
-            file_size=image_uploaded.file.size,
-            extension=image_uploaded.file.ext,
-            file_type=image_uploaded.file.mime or "image/png",
-            dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None,
+            file=image_uploaded.file,
             caption="This is a longer caption that demonstrates how captions work with full-width images. Captions provide context and descriptions for images.",
             width_percent=100
         ),

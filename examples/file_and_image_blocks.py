@@ -90,16 +90,8 @@ def main():
             
             paragraph(text("Here's an embedded image:")),
             
-            image_block(
-                file_id=image_uploaded.file.id,
-                src=image_uploaded.file.url,
-                file_name=image_uploaded.file.name,
-                file_size=image_uploaded.file.size,
-                extension=image_uploaded.file.ext,
-                file_type=image_uploaded.file.mime or "image/png",
-                width_percent=100,
-                dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None
-            ),
+            # New simple API - just pass the file!
+            image_block(file=image_uploaded.file),
             
             paragraph(text("Image displayed above", italic=True)),
             
