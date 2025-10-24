@@ -3,6 +3,12 @@ Integration tests for task lists (checklists) in real documents and tasks.
 """
 
 import pytest
+import sys
+import os
+
+# Add tests directory to path for test_config import
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID
 from vaiz import (
     CreateTaskRequest,

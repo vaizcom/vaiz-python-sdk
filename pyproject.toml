@@ -41,3 +41,8 @@ exclude = ["tests*", "examples*"]
 
 [tool.setuptools.package-data]
 vaiz = ["py.typed"]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests (require real API credentials)",
+]

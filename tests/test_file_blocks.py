@@ -272,6 +272,114 @@ def test_create_document_with_file_blocks():
         pass  # Could add cleanup here
 
 
+@pytest.mark.integration
+def test_add_images_with_captions_to_existing_document():
+    """Integration test: Add images with captions to existing document."""
+    client = get_test_client()
+    
+    # Use existing document ID
+    document_id = "68fb4d1cd35675279afd63e1"
+    
+    # Upload test image
+    image_path = "assets/example.png"
+    
+    print(f"\n📤 Uploading image: {image_path}")
+    image_uploaded = client.upload_file(image_path, file_type=UploadFileType.Image)
+    assert image_uploaded.file.id is not None
+    print(f"✅ Uploaded: {image_uploaded.file.name} (ID: {image_uploaded.file.id})")
+    
+    # Build content with images that have captions
+    content = [
+        heading(1, "Images with Captions Test"),
+        
+        paragraph(text("This document demonstrates image blocks with captions.")),
+        
+        heading(2, "Image 1: With Caption"),
+        
+        image_block(
+            file_id=image_uploaded.file.id,
+            src=image_uploaded.file.url,
+            file_name=image_uploaded.file.name,
+            file_size=image_uploaded.file.size,
+            extension=image_uploaded.file.ext,
+            file_type=image_uploaded.file.mime or "image/png",
+            dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None,
+            caption="This is a test image with a caption"
+        ),
+        
+        paragraph(text("The image above has a caption.", italic=True)),
+        
+        heading(2, "Image 2: With Different Caption"),
+        
+        image_block(
+            file_id=image_uploaded.file.id,
+            src=image_uploaded.file.url,
+            file_name=image_uploaded.file.name,
+            file_size=image_uploaded.file.size,
+            extension=image_uploaded.file.ext,
+            file_type=image_uploaded.file.mime or "image/png",
+            dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None,
+            caption="Another caption example with description",
+            width_percent=75
+        ),
+        
+        paragraph(text("The image above has a different caption and 75% width.", italic=True)),
+        
+        heading(2, "Image 3: Full Width with Long Caption"),
+        
+        image_block(
+            file_id=image_uploaded.file.id,
+            src=image_uploaded.file.url,
+            file_name=image_uploaded.file.name,
+            file_size=image_uploaded.file.size,
+            extension=image_uploaded.file.ext,
+            file_type=image_uploaded.file.mime or "image/png",
+            dimensions=image_uploaded.file.dimension if image_uploaded.file.dimension else None,
+            caption="This is a longer caption that demonstrates how captions work with full-width images. Captions provide context and descriptions for images.",
+            width_percent=100
+        ),
+    ]
+    
+    # Replace document content
+    print(f"\n📝 Updating document: {document_id}")
+    client.replace_json_document(document_id, content)
+    
+    # Verify blocks were created with captions
+    doc_content = client.get_json_document(document_id)
+    
+    assert doc_content is not None
+    assert "default" in doc_content
+    assert "content" in doc_content["default"]
+    
+    doc_nodes = doc_content["default"]["content"]
+    
+    # Find image blocks
+    image_blocks = [n for n in doc_nodes if n.get("type") == "image-block"]
+    
+    assert len(image_blocks) == 3, f"Expected 3 image blocks, found {len(image_blocks)}"
+    
+    # Verify all images have captions
+    captions_found = 0
+    for idx, image_block_node in enumerate(image_blocks):
+        assert "content" in image_block_node
+        image_content = image_block_node["content"][0]["text"]
+        image_data = json.loads(image_content)
+        
+        assert image_data["fileId"] == image_uploaded.file.id
+        
+        # Check caption exists
+        if "caption" in image_data:
+            captions_found += 1
+            print(f"   Image {idx + 1} caption: {image_data['caption'][:50]}...")
+    
+    assert captions_found == 3, f"Expected 3 captions, found {captions_found}"
+    
+    print(f"\n✅ Successfully created 3 images with captions in document!")
+    print(f"   Document ID: {document_id}")
+    print(f"   View at: https://vaiz.app/document/{document_id}")
+
+
 if __name__ == "__main__":
-    test_create_document_with_file_blocks()
+    # test_create_document_with_file_blocks()
+    test_add_images_with_captions_to_existing_document()
 
