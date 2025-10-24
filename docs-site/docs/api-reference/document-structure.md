@@ -873,6 +873,203 @@ milestones = client.get_milestones()
 milestone_id = milestones.milestones[0].id
 ```
 
+## Navigation Blocks
+
+### TOC Block
+
+Table of Contents block that automatically generates an interactive document outline.
+
+**Structure:**
+```json
+{
+  "type": "doc-siblings",
+  "attrs": {
+    "uid": "uniqueId123",
+    "custom": 1,
+    "contenteditable": "false"
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"type\":\"toc\"}"
+    }
+  ]
+}
+```
+
+**Using Helper:**
+```python
+from vaiz import toc_block, heading, paragraph
+
+content = [
+    toc_block(),
+    
+    heading(1, "Introduction"),
+    paragraph("Content here..."),
+    
+    heading(2, "Getting Started"),
+    paragraph("More content...")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Features:**
+- Automatically indexes all headings (h1-h6)
+- Creates clickable navigation links
+- Shows hierarchical structure
+- Updates automatically on changes
+
+**Note:** Headings must have `uid` attribute for TOC navigation to work (automatically added by `heading()` helper).
+
+---
+
+### Anchors Block
+
+Displays related documents and backlinks.
+
+**Structure:**
+```json
+{
+  "type": "doc-siblings",
+  "attrs": {
+    "uid": "uniqueId456",
+    "custom": 1,
+    "contenteditable": "false"
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"type\":\"anchors\"}"
+    }
+  ]
+}
+```
+
+**Using Helper:**
+```python
+from vaiz import anchors_block, heading, paragraph
+
+content = [
+    anchors_block(),
+    
+    heading(1, "Documentation"),
+    paragraph("Related documents shown above...")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Shows:**
+- Documents that this document links to
+- Documents that link to this one (backlinks)
+- Related documents from the space
+- Knowledge graph connections
+
+---
+
+### Siblings Block
+
+Displays documents at the same hierarchical level.
+
+**Structure:**
+```json
+{
+  "type": "doc-siblings",
+  "attrs": {
+    "uid": "uniqueId789",
+    "custom": 1,
+    "contenteditable": "false"
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"type\":\"siblings\"}"
+    }
+  ]
+}
+```
+
+**Using Helper:**
+```python
+from vaiz import siblings_block, heading, paragraph
+
+content = [
+    siblings_block(),
+    
+    heading(1, "Tutorial Part 2"),
+    paragraph("See related parts above...")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Useful for:**
+- Tutorial series navigation
+- Multi-part guides
+- Documentation pages at same level
+- Folder/collection browsing
+
+---
+
+### Code Block
+
+Code block with syntax highlighting.
+
+**Structure:**
+```json
+{
+  "type": "codeBlock",
+  "attrs": {
+    "uid": "uniqueIdABC",
+    "language": "python"
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "def hello():\n    print(\"Hello, World!\")"
+    }
+  ]
+}
+```
+
+**Using Helper:**
+```python
+from vaiz import code_block, heading, paragraph
+
+python_code = '''def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)'''
+
+content = [
+    heading(1, "Code Example"),
+    paragraph("Here's a Fibonacci function:"),
+    
+    code_block(
+        code=python_code,
+        language="python"
+    )
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Supported Languages:**
+- Python, JavaScript, TypeScript, Java, C++, Go, Rust
+- SQL, JSON, YAML, XML, HTML, CSS, SCSS
+- Bash, Shell, PowerShell
+- Markdown, LaTeX
+- And 50+ more languages
+
+**Features:**
+- Syntax highlighting based on language
+- Multiline code support
+- Optional language parameter
+- Empty blocks supported
+
+---
+
 ## Supported Elements
 
 ### Blocks
