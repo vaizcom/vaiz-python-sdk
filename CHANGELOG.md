@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.14.0] - 2025-10-24
+
+### Added
+
+- **📑 TOC Block**: Automatic table of contents generation
+  - `toc_block()` - Creates interactive document outline
+  - Automatically indexes all headings (h1-h6)
+  - Clickable navigation links to document sections
+  - Auto-updates when document content changes
+
+- **🔗 Anchors Block**: Related documents and backlinks
+  - `anchors_block()` - Displays document relationships
+  - Shows documents that this document links to
+  - Shows backlinks (documents linking to this one)
+  - Visualizes knowledge graph connections
+
+- **📄 Siblings Block**: Same-level document navigation
+  - `siblings_block()` - Shows sibling documents
+  - Displays documents in same folder/collection
+  - Helps navigate series of related pages
+  - Useful for guides and tutorials
+
+- **💻 Code Block**: Syntax-highlighted code snippets
+  - `code_block(code, language)` - Display code with highlighting
+  - Support for Python, JavaScript, TypeScript, Java, C++, Go, Rust, SQL, Bash, and many more
+  - Multiline code support
+  - Optional language specification
+
+### Changed
+
+- **🔧 Headings now auto-generate UIDs**: All headings created with `heading()` now automatically get unique IDs for TOC navigation support
+  - UIDs are 12-character alphanumeric strings (e.g., "sEeaN9ddIDsL")
+  - Required for TOC block to create working navigation links
+  - No breaking changes - UIDs added automatically
+
+---
+
 ## [0.13.0] - 2025-10-23
 
 ### Changed

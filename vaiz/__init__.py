@@ -138,6 +138,10 @@ from .helpers import (
     mention_milestone,
     image_block,
     files_block,
+    toc_block,
+    anchors_block,
+    siblings_block,
+    code_block,
 )
 
 __all__ = [
@@ -267,4 +271,8 @@ __all__ = [
     'mention_milestone',
     'image_block',
     'files_block',
+    'toc_block',
+    'anchors_block',
+    'siblings_block',
+    'code_block',
 ]

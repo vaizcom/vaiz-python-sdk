@@ -53,6 +53,7 @@ class TextNode(TypedDict):
 class HeadingAttrs(TypedDict):
     """Attributes for heading node."""
     level: Literal[1, 2, 3, 4, 5, 6]
+    uid: NotRequired[str]
 
 
 # Type definitions for ordered list attributes
@@ -153,8 +154,42 @@ class MentionNode(TypedDict):
     content: List[TextNode]
 
 
+# Type definitions for doc-siblings block (TOC, Anchors, Siblings, etc.)
+class DocSiblingsData(TypedDict):
+    """Data for doc-siblings block."""
+    type: Literal["toc", "anchors", "siblings"]
+
+
+class DocSiblingsAttrs(TypedDict):
+    """Attributes for doc-siblings block."""
+    uid: str
+    custom: Literal[1]
+    contenteditable: Literal["false"]
+
+
+class DocSiblingsNode(TypedDict):
+    """Doc-siblings node for special document elements like TOC, Anchors, and Siblings."""
+    type: Literal["doc-siblings"]
+    attrs: DocSiblingsAttrs
+    content: List[TextNode]
+
+
+# Type definitions for code block
+class CodeBlockAttrs(TypedDict):
+    """Attributes for code block."""
+    uid: NotRequired[str]
+    language: NotRequired[str]
+
+
+class CodeBlockNode(TypedDict):
+    """Code block node for displaying code with syntax highlighting."""
+    type: Literal["codeBlock"]
+    attrs: NotRequired[CodeBlockAttrs]
+    content: NotRequired[List[TextNode]]
+
+
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode, ImageBlockNode, FilesBlockNode]
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode, ImageBlockNode, FilesBlockNode, DocSiblingsNode, CodeBlockNode]
 
 
 class ParagraphNode(TypedDict):
@@ -273,7 +308,7 @@ class DetailsNode(TypedDict):
 
 
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode, ImageBlockNode, FilesBlockNode, MentionNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode, ImageBlockNode, FilesBlockNode, MentionNode, DocSiblingsNode, CodeBlockNode]
 
 
 # Helper functions
@@ -342,24 +377,45 @@ def paragraph(*content: Union[TextNode, str]) -> ParagraphNode:
     return node
 
 
+def _generate_uid() -> str:
+    """
+    Generate a unique identifier for document elements.
+    Format: 12 characters, mix of uppercase, lowercase letters and digits.
+    Example: "sEeaN9ddIDsL"
+    
+    Returns:
+        str: A unique identifier string
+    """
+    import random
+    import string
+    
+    # Generate random string with letters (upper + lower) and digits
+    chars = string.ascii_letters + string.digits  # a-z, A-Z, 0-9
+    uid = ''.join(random.choice(chars) for _ in range(12))
+    return uid
+
+
 def heading(level: Literal[1, 2, 3, 4, 5, 6], *content: Union[TextNode, str]) -> HeadingNode:
     """
-    Create a heading node.
+    Create a heading node with automatic UID generation for TOC support.
     
     Args:
         level: Heading level (1-6)
         *content: Text nodes or strings
     
     Returns:
-        HeadingNode: A valid document heading node
+        HeadingNode: A valid document heading node with UID
         
     Example:
         >>> heading(1, "Title")
-        {'type': 'heading', 'attrs': {'level': 1}, 'content': [{'type': 'text', 'text': 'Title'}]}
+        {'type': 'heading', 'attrs': {'level': 1, 'uid': '...'}, 'content': [{'type': 'text', 'text': 'Title'}]}
     """
     node: HeadingNode = {
         "type": "heading",
-        "attrs": {"level": level}
+        "attrs": {
+            "level": level,
+            "uid": _generate_uid()
+        }
     }
     if content:
         node["content"] = [
@@ -997,6 +1053,173 @@ def files_block(*file_items: dict) -> FilesBlockNode:
     }
 
 
+def toc_block() -> DocSiblingsNode:
+    """
+    Create a Table of Contents (TOC) block that automatically generates document outline.
+    
+    Returns:
+        DocSiblingsNode: A valid TOC block node
+        
+    Example:
+        >>> from vaiz import toc_block, heading, paragraph
+        >>> content = [
+        ...     toc_block(),
+        ...     heading(1, "Introduction"),
+        ...     paragraph("Welcome to our document"),
+        ...     heading(2, "Getting Started"),
+        ...     paragraph("First steps...")
+        ... ]
+        >>> client.replace_json_document(document_id, content)
+    """
+    import uuid
+    import json
+    
+    block_uid = str(uuid.uuid4())[:12].replace('-', '')
+    
+    toc_data: DocSiblingsData = {"type": "toc"}
+    
+    return {
+        "type": "doc-siblings",
+        "attrs": {
+            "uid": block_uid,
+            "custom": 1,
+            "contenteditable": "false"
+        },
+        "content": [
+            {"type": "text", "text": json.dumps(toc_data, ensure_ascii=False)}
+        ]
+    }
+
+
+def anchors_block() -> DocSiblingsNode:
+    """
+    Create an Anchors block that displays related documents and backlinks.
+    
+    This block automatically shows:
+    - Documents linked to this document
+    - Documents that link to this document (backlinks)
+    - Related documents from the same space
+    
+    Returns:
+        DocSiblingsNode: A valid Anchors block node
+        
+    Example:
+        >>> from vaiz import anchors_block, toc_block, heading, paragraph
+        >>> content = [
+        ...     toc_block(),
+        ...     anchors_block(),
+        ...     heading(1, "Main Content"),
+        ...     paragraph("Document with TOC and related links")
+        ... ]
+        >>> client.replace_json_document(document_id, content)
+    """
+    import uuid
+    import json
+    
+    block_uid = str(uuid.uuid4())[:12].replace('-', '')
+    
+    anchors_data: DocSiblingsData = {"type": "anchors"}
+    
+    return {
+        "type": "doc-siblings",
+        "attrs": {
+            "uid": block_uid,
+            "custom": 1,
+            "contenteditable": "false"
+        },
+        "content": [
+            {"type": "text", "text": json.dumps(anchors_data, ensure_ascii=False)}
+        ]
+    }
+
+
+def siblings_block() -> DocSiblingsNode:
+    """
+    Create a Siblings block that displays sibling documents (documents at the same level).
+    
+    This block automatically shows documents that are siblings in the document hierarchy:
+    - Documents in the same folder/collection
+    - Documents at the same level in the structure
+    
+    Returns:
+        DocSiblingsNode: A valid Siblings block node
+        
+    Example:
+        >>> from vaiz import siblings_block, heading, paragraph
+        >>> content = [
+        ...     siblings_block(),
+        ...     heading(1, "Current Document"),
+        ...     paragraph("Sibling documents will be shown above")
+        ... ]
+        >>> client.replace_json_document(document_id, content)
+    """
+    import uuid
+    import json
+    
+    block_uid = str(uuid.uuid4())[:12].replace('-', '')
+    
+    siblings_data: DocSiblingsData = {"type": "siblings"}
+    
+    return {
+        "type": "doc-siblings",
+        "attrs": {
+            "uid": block_uid,
+            "custom": 1,
+            "contenteditable": "false"
+        },
+        "content": [
+            {"type": "text", "text": json.dumps(siblings_data, ensure_ascii=False)}
+        ]
+    }
+
+
+def code_block(code: str = "", language: str = "") -> CodeBlockNode:
+    """
+    Create a code block for displaying code with syntax highlighting.
+    
+    Args:
+        code: The code content to display
+        language: Programming language for syntax highlighting (e.g., "python", "javascript", "typescript", etc.)
+    
+    Returns:
+        CodeBlockNode: A valid code block node
+        
+    Example:
+        >>> from vaiz import code_block, heading, paragraph
+        >>> content = [
+        ...     heading(1, "Code Example"),
+        ...     paragraph("Here's a Python function:"),
+        ...     code_block(
+        ...         code='def hello():\\n    print("Hello, World!")',
+        ...         language="python"
+        ...     )
+        ... ]
+        >>> client.replace_json_document(document_id, content)
+        
+        >>> # Or create an empty code block
+        >>> empty_code = code_block()
+    """
+    import uuid
+    
+    block_uid = str(uuid.uuid4())[:12].replace('-', '')
+    
+    node: CodeBlockNode = {
+        "type": "codeBlock",
+    }
+    
+    # Add attrs if we have uid or language
+    attrs: CodeBlockAttrs = {"uid": block_uid}
+    if language:
+        attrs["language"] = language
+    node["attrs"] = attrs
+    
+    # Add content if code is provided
+    if code:
+        node["content"] = [{"type": "text", "text": code}]
+    
+    return node
+
+
 # Convenience exports
 __all__ = [
     # Types
@@ -1029,6 +1252,11 @@ __all__ = [
     'FilesBlockAttrs',
     'FilesBlockData',
     'FileItem',
+    'DocSiblingsNode',
+    'DocSiblingsAttrs',
+    'DocSiblingsData',
+    'CodeBlockNode',
+    'CodeBlockAttrs',
     
     # Builders
     'text',
@@ -1054,5 +1282,9 @@ __all__ = [
     'mention_milestone',
     'image_block',
     'files_block',
+    'toc_block',
+    'anchors_block',
+    'siblings_block',
+    'code_block',
 ]
 

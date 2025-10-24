@@ -655,6 +655,162 @@ content = [
 client.replace_json_document("document_id", content)
 ```
 
+## Navigation Blocks
+
+### TOC Block - Table of Contents
+
+Automatically generate a table of contents from all headings in the document:
+
+```python
+from vaiz import toc_block, heading, paragraph
+
+content = [
+    # Add TOC at the beginning
+    toc_block(),
+    
+    heading(1, "Introduction"),
+    paragraph("Welcome to our documentation"),
+    
+    heading(2, "Getting Started"),
+    paragraph("First steps..."),
+    
+    heading(2, "Advanced Topics"),
+    paragraph("Deep dive into features...")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Features:**
+- Automatically indexes all headings (h1-h6)
+- Creates clickable navigation links
+- Shows hierarchical document structure
+- Updates automatically when content changes
+
+**Note:** Headings created with `heading()` automatically get unique IDs required for TOC navigation.
+
+### Anchors Block - Related Documents
+
+Display related documents and backlinks:
+
+```python
+from vaiz import anchors_block, heading, paragraph
+
+content = [
+    anchors_block(),  # Shows related documents
+    
+    heading(1, "Main Content"),
+    paragraph("Content here...")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Shows:**
+- Documents that this document links to
+- Documents that link to this one (backlinks)
+- Related documents from the space
+- Knowledge graph connections
+
+### Siblings Block - Same-Level Documents
+
+Display documents at the same hierarchical level:
+
+```python
+from vaiz import siblings_block, heading, paragraph
+
+content = [
+    siblings_block(),  # Shows sibling documents
+    
+    heading(1, "Current Page"),
+    paragraph("Sibling pages shown above...")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Useful for:**
+- Series of tutorial pages
+- Multi-part guides
+- Related documentation pages
+- Folder/collection navigation
+
+### Code Block - Syntax Highlighting
+
+Display code with syntax highlighting:
+
+```python
+from vaiz import code_block, heading, paragraph
+
+python_code = '''def hello():
+    print("Hello, World!")
+    return True'''
+
+content = [
+    heading(1, "Code Example"),
+    paragraph("Here's a Python function:"),
+    
+    code_block(
+        code=python_code,
+        language="python"
+    ),
+    
+    paragraph("This code demonstrates a simple function.")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Supported Languages:**
+- Python, JavaScript, TypeScript, Java, C++, Go, Rust
+- SQL, JSON, YAML, XML, HTML, CSS
+- Bash, Shell, PowerShell
+- And 50+ more languages
+
+**Features:**
+- Syntax highlighting
+- Multiline code support
+- Optional language specification
+- Automatic formatting
+
+### Complete Navigation Example
+
+Combine all navigation blocks:
+
+```python
+from vaiz import (
+    toc_block, anchors_block, siblings_block,
+    heading, paragraph, code_block, bullet_list
+)
+
+content = [
+    # All navigation blocks at the top
+    toc_block(),
+    anchors_block(),
+    siblings_block(),
+    
+    # Main content
+    heading(1, "API Documentation"),
+    
+    paragraph("This guide explains how to use our API."),
+    
+    heading(2, "Authentication"),
+    bullet_list(
+        "Get API key from settings",
+        "Set environment variable",
+        "Initialize client"
+    ),
+    
+    heading(2, "Example"),
+    code_block(
+        code='client = VaizClient(api_key="...")',
+        language="python"
+    )
+]
+
+client.replace_json_document(document_id, content)
+```
+
 ## Supported Elements
 
 All helper functions create nodes compatible with the document editor:
@@ -662,11 +818,12 @@ All helper functions create nodes compatible with the document editor:
 ### Nodes
 - ✅ `text()` - Text with formatting marks
 - ✅ `paragraph()` - Paragraph blocks
-- ✅ `heading(level)` - Headings (H1-H6)
+- ✅ `heading(level)` - Headings (H1-H6) with automatic UID
 - ✅ `bullet_list()` - Unordered lists
 - ✅ `ordered_list()` - Numbered lists
 - ✅ `list_item()` - List items with content
 - ✅ `blockquote()` - Blockquotes for quotes and callouts
+- ✅ `details()` - Collapsible sections
 - ✅ `table()` - Tables with rows and cells
 - ✅ `table_row()` - Table row
 - ✅ `table_cell()` - Table cell (use for both data and headers)
@@ -676,6 +833,14 @@ All helper functions create nodes compatible with the document editor:
 - ✅ `mention_task()` - Reference a task
 - ✅ `mention_milestone()` - Reference a milestone
 - ✅ `mention(id, kind)` - Generic mention
+- ✅ `image_block()` - Embed images
+- ✅ `files_block()` - Attach files
+
+### Navigation & Special Blocks
+- ✅ `toc_block()` - Automatic table of contents
+- ✅ `anchors_block()` - Related documents and backlinks
+- ✅ `siblings_block()` - Same-level documents navigation
+- ✅ `code_block()` - Code with syntax highlighting
 
 ### Marks (Formatting)
 - ✅ `bold=True` - Bold text

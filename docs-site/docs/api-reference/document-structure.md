@@ -881,17 +881,22 @@ milestone_id = milestones.milestones[0].id
 |-----------|-------------|---------|
 | `text` | Text content with optional marks | `{"type": "text", "text": "..."}` |
 | `paragraph` | Paragraph block | `{"type": "paragraph", "content": [...]}` |
-| `heading` | Heading (H1-H6) | `{"type": "heading", "attrs": {"level": 1}}` |
+| `heading` | Heading (H1-H6) with UID | `{"type": "heading", "attrs": {"level": 1, "uid": "..."}}` |
 | `bulletList` | Unordered list | `{"type": "bulletList", "content": [...]}` |
 | `orderedList` | Numbered list | `{"type": "orderedList", "content": [...]}` |
 | `listItem` | List item | `{"type": "listItem", "content": [...]}` |
 | `blockquote` | Blockquote for quotes/callouts | `{"type": "blockquote", "content": [...]}` |
+| `details` | Collapsible section | `{"type": "details", "content": [...]}` |
 | `extension-table` | Table with rows | `{"type": "extension-table", "attrs": {"uid": "..."}, "content": [...]}` |
 | `tableRow` | Table row with cells/headers | `{"type": "tableRow", "attrs": {"showRowNumbers": false}, "content": [...]}` |
 | `tableCell` | Table data cell | `{"type": "tableCell", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
 | `tableHeader` | Table header cell (th) | `{"type": "tableHeader", "attrs": {"colspan": 1, "rowspan": 1}, "content": [...]}` |
 | `horizontalRule` | Horizontal divider line | `{"type": "horizontalRule"}` |
 | `custom-mention` | Mention user/doc/task/milestone | `{"type": "custom-mention", "attrs": {"uid": "...", "custom": 1, "inline": true, "data": {"item": {"id": "...", "kind": "User"}}}}` |
+| `image-block` | Embedded image | `{"type": "image-block", "attrs": {"uid": "...", "custom": 1}, "content": [...]}` |
+| `files` | File attachments | `{"type": "files", "attrs": {"uid": "...", "custom": 1}, "content": [...]}` |
+| `doc-siblings` | Navigation blocks (TOC/Anchors/Siblings) | `{"type": "doc-siblings", "attrs": {"uid": "...", "custom": 1}, "content": [...]}` |
+| `codeBlock` | Code with syntax highlighting | `{"type": "codeBlock", "attrs": {"uid": "...", "language": "python"}, "content": [...]}` |
 
 ### Marks
 

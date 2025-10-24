@@ -75,6 +75,10 @@ from .document_structure import (
     mention_milestone,
     image_block,
     files_block,
+    toc_block,
+    anchors_block,
+    siblings_block,
+    code_block,
     
     # Document structure types
     DocumentNode,
@@ -106,6 +110,11 @@ from .document_structure import (
     FilesBlockAttrs,
     FilesBlockData,
     FileItem,
+    DocSiblingsNode,
+    DocSiblingsAttrs,
+    DocSiblingsData,
+    CodeBlockNode,
+    CodeBlockAttrs,
 )
 
 __all__ = [
@@ -133,6 +142,10 @@ __all__ = [
     'mention_milestone',
     'image_block',
     'files_block',
+    'toc_block',
+    'anchors_block',
+    'siblings_block',
+    'code_block',
     
     # Document structure types
     'DocumentNode',
@@ -164,6 +177,11 @@ __all__ = [
     'FilesBlockAttrs',
     'FilesBlockData',
     'FileItem',
+    'DocSiblingsNode',
+    'DocSiblingsAttrs',
+    'DocSiblingsData',
+    'CodeBlockNode',
+    'CodeBlockAttrs',
     
     # Custom fields (existing)
     # Field creation helpers
