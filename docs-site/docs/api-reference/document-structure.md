@@ -350,6 +350,85 @@ Numbered list.
 **Attributes:**
 - `start` - Starting number (optional, default: 1)
 
+### Task List Node (Checklist)
+
+Interactive checklist with checkable items.
+
+```json
+{
+  "type": "taskList",
+  "attrs": {
+    "uid": "uniqueId123"
+  },
+  "content": [
+    {
+      "type": "taskItem",
+      "attrs": {
+        "checked": true
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [{"type": "text", "text": "Completed task"}]
+        }
+      ]
+    },
+    {
+      "type": "taskItem",
+      "attrs": {
+        "checked": false
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [{"type": "text", "text": "Todo task"}]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Attributes:**
+- `uid` - Unique identifier (optional, auto-generated)
+
+**Features:**
+- Interactive checkboxes
+- Can be nested for multi-level checklists
+- Supports checked/unchecked states
+- Can contain paragraphs and nested task lists
+
+### Task Item Node
+
+Individual item in a task list (checklist).
+
+```json
+{
+  "type": "taskItem",
+  "attrs": {
+    "checked": false
+  },
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [{"type": "text", "text": "Task description"}]
+    },
+    {
+      "type": "taskList",
+      "content": [...]  // Nested checklist
+    }
+  ]
+}
+```
+
+**Attributes:**
+- `checked` - Whether the task is completed (required, boolean)
+
+**Content:**
+- Can contain paragraphs
+- Can contain nested `taskList` nodes for sub-tasks
+- Supports multi-level nesting
+
 ### List Item Node
 
 Individual item in a list. Can contain paragraphs and nested lists.
@@ -611,6 +690,8 @@ Table header cell (`<th>` in HTML). Use for semantic table headers.
 
 ## Nested Structures
 
+### Nested Lists
+
 Lists can be nested within list items:
 
 ```json
@@ -642,6 +723,83 @@ Lists can be nested within list items:
     }
   ]
 }
+```
+
+### Nested Checklists
+
+Task lists support multi-level nesting:
+
+```json
+{
+  "type": "taskList",
+  "attrs": {"uid": "mainList"},
+  "content": [
+    {
+      "type": "taskItem",
+      "attrs": {"checked": false},
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [{"type": "text", "text": "Main task"}]
+        },
+        {
+          "type": "taskList",
+          "attrs": {"uid": "nestedList"},
+          "content": [
+            {
+              "type": "taskItem",
+              "attrs": {"checked": true},
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [{"type": "text", "text": "Subtask 1"}]
+                }
+              ]
+            },
+            {
+              "type": "taskItem",
+              "attrs": {"checked": false},
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [{"type": "text", "text": "Subtask 2"}]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Using helpers for nested checklists:**
+
+```python
+from vaiz import task_list, task_item, paragraph
+
+content = [
+    task_list(
+        task_item(
+            paragraph("Phase 1: Planning"),
+            task_list(
+                task_item("Define requirements", checked=True),
+                task_item("Create wireframes", checked=True),
+                task_item("Review with stakeholders", checked=False)
+            ),
+            checked=True
+        ),
+        task_item(
+            paragraph("Phase 2: Development"),
+            task_list(
+                task_item("Setup project", checked=False),
+                task_item("Implement features", checked=False)
+            ),
+            checked=False
+        )
+    )
+]
 ```
 
 ## Complete Example
@@ -722,7 +880,7 @@ Lists can be nested within list items:
 Instead of manually constructing JSON, use the built-in helper functions:
 
 ```python
-from vaiz import heading, paragraph, text, bullet_list, blockquote, link_text, table, table_row, table_header
+from vaiz import heading, paragraph, text, bullet_list, task_list, task_item, blockquote, link_text, table, table_row, table_header
 
 content = [
     heading(1, "Project Documentation"),
@@ -737,6 +895,11 @@ content = [
     bullet_list(
         "Easy to use",
         "Type-safe"
+    ),
+    heading(2, "Todo"),
+    task_list(
+        task_item("Review code", checked=True),
+        task_item("Deploy to production", checked=False)
     ),
     blockquote(
         paragraph(
@@ -1091,6 +1254,8 @@ client.replace_json_document(document_id, content)
 | `bulletList` | Unordered list | `{"type": "bulletList", "content": [...]}` |
 | `orderedList` | Numbered list | `{"type": "orderedList", "content": [...]}` |
 | `listItem` | List item | `{"type": "listItem", "content": [...]}` |
+| `taskList` | Checklist with checkable items | `{"type": "taskList", "attrs": {"uid": "..."}, "content": [...]}` |
+| `taskItem` | Checklist item with checkbox | `{"type": "taskItem", "attrs": {"checked": false}, "content": [...]}` |
 | `blockquote` | Blockquote for quotes/callouts | `{"type": "blockquote", "content": [...]}` |
 | `details` | Collapsible section | `{"type": "details", "content": [...]}` |
 | `extension-table` | Table with rows | `{"type": "extension-table", "attrs": {"uid": "..."}, "content": [...]}` |

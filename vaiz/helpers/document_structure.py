@@ -62,6 +62,17 @@ class OrderedListAttrs(TypedDict):
     start: NotRequired[int]
 
 
+# Type definitions for task list (checklist) attributes
+class TaskListAttrs(TypedDict):
+    """Attributes for task list node."""
+    uid: NotRequired[str]
+
+
+class TaskItemAttrs(TypedDict):
+    """Attributes for task item node."""
+    checked: bool
+
+
 # Type definitions for file and image blocks
 class ImageBlockData(TypedDict):
     """Data for image block (stored as JSON string in content)."""
@@ -189,7 +200,7 @@ class CodeBlockNode(TypedDict):
 
 
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode, ImageBlockNode, FilesBlockNode, DocSiblingsNode, CodeBlockNode]
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TaskListNode', 'TaskItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode, ImageBlockNode, FilesBlockNode, DocSiblingsNode, CodeBlockNode]
 
 
 class ParagraphNode(TypedDict):
@@ -222,6 +233,20 @@ class OrderedListNode(TypedDict):
     type: Literal["orderedList"]
     attrs: NotRequired[OrderedListAttrs]
     content: List[ListItemNode]
+
+
+class TaskItemNode(TypedDict):
+    """Task item node for checklist items with checked status."""
+    type: Literal["taskItem"]
+    attrs: TaskItemAttrs
+    content: NotRequired[List[DocumentContent]]
+
+
+class TaskListNode(TypedDict):
+    """Task list (checklist) node containing task items."""
+    type: Literal["taskList"]
+    attrs: NotRequired[TaskListAttrs]
+    content: List[TaskItemNode]
 
 
 # Table-related attributes
@@ -308,7 +333,7 @@ class DetailsNode(TypedDict):
 
 
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode, ImageBlockNode, FilesBlockNode, MentionNode, DocSiblingsNode, CodeBlockNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TaskListNode, TaskItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode, ImageBlockNode, FilesBlockNode, MentionNode, DocSiblingsNode, CodeBlockNode]
 
 
 # Helper functions
@@ -496,6 +521,75 @@ def ordered_list(*items: Union[ListItemNode, str], start: int = 1) -> OrderedLis
         node["attrs"] = {"start": start}
     
     return node
+
+
+def task_item(*content: Union[ParagraphNode, TaskListNode, str], checked: bool = False) -> TaskItemNode:
+    """
+    Create a task item node for checklists.
+    
+    Args:
+        *content: Paragraphs, nested task lists, or strings (strings will be wrapped in paragraphs)
+        checked: Whether the task item is completed (default: False)
+    
+    Returns:
+        TaskItemNode: A valid task item node
+        
+    Example:
+        >>> task_item("Buy milk", checked=False)
+        {'type': 'taskItem', 'attrs': {'checked': False}, 'content': [{'type': 'paragraph', ...}]}
+        
+        >>> task_item(paragraph("Review PR"), checked=True)
+        {'type': 'taskItem', 'attrs': {'checked': True}, 'content': [...]}
+    """
+    node: TaskItemNode = {
+        "type": "taskItem",
+        "attrs": {"checked": checked}
+    }
+    
+    if content:
+        node["content"] = [
+            item if isinstance(item, dict) else paragraph(item)
+            for item in content
+        ]
+    
+    return node
+
+
+def task_list(*items: Union[TaskItemNode, str], checked: bool = False) -> TaskListNode:
+    """
+    Create a task list (checklist) node.
+    
+    Args:
+        *items: Task item nodes or strings (strings will be wrapped in task items)
+        checked: Default checked state for string items (default: False)
+    
+    Returns:
+        TaskListNode: A valid task list node
+        
+    Example:
+        >>> task_list("Todo 1", "Todo 2")
+        {'type': 'taskList', 'attrs': {'uid': '...'}, 'content': [...]}
+        
+        >>> task_list(
+        ...     task_item("First task", checked=True),
+        ...     task_item("Second task", checked=False)
+        ... )
+        {'type': 'taskList', 'content': [...]}
+    """
+    import uuid
+    
+    content: List[TaskItemNode] = []
+    for item in items:
+        if isinstance(item, str):
+            content.append(task_item(item, checked=checked))
+        else:
+            content.append(item)
+    
+    return {
+        "type": "taskList",
+        "attrs": {"uid": str(uuid.uuid4())[:12].replace('-', '')},
+        "content": content
+    }
 
 
 def link_text(content: str, href: str, target: str = "_blank", 
@@ -1232,6 +1326,10 @@ __all__ = [
     'BulletListNode',
     'OrderedListNode',
     'ListItemNode',
+    'TaskListNode',
+    'TaskItemNode',
+    'TaskListAttrs',
+    'TaskItemAttrs',
     'TableNode',
     'TableRowNode',
     'TableCellNode',
@@ -1267,6 +1365,8 @@ __all__ = [
     'list_item',
     'bullet_list',
     'ordered_list',
+    'task_item',
+    'task_list',
     'link_text',
     'horizontal_rule',
     'blockquote',

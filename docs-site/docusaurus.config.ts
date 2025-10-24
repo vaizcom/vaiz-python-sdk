@@ -206,8 +206,8 @@ const config: Config = {
       },
       items: [
         {
-          label: "v0.14.0",
-          href: "https://pypi.org/project/vaiz-sdk/0.14.0/",
+          label: "v0.15.0",
+          href: "https://pypi.org/project/vaiz-sdk/0.15.0/",
           position: "left",
         },
         {

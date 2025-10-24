@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.15.0] - 2025-10-24
+
+### Added
+
+- **✅ Task Lists (Checklists)**: Interactive checklists with checked/unchecked states
+  - `task_list(*items)` - Create a checklist container
+  - `task_item(content, checked=False)` - Create individual checklist items
+  - Support for nested checklists (unlimited depth)
+  - Each task item can contain paragraphs and nested task lists
+  - `checked` attribute tracks completion status (boolean)
+  - Auto-generated UIDs for task lists
+  - Full integration with document API (`replace_json_document`, `append_json_document`)
+  
+- **New Document Structure Types**:
+  - `TaskListNode` - Type for task list container
+  - `TaskItemNode` - Type for individual checklist items
+  - `TaskListAttrs` - Attributes for task lists (uid)
+  - `TaskItemAttrs` - Attributes for task items (checked status)
+
+### Documentation
+
+- Added comprehensive task list documentation in API reference
+- Added nested checklist examples and patterns
+- Updated document structure guide with task list blocks
+- Added task list to supported elements table
+
+### Examples
+
+- `examples/task_list_checklist.py` - Complete examples of task lists usage
+  - Simple checklists
+  - Nested checklists (multi-level)
+  - Mixed content (text + checklists)
+  - Complex nested structures (3+ levels)
+
+### Tests
+
+- Added 8 unit tests for task list functionality
+- Added 4 integration tests with real API
+- All tests passing
+
 ## [0.14.0] - 2025-10-24
 
 ### Added
