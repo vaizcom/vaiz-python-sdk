@@ -144,6 +144,8 @@ from .helpers import (
     anchors_block,
     siblings_block,
     code_block,
+    embed_block,
+    EmbedType,
 )
 
 __all__ = [
@@ -279,4 +281,6 @@ __all__ = [
     'anchors_block',
     'siblings_block',
     'code_block',
+    'embed_block',
+    'EmbedType',
 ]

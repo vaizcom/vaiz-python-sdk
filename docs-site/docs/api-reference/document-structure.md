@@ -1242,6 +1242,87 @@ client.replace_json_document(document_id, content)
 
 ---
 
+## Embed Block
+
+Embed external content from various platforms (YouTube, Figma, Vimeo, CodeSandbox, GitHub Gist, Miro, Iframe).
+
+**Structure:**
+```json
+{
+  "type": "embed",
+  "attrs": {
+    "uid": "uniqueIdXYZ",
+    "custom": 1,
+    "contenteditable": "false",
+    "size": "medium",
+    "isContentHidden": false
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"type\":\"YouTube\",\"url\":\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\",\"extractedUrl\":\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"}"
+    }
+  ]
+}
+```
+
+**Embed Data Fields:**
+- `type` - Embed type: `"YouTube"`, `"Figma"`, `"Vimeo"`, `"CodeSandbox"`, `"GitHub Gist"`, `"Miro"`, `"Iframe"`
+- `url` - URL of content to embed
+- `extractedUrl` - Extracted/processed URL (usually same as url)
+- `isContentHidden` - Optional, for Figma/Miro to hide content by default
+
+**Attributes:**
+- `uid` - Unique block identifier
+- `custom` - Always 1 for custom blocks
+- `contenteditable` - Should be "false"
+- `size` - Display size: `"small"`, `"medium"`, or `"large"`
+- `isContentHidden` - Whether content is hidden by default
+
+**Using Helper (Recommended):**
+```python
+from vaiz import embed_block, heading, paragraph, horizontal_rule
+
+content = [
+    heading(1, "Project Resources"),
+    
+    # YouTube video
+    heading(2, "Demo Video"),
+    embed_block(
+        url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        size="large"
+    ),
+    
+    horizontal_rule(),
+    
+    # Figma design
+    heading(2, "Design Files"),
+    embed_block(
+        url="https://www.figma.com/file/example",
+        size="large",
+        is_content_hidden=True
+    ),
+    
+    horizontal_rule(),
+    
+    # Live code sandbox
+    heading(2, "Code Example"),
+    embed_block(url="https://codesandbox.io/s/example")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+See [EmbedType enum](./enums#embedtype) for type-safe values.
+
+**Parameters:**
+- `url` - URL of content to embed
+- `embed_type` - Type of embed (optional, see [EmbedType](./enums#embedtype))
+- `size` - Display size: `"small"`, `"medium"`, `"large"` (default: `"medium"`)
+- `is_content_hidden` - Hide content by default (default: `False`)
+
+---
+
 ## Image Block
 
 Embedded images in documents and task descriptions.

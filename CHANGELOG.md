@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.17.0] - 2025-10-24
+
+### Added
+
+- **🎬 Embed Blocks**: Support for embedding external content (YouTube, Figma, CodeSandbox, etc.)
+  - `embed_block(url, embed_type, size, is_content_hidden)` - Create embed blocks for external content
+  - `EmbedType` enum - Type-safe embed types (YOUTUBE, FIGMA, VIMEO, CODESANDBOX, GITHUB_GIST, MIRO, IFRAME)
+
 ## [0.16.0] - 2025-10-24
 
 ### Changed

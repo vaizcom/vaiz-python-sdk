@@ -47,6 +47,7 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`advanced_mention_usage.py`** - Advanced usage of mentions in tables, lists, and complex documents
 - **`document_navigation_blocks.py`** - TOC, Anchors, and Siblings navigation blocks
 - **`document_with_code_blocks.py`** - Code blocks with syntax highlighting
+- **`embed_blocks_example.py`** - Embed external content (YouTube, Figma, CodeSandbox, etc.)
 
 ## Custom Fields
 

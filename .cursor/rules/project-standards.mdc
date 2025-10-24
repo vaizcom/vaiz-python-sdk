@@ -49,6 +49,62 @@ Follow this checklist to ensure completeness:
    - [ ] Use existing enums instead of primitive types where applicable (e.g., `AvatarMode` instead of `int`)
    - [ ] Reuse shared models from `vaiz/models/base.py` (e.g., `ColorInfo` for color configurations)
 
+### Enums Documentation
+
+When adding new enums, follow these documentation standards:
+
+**1. Code Implementation:**
+- Export enum from `vaiz/__init__.py` for easy access
+- Use `str, Enum` inheritance for string enums
+- Use descriptive names matching API values
+
+**2. Documentation Structure:**
+
+In **`docs-site/docs/api-reference/enums.md`**:
+```markdown
+## EnumName
+
+Brief description of what the enum represents:
+
+```python
+from vaiz import EnumName  # or from vaiz.models.enums
+
+EnumName.VALUE1  # Description
+EnumName.VALUE2  # Description
+```
+
+**Usage:**
+
+```python
+from vaiz import function_name, EnumName
+
+# Show real-world example
+function_name(
+    param=EnumName.VALUE1
+)
+```
+```
+
+In **Guide Pages** (`docs-site/docs/guides/*.md`):
+- Show simple usage WITHOUT explicit enum references in examples
+- Add link to enum documentation: `See [EnumName](../api-reference/enums#enumname)`
+- Focus on functionality, not enum details
+
+**Example:**
+
+```python
+# ✅ Good - Guide page example (simple)
+embed_block(url="https://youtube.com/...")
+
+# ❌ Bad - Don't show enum in guides
+embed_block(url="...", embed_type=EmbedType.YOUTUBE)
+```
+
+**3. References:**
+- Always link to enum documentation: `[EnumName](../api-reference/enums#enumname)`
+- Mention enum exists but show simple usage first
+- Full enum examples only in `enums.md` and examples files
+
 ## Changelog
 
 **Keep CHANGELOG.md user-focused and concise:**

@@ -7,6 +7,19 @@ ensuring only validated elements are used with the replace_json_document API.
 
 from typing import List, Optional, Literal, Union
 from typing_extensions import TypedDict, NotRequired
+from enum import Enum
+
+
+# Embed block type enum
+class EmbedType(str, Enum):
+    """Supported embed types for embed blocks."""
+    YOUTUBE = "YouTube"
+    FIGMA = "Figma"
+    VIMEO = "Vimeo"
+    CODESANDBOX = "CodeSandbox"
+    GITHUB_GIST = "GitHub Gist"
+    MIRO = "Miro"
+    IFRAME = "Iframe"
 
 
 # Type definitions for text formatting marks
@@ -199,8 +212,33 @@ class CodeBlockNode(TypedDict):
     content: NotRequired[List[TextNode]]
 
 
+# Type definitions for embed block
+class EmbedBlockData(TypedDict):
+    """Data for embed block (stored as JSON string in content)."""
+    type: str  # EmbedType value
+    url: str
+    extractedUrl: str
+    isContentHidden: NotRequired[bool]
+
+
+class EmbedBlockAttrs(TypedDict):
+    """Attributes for embed block."""
+    uid: str
+    custom: Literal[1]
+    contenteditable: Literal["false"]
+    size: NotRequired[Literal["small", "medium", "large"]]
+    isContentHidden: NotRequired[bool]
+
+
+class EmbedBlockNode(TypedDict):
+    """Embed block node for displaying embedded content (YouTube, Figma, etc.)."""
+    type: Literal["embed"]
+    attrs: EmbedBlockAttrs
+    content: List[TextNode]
+
+
 # Forward references for recursive types
-DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TaskListNode', 'TaskItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode, ImageBlockNode, FilesBlockNode, DocSiblingsNode, CodeBlockNode]
+DocumentContent = Union[TextNode, 'ParagraphNode', 'HeadingNode', 'BulletListNode', 'OrderedListNode', 'ListItemNode', 'TaskListNode', 'TaskItemNode', 'TableNode', 'HorizontalRuleNode', 'BlockquoteNode', 'DetailsNode', 'DetailsSummaryNode', 'DetailsContentNode', MentionNode, ImageBlockNode, FilesBlockNode, DocSiblingsNode, CodeBlockNode, EmbedBlockNode]
 
 
 class ParagraphNode(TypedDict):
@@ -333,7 +371,7 @@ class DetailsNode(TypedDict):
 
 
 # Main content type
-DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TaskListNode, TaskItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode, ImageBlockNode, FilesBlockNode, MentionNode, DocSiblingsNode, CodeBlockNode]
+DocumentNode = Union[ParagraphNode, HeadingNode, BulletListNode, OrderedListNode, ListItemNode, TaskListNode, TaskItemNode, TableNode, HorizontalRuleNode, BlockquoteNode, DetailsNode, ImageBlockNode, FilesBlockNode, MentionNode, DocSiblingsNode, CodeBlockNode, EmbedBlockNode]
 
 
 # Helper functions
@@ -1316,6 +1354,143 @@ def code_block(code: str = "", language: str = "") -> CodeBlockNode:
     return node
 
 
+def _extract_embed_url(url: str, embed_type: EmbedType) -> str:
+    """
+    Extract the proper embed URL for different platforms.
+    
+    Args:
+        url: Original URL
+        embed_type: Type of embed
+    
+    Returns:
+        str: Extracted embed URL
+    """
+    import re
+    
+    if embed_type == EmbedType.YOUTUBE:
+        # Convert YouTube watch URL to embed URL
+        # https://www.youtube.com/watch?v=VIDEO_ID -> https://www.youtube.com/embed/VIDEO_ID
+        match = re.search(r'(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)', url)
+        if match:
+            video_id = match.group(1)
+            return f"https://www.youtube.com/embed/{video_id}"
+    
+    elif embed_type == EmbedType.FIGMA:
+        # Convert Figma design/file URL to embed format
+        # https://www.figma.com/design/FILE_ID/... -> 
+        # https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/FILE_ID/...
+        # Note: 'design' should be changed to 'file' in the embedded URL
+        figma_url = url.replace('/design/', '/file/')
+        return f"https://www.figma.com/embed?embed_host=share&url={figma_url}"
+    
+    elif embed_type == EmbedType.GITHUB_GIST:
+        # Convert GitHub Gist URL to data URI with script tag
+        # https://gist.github.com/user/gist_id -> data:text/html with script tag
+        return f"""data:text/html;charset=utf-8,
+            <head><base target='_blank'/></head>
+            <body><script src='{url}.js'></script>
+            </body>"""
+    
+    # For other types, return the original URL
+    return url
+
+
+def embed_block(
+    url: str = "",
+    embed_type: Optional[EmbedType] = None,
+    size: Literal["small", "medium", "large"] = "medium",
+    is_content_hidden: bool = False
+) -> EmbedBlockNode:
+    """
+    Create an embed block for displaying embedded content (YouTube, Figma, etc.).
+    
+    Args:
+        url: URL of the content to embed
+        embed_type: Type of embed (EmbedType enum). Default is EmbedType.IFRAME
+        size: Display size ("small", "medium", "large"), default is "medium"
+        is_content_hidden: Whether to hide the content by default (used for Figma, Miro), default is False
+    
+    Returns:
+        EmbedBlockNode: A valid embed block node
+        
+    Example:
+        >>> from vaiz import embed_block, EmbedType, heading, paragraph
+        >>> 
+        >>> # YouTube video
+        >>> content = [
+        ...     heading(1, "Project Demo"),
+        ...     paragraph("Check out our demo video:"),
+        ...     embed_block(
+        ...         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        ...         embed_type=EmbedType.YOUTUBE
+        ...     )
+        ... ]
+        >>> client.replace_json_document(document_id, content)
+        
+        >>> # Figma design with content hidden
+        >>> figma_embed = embed_block(
+        ...     url="https://www.figma.com/file/...",
+        ...     embed_type=EmbedType.FIGMA,
+        ...     size="large",
+        ...     is_content_hidden=True
+        ... )
+        
+        >>> # CodeSandbox
+        >>> codesandbox = embed_block(
+        ...     url="https://codesandbox.io/s/...",
+        ...     embed_type=EmbedType.CODESANDBOX
+        ... )
+        
+        >>> # Generic iframe embed (default type)
+        >>> iframe = embed_block(url="https://example.com/embed")
+    """
+    import json
+    
+    # Default to Iframe if not specified
+    if embed_type is None:
+        embed_type = EmbedType.IFRAME
+    
+    # Generate unique ID (same format as heading UIDs)
+    block_uid = _generate_uid()
+    
+    # Extract proper embed URL
+    extracted_url = _extract_embed_url(url, embed_type)
+    
+    # Build embed data
+    embed_data: EmbedBlockData = {
+        "type": embed_type.value,
+        "url": url,
+        "extractedUrl": extracted_url
+    }
+    
+    # Add isContentHidden for Figma and Miro
+    # Figma always has isContentHidden=True in data (UI behavior)
+    if embed_type == EmbedType.FIGMA:
+        embed_data["isContentHidden"] = True
+    elif embed_type == EmbedType.MIRO and is_content_hidden:
+        embed_data["isContentHidden"] = True
+    
+    # Build node
+    node: EmbedBlockNode = {
+        "type": "embed",
+        "attrs": {
+            "uid": block_uid,
+            "custom": 1,
+            "contenteditable": "false",
+            "size": size,
+            "isContentHidden": is_content_hidden
+        },
+        "content": [
+            {
+                "type": "text",
+                "text": json.dumps(embed_data, ensure_ascii=False, separators=(',', ':'))
+            }
+        ]
+    }
+    
+    return node
+
+
 # Convenience exports
 __all__ = [
     # Types
@@ -1357,6 +1532,10 @@ __all__ = [
     'DocSiblingsData',
     'CodeBlockNode',
     'CodeBlockAttrs',
+    'EmbedBlockNode',
+    'EmbedBlockAttrs',
+    'EmbedBlockData',
+    'EmbedType',
     
     # Builders
     'text',
@@ -1388,5 +1567,6 @@ __all__ = [
     'anchors_block',
     'siblings_block',
     'code_block',
+    'embed_block',
 ]
 

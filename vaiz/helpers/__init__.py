@@ -81,6 +81,7 @@ from .document_structure import (
     anchors_block,
     siblings_block,
     code_block,
+    embed_block,
     
     # Document structure types
     DocumentNode,
@@ -121,6 +122,10 @@ from .document_structure import (
     DocSiblingsData,
     CodeBlockNode,
     CodeBlockAttrs,
+    EmbedBlockNode,
+    EmbedBlockAttrs,
+    EmbedBlockData,
+    EmbedType,
 )
 
 __all__ = [
@@ -154,6 +159,7 @@ __all__ = [
     'anchors_block',
     'siblings_block',
     'code_block',
+    'embed_block',
     
     # Document structure types
     'DocumentNode',
@@ -194,6 +200,10 @@ __all__ = [
     'DocSiblingsData',
     'CodeBlockNode',
     'CodeBlockAttrs',
+    'EmbedBlockNode',
+    'EmbedBlockAttrs',
+    'EmbedBlockData',
+    'EmbedType',
     
     # Custom fields (existing)
     # Field creation helpers

@@ -1116,6 +1116,76 @@ client.replace_json_document(document_id, content)
 - Optional language specification
 - Automatic formatting
 
+### Embed Block - External Content
+
+Embed external content from various platforms:
+
+```python
+from vaiz import embed_block, heading, paragraph, horizontal_rule
+
+content = [
+    heading(1, "Project Resources"),
+    
+    # YouTube video
+    heading(2, "Demo Video"),
+    paragraph("Watch our product demo:"),
+    embed_block(
+        url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        size="large"
+    ),
+    
+    horizontal_rule(),
+    
+    # Figma design
+    heading(2, "Design Mockups"),
+    paragraph("View the design files:"),
+    embed_block(
+        url="https://www.figma.com/file/example",
+        size="large",
+        is_content_hidden=True
+    ),
+    
+    horizontal_rule(),
+    
+    # CodeSandbox
+    heading(2, "Live Code Example"),
+    paragraph("Try the code live:"),
+    embed_block(url="https://codesandbox.io/s/example"),
+    
+    horizontal_rule(),
+    
+    # Generic iframe (default)
+    heading(2, "External Tool"),
+    embed_block(url="https://example.com/embed")
+]
+
+client.replace_json_document(document_id, content)
+```
+
+**Supported Embed Types:**
+- YouTube - YouTube videos
+- Figma - Figma design files
+- Vimeo - Vimeo videos
+- CodeSandbox - Interactive code sandboxes
+- GitHub Gist - GitHub code snippets
+- Miro - Miro whiteboards
+- Iframe - Generic iframe embeds (default)
+
+See [EmbedType enum](../api-reference/enums#embedtype) for type-safe values.
+
+**Parameters:**
+- `url` - URL of content to embed
+- `embed_type` - Type of embed (optional, see [EmbedType](../api-reference/enums#embedtype))
+- `size` - Display size: `"small"`, `"medium"`, `"large"` (default: `"medium"`)
+- `is_content_hidden` - Hide content by default for Figma/Miro (default: `False`)
+
+**Use Cases:**
+- Video tutorials and demos
+- Design system documentation
+- Live code examples
+- Interactive prototypes
+- External tool integrations
+
 ### Complete Navigation Example
 
 Combine all navigation blocks for optimal user experience:
@@ -1190,6 +1260,7 @@ All helper functions create nodes compatible with the document editor:
 - ✅ `image_block()` - Embed images
 - ✅ `files_block()` - Attach files
 - ✅ `code_block()` - Code with syntax highlighting
+- ✅ `embed_block()` - Embed external content (YouTube, Figma, etc.)
 
 ### Navigation Blocks
 - ✅ `toc_block()` - Automatic table of contents

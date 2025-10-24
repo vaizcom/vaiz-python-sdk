@@ -82,6 +82,46 @@ CommentReactionType.PARTY        # 🎉
 
 ---
 
+## EmbedType
+
+Embed content types for document embed blocks:
+
+```python
+from vaiz import EmbedType
+
+EmbedType.YOUTUBE       # YouTube videos
+EmbedType.FIGMA         # Figma design files
+EmbedType.VIMEO         # Vimeo videos
+EmbedType.CODESANDBOX   # CodeSandbox code sandboxes
+EmbedType.GITHUB_GIST   # GitHub Gists
+EmbedType.MIRO          # Miro whiteboards
+EmbedType.IFRAME        # Generic iframe (default)
+```
+
+**Usage:**
+
+```python
+from vaiz import embed_block, EmbedType
+
+# YouTube video
+embed_block(
+    url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    embed_type=EmbedType.YOUTUBE
+)
+
+# Figma design
+embed_block(
+    url="https://www.figma.com/file/example",
+    embed_type=EmbedType.FIGMA,
+    is_content_hidden=True
+)
+
+# Default to Iframe when embed_type not specified
+embed_block(url="https://example.com/embed")
+```
+
+---
+
 ## Kind
 
 Entity types for history and documents:
