@@ -2,9 +2,9 @@
 Example demonstrating all document navigation blocks: TOC, Anchors, and Siblings.
 
 This example shows how to create a document with automatic navigation features:
-- Table of Contents (TOC) for internal document navigation
-- Anchors for displaying related documents and backlinks
-- Siblings for showing documents at the same hierarchical level
+- Table of Contents (TOC) for internal document navigation (top)
+- Anchors for displaying related documents and backlinks (top)
+- Siblings for Previous/Next navigation between documents (bottom)
 """
 
 from config import get_client
@@ -31,14 +31,9 @@ print("=" * 80)
 
 # Create document content with all navigation blocks
 content = [
-    # Automatic table of contents
+    # Top navigation: TOC and related documents
     toc_block(),
-    
-    # Related documents and backlinks
     anchors_block(),
-    
-    # Sibling documents navigation
-    siblings_block(),
     
     horizontal_rule(),
     
@@ -81,18 +76,19 @@ content = [
         "Related documents from the same space"
     ),
     
-    heading(2, "Siblings Block - Same Level Documents"),
+    heading(2, "Siblings Block - Previous/Next Navigation"),
     
     paragraph(
         "The ",
         text("siblings_block()", code=True),
-        " shows documents at the same hierarchical level:"
+        " provides Previous/Next navigation between documents in a sequence:"
     ),
     
     bullet_list(
-        "Documents in the same folder/collection",
-        "Documents at the same level in structure",
-        "Useful for series of related pages (guides, tutorials)"
+        "Shows Previous and Next documents in the sequence",
+        "Creates navigation buttons (Back/Forward)",
+        "Typically placed at the bottom of the page",
+        "Perfect for tutorial series and sequential guides"
     ),
     
     horizontal_rule(),
@@ -119,15 +115,23 @@ client.replace_json_document(document_id, content)''',
     heading(2, "All Navigation Blocks Together"),
     
     paragraph(text(
-        '''from vaiz import toc_block, anchors_block, siblings_block
+        '''from vaiz import toc_block, anchors_block, siblings_block, horizontal_rule
 
 content = [
+    # Top navigation
     toc_block(),        # Table of contents
     anchors_block(),    # Related documents
-    siblings_block(),   # Sibling documents
     
-    heading(1, "Main Content"),
-    paragraph("Your content here...")
+    horizontal_rule(),
+    
+    # Your content
+    heading(1, "Tutorial Part 2"),
+    paragraph("Main content here..."),
+    
+    horizontal_rule(),
+    
+    # Bottom navigation
+    siblings_block()    # Previous/Next buttons
 ]
 
 client.replace_json_document(document_id, content)''',
@@ -139,9 +143,10 @@ client.replace_json_document(document_id, content)''',
     heading(1, "Best Practices"),
     
     bullet_list(
-        "Place TOC block at the document start for better accessibility",
+        "Place TOC and Anchors blocks at the document start for better accessibility",
+        "Place Siblings block at the document end for Previous/Next navigation",
         "Use Anchors block for documentation with cross-references",
-        "Use Siblings block for series of related pages",
+        "Use Siblings block for tutorial series and sequential guides",
         "For short documents (< 3 sections), TOC may be redundant"
     ),
     
@@ -151,6 +156,11 @@ client.replace_json_document(document_id, content)''',
         text("mention_document()", code=True),
         " to create links between documents and populate the Anchors block!"
     ),
+    
+    horizontal_rule(),
+    
+    # Bottom navigation - demonstrate siblings placement
+    siblings_block(),
 ]
 
 try:
@@ -158,10 +168,20 @@ try:
     print("✅ Document created successfully!")
     print()
     print("What was added:")
-    print("  • TOC block - automatic table of contents")
-    print("  • Anchors block - related documents and backlinks")
-    print("  • Siblings block - same-level documents")
-    print("  • Headings with UIDs for navigation")
+    print("  • TOC block (top) - automatic table of contents")
+    print("  • Anchors block (top) - related documents and backlinks")
+    print("  • Siblings block (bottom) - Previous/Next navigation")
+    print("  • Headings with UIDs for TOC navigation")
+    print()
+    print("Navigation layout:")
+    print("  ┌─────────────────────────┐")
+    print("  │ TOC Block               │  ← Internal navigation")
+    print("  │ Anchors Block           │  ← Related docs")
+    print("  ├─────────────────────────┤")
+    print("  │ Content...              │")
+    print("  ├─────────────────────────┤")
+    print("  │ Siblings Block          │  ← Previous/Next")
+    print("  └─────────────────────────┘")
     print()
     print(f"Open document in Vaiz: {DOCUMENT_ID}")
     print()

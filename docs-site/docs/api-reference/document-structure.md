@@ -970,7 +970,7 @@ client.replace_json_document(document_id, content)
 
 ### Siblings Block
 
-Displays documents at the same hierarchical level.
+Previous/Next navigation between documents in a sequence.
 
 **Structure:**
 ```json
@@ -992,23 +992,32 @@ Displays documents at the same hierarchical level.
 
 **Using Helper:**
 ```python
-from vaiz import siblings_block, heading, paragraph
+from vaiz import siblings_block, heading, paragraph, horizontal_rule
 
 content = [
-    siblings_block(),
+    heading(1, "Tutorial Part 2: Advanced Features"),
+    paragraph("Main content here..."),
     
-    heading(1, "Tutorial Part 2"),
-    paragraph("See related parts above...")
+    horizontal_rule(),
+    
+    # Navigation at the bottom
+    siblings_block()  # Shows "← Part 1" and "Part 3 →"
 ]
 
 client.replace_json_document(document_id, content)
 ```
 
-**Useful for:**
-- Tutorial series navigation
-- Multi-part guides
-- Documentation pages at same level
-- Folder/collection browsing
+**Features:**
+- Shows Previous and Next documents in sequence
+- Creates navigation buttons (Back/Forward)
+- Typically placed at page bottom
+- Maintains document order in branch
+
+**Best for:**
+- Tutorial series (Part 1 → Part 2 → Part 3)
+- Multi-chapter guides  
+- Sequential documentation
+- Step-by-step workflows
 
 ---
 

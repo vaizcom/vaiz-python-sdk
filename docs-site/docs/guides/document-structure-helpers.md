@@ -712,28 +712,37 @@ client.replace_json_document(document_id, content)
 - Related documents from the space
 - Knowledge graph connections
 
-### Siblings Block - Same-Level Documents
+### Siblings Block - Previous/Next Navigation
 
-Display documents at the same hierarchical level:
+Display Previous/Next navigation between documents in a sequence:
 
 ```python
-from vaiz import siblings_block, heading, paragraph
+from vaiz import siblings_block, heading, paragraph, horizontal_rule
 
 content = [
-    siblings_block(),  # Shows sibling documents
+    heading(1, "Tutorial Part 2: Advanced Features"),
+    paragraph("Main tutorial content here..."),
     
-    heading(1, "Current Page"),
-    paragraph("Sibling pages shown above...")
+    horizontal_rule(),
+    
+    # Navigation at the bottom
+    siblings_block()  # Shows "← Previous" and "Next →" buttons
 ]
 
 client.replace_json_document(document_id, content)
 ```
 
+**Features:**
+- Shows Previous and Next documents in sequence
+- Creates navigation buttons (Back/Forward)
+- Typically placed at page bottom
+- Perfect for linear document flows
+
 **Useful for:**
-- Series of tutorial pages
-- Multi-part guides
-- Related documentation pages
-- Folder/collection navigation
+- Tutorial series (Part 1 → Part 2 → Part 3)
+- Multi-chapter guides
+- Documentation sequences
+- Step-by-step workflows
 
 ### Code Block - Syntax Highlighting
 
@@ -775,22 +784,23 @@ client.replace_json_document(document_id, content)
 
 ### Complete Navigation Example
 
-Combine all navigation blocks:
+Combine all navigation blocks for optimal user experience:
 
 ```python
 from vaiz import (
     toc_block, anchors_block, siblings_block,
-    heading, paragraph, code_block, bullet_list
+    heading, paragraph, code_block, bullet_list, horizontal_rule
 )
 
 content = [
-    # All navigation blocks at the top
+    # Top navigation: TOC and related documents
     toc_block(),
     anchors_block(),
-    siblings_block(),
+    
+    horizontal_rule(),
     
     # Main content
-    heading(1, "API Documentation"),
+    heading(1, "API Documentation - Part 2"),
     
     paragraph("This guide explains how to use our API."),
     
@@ -805,11 +815,21 @@ content = [
     code_block(
         code='client = VaizClient(api_key="...")',
         language="python"
-    )
+    ),
+    
+    horizontal_rule(),
+    
+    # Bottom navigation: Previous/Next pages
+    siblings_block()  # Shows "← Part 1" and "Part 3 →"
 ]
 
 client.replace_json_document(document_id, content)
 ```
+
+**Navigation Layout:**
+- **Top**: TOC (internal navigation) + Anchors (related docs)
+- **Content**: Your document content
+- **Bottom**: Siblings (Previous/Next in sequence)
 
 ## Supported Elements
 

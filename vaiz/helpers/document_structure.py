@@ -1135,11 +1135,13 @@ def anchors_block() -> DocSiblingsNode:
 
 def siblings_block() -> DocSiblingsNode:
     """
-    Create a Siblings block that displays sibling documents (documents at the same level).
+    Create a Siblings block for Previous/Next document navigation.
     
-    This block automatically shows documents that are siblings in the document hierarchy:
-    - Documents in the same folder/collection
-    - Documents at the same level in the structure
+    This block provides navigation between documents in the same branch/sequence:
+    - Shows Previous and Next documents in the sequence
+    - Typically placed at the bottom of the page
+    - Perfect for tutorial series, guides, and documentation chapters
+    - Creates "Back" and "Forward" navigation buttons
     
     Returns:
         DocSiblingsNode: A valid Siblings block node
@@ -1147,9 +1149,9 @@ def siblings_block() -> DocSiblingsNode:
     Example:
         >>> from vaiz import siblings_block, heading, paragraph
         >>> content = [
-        ...     siblings_block(),
-        ...     heading(1, "Current Document"),
-        ...     paragraph("Sibling documents will be shown above")
+        ...     heading(1, "Tutorial Part 2"),
+        ...     paragraph("Main content here..."),
+        ...     siblings_block()  # Navigation at the bottom
         ... ]
         >>> client.replace_json_document(document_id, content)
     """

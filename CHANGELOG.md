@@ -16,11 +16,12 @@
   - Shows backlinks (documents linking to this one)
   - Visualizes knowledge graph connections
 
-- **📄 Siblings Block**: Same-level document navigation
-  - `siblings_block()` - Shows sibling documents
-  - Displays documents in same folder/collection
-  - Helps navigate series of related pages
-  - Useful for guides and tutorials
+- **📄 Siblings Block**: Previous/Next document navigation
+  - `siblings_block()` - Creates Previous/Next navigation buttons
+  - Shows Previous and Next documents in sequence
+  - Typically placed at the bottom of the page
+  - Perfect for tutorial series and sequential guides
+  - Maintains document order in branch
 
 - **💻 Code Block**: Syntax-highlighted code snippets
   - `code_block(code, language)` - Display code with highlighting
