@@ -142,6 +142,7 @@ class CreateTaskRequest(VaizBaseModel):
 class EditTaskRequest(VaizBaseModel):
     task_id: str = Field(..., alias="taskId")
     name: Optional[str] = None
+    group: Optional[str] = None
     parent_task: Optional[str] = Field(default=None, alias="parentTask")
     types: Optional[List[str]] = None
     priority: Optional[TaskPriority] = None

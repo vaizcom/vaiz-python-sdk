@@ -173,6 +173,46 @@ class CustomFieldType(str, Enum):
 
 ---
 
+## Task Group Movement: taskOrderByGroups Not Updated
+
+**Issue:** When changing a task's `group` field via `edit_task` API, the backend updates the task's `group` property but does not update the `taskOrderByGroups` dictionary on the board. This causes a discrepancy where:
+- The API returns the task with the new `group` value
+- The UI displays the task in the old group (based on `taskOrderByGroups`)
+- Task appears "orphaned" - has correct group in settings but wrong position on board
+
+**Example:**
+```python
+# Task PRJ-2 moved from Backlog to Todo
+client.edit_task(EditTaskRequest(task_id="...", group=todo_group_id))
+
+# After edit:
+task.group == todo_group_id  # ✅ Correct
+board.task_order_by_groups[todo_group_id]  # ❌ Task not in this list
+board.task_order_by_groups[backlog_group_id]  # ❌ Task still in old list
+```
+
+**Root Cause:** Backend's `editTask` endpoint does not automatically update the board's `taskOrderByGroups` field when task group changes.
+
+**Impact:**
+- Users see tasks in wrong columns in UI
+- Task appears in one group in settings but another group on board
+- Breaks visual workflow - users lose track of task positions
+- SDK tests pass but UI shows incorrect state
+
+**Task:**
+- [ ] **Backend Fix (Primary):** Update `editTask` endpoint to automatically:
+  - Remove task ID from old group in `taskOrderByGroups`
+  - Add task ID to new group in `taskOrderByGroups`
+  - Or provide separate API endpoint to update task order
+- [ ] Document this limitation in SDK until backend is fixed
+- [ ] Add warning in SDK documentation about group movement
+- [ ] Consider adding workaround helper in SDK if backend fix is not feasible
+
+**Workaround:**
+Currently no SDK-level workaround exists as there's no API endpoint to manually update `taskOrderByGroups`. Users must manually move tasks in UI after API edit, or wait for backend fix.
+
+---
+
 ## General Recommendations
 
 ### Alignment Strategy
@@ -197,6 +237,9 @@ class CustomFieldType(str, Enum):
 
 ## Priority Levels
 
+**Critical Priority:**
+- Task Group Movement taskOrderByGroups issue (breaks UI-API consistency, high user impact)
+
 **High Priority:**
 - GetTasksRequest filtering options (impacts usability significantly)
 - CreateTaskRequest project requirement (causes confusion)
@@ -213,5 +256,5 @@ class CustomFieldType(str, Enum):
 
 ---
 
-*Last Updated: 2025-10-20*
+*Last Updated: 2025-10-24*
 

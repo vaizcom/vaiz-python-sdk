@@ -353,8 +353,16 @@ def test_add_images_with_captions_to_existing_document():
     """Integration test: Add images with captions to existing document."""
     client = get_test_client()
     
-    # Use existing document ID
-    document_id = "68fb4d1cd35675279afd63e1"
+    # Create a new document for testing
+    create_request = CreateDocumentRequest(
+        kind=Kind.Space,
+        kind_id=TEST_SPACE_ID,
+        title="Test: Images with Captions",
+        index=0
+    )
+    
+    doc_response = client.create_document(create_request)
+    document_id = doc_response.payload.document.id
     
     # Upload test image
     image_path = "assets/example.png"
