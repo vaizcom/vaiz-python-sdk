@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 
-from vaiz.models import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, GetDocumentsRequest, GetDocumentsResponse, Document, Kind, CreateDocumentRequest, CreateDocumentResponse
+from vaiz.models import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, GetDocumentsRequest, GetDocumentsResponse, Document, Kind, CreateDocumentRequest, CreateDocumentResponse, EditDocumentRequest, EditDocumentResponse
 from tests.test_config import get_test_client
 
 
@@ -837,5 +837,197 @@ def test_create_multiple_child_documents(client):
     
     assert len(created_children) == 3
     print(f"✅ Created {len(created_children)} child documents under parent {parent_doc.id}")
+
+
+def test_edit_document_request_serialization():
+    """Test EditDocumentRequest model serialization."""
+    request = EditDocumentRequest(
+        document_id="doc123",
+        title="Updated Title"
+    )
+    
+    data = request.model_dump()
+    
+    assert data["documentId"] == "doc123"
+    assert data["title"] == "Updated Title"
+
+
+def test_edit_document_title(client):
+    """Test editing document title: create -> edit -> verify."""
+    # Get project ID
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
+    # 1. Create document
+    original_title = f"SDK Test - Original Title {datetime.now().timestamp()}"
+    create_request = CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id=project_id,
+        title=original_title,
+        index=0
+    )
+    
+    create_response = client.create_document(create_request)
+    document = create_response.payload.document
+    
+    assert document.title == original_title
+    print(f"✅ Created document: {document.id}")
+    print(f"   Original title: {document.title}")
+    
+    # 2. Edit document title
+    new_title = f"SDK Test - Updated Title {datetime.now().timestamp()}"
+    edit_request = EditDocumentRequest(
+        document_id=document.id,
+        title=new_title
+    )
+    
+    edit_response = client.edit_document(edit_request)
+    
+    assert isinstance(edit_response, EditDocumentResponse)
+    assert edit_response.type == "EditDocument"
+    assert hasattr(edit_response.payload, "document")
+    
+    edited_document = edit_response.payload.document
+    assert edited_document.title == new_title
+    assert edited_document.id == document.id
+    print(f"✅ Edited document title")
+    print(f"   New title: {edited_document.title}")
+    
+    # 3. Verify title changed in document list
+    list_response = client.get_documents(
+        GetDocumentsRequest(kind=Kind.Project, kind_id=project_id)
+    )
+    
+    # Find our document in the list
+    found_document = None
+    for doc in list_response.payload.documents:
+        if doc.id == document.id:
+            found_document = doc
+            break
+    
+    assert found_document is not None, "Document should be found in list"
+    assert found_document.title == new_title, "Title should be updated in document list"
+    print(f"✅ Verified title change in document list")
+    print(f"   Found document with updated title: {found_document.title}")
+
+
+def test_edit_document_space(client):
+    """Test editing a Space document."""
+    from tests.test_config import TEST_SPACE_ID
+    
+    # 1. Ensure document exists
+    test_document = get_or_create_test_document(client, Kind.Space, TEST_SPACE_ID, "Space Edit Test")
+    original_title = test_document.title
+    
+    print(f"Testing Space document: {test_document.title} (ID: {test_document.id})")
+    
+    # 2. Edit document
+    new_title = f"SDK Test - Space Edited {datetime.now().timestamp()}"
+    edit_request = EditDocumentRequest(
+        document_id=test_document.id,
+        title=new_title
+    )
+    
+    edit_response = client.edit_document(edit_request)
+    
+    assert isinstance(edit_response, EditDocumentResponse)
+    assert edit_response.payload.document.title == new_title
+    print(f"✅ Edited Space document")
+    print(f"   From: {original_title}")
+    print(f"   To: {new_title}")
+    
+    # 3. Verify in list
+    list_response = client.get_documents(
+        GetDocumentsRequest(kind=Kind.Space, kind_id=TEST_SPACE_ID)
+    )
+    
+    found = any(doc.id == test_document.id and doc.title == new_title 
+                for doc in list_response.payload.documents)
+    assert found, "Updated document should be in list with new title"
+    print("✅ Verified Space document title change")
+
+
+def test_edit_document_member(client):
+    """Test editing a Member document."""
+    # Get member ID
+    profile = client.get_profile()
+    member_id = profile.profile.member_id
+    
+    # 1. Ensure document exists
+    test_document = get_or_create_test_document(client, Kind.Member, member_id, "Member Edit Test")
+    original_title = test_document.title
+    
+    print(f"Testing Member document: {test_document.title} (ID: {test_document.id})")
+    
+    # 2. Edit document
+    new_title = f"SDK Test - Member Edited {datetime.now().timestamp()}"
+    edit_request = EditDocumentRequest(
+        document_id=test_document.id,
+        title=new_title
+    )
+    
+    edit_response = client.edit_document(edit_request)
+    
+    assert isinstance(edit_response, EditDocumentResponse)
+    assert edit_response.payload.document.title == new_title
+    print(f"✅ Edited Member document")
+    print(f"   From: {original_title}")
+    print(f"   To: {new_title}")
+    
+    # 3. Verify in list
+    list_response = client.get_documents(
+        GetDocumentsRequest(kind=Kind.Member, kind_id=member_id)
+    )
+    
+    found = any(doc.id == test_document.id and doc.title == new_title 
+                for doc in list_response.payload.documents)
+    assert found, "Updated document should be in list with new title"
+    print("✅ Verified Member document title change")
+
+
+def test_edit_document_response_structure(client):
+    """Test EditDocumentResponse has correct structure without map field."""
+    # Get project ID
+    projects = client.get_projects()
+    assert projects.projects, "No projects available for testing"
+    project_id = projects.projects[0].id
+    
+    # Get or create document
+    test_document = get_or_create_test_document(client, Kind.Project, project_id, "Structure Test")
+    
+    # Edit document
+    edit_request = EditDocumentRequest(
+        document_id=test_document.id,
+        title=f"Structure Test {datetime.now().timestamp()}"
+    )
+    
+    edit_response = client.edit_document(edit_request)
+    
+    # Verify response structure
+    assert isinstance(edit_response, EditDocumentResponse)
+    assert hasattr(edit_response, 'payload')
+    assert hasattr(edit_response, 'type')
+    assert edit_response.type == "EditDocument"
+    
+    # Verify document structure (without map field)
+    edited_doc = edit_response.payload.document
+    assert hasattr(edited_doc, 'id')
+    assert hasattr(edited_doc, 'title')
+    assert hasattr(edited_doc, 'space')
+    assert hasattr(edited_doc, 'size')
+    assert hasattr(edited_doc, 'kind')
+    assert hasattr(edited_doc, 'kind_id')
+    assert hasattr(edited_doc, 'creator')
+    assert hasattr(edited_doc, 'created_at')
+    assert hasattr(edited_doc, 'updated_at')
+    assert hasattr(edited_doc, 'bucket')
+    assert hasattr(edited_doc, 'contributor_ids')
+    assert hasattr(edited_doc, 'followers')
+    
+    # Verify map field is NOT present (as per user request)
+    assert not hasattr(edited_doc, 'map'), "EditDocument should not have 'map' field"
+    
+    print("✅ EditDocumentResponse has correct structure without 'map' field")
 
 

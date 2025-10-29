@@ -15,7 +15,9 @@ from vaiz.models.documents import (
     GetDocumentsRequest,
     GetDocumentsResponse,
     CreateDocumentRequest,
-    CreateDocumentResponse
+    CreateDocumentResponse,
+    EditDocumentRequest,
+    EditDocumentResponse
 )
 
 # Import Document Structure types for better type hints
@@ -242,5 +244,21 @@ class DocumentsAPIClient(BaseAPIClient):
         """
         response_data = self._make_request("createDocument", json_data=request.model_dump())
         return CreateDocumentResponse(**response_data)
+
+    def edit_document(self, request: EditDocumentRequest) -> EditDocumentResponse:
+        """
+        Edit an existing document (e.g., update title).
+
+        Args:
+            request (EditDocumentRequest): The request containing document_id and title
+
+        Returns:
+            EditDocumentResponse: The response containing the edited document
+
+        Raises:
+            VaizSDKError: If the API request fails
+        """
+        response_data = self._make_request("editDocument", json_data=request.model_dump())
+        return EditDocumentResponse(**response_data)
 
 

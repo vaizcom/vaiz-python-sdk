@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0] - 2025-10-29
+
+### Added
+
+- **📝 Edit Document API**: New method to edit document metadata
+  - `edit_document` - Update document properties
+
 ## [0.17.0] - 2025-10-24
 
 ### Added

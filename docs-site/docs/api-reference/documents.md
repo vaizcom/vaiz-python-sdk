@@ -43,6 +43,36 @@ print(f"Created: {document.id}")
 
 ---
 
+### `edit_document`
+
+```python
+edit_document(request: EditDocumentRequest) -> EditDocumentResponse
+```
+
+Edit document metadata such as title.
+
+**Parameters:**
+- `request` - EditDocumentRequest with document_id and title
+
+**Returns:** `EditDocumentResponse` with updated document
+
+**Example:**
+```python
+from vaiz.models import EditDocumentRequest
+
+response = client.edit_document(
+    EditDocumentRequest(
+        document_id="doc_id",
+        title="Updated Title"
+    )
+)
+
+edited_doc = response.payload.document
+print(f"Updated: {edited_doc.title}")
+```
+
+---
+
 ### `get_documents`
 
 ```python
@@ -96,6 +126,32 @@ class Document:
 
 ---
 
+### EditDocument
+
+Model representing an edited document (without internal fields like map).
+
+```python
+class EditDocument:
+    id: str                             # Document ID
+    title: str                          # Document title
+    space: str                          # Space ID
+    size: int                           # Document size in bytes
+    contributor_ids: List[str]          # List of contributor IDs
+    archiver: Optional[str]             # User who archived (if archived)
+    followers: Dict[str, str]           # Document followers
+    archived_at: Optional[datetime]     # Archive timestamp
+    kind_id: str                        # ID of document scope
+    kind: Kind                          # Document scope (Space/Member/Project)
+    creator: str                        # Creator user ID
+    created_at: datetime                # Creation timestamp
+    updated_at: datetime                # Last update timestamp
+    bucket: str                         # Storage bucket ID
+    content: Optional[str]              # Document content (encoded)
+    content_updated_at: Optional[datetime]  # Content update timestamp
+```
+
+---
+
 ## Request Models
 
 ### CreateDocumentRequest
@@ -107,6 +163,16 @@ class CreateDocumentRequest:
     title: str                          # Required - Document title
     index: int                          # Required - Position in document list
     parent_document_id: Optional[str]   # Optional - Parent document ID for nesting
+```
+
+---
+
+### EditDocumentRequest
+
+```python
+class EditDocumentRequest:
+    document_id: str                    # Required - Document ID to edit
+    title: str                          # Required - New document title
 ```
 
 ---
@@ -128,6 +194,25 @@ class CreateDocumentResponse:
 ```python
 class CreateDocumentPayload:
     document: Document                  # Created document
+```
+
+---
+
+### EditDocumentResponse
+
+```python
+class EditDocumentResponse:
+    payload: EditDocumentPayload        # Response payload
+    type: str                           # Response type ("EditDocument")
+```
+
+---
+
+### EditDocumentPayload
+
+```python
+class EditDocumentPayload:
+    document: EditDocument              # Edited document
 ```
 
 ---

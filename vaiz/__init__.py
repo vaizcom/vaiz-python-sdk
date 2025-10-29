@@ -45,8 +45,12 @@ from .models import (
     AppendDocumentResponse,
     AppendJSONDocumentRequest,
     AppendJSONDocumentResponse,
+    GetDocumentsRequest,
+    GetDocumentsResponse,
     CreateDocumentRequest,
     CreateDocumentResponse,
+    EditDocumentRequest,
+    EditDocumentResponse,
     Comment,
     CommentReaction,
     PostCommentRequest,
@@ -67,6 +71,7 @@ from .models import (
     GetSpaceMembersResponse,
     AvatarMode,
     ColorInfo,
+    Kind,
 )
 
 # Import helper functions for convenient usage
@@ -187,8 +192,12 @@ __all__ = [
     'AppendDocumentResponse',
     'AppendJSONDocumentRequest',
     'AppendJSONDocumentResponse',
+    'GetDocumentsRequest',
+    'GetDocumentsResponse',
     'CreateDocumentRequest',
     'CreateDocumentResponse',
+    'EditDocumentRequest',
+    'EditDocumentResponse',
     'Comment',
     'CommentReaction',
     'PostCommentRequest',
@@ -209,6 +218,7 @@ __all__ = [
     'GetSpaceMembersResponse',
     'AvatarMode',
     'ColorInfo',
+    'Kind',
     
     # Helper functions for custom fields
     'make_text_field',

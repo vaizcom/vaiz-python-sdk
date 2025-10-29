@@ -154,3 +154,48 @@ class CreateDocumentResponse(VaizBaseModel):
     type: str
 
 
+class EditDocumentRequest(VaizBaseModel):
+    """Request model for editing a document."""
+    document_id: str = Field(..., alias="documentId")
+    title: str
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class EditDocument(VaizBaseModel):
+    """Model representing an edited document (without map field)."""
+    id: str = Field(..., alias="_id")
+    title: str
+    space: str
+    size: int
+    contributor_ids: List[str] = Field(default_factory=list, alias="contributorIds")
+    archiver: Optional[str] = None
+    followers: Dict[str, str] = Field(default_factory=dict)
+    archived_at: Optional[datetime] = Field(default=None, alias="archivedAt")
+    kind_id: str = Field(..., alias="kindId")
+    kind: Kind
+    creator: str
+    created_at: datetime = Field(..., alias="createdAt")
+    updated_at: datetime = Field(..., alias="updatedAt")
+    bucket: str
+    content: Optional[str] = None
+    content_updated_at: Optional[datetime] = Field(default=None, alias="contentUpdatedAt")
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+
+class EditDocumentPayload(VaizBaseModel):
+    """Payload containing the edited document."""
+    document: EditDocument
+
+
+class EditDocumentResponse(VaizBaseModel):
+    """Response model for editing a document."""
+    payload: EditDocumentPayload
+    type: str
+
+

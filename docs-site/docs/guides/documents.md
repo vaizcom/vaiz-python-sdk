@@ -260,6 +260,65 @@ root_doc = create_doc_tree(client, project_id)
 print(f"\n✅ Created documentation tree with root: {root_doc.id}")
 ```
 
+## Editing Documents
+
+Update document metadata such as title:
+
+```python
+from vaiz.models import EditDocumentRequest
+
+# Edit document title
+response = client.edit_document(
+    EditDocumentRequest(
+        document_id="document_id",
+        title="Updated Document Title"
+    )
+)
+
+edited_doc = response.payload.document
+print(f"✅ Updated document: {edited_doc.title}")
+```
+
+### Complete Edit Workflow
+
+Create, edit, and verify document changes:
+
+```python
+from vaiz import CreateDocumentRequest, EditDocumentRequest, GetDocumentsRequest, Kind
+
+# 1. Create document
+create_response = client.create_document(
+    CreateDocumentRequest(
+        kind=Kind.Project,
+        kind_id=project_id,
+        title="Initial Title",
+        index=0
+    )
+)
+
+doc_id = create_response.payload.document.id
+print(f"Created: {create_response.payload.document.title}")
+
+# 2. Edit document title
+edit_response = client.edit_document(
+    EditDocumentRequest(
+        document_id=doc_id,
+        title="Updated Title"
+    )
+)
+
+print(f"Updated: {edit_response.payload.document.title}")
+
+# 3. Verify change in document list
+docs = client.get_documents(
+    GetDocumentsRequest(kind=Kind.Project, kind_id=project_id)
+)
+
+updated_doc = next((d for d in docs.payload.documents if d.id == doc_id), None)
+if updated_doc:
+    print(f"✅ Verified: {updated_doc.title}")
+```
+
 ## Working with Document Content
 
 In addition to listing and creating documents, you can work with their content using document API methods.

@@ -31,6 +31,7 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 ### Basic Operations
 - **`get_documents.py`** - List documents by scope (Space/Member/Project)
 - **`create_document.py`** - Create new documents
+- **`edit_document.py`** - Edit document metadata (e.g., title)
 - **`get_document.py`** - Get single document
 - **`replace_document.py`** - Replace document content with plain text
 - **`replace_json_document.py`** - Replace document content with rich JSON (document structure format)
