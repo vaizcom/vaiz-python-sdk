@@ -234,7 +234,8 @@ Icon.Chat, Icon.Sound
 
 # Editing & Content
 Icon.Rename, Icon.New, Icon.Add, Icon.Delete, Icon.Type, Icon.Asterisk
-Icon.Thumb, Icon.Percent, Icon.Percent25, Icon.Percent50
+Icon.Thumb, Icon.Percent, Icon.Percent0, Icon.Percent25, Icon.Percent50
+Icon.Percent75, Icon.Percent100
 
 # Food & Drink
 Icon.Coffee, Icon.Beer, Icon.Champagne, Icon.WineGlass, Icon.Cocktail
