@@ -75,11 +75,36 @@ class HistoryData:
 
 ```python
 class GetHistoryRequest:
-    kind: Kind                         # Required - Entity type (Task, Project, etc.)
-    kindId: str                         # Required - Entity ID
-    excludeKeys: Optional[List[str]]    # Keys to exclude from history
-    lastLoadedDate: Optional[int]       # Timestamp for pagination (default: 0)
+    kind: Kind                           # Required - Entity type (Task, Project, Board, etc.)
+    kindId: str                          # Required - Entity ID
+    createdBy: Optional[List[str]]       # Filter by creator member IDs
+    dateRangeStart: Optional[datetime]   # Start of date range filter
+    dateRangeEnd: Optional[datetime]     # End of date range filter
+    limit: Optional[int]                 # Max number of history events to return
+    lastLoadedDate: Optional[int]        # Timestamp for pagination (default: 0)
+    keys: Optional[List[str]]            # Only include these event keys
+    excludeKeys: Optional[List[str]]     # Exclude these event keys
+    tasksIds: Optional[List[str]]        # Filter by specific task IDs
+    groupsIds: Optional[List[str]]       # Filter by specific group IDs
 ```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `kind` | `Kind` | Yes | Entity type — `Kind.Task`, `Kind.Project`, `Kind.Board`, etc. |
+| `kindId` | `str` | Yes | ID of the entity to get history for |
+| `createdBy` | `List[str]` | No | Filter events by member IDs who made the changes |
+| `dateRangeStart` | `datetime` | No | Return events after this date |
+| `dateRangeEnd` | `datetime` | No | Return events before this date |
+| `limit` | `int` | No | Maximum number of events to return |
+| `lastLoadedDate` | `int` | No | Timestamp for pagination (default: `0`) |
+| `keys` | `List[str]` | No | Only include events matching these keys (e.g. `["TASK_CREATED"]`) |
+| `excludeKeys` | `List[str]` | No | Exclude events matching these keys |
+| `tasksIds` | `List[str]` | No | Filter events related to specific task IDs |
+| `groupsIds` | `List[str]` | No | Filter events related to specific group IDs |
+
+:::tip Filtering
+Use `keys` to include only specific event types, or `excludeKeys` to exclude them. These are mutually exclusive — use one or the other.
+:::
 
 ---
 

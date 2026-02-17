@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 from vaiz import VaizClient
 from vaiz.models import GetHistoryRequest, CreateTaskRequest, TaskPriority
@@ -28,7 +29,8 @@ task = CreateTaskRequest(
 response = client.create_task(task)
 task_id = response.payload["task"]["_id"]
 
-# Get history for the newly created task
+# Example 1: Basic history request
+print("=== Basic history request ===")
 request = GetHistoryRequest(
     kind=Kind.Task,
     kindId=task_id,
@@ -40,4 +42,21 @@ history_response = client.get_history(request)
 print(f"Type: {history_response.type}")
 print(f"Number of histories: {len(history_response.payload.histories)}")
 for history in history_response.payload.histories:
-    print(f"History key: {history.key}, createdAt: {history.createdAt}, data: {history.data}") 
+    print(f"History key: {history.key}, createdAt: {history.createdAt}, data: {history.data}")
+
+# Example 2: History with date range and filters
+print("\n=== History with date range and filters ===")
+request_filtered = GetHistoryRequest(
+    kind=Kind.Task,
+    kindId=task_id,
+    dateRangeStart=datetime(2025, 1, 1),
+    dateRangeEnd=datetime(2026, 12, 31),
+    limit=10,
+    keys=["TASK_CREATED", "TASK_COMPLETED"],
+    tasksIds=[task_id],
+)
+history_filtered = client.get_history(request_filtered)
+
+print(f"Filtered histories: {len(history_filtered.payload.histories)}")
+for history in history_filtered.payload.histories:
+    print(f"  key: {history.key}, createdAt: {history.createdAt}") 

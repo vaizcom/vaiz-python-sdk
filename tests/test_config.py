@@ -4,11 +4,13 @@ Contains test credentials and helper functions for testing.
 """
 
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 from vaiz import VaizClient
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from .env file (resolve path relative to project root)
+_env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(_env_path)
 
 # Test credentials
 TEST_API_KEY = os.getenv("VAIZ_API_KEY")

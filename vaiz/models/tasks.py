@@ -142,7 +142,6 @@ class CreateTaskRequest(VaizBaseModel):
 class EditTaskRequest(VaizBaseModel):
     task_id: str = Field(..., alias="taskId")
     name: Optional[str] = None
-    group: Optional[str] = None
     parent_task: Optional[str] = Field(default=None, alias="parentTask")
     types: Optional[List[str]] = None
     priority: Optional[TaskPriority] = None
@@ -207,8 +206,19 @@ class TaskUploadFile(BaseModel):
 class GetHistoryRequest(VaizBaseModel):
     kind: Kind
     kindId: str
-    excludeKeys: Optional[List[str]] = None
+    createdBy: Optional[List[str]] = None
+    dateRangeStart: Optional[datetime] = None
+    dateRangeEnd: Optional[datetime] = None
+    limit: Optional[int] = None
     lastLoadedDate: Optional[int] = 0
+    keys: Optional[List[str]] = None
+    excludeKeys: Optional[List[str]] = None
+    tasksIds: Optional[List[str]] = None
+    groupsIds: Optional[List[str]] = None
+
+    def model_dump(self, **kwargs):
+        data = super().model_dump(**kwargs)
+        return {k: v for k, v in data.items() if v is not None}
 
 class HistoryData(VaizBaseModel):
     _id: str
@@ -267,4 +277,28 @@ class GetTasksPayload(VaizBaseModel):
 
 class GetTasksResponse(VaizBaseModel):
     payload: GetTasksPayload
-    type: str 
+    type: str
+
+
+class MoveTaskItem(VaizBaseModel):
+    task_id: str = Field(..., alias="taskId")
+    to_group_id: str = Field(..., alias="toGroupId")
+    to_index: int = Field(default=0, alias="toIndex")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class MoveTasksRequest(VaizBaseModel):
+    moves: List[MoveTaskItem]
+
+
+class MoveTasksPayload(VaizBaseModel):
+    success_ids: List[str] = Field(default_factory=list, alias="successIds")
+    failed_ids: List[str] = Field(default_factory=list, alias="failedIds")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class MoveTasksResponse(VaizBaseModel):
+    payload: MoveTasksPayload
+    type: str

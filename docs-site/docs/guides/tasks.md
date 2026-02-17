@@ -178,6 +178,48 @@ for task in response.payload.tasks:
     print(f"{task.hrid}: {task.name}")
 ```
 
+## Moving Tasks Between Groups
+
+To move tasks between board groups, use the `move_tasks` method. This is the correct way to change a task's group — `edit_task` does not support group changes.
+
+### Move a single task
+
+```python
+from vaiz.models import MoveTaskItem, MoveTasksRequest
+
+move_request = MoveTasksRequest(
+    moves=[
+        MoveTaskItem(
+            task_id="task_id",
+            to_group_id="target_group_id",
+            to_index=0  # Position in the target group
+        )
+    ]
+)
+
+response = client.move_tasks(move_request)
+print(f"Moved: {response.payload.success_ids}")
+print(f"Failed: {response.payload.failed_ids}")
+```
+
+### Move multiple tasks at once
+
+```python
+move_request = MoveTasksRequest(
+    moves=[
+        MoveTaskItem(task_id="task_1", to_group_id="group_b", to_index=0),
+        MoveTaskItem(task_id="task_2", to_group_id="group_b", to_index=1),
+        MoveTaskItem(task_id="task_3", to_group_id="group_c", to_index=0),
+    ]
+)
+
+response = client.move_tasks(move_request)
+```
+
+:::tip
+You can move tasks to different groups in a single request. Each move specifies its own target group and position.
+:::
+
 ## Task Descriptions
 
 Tasks store descriptions as structured JSON documents. The SDK provides convenient methods to work with descriptions directly from Task objects.

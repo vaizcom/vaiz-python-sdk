@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.19.0] - 2026-02-17
+
+### Added
+
+- **🔀 Move Tasks API**: New `move_tasks()` method for moving tasks between board groups
+  - `MoveTaskItem` - Specify task, target group, and position
+  - `MoveTasksRequest` - Batch move multiple tasks in one call
+  - `MoveTasksResponse` - Response with success/failed task IDs
+- **📜 History API**: Added missing filter parameters to `GetHistoryRequest`
+  - `createdBy` - Filter by creator member IDs
+  - `dateRangeStart` / `dateRangeEnd` - Date range filters
+  - `limit` - Limit number of results
+  - `keys` - Include only specific event keys
+  - `tasksIds` - Filter by task IDs
+  - `groupsIds` - Filter by group IDs
+
+### Changed
+
+- **🔧 Breaking**: Removed `group` field from `EditTaskRequest` — use `move_tasks()` instead
+  - Migration: Replace `client.edit_task(EditTaskRequest(task_id=..., group=...))` with `client.move_tasks(MoveTasksRequest(moves=[MoveTaskItem(task_id=..., to_group_id=...)]))`
+
 ## [0.18.0] - 2025-10-29
 
 ### Added

@@ -9,6 +9,8 @@ from vaiz.models import (
     GetHistoryResponse,
     GetTasksRequest,
     GetTasksResponse,
+    MoveTasksRequest,
+    MoveTasksResponse,
 )
 from typing import Optional, Dict, Tuple
 from datetime import datetime, timedelta
@@ -128,6 +130,22 @@ class TasksAPIClient(BaseAPIClient):
             "getHistory", json_data=request.model_dump(by_alias=True)
         )
         return GetHistoryResponse(**response_data)
+
+    def move_tasks(self, request: MoveTasksRequest) -> MoveTasksResponse:
+        """
+        Move tasks between board groups.
+
+        Args:
+            request (MoveTasksRequest): The request containing a list of task moves,
+                each specifying taskId, target group (toGroupId), and position (toIndex).
+
+        Returns:
+            MoveTasksResponse: The response containing lists of successful and failed task IDs.
+        """
+        response_data = self._make_request(
+            "moveTasks", json_data=request.model_dump(by_alias=True)
+        )
+        return MoveTasksResponse(**response_data)
 
     def _get_cache_key(self, request: GetTasksRequest) -> str:
         """Generate a unique cache key for the request."""

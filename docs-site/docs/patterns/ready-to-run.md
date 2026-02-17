@@ -19,6 +19,9 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`get_tasks.py`** - Query and filter tasks
 - **`get_task.py`** - Get single task by ID
 
+### Moving Tasks
+- **`move_tasks.py`** - Move tasks between board groups (single and batch)
+
 ### Tasks with Files
 - **`create_task_with_files.py`** - Tasks with file attachments
 - **`create_task_with_file.py`** - Single file attachment

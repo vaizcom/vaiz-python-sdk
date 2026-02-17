@@ -182,7 +182,7 @@ def test_create_document_with_embed_blocks():
 
 def test_create_tasks_with_embeds_and_move_between_groups():
     """Create tasks with embed blocks in descriptions and move them between board groups."""
-    from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority
+    from vaiz.models import CreateTaskRequest, TaskPriority, MoveTaskItem, MoveTasksRequest
     
     client = get_test_client()
     
@@ -284,18 +284,20 @@ def test_create_tasks_with_embeds_and_move_between_groups():
         assert task.group == group_1.id, f"Task {i} is not in expected group"
         print(f"   ✅ Task {i} confirmed in group '{group_1.name}'")
     
-    # Move tasks to group 2
+    # Move tasks to group 2 using moveTasks API
     print(f"\n🔄 Moving tasks to group '{group_2.name}'...")
-    for i, task_id in enumerate(task_ids, 1):
-        edit_request = EditTaskRequest(
-            task_id=task_id,
-            group=group_2.id
-        )
-        
-        response = client.edit_task(edit_request)
-        updated_task = response.task
-        assert updated_task.group == group_2.id, f"Failed to move task {i}"
-        print(f"   ✅ Moved task {i} to group '{group_2.name}'")
+    move_request = MoveTasksRequest(
+        moves=[
+            MoveTaskItem(task_id=tid, to_group_id=group_2.id, to_index=i)
+            for i, tid in enumerate(task_ids)
+        ]
+    )
+    move_response = client.move_tasks(move_request)
+    assert len(move_response.payload.success_ids) == len(task_ids), (
+        f"Expected {len(task_ids)} successful moves, got {len(move_response.payload.success_ids)}. "
+        f"Failed: {move_response.payload.failed_ids}"
+    )
+    print(f"   ✅ Moved {len(move_response.payload.success_ids)} tasks to group '{group_2.name}'")
     
     print(f"\n✅ All tasks moved to group '{group_2.name}'")
     
@@ -309,18 +311,28 @@ def test_create_tasks_with_embeds_and_move_between_groups():
     
     # Move tasks back to group 1
     print(f"\n🔄 Moving tasks back to group '{group_1.name}'...")
-    for i, task_id in enumerate(task_ids, 1):
-        edit_request = EditTaskRequest(
-            task_id=task_id,
-            group=group_1.id
-        )
-        
-        response = client.edit_task(edit_request)
-        updated_task = response.task
-        assert updated_task.group == group_1.id, f"Failed to move task {i} back"
-        print(f"   ✅ Moved task {i} back to group '{group_1.name}'")
+    move_back_request = MoveTasksRequest(
+        moves=[
+            MoveTaskItem(task_id=tid, to_group_id=group_1.id, to_index=i)
+            for i, tid in enumerate(task_ids)
+        ]
+    )
+    move_back_response = client.move_tasks(move_back_request)
+    assert len(move_back_response.payload.success_ids) == len(task_ids), (
+        f"Expected {len(task_ids)} successful moves back, got {len(move_back_response.payload.success_ids)}. "
+        f"Failed: {move_back_response.payload.failed_ids}"
+    )
+    print(f"   ✅ Moved {len(move_back_response.payload.success_ids)} tasks back to group '{group_1.name}'")
     
     print(f"\n✅ All tasks moved back to group '{group_1.name}'")
+    
+    # Verify tasks are back in group 1
+    print(f"\n🔍 Verifying tasks are back in group '{group_1.name}'...")
+    for i, task_id in enumerate(task_ids, 1):
+        task_response = client.get_task(task_id)
+        task = task_response.task
+        assert task.group == group_1.id, f"Task {i} is not back in group '{group_1.name}'"
+        print(f"   ✅ Task {i} confirmed in group '{group_1.name}'")
     
     print("\n" + "="*60)
     print("✅ Tasks with embed blocks group movement test completed!")

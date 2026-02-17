@@ -72,6 +72,9 @@ from .models import (
     AvatarMode,
     ColorInfo,
     Kind,
+    MoveTaskItem,
+    MoveTasksRequest,
+    MoveTasksResponse,
 )
 
 # Import helper functions for convenient usage
@@ -219,6 +222,9 @@ __all__ = [
     'AvatarMode',
     'ColorInfo',
     'Kind',
+    'MoveTaskItem',
+    'MoveTasksRequest',
+    'MoveTasksResponse',
     
     # Helper functions for custom fields
     'make_text_field',

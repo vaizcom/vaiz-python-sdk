@@ -30,7 +30,7 @@ for history in response.payload.histories:
 
 ## Filter History
 
-### Exclude Specific Keys
+### Exclude specific keys
 
 ```python
 # Track everything except description changes
@@ -43,9 +43,77 @@ request = GetHistoryRequest(
 response = client.get_history(request)
 ```
 
+### Include only specific keys
+
+```python
+# Only get task creation and completion events
+request = GetHistoryRequest(
+    kind=Kind.Task,
+    kindId="task_id",
+    keys=["TASK_CREATED", "TASK_COMPLETED"]
+)
+
+response = client.get_history(request)
+```
+
+### Filter by date range
+
+```python
+from datetime import datetime
+
+request = GetHistoryRequest(
+    kind=Kind.Task,
+    kindId="task_id",
+    dateRangeStart=datetime(2025, 1, 1),
+    dateRangeEnd=datetime(2025, 6, 30),
+)
+
+response = client.get_history(request)
+```
+
+### Filter by author
+
+```python
+# Only changes made by specific members
+request = GetHistoryRequest(
+    kind=Kind.Task,
+    kindId="task_id",
+    createdBy=["member_id_1", "member_id_2"]
+)
+
+response = client.get_history(request)
+```
+
+### Limit results
+
+```python
+# Get only the last 10 events
+request = GetHistoryRequest(
+    kind=Kind.Task,
+    kindId="task_id",
+    limit=10
+)
+
+response = client.get_history(request)
+```
+
+### Filter by tasks and groups
+
+```python
+# Get board history filtered by specific tasks and groups
+request = GetHistoryRequest(
+    kind=Kind.Board,
+    kindId="board_id",
+    tasksIds=["task_id_1", "task_id_2"],
+    groupsIds=["group_id_1"]
+)
+
+response = client.get_history(request)
+```
+
 ## Use Cases
 
-### Audit Trail
+### Audit trail
 
 ```python
 def get_task_audit_trail(task_id: str):
@@ -69,14 +137,21 @@ def get_task_audit_trail(task_id: str):
 get_task_audit_trail("task_id")
 ```
 
-### Filter Specific Changes
+### Weekly activity report
 
 ```python
-def monitor_important_changes(task_id: str):
-    """Get history excluding description changes"""
+from datetime import datetime, timedelta
+
+def weekly_activity_report(task_id: str):
+    """Get activity for the last 7 days"""
+    now = datetime.now()
+    week_ago = now - timedelta(days=7)
+
     request = GetHistoryRequest(
         kind=Kind.Task,
         kindId=task_id,
+        dateRangeStart=week_ago,
+        dateRangeEnd=now,
         excludeKeys=["description", "files"]
     )
     
@@ -87,7 +162,7 @@ def monitor_important_changes(task_id: str):
         print(f"  New value: {event.data}")
 ```
 
-### Generate Reports
+### Generate reports
 
 ```python
 def generate_activity_report(task_id: str):
@@ -106,9 +181,8 @@ def generate_activity_report(task_id: str):
         changes[event.key] = changes.get(event.key, 0) + 1
     
     # Count contributors
-    contributors = set(event.createdBy for event in histories)
+    contributors = set(event.creatorId for event in histories)
     
-    print("📊 Activity Report")
     print(f"Total changes: {len(histories)}")
     print(f"Contributors: {len(contributors)}")
     print("\nChanges by type:")
@@ -116,9 +190,10 @@ def generate_activity_report(task_id: str):
         print(f"  {key}: {count}")
 ```
 
-## Complete Example
+## Complete example
 
 ```python
+from datetime import datetime
 from vaiz import VaizClient
 from vaiz.models import GetHistoryRequest
 from vaiz.models.enums import Kind
@@ -136,17 +211,20 @@ request = GetHistoryRequest(
 )
 
 response = client.get_history(request)
-print(f"📊 Total changes: {len(response.payload.histories)}")
+print(f"Total changes: {len(response.payload.histories)}")
 
-# Get history excluding certain keys
+# Get history with all filters
 filtered = GetHistoryRequest(
     kind=Kind.Task,
     kindId=task_id,
+    dateRangeStart=datetime(2025, 1, 1),
+    dateRangeEnd=datetime(2025, 12, 31),
+    limit=20,
     excludeKeys=["description", "files", "customFields"]
 )
 
 response = client.get_history(filtered)
-print(f"⚡ Important changes: {len(response.payload.histories)}")
+print(f"Important changes: {len(response.payload.histories)}")
 
 for event in response.payload.histories:
     print(f"  {event.key}: {event.createdAt}")

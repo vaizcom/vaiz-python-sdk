@@ -81,6 +81,25 @@ Get multiple tasks with filtering and pagination (max 50 per request).
 
 ---
 
+### `move_tasks`
+
+```python
+move_tasks(request: MoveTasksRequest) -> MoveTasksResponse
+```
+
+Move tasks between board groups.
+
+**Parameters:**
+- `request` - Move request containing a list of task moves
+
+**Returns:** `MoveTasksResponse` with lists of successful and failed task IDs
+
+:::warning
+`edit_task` does not support changing a task's group. Use `move_tasks` instead.
+:::
+
+---
+
 ### `clear_tasks_cache`
 
 ```python
@@ -246,6 +265,26 @@ class GetTasksRequest:
 
 ---
 
+### MoveTaskItem
+
+```python
+class MoveTaskItem:
+    task_id: str                        # Required - Task ID to move
+    to_group_id: str                    # Required - Target group ID
+    to_index: int                       # Position in target group (default: 0)
+```
+
+---
+
+### MoveTasksRequest
+
+```python
+class MoveTasksRequest:
+    moves: List[MoveTaskItem]           # List of task moves
+```
+
+---
+
 ## Response Models
 
 ### TaskResponse
@@ -277,6 +316,26 @@ class GetTasksResponse:
 ```python
 class GetTasksPayload:
     tasks: List[Task]                   # List of tasks
+```
+
+---
+
+### MoveTasksResponse
+
+```python
+class MoveTasksResponse:
+    type: str                           # Response type ("MoveTasks")
+    payload: MoveTasksPayload           # Response payload
+```
+
+---
+
+### MoveTasksPayload
+
+```python
+class MoveTasksPayload:
+    success_ids: List[str]              # Successfully moved task IDs
+    failed_ids: List[str]               # Failed task IDs
 ```
 
 ---

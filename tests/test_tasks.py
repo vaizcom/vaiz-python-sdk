@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
-from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority, GetHistoryRequest, GetHistoryResponse, HistoryItem, ReplaceDocumentResponse, GetTasksRequest, GetTasksResponse
+from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority, GetHistoryRequest, GetHistoryResponse, HistoryItem, ReplaceDocumentResponse, GetTasksRequest, GetTasksResponse, MoveTaskItem, MoveTasksRequest, MoveTasksResponse
 from vaiz.models.enums import Kind
 
 @pytest.fixture(scope="module")
@@ -88,6 +88,113 @@ def test_get_history(client, task_id):
     # Optionally check that each item is a HistoryItem
     if response.payload.histories:
         assert isinstance(response.payload.histories[0], HistoryItem)
+
+
+def test_get_history_with_all_params(client, task_id):
+    """Test get_history with all available parameters."""
+    request = GetHistoryRequest(
+        kind=Kind.Task,
+        kindId=task_id,
+        createdBy=[str(TEST_ASSIGNEE_ID)] if TEST_ASSIGNEE_ID else None,
+        dateRangeStart=datetime(2025, 1, 1),
+        dateRangeEnd=datetime(2026, 12, 31),
+        limit=10,
+        lastLoadedDate=0,
+        keys=["TASK_CREATED"],
+        excludeKeys=None,
+        tasksIds=[task_id],
+        groupsIds=[TEST_GROUP_ID] if TEST_GROUP_ID else None,
+    )
+    response = client.get_history(request)
+    assert isinstance(response, GetHistoryResponse)
+    assert response.type == "GetHistory"
+    assert isinstance(response.payload.histories, list)
+
+
+def test_get_history_request_model_dump():
+    """Test that GetHistoryRequest model_dump excludes None values."""
+    request = GetHistoryRequest(
+        kind=Kind.Task,
+        kindId="test_task_id",
+        lastLoadedDate=0,
+    )
+    dumped = request.model_dump(by_alias=True)
+
+    # These should be present
+    assert "kind" in dumped
+    assert "kindId" in dumped
+    assert "lastLoadedDate" in dumped
+
+    # These should be excluded (None)
+    assert "createdBy" not in dumped
+    assert "dateRangeStart" not in dumped
+    assert "dateRangeEnd" not in dumped
+    assert "limit" not in dumped
+    assert "keys" not in dumped
+    assert "excludeKeys" not in dumped
+    assert "tasksIds" not in dumped
+    assert "groupsIds" not in dumped
+
+
+def test_get_history_request_with_date_range():
+    """Test GetHistoryRequest serializes datetime fields correctly."""
+    request = GetHistoryRequest(
+        kind=Kind.Board,
+        kindId="board_123",
+        dateRangeStart=datetime(2025, 6, 1, 0, 0, 0),
+        dateRangeEnd=datetime(2025, 6, 30, 23, 59, 59),
+        limit=50,
+    )
+    dumped = request.model_dump(by_alias=True)
+
+    assert dumped["kind"] == "Board"
+    assert dumped["kindId"] == "board_123"
+    assert "dateRangeStart" in dumped
+    assert "dateRangeEnd" in dumped
+    assert dumped["limit"] == 50
+
+    # Verify datetime is serialized (VaizBaseModel serializes to ISO strings)
+    assert isinstance(dumped["dateRangeStart"], str)
+    assert isinstance(dumped["dateRangeEnd"], str)
+
+
+def test_get_history_request_all_fields_populated():
+    """Test GetHistoryRequest with all fields populated."""
+    request = GetHistoryRequest(
+        kind=Kind.Project,
+        kindId="project_abc",
+        createdBy=["member1", "member2"],
+        dateRangeStart=datetime(2025, 1, 1),
+        dateRangeEnd=datetime(2025, 12, 31),
+        limit=25,
+        lastLoadedDate=1700000000,
+        keys=["TASK_CREATED", "TASK_COMPLETED"],
+        excludeKeys=["TASK_COMMENTED"],
+        tasksIds=["task1", "task2"],
+        groupsIds=["group1"],
+    )
+    assert request.kind == Kind.Project
+    assert request.kindId == "project_abc"
+    assert request.createdBy == ["member1", "member2"]
+    assert request.dateRangeStart == datetime(2025, 1, 1)
+    assert request.dateRangeEnd == datetime(2025, 12, 31)
+    assert request.limit == 25
+    assert request.lastLoadedDate == 1700000000
+    assert request.keys == ["TASK_CREATED", "TASK_COMPLETED"]
+    assert request.excludeKeys == ["TASK_COMMENTED"]
+    assert request.tasksIds == ["task1", "task2"]
+    assert request.groupsIds == ["group1"]
+
+    dumped = request.model_dump(by_alias=True)
+    # All fields should be present when populated
+    assert "createdBy" in dumped
+    assert "dateRangeStart" in dumped
+    assert "dateRangeEnd" in dumped
+    assert "limit" in dumped
+    assert "keys" in dumped
+    assert "excludeKeys" in dumped
+    assert "tasksIds" in dumped
+    assert "groupsIds" in dumped
 
 
 def test_task_get_description_method_with_initial_content(client):
@@ -644,4 +751,78 @@ def test_get_tasks_cache_ttl():
     assert client._is_cache_valid(now - timedelta(hours=1)) == False
 
 
- 
+def test_move_tasks_request_model():
+    """Test MoveTasksRequest and MoveTaskItem model serialization."""
+    move = MoveTaskItem(task_id="task_abc", to_group_id="group_xyz", to_index=3)
+
+    dumped = move.model_dump(by_alias=True)
+    assert dumped["taskId"] == "task_abc"
+    assert dumped["toGroupId"] == "group_xyz"
+    assert dumped["toIndex"] == 3
+
+    request = MoveTasksRequest(moves=[move])
+    dumped_request = request.model_dump(by_alias=True)
+    assert len(dumped_request["moves"]) == 1
+    assert dumped_request["moves"][0]["taskId"] == "task_abc"
+
+
+def test_move_tasks_request_default_index():
+    """Test that MoveTaskItem defaults toIndex to 0."""
+    move = MoveTaskItem(task_id="task_1", to_group_id="group_1")
+    dumped = move.model_dump(by_alias=True)
+    assert dumped["toIndex"] == 0
+
+
+def test_move_tasks_request_multiple_moves():
+    """Test MoveTasksRequest with multiple moves."""
+    moves = [
+        MoveTaskItem(task_id=f"task_{i}", to_group_id="group_target", to_index=i)
+        for i in range(5)
+    ]
+    request = MoveTasksRequest(moves=moves)
+    dumped = request.model_dump(by_alias=True)
+    assert len(dumped["moves"]) == 5
+    for i, move in enumerate(dumped["moves"]):
+        assert move["taskId"] == f"task_{i}"
+        assert move["toGroupId"] == "group_target"
+        assert move["toIndex"] == i
+
+
+def test_move_tasks_integration(client, task_id):
+    """Test move_tasks API method to move a task between groups."""
+    # Get the task to find its current group
+    task_response = client.get_task(task_id)
+    task = task_response.task
+    original_group = task.group
+
+    # Get board groups to find a different group
+    board_response = client.get_board(task.board)
+    board = board_response.board
+    assert len(board.groups) >= 2, "Board needs at least 2 groups for move test"
+
+    target_group = next(g for g in board.groups if g.id != original_group)
+
+    # Move to target group
+    move_request = MoveTasksRequest(
+        moves=[MoveTaskItem(task_id=task_id, to_group_id=target_group.id, to_index=0)]
+    )
+    move_response = client.move_tasks(move_request)
+
+    assert isinstance(move_response, MoveTasksResponse)
+    assert move_response.type == "MoveTasks"
+    assert task_id in move_response.payload.success_ids
+    assert len(move_response.payload.failed_ids) == 0
+
+    # Verify the task moved
+    verify = client.get_task(task_id)
+    assert verify.task.group == target_group.id
+
+    # Move back
+    move_back = MoveTasksRequest(
+        moves=[MoveTaskItem(task_id=task_id, to_group_id=original_group, to_index=0)]
+    )
+    client.move_tasks(move_back)
+
+    # Verify moved back
+    verify_back = client.get_task(task_id)
+    assert verify_back.task.group == original_group
