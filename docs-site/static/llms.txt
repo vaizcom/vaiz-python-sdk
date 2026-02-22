@@ -1,0 +1,59 @@
+# Vaiz Python SDK
+
+> Official Python library for the Vaiz platform API with full type support, Pydantic v2 validation, and rich content management.
+
+The Vaiz Python SDK provides a convenient, fully-typed interface to all Vaiz platform features including tasks, documents, boards, comments, files, milestones, and more. Requires Python 3.8+.
+
+## Getting Started
+
+- [Introduction](https://docs-python-sdk.vaiz.com/intro): Overview of the SDK — key features, type safety, datetime handling, enums, custom field helpers, and file handling.
+- [Getting Started](https://docs-python-sdk.vaiz.com/): Installation, authentication setup, and your first API call.
+
+## Guides
+
+- [SDK Basics](https://docs-python-sdk.vaiz.com/guides/basics): Client initialization, authentication, error handling, and core concepts.
+- [Tasks](https://docs-python-sdk.vaiz.com/guides/tasks): Create, edit, and manage tasks with custom fields, file attachments, priorities, and assignees.
+- [Documents](https://docs-python-sdk.vaiz.com/guides/documents): Create and manage rich-text documents with JSON format, blocks, tables, mentions, and formatting.
+- [Document Structure Helpers](https://docs-python-sdk.vaiz.com/guides/document-structure-helpers): Type-safe helper functions to build valid document content — paragraphs, headings, lists, tables.
+- [Boards](https://docs-python-sdk.vaiz.com/guides/boards): Manage boards, create types and groups, and configure custom fields.
+- [Comments](https://docs-python-sdk.vaiz.com/guides/comments): Create comments, replies, and manage reactions with HTML formatting and file attachments.
+- [Files](https://docs-python-sdk.vaiz.com/guides/files): Upload and manage files — local files, URLs, images, videos, PDFs, and attachments.
+- [Custom Fields](https://docs-python-sdk.vaiz.com/guides/custom-fields): Create and manage custom fields on tasks — text, number, date, select, and multi-select types.
+- [Projects](https://docs-python-sdk.vaiz.com/guides/projects): Retrieve and manage projects and lists in your workspace.
+- [Milestones](https://docs-python-sdk.vaiz.com/guides/milestones): Create, edit, and manage milestones — track progress, set dates, and organize workflows.
+- [Blockers](https://docs-python-sdk.vaiz.com/guides/blockers): Manage blocking relationships and dependencies between tasks.
+- [History](https://docs-python-sdk.vaiz.com/guides/history): Retrieve and track change history for tasks and documents — edits, authors, timestamps.
+- [Spaces](https://docs-python-sdk.vaiz.com/guides/spaces): Retrieve space information, settings, and workspace details.
+- [Members](https://docs-python-sdk.vaiz.com/guides/members): Retrieve space members, user information, and team details.
+- [Profile](https://docs-python-sdk.vaiz.com/guides/profile): Retrieve the authenticated user's profile — name, email, avatar, and account settings.
+- [Helper Functions](https://docs-python-sdk.vaiz.com/guides/helpers): Built-in helpers for custom fields, document formatting, and common operations.
+
+## API Reference
+
+- [Overview](https://docs-python-sdk.vaiz.com/api-reference/overview): Complete reference of all SDK methods, models, and enums.
+- [Tasks API](https://docs-python-sdk.vaiz.com/api-reference/tasks): Create, edit, and manage tasks — custom fields, priorities, assignees, and file attachments.
+- [Documents API](https://docs-python-sdk.vaiz.com/api-reference/documents): Create, edit, and manage rich-text documents with structured content, JSON format, and blocks.
+- [Document Structure](https://docs-python-sdk.vaiz.com/api-reference/document-structure): Technical reference for the document JSON format — blocks, marks, paragraphs, headings, lists, tables.
+- [Boards API](https://docs-python-sdk.vaiz.com/api-reference/boards): Manage boards, groups, types, and custom fields in your workspace.
+- [Comments API](https://docs-python-sdk.vaiz.com/api-reference/comments): Manage comments, replies, and reactions with examples and usage patterns.
+- [Files API](https://docs-python-sdk.vaiz.com/api-reference/files): Upload files, manage attachments, and work with external URLs — images, videos, PDFs.
+- [Custom Fields API](https://docs-python-sdk.vaiz.com/api-reference/custom-fields): Create, edit, and manage custom fields on boards — text, number, date, select, multi-select.
+- [Projects API](https://docs-python-sdk.vaiz.com/api-reference/projects): Retrieve projects, lists, and organize your workspace structure.
+- [Milestones API](https://docs-python-sdk.vaiz.com/api-reference/milestones): Create, edit, toggle, and track milestones in your projects.
+- [History API](https://docs-python-sdk.vaiz.com/api-reference/history): Retrieve change history for documents and tasks — edits, authors, timestamps.
+- [Spaces API](https://docs-python-sdk.vaiz.com/api-reference/spaces): Retrieve space information, settings, and workspace details.
+- [Members API](https://docs-python-sdk.vaiz.com/api-reference/members): Retrieve space members, user information, and team details.
+- [Profile API](https://docs-python-sdk.vaiz.com/api-reference/profile): Retrieve the authenticated user's profile — name, email, and avatar settings.
+- [Enums](https://docs-python-sdk.vaiz.com/api-reference/enums): Complete reference for all enum types — TaskPriority, AvatarMode, and other enumerations.
+
+## Patterns & Examples
+
+- [Introduction](https://docs-python-sdk.vaiz.com/patterns/introduction): Practical examples, design patterns, and best practices for effective SDK usage.
+- [Common Patterns](https://docs-python-sdk.vaiz.com/patterns/common-patterns): Essential patterns — typed objects, helpers, async operations, and best practices.
+- [Error Handling](https://docs-python-sdk.vaiz.com/patterns/error-handling): Robust production strategies — retry logic, validation, and exception handling.
+- [Performance](https://docs-python-sdk.vaiz.com/patterns/performance): Optimize SDK usage — batch operations, caching strategies, and efficiency tips.
+- [Document Patterns](https://docs-python-sdk.vaiz.com/patterns/documents): Document management and hierarchies — mentions, nested content, and organization strategies.
+- [Environment Setup](https://docs-python-sdk.vaiz.com/patterns/environment-setup): Configure your development environment — environment variables, credentials, and security.
+- [Integrations](https://docs-python-sdk.vaiz.com/patterns/integrations): Integrate with external systems — webhooks, APIs, databases, and automation patterns.
+- [Real-World Scenarios](https://docs-python-sdk.vaiz.com/patterns/real-world): Complete use-case examples — automation, integrations, and production workflows.
+- [Ready-to-Run Examples](https://docs-python-sdk.vaiz.com/patterns/ready-to-run): Runnable code samples for tasks, documents, boards, comments, and more.
