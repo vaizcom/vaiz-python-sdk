@@ -33,7 +33,6 @@ export default function DocItemMetadata() {
     headline: cleanTitle,
     description: description,
     proficiencyLevel: proficiencyLevel,
-    programmingLanguage: 'Python',
     mainEntityOfPage: `https://docs-python-sdk.vaiz.com${permalink}`,
     creator: {
       '@type': 'Organization',
