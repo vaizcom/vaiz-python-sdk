@@ -53,7 +53,10 @@ export default function DocItemMetadata() {
   return (
     <Head>
       <title>{title}</title>
+      <meta name="description" content={description} />
       <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <link rel="canonical" href={`https://docs-python-sdk.vaiz.com${permalink}`} />
       <script type="application/ld+json">
         {JSON.stringify(structuredData)}
       </script>
