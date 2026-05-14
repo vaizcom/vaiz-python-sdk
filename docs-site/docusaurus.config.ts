@@ -8,6 +8,12 @@ const config: Config = {
   title: "Vaiz Python SDK",
   tagline: "Official Python SDK for the Vaiz platform",
   favicon: "img/favicon.ico",
+  customFields: {
+    nexly: {
+      appId: "app_9fd7b89eee01e7dfb62e2afdcd45c53c",
+      ingestKey: "trk_62021e5a5a20a235e91b5b3dc996acaf587562a51bc09375c823fe84fae6cb88",
+    },
+  },
 
   plugins: [
     [

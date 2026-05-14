@@ -43,6 +43,20 @@ npm run build      # Production build
 npm run serve      # Serve production build
 ```
 
+## 📈 Analytics
+
+The docs site uses Nexly via `@nexly/react-web`.
+
+Set `NEXLY_INGEST_KEY` in the environment that starts or builds `docs-site`:
+
+```bash
+NEXLY_INGEST_KEY=your-ingest-key npm start
+```
+
+For production, set `NEXLY_INGEST_KEY` in the hosting provider or CI/CD environment
+(for example, Vercel project environment variables). `NEXLY_APP_ID` is optional and
+defaults to the Vaiz docs app ID configured in `docusaurus.config.ts`.
+
 ## 📝 Writing Docs
 
 All documentation is in Markdown with MDX support. Edit files in `docs/` and changes will auto-reload.
