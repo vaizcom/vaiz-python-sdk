@@ -51,7 +51,7 @@ export default function Root({ children }: { children: ReactNode }): ReactNode {
   }
 
   return (
-    <NexlyProvider appId={appId} ingestKey={ingestKey}>
+    <NexlyProvider appId={appId} ingestKey={ingestKey} autoEngagement>
       <NexlyPageviewTracker />
       {children}
     </NexlyProvider>
