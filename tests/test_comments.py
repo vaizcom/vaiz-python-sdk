@@ -135,6 +135,111 @@ def test_post_simple_text_comment(client, test_document_id):
     print(f"Posted simple comment ID: {comment.id}")
 
 
+def test_post_comment_with_markdown(client, test_document_id):
+    """Test posting a comment with Markdown: converted to rich content (contentVersion 2)."""
+    markdown = (
+        "Some **bold-marker** and *italic-marker* text\n\n"
+        "- list-item-one\n"
+        "- list-item-two\n\n"
+        "`code-marker` and [link-marker](https://vaiz.app)"
+    )
+
+    response = client.post_comment(
+        document_id=test_document_id,
+        markdown=markdown
+    )
+
+    # Validate response
+    assert isinstance(response, PostCommentResponse)
+    assert response.type == "PostComment"
+
+    comment = response.comment
+    assert comment.id is not None
+    assert comment.document_id == test_document_id
+
+    # Markdown is converted to rich content on the server
+    assert comment.content_version == 2
+
+    # Content must contain real HTML tags, not escaped markdown
+    assert "<strong" in comment.content
+    assert "<em" in comment.content
+    assert "<ul" in comment.content
+    assert "<code" in comment.content
+    assert "<a" in comment.content
+    assert "https://vaiz.app" in comment.content
+    assert "**bold-marker**" not in comment.content
+    assert "*italic-marker*" not in comment.content
+    assert "bold-marker" in comment.content
+    assert "list-item-one" in comment.content
+
+    # Verify persistence via get_comments
+    comments_response = client.get_comments(test_document_id)
+    fetched = next((c for c in comments_response.comments if c.id == comment.id), None)
+    assert fetched is not None, "Posted markdown comment not found in get_comments"
+    assert fetched.content_version == 2
+    assert "<strong" in fetched.content
+
+    print(f"Posted markdown comment ID: {comment.id}")
+
+
+def test_edit_comment_with_markdown(client, test_document_id):
+    """Test editing a comment with Markdown content."""
+    # Create a legacy HTML comment first
+    response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Original legacy comment</p>"
+    )
+    comment = response.comment
+    assert comment.content_version is None
+
+    # Edit it with markdown
+    updated_markdown = "Updated with a [link-marker](https://vaiz.app) and ~~strike-marker~~"
+    edit_response = client.edit_comment(
+        comment_id=comment.id,
+        markdown=updated_markdown
+    )
+
+    edited = edit_response.comment
+    # Markdown edit upgrades the comment to contentVersion 2
+    assert edited.content_version == 2
+    assert "<a" in edited.content
+    assert "https://vaiz.app" in edited.content
+    assert "<s>" in edited.content
+    assert "[link-marker]" not in edited.content
+    assert "~~strike-marker~~" not in edited.content
+
+    print(f"Edited comment with markdown ID: {comment.id}")
+
+
+def test_comment_markdown_content_mutually_exclusive(client, test_document_id):
+    """Test that content and markdown are mutually exclusive in post/edit."""
+    # Both provided
+    with pytest.raises(ValueError):
+        client.post_comment(
+            document_id=test_document_id,
+            content="<p>html</p>",
+            markdown="**md**"
+        )
+
+    # Neither provided
+    with pytest.raises(ValueError):
+        client.post_comment(document_id=test_document_id)
+
+    # Same for edit_comment
+    response = client.post_comment(
+        document_id=test_document_id,
+        markdown="comment-to-edit"
+    )
+    with pytest.raises(ValueError):
+        client.edit_comment(
+            comment_id=response.comment.id,
+            content="<p>html</p>",
+            markdown="**md**"
+        )
+    with pytest.raises(ValueError):
+        client.edit_comment(comment_id=response.comment.id)
+
+
 def test_post_comment_with_empty_file_list(client, test_document_id):
     """Test posting a comment with explicitly empty file list."""
     response = client.post_comment(

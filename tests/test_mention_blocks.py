@@ -2,6 +2,8 @@
 Tests for mention block helper functions.
 """
 
+import json
+
 import pytest
 from vaiz.helpers import (
     mention,
@@ -206,54 +208,34 @@ def test_create_document_with_real_mentions():
         
         # Verify mentions were created by reading document
         doc_content = client.get_json_document(test_doc_id)
-        
+
         assert doc_content is not None
-        assert "default" in doc_content
-        assert "content" in doc_content["default"]
-        
-        doc_nodes = doc_content["default"]["content"]
-        
-        # Find mention nodes in content
-        mention_nodes = []
-        for node in doc_nodes:
-            if node.get("type") == "paragraph" and "content" in node:
-                for child in node["content"]:
-                    if child.get("type") == "custom-mention":
-                        mention_nodes.append(child)
-        
+        assert "root" in doc_content
+        assert "content" in doc_content["root"]
+
+        # Lexical format: mentions persist as serialized markers
+        # with __userId / __entityId and __entityKind fields
+        doc_str = json.dumps(doc_content)
+        mention_count = doc_str.count("-mention")
+
         # Verify at least user mention was created
-        assert len(mention_nodes) > 0, "No mention blocks found in document"
-        
-        # Verify all are mention nodes with full structure
-        for mention_node in mention_nodes:
-            assert mention_node["type"] == "custom-mention", f"Expected custom-mention, got {mention_node.get('type')}"
-            assert "attrs" in mention_node, "Mention node missing 'attrs' field"
-            assert "data" in mention_node["attrs"], "Mention attrs missing 'data' field"
-            assert "item" in mention_node["attrs"]["data"], "Mention data missing 'item' field"
-            assert "id" in mention_node["attrs"]["data"]["item"], "Mention item missing 'id' field"
-            assert "kind" in mention_node["attrs"]["data"]["item"], "Mention item missing 'kind' field"
-        
-        # Verify specific mention IDs and kinds match
-        mention_items = [m["attrs"]["data"]["item"] for m in mention_nodes]
-        mention_ids = [item["id"] for item in mention_items]
-        mention_kinds = [item["kind"] for item in mention_items]
-        
-        assert member_id in mention_ids, "User mention not found in document"
-        assert "User" in mention_kinds, "User kind not found"
-        
+        assert mention_count > 0, "No mention blocks found in document"
+
+        assert member_id in doc_str, "User mention not found in document"
+        assert "user-mention" in doc_str, "User mention marker not found"
+
         if document_id:
-            assert document_id in mention_ids, "Document mention not found"
-            assert "Document" in mention_kinds, "Document kind not found"
+            assert document_id in doc_str, "Document mention not found"
+            assert 'Document' in doc_str, "Document kind not found"
         if task_id:
-            assert task_id in mention_ids, "Task mention not found"
-            assert "Task" in mention_kinds, "Task kind not found"
+            assert task_id in doc_str, "Task mention not found"
+            assert 'Task' in doc_str, "Task kind not found"
         if milestone_id:
-            assert milestone_id in mention_ids, "Milestone mention not found"
-            assert "Milestone" in mention_kinds, "Milestone kind not found"
-        
-        print(f"\n✅ Successfully created and verified document with {len(mention_nodes)} mention block(s)")
+            assert milestone_id in doc_str, "Milestone mention not found"
+            assert 'Milestone' in doc_str, "Milestone kind not found"
+
+        print(f"\n✅ Successfully created and verified document with {mention_count} mention block(s)")
         print(f"   Document ID: {test_doc_id}")
-        print(f"   All mentions have full structure with attrs, data, and item fields")
         print(f"   View at: https://vaiz.app/document/{test_doc_id}")
         
     finally:

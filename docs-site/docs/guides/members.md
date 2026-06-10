@@ -9,6 +9,10 @@ description: Learn how to retrieve space members, user information, and team det
 
 Get information about members in your space.
 
+:::note
+Bot members (AI, automation, and integration bots) are excluded from `get_space_members()` results.
+:::
+
 ## Get Space Members
 
 ```python

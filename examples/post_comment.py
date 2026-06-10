@@ -74,6 +74,43 @@ def post_comment_with_html():
         print("======================\n")
 
 
+def post_comment_with_markdown():
+    """Post a comment with Markdown content (recommended format)."""
+    client = get_client()
+
+    document_id = get_example_document_id()
+
+    try:
+        markdown = (
+            "Comment with **bold** and *italic*\n\n"
+            "- Item 1\n"
+            "- Item 2\n\n"
+            "`inline code` and a [link](https://vaiz.app)"
+        )
+
+        response = client.post_comment(
+            document_id=document_id,
+            markdown=markdown
+        )
+
+        print("Markdown comment posted successfully!")
+        print(f"Comment ID: {response.comment.id}")
+        print(f"Content version: {response.comment.content_version}")  # 2 = rich content
+        print(f"Rendered content: {response.comment.content}")
+
+        # Edit the comment with new markdown
+        edit_response = client.edit_comment(
+            comment_id=response.comment.id,
+            markdown="**Updated** markdown comment"
+        )
+        print(f"Edited at: {edit_response.comment.edited_at}")
+
+        return response.comment.id
+
+    except Exception as e:
+        print(f"Error posting markdown comment: {e}")
+
+
 def post_comment_with_files():
     """Post a comment with file attachments to a document."""
     client = get_client()
@@ -547,6 +584,10 @@ def main():
     print("\n1. Posting HTML comment...")
     print("-" * 40)
     post_comment_with_html()
+    
+    print("\n1b. Posting Markdown comment (recommended)...")
+    print("-" * 40)
+    post_comment_with_markdown()
     
     print("\n2. Posting comment with files...")
     print("-" * 40)

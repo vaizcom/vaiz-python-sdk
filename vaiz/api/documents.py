@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Union, Optional
 import json
+import warnings
 
 from vaiz.api.base import BaseAPIClient
 from vaiz.models.documents import (
@@ -63,6 +64,9 @@ class DocumentsAPIClient(BaseAPIClient):
         """
         Replace document content completely.
 
+        .. deprecated::
+            Use :meth:`replace_markdown_document` instead.
+
         Args:
             document_id: The document ID to replace content for
             description: New description content as plain text string
@@ -73,6 +77,11 @@ class DocumentsAPIClient(BaseAPIClient):
         Raises:
             VaizSDKError: If the API request fails
         """
+        warnings.warn(
+            "replace_document() is deprecated, use replace_markdown_document() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         request = ReplaceDocumentRequest(
             document_id=document_id,
             description=description
@@ -88,7 +97,10 @@ class DocumentsAPIClient(BaseAPIClient):
     ) -> ReplaceJSONDocumentResponse:
         """
         Replace document content with structured JSON content.
-        
+
+        .. deprecated::
+            Use :meth:`replace_markdown_document` instead.
+
         This method allows you to replace document content with structured JSON content
         using the document editor format. This is useful when you need to set rich content with
         specific formatting, links, lists, etc.
@@ -129,6 +141,11 @@ class DocumentsAPIClient(BaseAPIClient):
             ... ]
             >>> client.replace_json_document(document_id, content)
         """
+        warnings.warn(
+            "replace_json_document() is deprecated, use replace_markdown_document() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         request = ReplaceJSONDocumentRequest(
             document_id=document_id,
             content=content
@@ -145,7 +162,10 @@ class DocumentsAPIClient(BaseAPIClient):
     ) -> AppendDocumentResponse:
         """
         Append plain text content to an existing document.
-        
+
+        .. deprecated::
+            Use :meth:`append_markdown_document` instead.
+
         This method adds content to the end of the document without removing existing content.
 
         Args:
@@ -165,6 +185,11 @@ class DocumentsAPIClient(BaseAPIClient):
             ...     description="Additional content to add"
             ... )
         """
+        warnings.warn(
+            "append_document() is deprecated, use append_markdown_document() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         request = AppendDocumentRequest(
             document_id=document_id,
             description=description,
@@ -181,7 +206,10 @@ class DocumentsAPIClient(BaseAPIClient):
     ) -> AppendJSONDocumentResponse:
         """
         Append structured JSON content to an existing document.
-        
+
+        .. deprecated::
+            Use :meth:`append_markdown_document` instead.
+
         This method adds content to the end of the document without removing existing content.
         Use document structure builder functions for type-safe content creation.
 
@@ -211,6 +239,11 @@ class DocumentsAPIClient(BaseAPIClient):
             ... ]
             >>> client.append_json_document(document_id, content)
         """
+        warnings.warn(
+            "append_json_document() is deprecated, use append_markdown_document() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         request = AppendJSONDocumentRequest(
             document_id=document_id,
             content=content

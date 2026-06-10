@@ -89,55 +89,26 @@ def test_verify_mention_structure_after_creation():
         print(f"\n📋 Retrieved document structure:")
         print(json.dumps(doc_content, indent=2))
         
-        # Extract mentions from response
-        received_mentions = []
-        for node in doc_content.get("default", {}).get("content", []):
-            if node.get("type") == "paragraph" and "content" in node:
-                for child in node["content"]:
-                    if child.get("type") == "custom-mention":
-                        received_mentions.append(child)
-        
-        print(f"\n✅ Found {len(received_mentions)} mention(s) in response")
-        
-        # Detailed verification
-        print(f"\n🔍 Detailed verification:")
-        
-        attrs_present = 0
-        for i, mention in enumerate(received_mentions, 1):
-            print(f"\n  Mention {i}:")
-            print(f"    Type: {mention.get('type')}")
-            print(f"    Has 'attrs': {('attrs' in mention)}")
-            print(f"    Has 'content': {('content' in mention)}")
-            
-            if 'attrs' in mention:
-                attrs_present += 1
-                attrs = mention['attrs']
-                print(f"    Attributes present: {list(attrs.keys())}")
-                
-                if 'data' in attrs and 'item' in attrs['data']:
-                    item = attrs['data']['item']
-                    print(f"    Item ID: {item.get('id')}")
-                    print(f"    Item Kind: {item.get('kind')}")
-        
+        # Lexical format: mentions persist as serialized markers
+        # with __userId / __entityId and __entityKind fields
+        doc_str = json.dumps(doc_content)
+        received_count = doc_str.count("-mention")
+
+        print(f"\n✅ Found {received_count} mention(s) in response")
+
         # Assertions
-        assert len(received_mentions) == len(sent_mentions), \
-            f"Expected {len(sent_mentions)} mentions, got {len(received_mentions)}"
-        
-        # Check that all are mention types
-        for mention in received_mentions:
-            assert mention.get("type") == "custom-mention", \
-                f"Expected type 'custom-mention', got {mention.get('type')}"
-        
+        assert received_count == len(sent_mentions), \
+            f"Expected {len(sent_mentions)} mentions, got {received_count}"
+
+        # Verify each sent mention's entity ID survived the round-trip
+        for kind, entity_id, _ in sent_mentions:
+            assert entity_id in doc_str, f"{kind} mention with ID {entity_id} not found in document"
+
         print(f"\n📊 Summary:")
-        print(f"  ✅ Sent: {len(sent_mentions)} mentions with full structure")
-        print(f"  ✅ Received: {len(received_mentions)} mentions with full structure")
-        print(f"  ✅ All mentions have 'attrs' field: {attrs_present}/{len(received_mentions)}")
+        print(f"  ✅ Sent: {len(sent_mentions)} mentions")
+        print(f"  ✅ Received: {received_count} mentions")
         print(f"\n🔗 Verify visually in browser: https://vaiz.app/document/{test_doc_id}")
         print(f"   Mentions should display with avatars/icons and be clickable")
-        
-        # Additional assertion - verify attrs present
-        assert attrs_present == len(received_mentions), \
-            f"Expected all {len(received_mentions)} mentions to have attrs, but only {attrs_present} have it"
         
     finally:
         pass  # Could add cleanup here

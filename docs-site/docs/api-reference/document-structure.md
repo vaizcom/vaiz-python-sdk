@@ -13,6 +13,10 @@ Technical reference for the document structure JSON format.
 
 These methods work with document content for both task descriptions and standalone documents.
 
+:::warning Deprecated
+The write methods on this page (`replace_document`, `replace_json_document`, `append_document`, `append_json_document`) are deprecated and emit a `DeprecationWarning`. Use the Markdown methods instead: `replace_markdown_document()`, `append_markdown_document()`, and `get_markdown_document()`. See the [Documents Guide](../guides/documents#markdown-methods-recommended).
+:::
+
 ### `get_json_document`
 
 ```python
@@ -24,7 +28,7 @@ Get the JSON content of a specific document or task description.
 **Parameters:**
 - `document_id` - Document ID (from task or standalone document)
 
-**Returns:** `Dict[str, Any]` - Parsed JSON structure
+**Returns:** `Dict[str, Any]` - Parsed JSON structure in the Lexical editor format (top-level `root` key). For reading rich content, prefer `get_markdown_document()`.
 
 **Example:**
 ```python
@@ -209,12 +213,14 @@ client.append_json_document("doc_id", updates)
 
 ## Method Comparison
 
-| Method | Clears Existing? | Format | Use Case |
-|--------|------------------|--------|----------|
-| `replace_document` | ✅ Yes | Plain text | Complete replacement with plain text |
-| `replace_json_document` | ✅ Yes | JSON structure | Complete replacement with rich content |
-| `append_document` | ❌ No | Plain text | Add to existing plain text |
-| `append_json_document` | ❌ No | JSON structure | Add to existing rich content |
+| Method | Clears Existing? | Format | Status |
+|--------|------------------|--------|--------|
+| `replace_markdown_document` | ✅ Yes | Markdown | ✅ Recommended |
+| `append_markdown_document` | ❌ No | Markdown | ✅ Recommended |
+| `replace_document` | ✅ Yes | Plain text | ⚠️ Deprecated |
+| `replace_json_document` | ✅ Yes | JSON structure | ⚠️ Deprecated |
+| `append_document` | ❌ No | Plain text | ⚠️ Deprecated |
+| `append_json_document` | ❌ No | JSON structure | ⚠️ Deprecated |
 
 ---
 

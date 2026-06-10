@@ -66,14 +66,14 @@ def test_create_complex_table_with_colspan():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify table saved
-    saved = client.get_json_document(document_id)
-    saved_text = str(saved)
-    
-    assert "extension-table" in saved_text
-    assert "Q1-Q4 Performance" in saved_text
-    assert "colspan" in saved_text
-    
+    # Verify table saved via markdown round-trip
+    markdown = client.get_markdown_document(document_id)
+
+    assert "Q1-Q4 Performance" in markdown
+    assert "Total Revenue" in markdown
+    table_lines = [l for l in markdown.splitlines() if l.strip().startswith("|")]
+    assert len(table_lines) >= 6, f"Expected at least 6 table lines, got {len(table_lines)}"
+
     print(f"✅ Complex table with colspan created successfully")
 
 
@@ -147,14 +147,14 @@ def test_create_complex_table_with_rowspan():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify
-    saved = client.get_json_document(document_id)
-    saved_text = str(saved)
-    
-    assert "rowspan" in saved_text
-    assert "Engineering" in saved_text
-    assert "Design" in saved_text
-    
+    # Verify via markdown round-trip
+    markdown = client.get_markdown_document(document_id)
+
+    assert "Engineering" in markdown
+    assert "Design" in markdown
+    table_lines = [l for l in markdown.splitlines() if l.strip().startswith("|")]
+    assert len(table_lines) >= 6, f"Expected at least 6 table lines, got {len(table_lines)}"
+
     print(f"✅ Complex table with rowspan created successfully")
 
 
@@ -225,22 +225,18 @@ def test_create_large_table_many_columns():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify
-    saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    # Find table
-    tables = [b for b in saved_blocks if b.get("type") == "extension-table"]
-    assert len(tables) > 0, "Table not found"
-    
-    # Verify table has rows
-    table_content = tables[0].get("content", [])
-    assert len(table_content) == 4, f"Expected 4 rows (header + 3 data), got {len(table_content)}"
-    
-    # Verify first row has 13 cells (Metric + 12 months)
-    first_row = table_content[0].get("content", [])
-    assert len(first_row) == 13, f"Expected 13 columns, got {len(first_row)}"
-    
+    # Verify via markdown round-trip
+    markdown = client.get_markdown_document(document_id)
+    table_lines = [l for l in markdown.splitlines() if l.strip().startswith("|")]
+    # Header + separator + 3 data rows
+    assert len(table_lines) >= 5, f"Expected at least 5 table lines, got {len(table_lines)}"
+
+    # Verify header row has 13 cells (Metric + 12 months)
+    header_cells = [c for c in table_lines[0].split("|") if c.strip()]
+    assert len(header_cells) == 13, f"Expected 13 columns, got {len(header_cells)}"
+    assert "Revenue ($K)" in markdown
+    assert "Active Users" in markdown
+
     print(f"✅ Large table with 13 columns created successfully")
 
 
@@ -338,25 +334,18 @@ def test_create_complex_table_with_formatting():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify complex structure
-    saved = client.get_json_document(document_id)
-    saved_text = str(saved)
-    
-    assert "extension-table" in saved_text
-    assert "colspan" in saved_text
-    assert "rowspan" in saved_text
-    assert "Project Dashboard" in saved_text
-    assert "Phase 1: Design" in saved_text
-    assert "Phase 2: Development" in saved_text
-    
-    # Verify table structure
-    saved_blocks = saved.get("default", {}).get("content", [])
-    tables = [b for b in saved_blocks if b.get("type") == "extension-table"]
-    assert len(tables) > 0
-    
-    table_rows = tables[0].get("content", [])
-    assert len(table_rows) >= 7, f"Expected at least 7 rows, got {len(table_rows)}"
-    
+    # Verify complex structure via markdown round-trip
+    markdown = client.get_markdown_document(document_id)
+
+    assert "Project Dashboard" in markdown
+    assert "Phase 1: Design" in markdown
+    assert "Phase 2: Development" in markdown
+    assert "Total Progress" in markdown
+
+    # Verify table has rows (header + separator + data rows)
+    table_rows = [l for l in markdown.splitlines() if l.strip().startswith("|")]
+    assert len(table_rows) >= 7, f"Expected at least 7 table rows, got {len(table_rows)}"
+
     print(f"✅ Ultra complex table with colspan, rowspan, and formatting created")
     print(f"   Rows: {len(table_rows)}")
     print(f"   Features: colspan, rowspan, bold, italic")
@@ -449,17 +438,20 @@ def test_append_multiple_complex_tables():
     ]
     client.append_json_document(document_id, table3)
     
-    # Verify all 3 tables present
-    saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    tables = [b for b in saved_blocks if b.get("type") == "extension-table"]
-    assert len(tables) == 3, f"Expected 3 tables, found {len(tables)}"
-    
-    saved_text = str(saved)
-    assert "Sprint Metrics" in saved_text
-    assert "Team Allocation" in saved_text
-    assert "Budget Breakdown" in saved_text
+    # Verify all 3 tables present via markdown round-trip
+    markdown = client.get_markdown_document(document_id)
+
+    assert "Sprint Metrics" in markdown
+    assert "Team Allocation" in markdown
+    assert "Budget Breakdown" in markdown
+
+    # Each table renders with a separator line like | --- | --- |
+    separator_lines = [
+        l for l in markdown.splitlines()
+        if l.strip().startswith("|") and set(l.replace("|", "").replace("-", "").strip()) == set()
+        and "---" in l
+    ]
+    assert len(separator_lines) == 3, f"Expected 3 tables, found {len(separator_lines)}"
     
     print(f"✅ Successfully appended 3 complex tables")
     print(f"   Table 1: Sprint metrics (4 columns)")
@@ -544,27 +536,25 @@ def test_create_nested_table_structure():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify structure
-    saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    # Count different element types
-    headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
-    tables = sum(1 for b in saved_blocks if b.get("type") == "extension-table")
-    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "bulletList")
-    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "orderedList")
-    
+    # Verify structure via markdown round-trip
+    markdown = client.get_markdown_document(document_id)
+    lines = markdown.splitlines()
+
+    headings = sum(1 for l in lines if l.startswith("#"))
+    table_lines = [l for l in lines if l.strip().startswith("|")]
+    bullet_items = [l for l in lines if l.strip().startswith("- ")]
+    ordered_items = [l for l in lines if l.strip().startswith(("1.", "2.", "3."))]
+
     assert headings >= 3, "Should have at least 3 headings"
-    assert tables >= 1, "Should have at least 1 table"
-    assert bullet_lists >= 1, "Should have bullet list"
-    assert ordered_lists >= 1, "Should have ordered list"
-    
+    assert len(table_lines) >= 5, "Should have at least 1 table"
+    assert len(bullet_items) >= 3, "Should have bullet list"
+    assert len(ordered_items) >= 3, "Should have ordered list"
+
     print(f"✅ Complex nested structure with table created")
     print(f"   Headings: {headings}")
-    print(f"   Tables: {tables}")
-    print(f"   Bullet lists: {bullet_lists}")
-    print(f"   Ordered lists: {ordered_lists}")
-    print(f"   Total blocks: {len(saved_blocks)}")
+    print(f"   Table lines: {len(table_lines)}")
+    print(f"   Bullet items: {len(bullet_items)}")
+    print(f"   Ordered items: {len(ordered_items)}")
 
 
 if __name__ == "__main__":

@@ -87,6 +87,9 @@ class Task(VaizBaseModel):
     ) -> ReplaceDocumentResponse:
         """Replace this task's description content.
 
+        .. deprecated::
+            Use ``client.replace_markdown_document(task.document, markdown)`` instead.
+
         Uses the document API to completely replace the description content for
         the document associated with this task.
 
@@ -97,6 +100,13 @@ class Task(VaizBaseModel):
         Returns:
             ReplaceDocumentResponse: Response object from the replace operation
         """
+        import warnings
+        warnings.warn(
+            "Task.update_task_description() is deprecated, "
+            "use client.replace_markdown_document(task.document, markdown) instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return client.replace_document(self.document, description)
 
 

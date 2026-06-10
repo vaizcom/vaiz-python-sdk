@@ -9,6 +9,10 @@ description: Learn how to use type-safe helper functions to build valid document
 
 Type-safe helper functions for building valid document content.
 
+:::warning Deprecated
+The JSON write methods (`replace_json_document`, `append_json_document`) used with these helpers are deprecated and emit a `DeprecationWarning`. The recommended way to write rich content is Markdown via `replace_markdown_document()` / `append_markdown_document()`. See the [Documents Guide](./documents#markdown-methods-recommended).
+:::
+
 ## Overview
 
 The document structure format is used for creating and editing rich content in Vaiz. This includes:

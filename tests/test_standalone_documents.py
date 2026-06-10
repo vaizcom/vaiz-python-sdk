@@ -81,23 +81,22 @@ def test_create_space_document_with_content():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify content was saved
+    # Verify content was saved via markdown round-trip
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    assert len(saved_blocks) > 0, "Document should have content blocks"
-    
-    # Verify we have headings and tables
-    headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
-    tables = sum(1 for b in saved_blocks if b.get("type") == "extension-table")
-    
+    assert "root" in saved, "Document should have content"
+
+    markdown = client.get_markdown_document(document_id)
+    lines = markdown.splitlines()
+
+    headings = sum(1 for l in lines if l.lstrip().startswith("#"))
+    table_separators = sum(1 for l in lines if l.strip().startswith("|") and "---" in l)
+
     assert headings >= 2, "Should have at least 2 headings"
-    assert tables >= 1, "Should have at least 1 table"
-    
+    assert table_separators >= 1, "Should have at least 1 table"
+
     print(f"✅ Space document created successfully")
     print(f"   Document ID: {document_id}")
     print(f"   Title: {doc_response.payload.document.title}")
-    print(f"   Content blocks: {len(saved_blocks)}")
     print(f"   Location: Space docs section")
 
 
@@ -205,28 +204,27 @@ def test_create_personal_document_with_content():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify content was saved
+    # Verify content was saved via markdown round-trip
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    assert len(saved_blocks) > 0, "Document should have content blocks"
-    
-    # Count elements
-    headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
-    tables = sum(1 for b in saved_blocks if b.get("type") == "extension-table")
-    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "bulletList")
-    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "orderedList")
-    
+    assert "root" in saved, "Document should have content"
+
+    markdown = client.get_markdown_document(document_id)
+    lines = markdown.splitlines()
+
+    headings = sum(1 for l in lines if l.lstrip().startswith("#"))
+    table_separators = sum(1 for l in lines if l.strip().startswith("|") and "---" in l)
+    bullet_items = sum(1 for l in lines if l.lstrip().startswith("- "))
+    ordered_items = sum(1 for l in lines if l.lstrip()[:3] in ("1. ", "2. ", "3. ", "4. "))
+
     assert headings >= 4, "Should have at least 4 headings"
-    assert tables >= 1, "Should have at least 1 table"
-    assert bullet_lists >= 1, "Should have bullet lists"
-    assert ordered_lists >= 1, "Should have ordered list"
-    
+    assert table_separators >= 1, "Should have at least 1 table"
+    assert bullet_items >= 2, "Should have bullet lists"
+    assert ordered_items >= 3, "Should have ordered list"
+
     print(f"✅ Personal document created successfully")
     print(f"   Document ID: {document_id}")
     print(f"   Title: {doc_response.payload.document.title}")
-    print(f"   Content blocks: {len(saved_blocks)}")
-    print(f"   Headings: {headings}, Tables: {tables}")
+    print(f"   Headings: {headings}, Tables: {table_separators}")
     print(f"   Location: Personal docs section")
 
 

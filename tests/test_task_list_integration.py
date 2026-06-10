@@ -73,29 +73,16 @@ def test_create_task_with_simple_checklist():
     
     client.replace_json_document(document_id, content)
     
-    # Fetch task and verify content
+    # Fetch task and verify content via markdown round-trip
     task = client.get_task(task_id)
     doc_content = client.get_json_document(task.task.document)
-    
-    # Verify structure
-    assert "default" in doc_content
-    content_blocks = doc_content["default"]["content"]
-    
-    # Find task list block
-    task_list_block = None
-    for block in content_blocks:
-        if block.get("type") == "taskList":
-            task_list_block = block
-            break
-    
-    assert task_list_block is not None, "Task list block not found in document"
-    assert len(task_list_block["content"]) == 3
-    
-    # Verify task items
-    items = task_list_block["content"]
-    assert items[0]["attrs"]["checked"] == True
-    assert items[1]["attrs"]["checked"] == False
-    assert items[2]["attrs"]["checked"] == False
+    assert "root" in doc_content
+
+    markdown = client.get_markdown_document(task.task.document)
+    assert "# Sprint Tasks" in markdown
+    assert "- [x] Review pull requests" in markdown
+    assert "- [ ] Update documentation" in markdown
+    assert "- [ ] Deploy to production" in markdown
     
     print(f"✅ Created task with checklist: {task_id}")
     return task_id
@@ -157,37 +144,21 @@ def test_create_task_with_nested_checklist():
     # Update task description with nested checklist
     client.replace_json_document(document_id, content)
     
-    # Fetch and verify structure
+    # Fetch and verify structure via markdown round-trip
     task = client.get_task(task_id)
     doc_content = client.get_json_document(task.task.document)
-    
-    # Verify nested structure exists
-    assert "default" in doc_content
-    content_blocks = doc_content["default"]["content"]
-    
-    # Find main task list
-    main_task_list = None
-    for block in content_blocks:
-        if block.get("type") == "taskList":
-            main_task_list = block
-            break
-    
-    assert main_task_list is not None
-    assert len(main_task_list["content"]) == 2
-    
-    # Verify first item has nested list
-    first_item = main_task_list["content"][0]
-    assert first_item["attrs"]["checked"] == True
-    
-    # Find nested task list in first item
-    nested_list = None
-    for item in first_item["content"]:
-        if isinstance(item, dict) and item.get("type") == "taskList":
-            nested_list = item
-            break
-    
-    assert nested_list is not None
-    assert len(nested_list["content"]) == 3
+    assert "root" in doc_content
+
+    markdown = client.get_markdown_document(task.task.document)
+    assert "- [x] Phase 1: Planning" in markdown
+    assert "- [ ] Phase 2: Development" in markdown
+    # Nested items are rendered with indentation
+    assert "    - [x] Define requirements" in markdown
+    assert "    - [x] Create wireframes" in markdown
+    assert "    - [ ] Review with stakeholders" in markdown
+    # Deeply nested items
+    assert "- [ ] Unit tests" in markdown
+    assert "- [ ] Integration tests" in markdown
     
     print(f"✅ Created task with nested checklist: {task_id}")
     return task_id
@@ -224,13 +195,14 @@ def test_update_task_with_checklist():
     
     client.replace_json_document(document_id, new_content)
     
-    # Verify update
+    # Verify update via markdown round-trip
     doc_content = client.get_json_document(document_id)
-    content_blocks = doc_content["default"]["content"]
-    
-    # Find task list
-    has_task_list = any(block.get("type") == "taskList" for block in content_blocks)
-    assert has_task_list, "Task list not found after update"
+    assert "root" in doc_content
+
+    markdown = client.get_markdown_document(document_id)
+    assert "- [ ] First action" in markdown
+    assert "- [ ] Second action" in markdown
+    assert "- [ ] Third action" in markdown
     
     print(f"✅ Updated task with checklist: {task_id}")
     return task_id
@@ -282,18 +254,18 @@ def test_task_list_with_mixed_content():
     # Update task description with mixed content
     client.replace_json_document(document_id, content)
     
-    # Verify content
+    # Verify content via markdown round-trip
     task = client.get_task(task_id)
     doc_content = client.get_json_document(task.task.document)
-    content_blocks = doc_content["default"]["content"]
-    
-    # Count task lists
-    task_lists = [block for block in content_blocks if block.get("type") == "taskList"]
-    assert len(task_lists) == 2, "Should have 2 task lists"
-    
-    # Count headings
-    headings = [block for block in content_blocks if block.get("type") == "heading"]
-    assert len(headings) >= 2, "Should have at least 2 headings"
+    assert "root" in doc_content
+
+    markdown = client.get_markdown_document(task.task.document)
+    assert "# Sprint Planning" in markdown
+    assert "## Backend Tasks" in markdown
+    assert "## Frontend Tasks" in markdown
+    assert "- [x] Design database schema" in markdown
+    assert "- [x] Create login page" in markdown
+    assert "Review meeting scheduled for Friday." in markdown
     
     print(f"✅ Created task with mixed content and checklists: {task_id}")
     return task_id

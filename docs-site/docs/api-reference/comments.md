@@ -16,19 +16,21 @@ Complete reference for comment-related methods and models.
 ```python
 post_comment(
     document_id: str,
-    content: str,
+    content: Optional[str] = None,
     file_ids: List[str] = None,
-    reply_to: str = None
+    reply_to: str = None,
+    markdown: Optional[str] = None
 ) -> PostCommentResponse
 ```
 
-Post a comment to a document.
+Post a comment to a document. Provide exactly one of `markdown` (recommended) or `content` (legacy HTML); passing both or neither raises `ValueError`.
 
 **Parameters:**
 - `document_id` - Document ID to comment on
-- `content` - Comment content (HTML supported)
+- `content` - Comment content as HTML (legacy format)
 - `file_ids` - Optional list of file IDs to attach
 - `reply_to` - Optional parent comment ID for replies
+- `markdown` - Comment content as Markdown (recommended). Converted to rich comment content on the server; the stored comment has `content_version = 2`
 
 **Returns:** `PostCommentResponse` with created comment
 
@@ -54,21 +56,23 @@ Get all comments for a document.
 ```python
 edit_comment(
     comment_id: str,
-    content: str,
+    content: Optional[str] = None,
     add_file_ids: List[str] = None,
     order_file_ids: List[str] = None,
-    remove_file_ids: List[str] = None
+    remove_file_ids: List[str] = None,
+    markdown: Optional[str] = None
 ) -> EditCommentResponse
 ```
 
-Edit comment content and manage files.
+Edit comment content and manage files. Provide exactly one of `markdown` (recommended) or `content` (legacy HTML); passing both or neither raises `ValueError`.
 
 **Parameters:**
 - `comment_id` - Comment ID to edit
-- `content` - New content
+- `content` - New content as HTML (legacy format)
 - `add_file_ids` - Files to add
 - `order_file_ids` - New file order
 - `remove_file_ids` - Files to remove
+- `markdown` - New content as Markdown (recommended). Editing with markdown upgrades the comment to `content_version = 2`
 
 **Returns:** `EditCommentResponse` with updated comment
 
@@ -146,7 +150,8 @@ Main comment model representing a comment in the system.
 ```python
 class Comment:
     id: str                             # Comment ID
-    content: str                        # HTML content
+    content: str                        # Rendered HTML content
+    content_version: Optional[int]      # Content format version (2 = rich/markdown-based, None = legacy HTML)
     author_id: str                      # Author user ID
     document_id: str                    # Document ID
     created_at: datetime                # Creation timestamp
@@ -180,7 +185,8 @@ class CommentReaction:
 ```python
 class PostCommentRequest:
     document_id: str                    # Required - Document ID
-    content: str                        # Required - Comment content (HTML)
+    content: Optional[str]              # Comment content (HTML, legacy)
+    markdown: Optional[str]             # Comment content (Markdown, recommended)
     file_ids: List[str]                 # File IDs to attach
     reply_to: Optional[str]             # Parent comment ID for replies
 ```
@@ -201,7 +207,8 @@ class GetCommentsRequest:
 ```python
 class EditCommentRequest:
     comment_id: str                     # Required - Comment ID
-    content: str                        # Required - New comment content (HTML)
+    content: Optional[str]              # New comment content (HTML, legacy)
+    markdown: Optional[str]             # New comment content (Markdown, recommended)
     add_file_ids: List[str]             # File IDs to add
     order_file_ids: List[str]           # Order of file IDs
     remove_file_ids: List[str]          # File IDs to remove

@@ -130,36 +130,27 @@ def test_create_document_with_embed_blocks():
     response = client.replace_json_document(document_id, content)
     assert response is not None
     
-    # Verify content was saved
+    # Verify content was saved via markdown round-trip
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    assert len(saved_blocks) > 0, "Document should have content blocks"
-    
-    # Count embed blocks
-    embed_blocks = sum(1 for b in saved_blocks if b.get("type") == "embed")
-    headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
-    
-    assert embed_blocks >= 6, f"Should have at least 6 embed blocks, found {embed_blocks}"
+    assert "root" in saved, "Document should have content"
+
+    markdown = client.get_markdown_document(document_id)
+    lines = markdown.splitlines()
+
+    # Embed blocks survive the round-trip as serialized JSON lines
+    embed_lines = [l for l in lines if "extractedUrl" in l]
+    headings = sum(1 for l in lines if l.lstrip().startswith("#"))
+
+    assert len(embed_lines) >= 6, f"Should have at least 6 embed blocks, found {len(embed_lines)}"
     assert headings >= 7, f"Should have at least 7 headings, found {headings}"
-    
-    # Verify embed block structure
-    first_embed = next((b for b in saved_blocks if b.get("type") == "embed"), None)
-    assert first_embed is not None, "Should find at least one embed block"
-    assert "content" in first_embed, "Embed block should have content"
-    
-    # Verify embed data is in content
-    embed_content = first_embed["content"]
-    assert len(embed_content) > 0, "Embed should have content"
-    assert embed_content[0]["type"] == "text", "Embed content should be text node"
-    
+
     # Parse embed data JSON
     import json
-    embed_data = json.loads(embed_content[0]["text"])
+    embed_data = json.loads(embed_lines[0])
     assert "type" in embed_data, "Embed data should have type"
     assert "url" in embed_data, "Embed data should have url"
     assert "extractedUrl" in embed_data, "Embed data should have extractedUrl"
-    
+
     print(f"\n✅ First embed block structure:")
     print(f"   Type: {embed_data['type']}")
     print(f"   URL: {embed_data['url']}")
@@ -167,8 +158,7 @@ def test_create_document_with_embed_blocks():
     print(f"\n✅ Document with embed blocks created successfully!")
     print(f"   Document ID: {document_id}")
     print(f"   Title: {doc_response.payload.document.title}")
-    print(f"   Total blocks: {len(saved_blocks)}")
-    print(f"   Embed blocks: {embed_blocks}")
+    print(f"   Embed blocks: {len(embed_lines)}")
     print(f"   Headings: {headings}")
     print(f"\n📍 Location: Space docs section")
     print(f"🔗 Check your Vaiz interface to see all embed blocks:")

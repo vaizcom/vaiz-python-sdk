@@ -147,7 +147,7 @@ content = """
 [Meeting content here]
 """
 
-client.replace_document(doc_id, content)
+client.replace_markdown_document(doc_id, content)
 print(f"✅ Document created and populated: {doc_id}")
 ```
 
@@ -354,8 +354,12 @@ Retrieve the JSON content of any document:
 ```python
 # Get document content by ID
 content = client.get_json_document("document_id")
-print(content)  # Returns parsed JSON structure
+print(content)  # Returns parsed JSON structure (Lexical format, top-level "root" key)
 ```
+
+:::note
+The returned JSON uses the Lexical editor format with a top-level `root` key. For reading rich content, prefer `get_markdown_document()`.
+:::
 
 This method is universal and works for:
 - Task descriptions
@@ -363,6 +367,10 @@ This method is universal and works for:
 - Any document by its ID
 
 ### Replace Document Content (Plain Text)
+
+:::warning Deprecated
+`replace_document()` is deprecated and emits a `DeprecationWarning`. Use [`replace_markdown_document()`](#markdown-methods-recommended) instead.
+:::
 
 Replace the entire content of a document with plain text:
 
@@ -374,12 +382,11 @@ client.replace_document(
 )
 ```
 
-**Use cases:**
-- Updating task descriptions programmatically
-- Bulk content updates
-- Template-based content generation
-
 ### Replace Document Content (Rich JSON)
+
+:::warning Deprecated
+`replace_json_document()` is deprecated and emits a `DeprecationWarning`. Use [`replace_markdown_document()`](#markdown-methods-recommended) instead.
+:::
 
 Replace document content with structured rich content.
 
@@ -512,7 +519,7 @@ target_doc = next(
 
 if target_doc:
     # 3. Get current content
-    current_content = client.get_json_document(target_doc.id)
+    current_markdown = client.get_markdown_document(target_doc.id)
     print(f"Current size: {target_doc.size} bytes")
     
     # 4. Update content
@@ -528,20 +535,16 @@ if target_doc:
 - Update documentation
 """
     
-    client.replace_document(target_doc.id, new_content)
+    client.replace_markdown_document(target_doc.id, new_content)
     print(f"✅ Updated: {target_doc.title}")
 ```
 
 ### Document Content Format
 
-Documents are stored as structured JSON. When you use `replace_document`, the content is converted to the appropriate format:
+Documents are stored in the Lexical editor format on the server. Markdown is the recommended way to write content — it is converted to native rich blocks (headings, lists, tables, bold/italic text, etc.):
 
 ```python
-# Plain text
-client.replace_document(doc_id, "Simple text")
-
-# Markdown-style formatting (as plain text)
-client.replace_document(
+client.replace_markdown_document(
     doc_id,
     """
 # Header
@@ -553,50 +556,6 @@ client.replace_document(
 **Bold** and *italic* text
 """
 )
-
-# Rich JSON format (with actual formatting)
-json_content = [
-    {
-        "type": "heading",
-        "attrs": {"level": 1},
-        "content": [{"type": "text", "text": "Header"}]
-    },
-    {
-        "type": "heading",
-        "attrs": {"level": 2},
-        "content": [{"type": "text", "text": "Subheader"}]
-    },
-    {
-        "type": "bulletList",
-        "content": [
-            {
-                "type": "listItem",
-                "content": [{
-                    "type": "paragraph",
-                    "content": [{"type": "text", "text": "List item 1"}]
-                }]
-            },
-            {
-                "type": "listItem",
-                "content": [{
-                    "type": "paragraph",
-                    "content": [{"type": "text", "text": "List item 2"}]
-                }]
-            }
-        ]
-    },
-    {
-        "type": "paragraph",
-        "content": [
-            {"type": "text", "marks": [{"type": "bold"}], "text": "Bold"},
-            {"type": "text", "text": " and "},
-            {"type": "text", "marks": [{"type": "italic"}], "text": "italic"},
-            {"type": "text", "text": " text"}
-        ]
-    }
-]
-
-client.replace_json_document(doc_id, json_content)
 ```
 
 ## See Also

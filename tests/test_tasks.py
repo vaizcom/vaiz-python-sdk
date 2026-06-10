@@ -227,11 +227,11 @@ def test_task_get_description_method_with_initial_content(client):
     print(f"Full description body: {description_body}")
     print(f"Task document ID: {task_instance.document}")
     
-    # Check if there's content in the default key
-    if 'default' in description_body:
-        default_content = description_body['default']
-        print(f"Default content type: {type(default_content)}")
-        print(f"Default content: {default_content}")
+    # Check if there's content in the root key (Lexical format)
+    if 'root' in description_body:
+        root_content = description_body['root']
+        print(f"Root content type: {type(root_content)}")
+        print(f"Root content: {root_content}")
 
 
 

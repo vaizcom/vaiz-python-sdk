@@ -362,7 +362,7 @@ def test_append_json_document_race_condition():
     assert "APPEND_3_MARKER" in final_text, "Append 3 missing - race condition or lost update!"
     
     # Count actual markers in content blocks to ensure they're in document structure
-    final_blocks = final.get("default", {}).get("content", [])
+    final_blocks = final.get("root", {}).get("content", [])
     
     # Verify we have at least 4 blocks (could be more with formatting)
     # Initial paragraph + 3 appended paragraphs

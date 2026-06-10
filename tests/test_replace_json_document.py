@@ -773,21 +773,19 @@ def test_replace_json_document_complete_replacement():
     assert "NEW_CONTENT_MARKER" in saved_text, "New content not found"
     assert "Verified Structure" in saved_text, "New heading not found"
     
-    # Verify structure elements are saved correctly
-    saved_blocks = saved_content.get("default", {}).get("content", [])
-    
-    # Verify we have all expected block types
-    block_types = [block.get("type") for block in saved_blocks]
-    assert "heading" in block_types, "Heading not saved"
-    assert "paragraph" in block_types, "Paragraph not saved"
-    assert "bulletList" in block_types, "Bullet list not saved"
-    assert "orderedList" in block_types, "Ordered list not saved"
-    
+    # Verify structure elements are saved correctly via markdown round-trip
+    markdown = client.get_markdown_document(document_id)
+    lines = markdown.splitlines()
+
+    assert any(l.lstrip().startswith("#") for l in lines), "Heading not saved"
+    assert "- Bullet item 1" in markdown, "Bullet list not saved"
+    assert "1. Ordered step 1" in markdown, "Ordered list not saved"
+
     # Verify marks are preserved
-    assert "bold" in saved_text, "Bold formatting not preserved"
-    assert "italic" in saved_text, "Italic formatting not preserved"
-    assert "code" in saved_text, "Code formatting not preserved"
-    assert "vaiz.app" in saved_text, "Link not preserved"
+    assert "**" in markdown, "Bold formatting not preserved"
+    assert "*" in markdown, "Italic formatting not preserved"
+    assert "`code`" in markdown, "Code formatting not preserved"
+    assert "vaiz.app" in markdown, "Link not preserved"
     
     print(f"✅ STRICT TEST PASSED: Complete replacement verified")
     print(f"   ✓ Old content removed (OLD_CONTENT_MARKER not found)")

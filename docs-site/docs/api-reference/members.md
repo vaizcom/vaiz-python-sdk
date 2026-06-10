@@ -17,7 +17,7 @@ Complete reference for member-related methods.
 get_space_members() -> GetSpaceMembersResponse
 ```
 
-Get all members in the current space.
+Get all members in the current space. Bot members (AI, automation, and integration bots) are excluded from the result.
 
 **Returns:** `GetSpaceMembersResponse` with list of members
 

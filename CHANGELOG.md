@@ -9,10 +9,27 @@
   - `append_markdown_document(document_id, markdown)` - Append Markdown to existing content
   - `get_markdown_document(document_id)` - Read document content back as a Markdown string
   - Markdown is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.)
+- New `Tree` icon in the `Icon` enum
+- **💬 Markdown Comments**: New `markdown` parameter in `post_comment()` and `edit_comment()`
+  - Markdown is converted to rich comment content on the server and stored with `content_version = 2`
+  - `markdown` and `content` are mutually exclusive — provide exactly one (otherwise `ValueError` is raised)
+  - New `Comment.content_version` field (`2` = rich/markdown-based, `None` = legacy HTML)
+
+### Changed
+
+- `post_comment()` and `edit_comment()`: the `content` parameter is now optional (use `markdown` instead, recommended)
+
+- **🔧 Breaking**: `get_json_document()` now returns the new Lexical document format (top-level `root` key instead of `default`). Use Markdown methods for reading and writing rich content
+- `get_space_members()` now excludes bot members (AI, automation, and integration bots) from the result
+- `toggle_milestone()` no longer sets the task's main `milestone` field — only the `milestones` list is updated
 
 ### Deprecated
 
-- JSON document methods (`replace_json_document`, `append_json_document`, `get_json_document`) and the JSON document DSL remain supported for backward compatibility, but Markdown methods are now the recommended way to write document content
+- Non-Markdown document write methods now emit `DeprecationWarning`:
+  - `replace_document()` and `replace_json_document()` → use `replace_markdown_document()`
+  - `append_document()` and `append_json_document()` → use `append_markdown_document()`
+  - `Task.update_task_description()` → use `client.replace_markdown_document(task.document, markdown)`
+- `get_json_document()` and the JSON document DSL remain supported for backward compatibility, but Markdown methods are now the recommended way to work with document content
 
 ## [0.19.0] - 2026-02-17
 

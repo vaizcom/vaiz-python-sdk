@@ -78,6 +78,7 @@ class Icon(str, Enum):
     Snow = 'Snow'
     Fire = 'Fire'
     Drop = 'Drop'
+    Tree = 'Tree'
     DoctorsBag = 'DoctorsBag'
     Hospital = 'Hospital'
     MedicalDoctor = 'MedicalDoctor'
