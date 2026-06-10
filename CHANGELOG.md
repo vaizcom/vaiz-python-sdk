@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.20.0] - 2026-06-11
+
+### Added
+
+- **📝 Markdown Document API**: New recommended methods for working with document content
+  - `replace_markdown_document(document_id, markdown)` - Replace document content with Markdown
+  - `append_markdown_document(document_id, markdown)` - Append Markdown to existing content
+  - `get_markdown_document(document_id)` - Read document content back as a Markdown string
+  - Markdown is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.)
+
+### Deprecated
+
+- JSON document methods (`replace_json_document`, `append_json_document`, `get_json_document`) and the JSON document DSL remain supported for backward compatibility, but Markdown methods are now the recommended way to write document content
+
 ## [0.19.0] - 2026-02-17
 
 ### Added

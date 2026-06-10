@@ -323,6 +323,30 @@ if updated_doc:
 
 In addition to listing and creating documents, you can work with their content using document API methods.
 
+### Markdown Methods (Recommended)
+
+The simplest and recommended way to read and write document content is Markdown. It is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.):
+
+```python
+# Replace document content with Markdown
+client.replace_markdown_document(
+    document_id="document_id",
+    markdown="# Title\n\nSome **bold** text\n\n- item 1\n- item 2"
+)
+
+# Append Markdown to existing content
+client.append_markdown_document(
+    document_id="document_id",
+    markdown="## Update\n\nAdditional notes"
+)
+
+# Read document content back as Markdown
+markdown = client.get_markdown_document("document_id")
+print(markdown)
+```
+
+The JSON-based methods below remain supported for backward compatibility.
+
 ### Get Document Content
 
 Retrieve the JSON content of any document:

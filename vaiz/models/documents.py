@@ -85,6 +85,66 @@ class AppendJSONDocumentResponse(BaseModel):
     pass
 
 
+class ReplaceMarkdownDocumentRequest(BaseModel):
+    """Request model for replacing document content with Markdown content."""
+    document_id: str = Field(..., alias="documentId")
+    markdown: str
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):  # type: ignore[override]
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class ReplaceMarkdownDocumentResponse(BaseModel):
+    """Response model for Markdown document replacement - returns empty object on success."""
+    pass
+
+
+class AppendMarkdownDocumentRequest(BaseModel):
+    """Request model for appending Markdown content to a document."""
+    document_id: str = Field(..., alias="documentId")
+    markdown: str
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):  # type: ignore[override]
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class AppendMarkdownDocumentResponse(BaseModel):
+    """Response model for Markdown document append - returns empty object on success."""
+    pass
+
+
+class GetMarkdownDocumentRequest(BaseModel):
+    """Request model for fetching document content as Markdown."""
+    document_id: str = Field(..., alias="documentId")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def model_dump(self, **kwargs):  # type: ignore[override]
+        data = super().model_dump(by_alias=True, **kwargs)
+        return {k: v for k, v in data.items() if v is not None}
+
+
+class GetMarkdownDocumentPayload(BaseModel):
+    """Payload containing the document content as Markdown."""
+    markdown: str = ""
+
+
+class GetMarkdownDocumentResponse(BaseModel):
+    """Response model for fetching document content as Markdown."""
+    payload: GetMarkdownDocumentPayload
+    type: str
+
+    @property
+    def markdown(self) -> str:
+        return self.payload.markdown
+
+
 class Document(VaizBaseModel):
     """Model representing a Vaiz document."""
     id: str = Field(..., alias="_id")
