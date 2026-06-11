@@ -43,6 +43,21 @@ response = client.post_comment(
 )
 ```
 
+### Comment with Mentions
+
+Mentions use the `@[label](kind:id)` syntax and trigger notifications for mentioned members:
+
+```python
+member_id = client.get_profile().profile.member_id
+
+response = client.post_comment(
+    document_id="document_id",
+    markdown=f"ping @[Reviewer](user:{member_id}), please take a look"
+)
+```
+
+Supported kinds: `user`, `task`, `document`, `milestone`, `project`, `board`. The label is cosmetic — only the kind and ID are stored.
+
 ### HTML Comment (Legacy)
 
 ```python

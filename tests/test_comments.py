@@ -211,6 +211,25 @@ def test_edit_comment_with_markdown(client, test_document_id):
     print(f"Edited comment with markdown ID: {comment.id}")
 
 
+def test_post_comment_with_markdown_mention(client, test_document_id):
+    """Test that a markdown mention becomes a real mention node in the comment."""
+    profile = client.get_profile()
+    member_id = profile.profile.member_id
+
+    response = client.post_comment(
+        document_id=test_document_id,
+        markdown=f"ping @[Reviewer](user:{member_id}), please take a look"
+    )
+
+    comment = response.comment
+    assert comment.content_version == 2
+    # The mention must be converted into a mention span with the member id
+    assert f'data-user-id="{member_id}"' in comment.content
+    assert "@[Reviewer]" not in comment.content
+
+    print(f"Posted comment with mention: {comment.id}")
+
+
 def test_comment_markdown_content_mutually_exclusive(client, test_document_id):
     """Test that content and markdown are mutually exclusive in post/edit."""
     # Both provided

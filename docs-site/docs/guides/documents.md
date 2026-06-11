@@ -357,7 +357,26 @@ These methods are universal and work for:
 - **Links**: Standard Markdown links
 - **Code blocks**: Fenced code blocks with syntax highlighting
 - **Tables**: Markdown tables
+- **Mentions**: `@[label](kind:id)` syntax (see below)
 - **And more**: Blockquotes, horizontal rules, etc.
+
+### Mentions
+
+Mentions are written with a dedicated Markdown syntax and become live mention chips in the editor:
+
+```python
+member_id = client.get_profile().profile.member_id
+
+client.replace_markdown_document(
+    document_id,
+    f"Please review, @[Reviewer](user:{member_id})\n\n"
+    f"Related: @[Spec](document:{document_id})"
+)
+```
+
+Supported kinds: `user`, `task`, `document`, `milestone`, `project`, `board`.
+
+The label inside `[...]` is cosmetic — only the kind and ID are stored, and the editor renders the live entity name. When reading content back with `get_markdown_document()`, mentions are exported in the same syntax (with a generic label), so they survive read-edit-write round-trips.
 
 ### Update Project Document
 

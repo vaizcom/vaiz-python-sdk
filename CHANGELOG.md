@@ -11,6 +11,10 @@ The SDK is now **Markdown-only** for rich content. All TipTap/JSON document APIs
   - `append_markdown_document(document_id, markdown)` - Append Markdown to existing content
   - `get_markdown_document(document_id)` - Read document content back as a Markdown string
   - Markdown is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.)
+- **🏷️ Markdown Mentions**: New `@[label](kind:id)` syntax for mentions in documents and comments
+  - Supported kinds: `user`, `task`, `document`, `milestone`, `project`, `board`
+  - Example: `@[John](user:6a29be79cb3b2bee09db40bd)` becomes a live mention chip and triggers notifications
+  - Mentions survive markdown round-trips: `get_markdown_document()` exports them in the same syntax
 - **💬 Markdown Comments**: New `markdown` parameter in `post_comment()` and `edit_comment()`
   - Markdown is converted to rich comment content on the server and stored with `content_version = 2`
   - `markdown` and `content` are mutually exclusive — provide exactly one (otherwise `ValueError` is raised)
@@ -46,7 +50,8 @@ The SDK is now **Markdown-only** for rich content. All TipTap/JSON document APIs
 | `table(table_row(table_header("H")), table_row("v"))` | `"\| H \|\n\| --- \|\n\| v \|"` |
 | `code_block("print(1)", language="python")` | <code>"```python\nprint(1)\n```"</code> |
 | `link_text("Vaiz", "https://vaiz.app")` | `"[Vaiz](https://vaiz.app)"` |
-| `embed_block(...)`, `image_block(...)`, `mention_*(...)`, `toc_block()`, etc. | No direct replacement; managed by the editor UI |
+| `mention_user("id")` / `mention_task("id")` / ... | `"@[label](user:id)"` / `"@[label](task:id)"` / ... |
+| `embed_block(...)`, `image_block(...)`, `toc_block()`, etc. | No direct replacement; managed by the editor UI |
 | `client.post_comment(doc_id, content="<p>Hi <strong>there</strong></p>")` | `client.post_comment(doc_id, markdown="Hi **there**")` |
 | Rich `create_task(description=...)` | `description` is plain text only; for rich content: `task = client.create_task(...).task` then `client.replace_markdown_document(task.document, markdown)` |
 
