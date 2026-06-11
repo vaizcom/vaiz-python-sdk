@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
@@ -45,6 +45,12 @@ class Task(VaizBaseModel):
     types: List[str] = []
     priority: TaskPriority
     hrid: str
+
+    @field_validator("types", mode="before")
+    @classmethod
+    def _none_types_to_empty_list(cls, v):
+        """API may return null for tasks without types."""
+        return v if v is not None else []
     followers: Dict[str, str]
     archiver: Optional[str] = None
     completed: bool
