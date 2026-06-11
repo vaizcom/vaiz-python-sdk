@@ -5,7 +5,7 @@ from .profile import Profile, ProfileResponse
 from .projects import Project, ProjectsResponse, ProjectResponse
 from .milestones import Milestone, MilestonesResponse, CreateMilestoneRequest, CreateMilestoneResponse, GetMilestoneResponse, EditMilestoneRequest, EditMilestoneResponse, ToggleMilestoneRequest, ToggleMilestoneResponse
 from .upload import UploadedFile, UploadFileResponse
-from .documents import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, ReplaceJSONDocumentRequest, ReplaceJSONDocumentResponse, AppendDocumentRequest, AppendDocumentResponse, AppendJSONDocumentRequest, AppendJSONDocumentResponse, ReplaceMarkdownDocumentRequest, ReplaceMarkdownDocumentResponse, AppendMarkdownDocumentRequest, AppendMarkdownDocumentResponse, GetMarkdownDocumentRequest, GetMarkdownDocumentPayload, GetMarkdownDocumentResponse, Document, GetDocumentsRequest, GetDocumentsResponse, GetDocumentsPayload, CreateDocumentRequest, CreateDocumentResponse, CreateDocumentPayload, EditDocumentRequest, EditDocumentResponse, EditDocument, EditDocumentPayload
+from .documents import ReplaceMarkdownDocumentRequest, ReplaceMarkdownDocumentResponse, AppendMarkdownDocumentRequest, AppendMarkdownDocumentResponse, GetMarkdownDocumentRequest, GetMarkdownDocumentPayload, GetMarkdownDocumentResponse, Document, GetDocumentsRequest, GetDocumentsResponse, GetDocumentsPayload, CreateDocumentRequest, CreateDocumentResponse, CreateDocumentPayload, EditDocumentRequest, EditDocumentResponse, EditDocument, EditDocumentPayload
 from .comments import Comment, CommentReaction, PostCommentRequest, PostCommentResponse, ReactToCommentRequest, ReactToCommentResponse, GetCommentsRequest, GetCommentsResponse, EditCommentRequest, EditCommentResponse, DeleteCommentRequest, DeleteCommentResponse
 from .spaces import Space, GetSpaceRequest, GetSpaceResponse, GetSpacePayload
 from .members import Member, GetSpaceMembersResponse, GetSpaceMembersPayload
@@ -84,15 +84,6 @@ __all__ = [
     
     # Document models
     'Document',
-    'GetDocumentRequest',
-    'ReplaceDocumentRequest',
-    'ReplaceDocumentResponse',
-    'ReplaceJSONDocumentRequest',
-    'ReplaceJSONDocumentResponse',
-    'AppendDocumentRequest',
-    'AppendDocumentResponse',
-    'AppendJSONDocumentRequest',
-    'AppendJSONDocumentResponse',
     'ReplaceMarkdownDocumentRequest',
     'ReplaceMarkdownDocumentResponse',
     'AppendMarkdownDocumentRequest',

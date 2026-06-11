@@ -343,6 +343,5 @@ class MoveTasksPayload:
 ## See Also
 
 - [Tasks Guide](../guides/tasks) - Usage examples and patterns
-- [Document Structure](./document-structure) - Format for task descriptions with rich content
 - [Enums](./enums) - TaskPriority and other enums
 

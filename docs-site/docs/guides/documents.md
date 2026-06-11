@@ -323,9 +323,9 @@ if updated_doc:
 
 In addition to listing and creating documents, you can work with their content using document API methods.
 
-### Markdown Methods (Recommended)
+### Markdown Methods
 
-The simplest and recommended way to read and write document content is Markdown. It is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.):
+Document content is read and written as Markdown. It is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.):
 
 ```python
 # Replace document content with Markdown
@@ -345,158 +345,19 @@ markdown = client.get_markdown_document("document_id")
 print(markdown)
 ```
 
-The JSON-based methods below remain supported for backward compatibility.
-
-### Get Document Content
-
-Retrieve the JSON content of any document:
-
-```python
-# Get document content by ID
-content = client.get_json_document("document_id")
-print(content)  # Returns parsed JSON structure (Lexical format, top-level "root" key)
-```
-
-:::note
-The returned JSON uses the Lexical editor format with a top-level `root` key. For reading rich content, prefer `get_markdown_document()`.
-:::
-
-This method is universal and works for:
+These methods are universal and work for:
 - Task descriptions
 - Standalone documents
 - Any document by its ID
 
-### Replace Document Content (Plain Text)
-
-:::warning Deprecated
-`replace_document()` is deprecated and emits a `DeprecationWarning`. Use [`replace_markdown_document()`](#markdown-methods-recommended) instead.
-:::
-
-Replace the entire content of a document with plain text:
-
-```python
-# Replace document content with plain text
-client.replace_document(
-    document_id="document_id",
-    description="New content here"
-)
-```
-
-### Replace Document Content (Rich JSON)
-
-:::warning Deprecated
-`replace_json_document()` is deprecated and emits a `DeprecationWarning`. Use [`replace_markdown_document()`](#markdown-methods-recommended) instead.
-:::
-
-Replace document content with structured rich content.
-
-**💡 Tip:** Use [Document Structure helper functions](./document-structure-helpers) for type-safe, readable content creation!
-
-```python
-# Replace with rich formatted content
-json_content = [
-    {
-        "type": "heading",
-        "attrs": {"level": 1},
-        "content": [
-            {"type": "text", "text": "Project Overview"}
-        ]
-    },
-    {
-        "type": "paragraph",
-        "content": [
-            {"type": "text", "text": "This is "},
-            {
-                "type": "text",
-                "marks": [{"type": "bold"}],
-                "text": "bold text"
-            },
-            {"type": "text", "text": " and this is "},
-            {
-                "type": "text",
-                "marks": [{"type": "italic"}],
-                "text": "italic text"
-            }
-        ]
-    },
-    {
-        "type": "bulletList",
-        "content": [
-            {
-                "type": "listItem",
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "content": [
-                            {"type": "text", "text": "First item"}
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "listItem",
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "content": [
-                            {"type": "text", "text": "Second item"}
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-]
-
-client.replace_json_document(
-    document_id="document_id",
-    content=json_content
-)
-```
-
-**Document Structure Format features:**
-- **Rich text formatting**: Bold, italic, underline, strikethrough, code
+**Supported Markdown features:**
+- **Rich text formatting**: Bold, italic, strikethrough, inline code
 - **Headings**: Multiple levels (h1-h6)
-- **Lists**: Bullet lists, numbered lists, task lists
-- **Links**: Hyperlinks with custom attributes
-- **Code blocks**: Syntax highlighted code
-- **Tables**: Structured tabular data
-- **And more**: Blockquotes, horizontal rules, mentions, etc.
-
-**Use cases:**
-- Creating structured documentation programmatically
-- Importing content from other systems with formatting
-- Generating reports with rich formatting
-- Building document templates with complex layouts
-
-**With helper functions (recommended):**
-```python
-from vaiz import heading, paragraph, text, bullet_list, link_text, horizontal_rule
-
-content = [
-    heading(1, "📚 Documentation"),
-    paragraph(
-        "Welcome to our ",
-        text("project docs", bold=True),
-        "!"
-    ),
-    horizontal_rule(),
-    heading(2, "Features"),
-    bullet_list(
-        "Easy to use",
-        "Type-safe",
-        "Well documented"
-    ),
-    paragraph(
-        "Learn more at ",
-        link_text("our docs", "https://docs.vaiz.app")
-    )
-]
-
-client.replace_json_document(document_id, content)
-```
-
-See [Document Structure Helpers Guide](./document-structure-helpers) for complete documentation.
+- **Lists**: Bullet lists, numbered lists, task lists (`- [ ]` / `- [x]`)
+- **Links**: Standard Markdown links
+- **Code blocks**: Fenced code blocks with syntax highlighting
+- **Tables**: Markdown tables
+- **And more**: Blockquotes, horizontal rules, etc.
 
 ### Update Project Document
 

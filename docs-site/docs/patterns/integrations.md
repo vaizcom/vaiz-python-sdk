@@ -153,14 +153,14 @@ def sync_with_jira(jira_url: str, jira_token: str):
             jira_issue = jira.issue(jira_id)
             jira_issue.update(
                 summary=task.name,
-                description=get_task_description(task.document)
+                description=client.get_markdown_document(task.document)
             )
         else:
             # Create new Jira issue
             new_issue = jira.create_issue(
                 project='PROJECT',
                 summary=task.name,
-                description=get_task_description(task.document),
+                description=client.get_markdown_document(task.document),
                 issuetype={'name': 'Task'}
             )
             

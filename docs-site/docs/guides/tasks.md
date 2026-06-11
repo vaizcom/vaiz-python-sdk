@@ -272,9 +272,19 @@ client.append_markdown_document(
 )
 ```
 
-:::warning Deprecated
-The non-Markdown write methods `replace_document()`, `replace_json_document()`, `append_document()`, `append_json_document()`, and the `Task.update_task_description()` helper are deprecated and emit a `DeprecationWarning`. Use the Markdown methods above instead.
-:::
+### Convenience Methods on Task
+
+The `Task` model provides shortcuts for working with descriptions:
+
+```python
+task = client.get_task("PRJ-123").task
+
+# Read description as Markdown
+markdown = task.get_task_description(client)
+
+# Replace description with Markdown
+task.update_task_description(client, "# New Description\n\nWith **markdown**.")
+```
 
 ### Programmatic Description Updates
 

@@ -1,5 +1,5 @@
 """
-Example: Fetch JSON document content by document ID.
+Example: Fetch document content as Markdown by document ID.
 """
 
 from examples.config import get_client
@@ -12,17 +12,11 @@ def main():
     # Example document ID
     document_id = "6878ff0ad2c2d60e246402c2"
 
-    doc = client.get_json_document(document_id)
-    print("\n=== Document JSON ===")
-    # Print only top-level keys to avoid huge output
-    if isinstance(doc, dict):
-        print(f"keys: {list(doc.keys())}")
-    else:
-        print(doc)
-    print("====================\n")
+    markdown = client.get_markdown_document(document_id)
+    print("\n=== Document Markdown ===")
+    print(markdown)
+    print("=========================\n")
 
 
 if __name__ == "__main__":
     main()
-
-

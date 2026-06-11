@@ -1,7 +1,18 @@
 import pytest
 from datetime import datetime
 
-from vaiz.models import GetDocumentRequest, ReplaceDocumentRequest, ReplaceDocumentResponse, GetDocumentsRequest, GetDocumentsResponse, Document, Kind, CreateDocumentRequest, CreateDocumentResponse, EditDocumentRequest, EditDocumentResponse
+from vaiz.models import (
+    ReplaceMarkdownDocumentRequest,
+    ReplaceMarkdownDocumentResponse,
+    GetDocumentsRequest,
+    GetDocumentsResponse,
+    Document,
+    Kind,
+    CreateDocumentRequest,
+    CreateDocumentResponse,
+    EditDocumentRequest,
+    EditDocumentResponse,
+)
 from tests.test_config import get_test_client
 
 
@@ -87,29 +98,23 @@ def ensure_test_documents_exist(client, kind: Kind, kind_id: str, min_count: int
     return all_docs[:min_count]
 
 
-def test_get_document_request_model_serialization():
-    request = GetDocumentRequest(document_id="doc123")
-    data = request.model_dump()
-    assert data == {"documentId": "doc123"}
-
-
-def test_replace_document_request_model_serialization():
-    request = ReplaceDocumentRequest(
+def test_replace_markdown_document_request_model_serialization():
+    request = ReplaceMarkdownDocumentRequest(
         document_id="doc123",
-        description="<h2>New Content</h2><p>HTML description</p>"
+        markdown="# New Content\n\nMarkdown description"
     )
     data = request.model_dump()
     expected = {
         "documentId": "doc123",
-        "description": "<h2>New Content</h2><p>HTML description</p>"
+        "markdown": "# New Content\n\nMarkdown description"
     }
     assert data == expected
 
 
-def test_get_document_fetches_json(client):
+def test_get_markdown_document_for_task(client):
     # Create a task to get a real document id
     from vaiz.models import CreateTaskRequest, TaskPriority
-    from tests.test_config import TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID
+    from tests.test_config import TEST_BOARD_ID, TEST_GROUP_ID
 
     task = CreateTaskRequest(
         name="SDK Test - GetDocument",
@@ -122,16 +127,16 @@ def test_get_document_fetches_json(client):
     task_response = client.create_task(task)
     document_id = task_response.task.document
 
-    doc = client.get_json_document(document_id)
+    markdown = client.get_markdown_document(document_id)
 
-    # API may return an empty document for newly created tasks
-    assert isinstance(doc, dict)
+    assert isinstance(markdown, str)
+    assert "Initial document content" in markdown
 
 
-def test_replace_document_content(client):
-    """Test replacing document content with new JSON content."""
+def test_replace_markdown_document_content(client):
+    """Test replacing document content with Markdown content."""
     from vaiz.models import CreateTaskRequest, TaskPriority
-    from tests.test_config import TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID
+    from tests.test_config import TEST_BOARD_ID, TEST_GROUP_ID
 
     # Create a task with initial description
     task = CreateTaskRequest(
@@ -141,51 +146,32 @@ def test_replace_document_content(client):
         priority=TaskPriority.General,
         description="Initial content that will be replaced"
     )
-    
-    # Enable verbose mode to see request/response
-    client.verbose = True
-    
+
     task_response = client.create_task(task)
     document_id = task_response.task.document
 
-    # Get initial content
-    initial_content = client.get_json_document(document_id)
-    print(f"Initial content: {initial_content}")
-
-    # API currently supports PLAIN TEXT description only
-    new_description_text = (
-        "🎯 Replaced Content via SDK!\n\n"
-        "This content was completely replaced using the replaceDocument API method.\n\n"
-        "- ✅ Content replacement works\n"
-        "- 📝 Plain text format\n"
-        "- 🚀 Ready to use!"
+    new_markdown = (
+        "# Replaced Content via SDK\n\n"
+        "This content was completely replaced using the replaceMarkdownDocument API method.\n\n"
+        "- Content replacement works\n"
+        "- **Markdown** format\n"
+        "- Ready to use"
     )
-    print(f"Sending description: {new_description_text}")
 
-    # Replace document content
-    replace_response = client.replace_document(
+    replace_response = client.replace_markdown_document(
         document_id=document_id,
-        description=new_description_text
+        markdown=new_markdown
     )
 
-    # Verify response
-    assert isinstance(replace_response, ReplaceDocumentResponse)
+    assert isinstance(replace_response, ReplaceMarkdownDocumentResponse)
 
-    # Get updated content and verify it changed
-    updated_content = client.get_json_document(document_id)
-    print(f"Updated content: {updated_content}")
+    # Verify round-trip
+    updated_markdown = client.get_markdown_document(document_id)
+    assert "# Replaced Content via SDK" in updated_markdown
+    assert "Content replacement works" in updated_markdown
+    assert "Initial content that will be replaced" not in updated_markdown
 
-    # For now, just verify the API call was successful and returned proper response
-    # The content may not change immediately or may require different format
-    assert isinstance(updated_content, dict)
-    
-    # API call was successful if we got here without exception
-    print("✅ replace_document API call completed successfully!")
-    print(f"✅ Response type: {type(replace_response)}")
-    print(f"✅ Document ID: {document_id}")
-    
-    # Note: Content change verification may require different content format
-    # or there might be a delay in content update
+    print("✅ replace_markdown_document API call completed successfully!")
 
 
 def test_get_documents_request_model_serialization():
@@ -432,32 +418,29 @@ def test_space_document_content_workflow(client):
     print(f"Testing Space document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
-    content = client.get_json_document(test_document.id)
-    assert isinstance(content, dict)
-    print(f"✅ Retrieved Space document content: {type(content)}")
+    content = client.get_markdown_document(test_document.id)
+    assert isinstance(content, str)
+    print(f"✅ Retrieved Space document content")
     
     # 4. Replace document content
-    new_content = f"""
-# Test Content Update - Space Document
+    new_content = f"""# Test Content Update - Space Document
 
 Updated at: {datetime.now().isoformat()}
 
 This is a test content replacement for Space document.
-Document ID: {test_document.id}
-Document Title: {test_document.title}
 """
     
-    replace_response = client.replace_document(
+    replace_response = client.replace_markdown_document(
         document_id=test_document.id,
-        description=new_content
+        markdown=new_content
     )
     
-    assert isinstance(replace_response, ReplaceDocumentResponse)
+    assert isinstance(replace_response, ReplaceMarkdownDocumentResponse)
     print("✅ Replaced Space document content")
     
     # 5. Verify content was updated
-    updated_content = client.get_json_document(test_document.id)
-    assert isinstance(updated_content, dict)
+    updated_content = client.get_markdown_document(test_document.id)
+    assert "Test Content Update - Space Document" in updated_content
     print("✅ Retrieved updated Space document content")
 
 
@@ -473,32 +456,29 @@ def test_member_document_content_workflow(client):
     print(f"Testing Member document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
-    content = client.get_json_document(test_document.id)
-    assert isinstance(content, dict)
-    print(f"✅ Retrieved Member document content: {type(content)}")
+    content = client.get_markdown_document(test_document.id)
+    assert isinstance(content, str)
+    print(f"✅ Retrieved Member document content")
     
     # 4. Replace document content
-    new_content = f"""
-# Test Content Update - Member Document
+    new_content = f"""# Test Content Update - Member Document
 
 Updated at: {datetime.now().isoformat()}
 
 This is a test content replacement for Member (personal) document.
-Document ID: {test_document.id}
-Document Title: {test_document.title}
 """
     
-    replace_response = client.replace_document(
+    replace_response = client.replace_markdown_document(
         document_id=test_document.id,
-        description=new_content
+        markdown=new_content
     )
     
-    assert isinstance(replace_response, ReplaceDocumentResponse)
+    assert isinstance(replace_response, ReplaceMarkdownDocumentResponse)
     print("✅ Replaced Member document content")
     
     # 5. Verify content was updated
-    updated_content = client.get_json_document(test_document.id)
-    assert isinstance(updated_content, dict)
+    updated_content = client.get_markdown_document(test_document.id)
+    assert "Test Content Update - Member Document" in updated_content
     print("✅ Retrieved updated Member document content")
 
 
@@ -515,36 +495,33 @@ def test_project_document_content_workflow(client):
     print(f"Testing Project document: {test_document.title} (ID: {test_document.id})")
     
     # 3. Get document content
-    content = client.get_json_document(test_document.id)
-    assert isinstance(content, dict)
-    print(f"✅ Retrieved Project document content: {type(content)}")
+    content = client.get_markdown_document(test_document.id)
+    assert isinstance(content, str)
+    print(f"✅ Retrieved Project document content")
     
     # 4. Replace document content
-    new_content = f"""
-# Test Content Update - Project Document
+    new_content = f"""# Test Content Update - Project Document
 
 Updated at: {datetime.now().isoformat()}
 
 This is a test content replacement for Project document.
-Document ID: {test_document.id}
-Document Title: {test_document.title}
 
 ## Test Details
+
 - Document Size: {test_document.size} bytes
-- Created At: {test_document.created_at}
 """
     
-    replace_response = client.replace_document(
+    replace_response = client.replace_markdown_document(
         document_id=test_document.id,
-        description=new_content
+        markdown=new_content
     )
     
-    assert isinstance(replace_response, ReplaceDocumentResponse)
+    assert isinstance(replace_response, ReplaceMarkdownDocumentResponse)
     print("✅ Replaced Project document content")
     
     # 5. Verify content was updated
-    updated_content = client.get_json_document(test_document.id)
-    assert isinstance(updated_content, dict)
+    updated_content = client.get_markdown_document(test_document.id)
+    assert "Test Content Update - Project Document" in updated_content
     print("✅ Retrieved updated Project document content")
 
 
@@ -576,14 +553,14 @@ def test_all_scopes_document_workflow(client):
             print(f"Document: {doc.title} (ID: {doc.id})")
             
             # Get content
-            content = client.get_json_document(doc.id)
-            assert isinstance(content, dict)
+            content = client.get_markdown_document(doc.id)
+            assert isinstance(content, str)
             print(f"✅ Got {scope_name} document content")
             
             # Replace content
             new_content = f"Test update for {scope_name} document at {datetime.now().isoformat()}"
-            replace_response = client.replace_document(doc.id, new_content)
-            assert isinstance(replace_response, ReplaceDocumentResponse)
+            replace_response = client.replace_markdown_document(doc.id, new_content)
+            assert isinstance(replace_response, ReplaceMarkdownDocumentResponse)
             print(f"✅ Replaced {scope_name} document content")
             
             tested_scopes.append(scope_name)
@@ -682,20 +659,19 @@ def test_create_and_update_document_workflow(client):
     print(f"✅ Created document: {document.id}")
     
     # 2. Add content
-    content = f"""
-# Workflow Test Document
+    content = f"""# Workflow Test Document
 
 Created at: {datetime.now().isoformat()}
 
 This document was created via SDK and immediately updated with content.
 """
     
-    client.replace_document(document.id, content)
+    client.replace_markdown_document(document.id, content)
     print("✅ Added content to document")
     
     # 3. Verify content
-    retrieved_content = client.get_json_document(document.id)
-    assert isinstance(retrieved_content, dict)
+    retrieved_content = client.get_markdown_document(document.id)
+    assert "Workflow Test Document" in retrieved_content
     print("✅ Retrieved and verified document content")
     
     # 4. Verify document appears in list

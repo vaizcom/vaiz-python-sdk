@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
-from .documents import ReplaceDocumentResponse
+from .documents import ReplaceMarkdownDocumentResponse
 from .enums import UploadFileType, Kind
 
 if TYPE_CHECKING:
@@ -69,45 +69,34 @@ class Task(VaizBaseModel):
 
     model_config = ConfigDict(populate_by_name=True)
 
-    def get_task_description(self, client: 'VaizClient') -> Dict[str, Any]:
-        """Convenience method to fetch this task's description document body.
+    def get_task_description(self, client: 'VaizClient') -> str:
+        """Fetch this task's description as a Markdown string.
 
         Args:
             client (VaizClient): An initialized Vaiz client instance
 
         Returns:
-            Dict[str, Any]: Parsed JSON document body for this task's description
+            str: The task description rendered as Markdown
         """
-        return client.get_json_document(self.document)
+        return client.get_markdown_document(self.document)
 
     def update_task_description(
         self,
         client: 'VaizClient',
-        description: str,
-    ) -> ReplaceDocumentResponse:
-        """Replace this task's description content.
+        markdown: str,
+    ) -> ReplaceMarkdownDocumentResponse:
+        """Replace this task's description with Markdown content.
 
-        .. deprecated::
-            Use ``client.replace_markdown_document(task.document, markdown)`` instead.
-
-        Uses the document API to completely replace the description content for
-        the document associated with this task.
+        Markdown is converted to native document blocks on the server.
 
         Args:
             client (VaizClient): An initialized Vaiz client instance
-            description (str): New description content as plain text
+            markdown (str): New description content as a Markdown string
 
         Returns:
-            ReplaceDocumentResponse: Response object from the replace operation
+            ReplaceMarkdownDocumentResponse: Response object from the replace operation
         """
-        import warnings
-        warnings.warn(
-            "Task.update_task_description() is deprecated, "
-            "use client.replace_markdown_document(task.document, markdown) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return client.replace_document(self.document, description)
+        return client.replace_markdown_document(self.document, markdown)
 
 
 class TaskResponse(BaseModel):

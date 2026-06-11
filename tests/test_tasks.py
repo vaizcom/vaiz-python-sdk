@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID, TEST_PROJECT_ID, TEST_ASSIGNEE_ID
-from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority, GetHistoryRequest, GetHistoryResponse, HistoryItem, ReplaceDocumentResponse, GetTasksRequest, GetTasksResponse, MoveTaskItem, MoveTasksRequest, MoveTasksResponse
+from vaiz.models import CreateTaskRequest, EditTaskRequest, TaskPriority, GetHistoryRequest, GetHistoryResponse, HistoryItem, ReplaceMarkdownDocumentResponse, GetTasksRequest, GetTasksResponse, MoveTaskItem, MoveTasksRequest, MoveTasksResponse
 from vaiz.models.enums import Kind
 
 @pytest.fixture(scope="module")
@@ -219,19 +219,13 @@ def test_task_get_description_method_with_initial_content(client):
     task_instance = task_response.task
     assert task_instance.document is not None
     
-    # Use the convenience method to get description
-    description_body = task_instance.get_task_description(client)
-    assert isinstance(description_body, dict)
-    
-    print(f"Initial description body keys: {list(description_body.keys())}")
-    print(f"Full description body: {description_body}")
+    # Use the convenience method to get description as Markdown
+    description_markdown = task_instance.get_task_description(client)
+    assert isinstance(description_markdown, str)
+    assert "Initial task description content" in description_markdown
+
     print(f"Task document ID: {task_instance.document}")
-    
-    # Check if there's content in the root key (Lexical format)
-    if 'root' in description_body:
-        root_content = description_body['root']
-        print(f"Root content type: {type(root_content)}")
-        print(f"Root content: {root_content}")
+    print(f"Description markdown: {description_markdown}")
 
 
 
@@ -255,17 +249,18 @@ def test_task_update_description_method(client):
     task_instance = task_response.task
     assert task_instance.document is not None
 
-    # Update description via convenience method
+    # Update description via convenience method (Markdown)
     new_description = (
-        "Updated via Task.update_task_description()\n\n"
-        "This replaces the existing description content."
+        "## Updated Description\n\n"
+        "Updated via `Task.update_task_description()` with **markdown** content."
     )
     update_response = task_instance.update_task_description(client, new_description)
-    assert isinstance(update_response, ReplaceDocumentResponse)
+    assert isinstance(update_response, ReplaceMarkdownDocumentResponse)
 
-    # Fetch description body to ensure API call succeeded
-    updated_body = task_instance.get_task_description(client)
-    assert isinstance(updated_body, dict)
+    # Verify markdown round-trip
+    updated_markdown = task_instance.get_task_description(client)
+    assert "## Updated Description" in updated_markdown
+    assert "Initial description" not in updated_markdown
 
 
 def test_get_tasks_default_parameters(client):
