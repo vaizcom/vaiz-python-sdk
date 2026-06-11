@@ -19,6 +19,7 @@ The SDK is now **Markdown-only** for rich content. All TipTap/JSON document APIs
   - Markdown is converted to rich comment content on the server and stored with `content_version = 2`
   - `markdown` and `content` are mutually exclusive — provide exactly one (otherwise `ValueError` is raised)
   - New `Comment.content_version` field (`2` = rich/markdown-based, `None` = legacy HTML)
+  - `get_comments()` now returns comment content as Markdown (full markdown round-trip, mentions included); legacy comments (`content_version` other than `2`) are returned as raw HTML
 - New `Tree` icon in the `Icon` enum
 
 ### Removed (Breaking)

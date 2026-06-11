@@ -131,17 +131,22 @@ class CommentsAPIClient(BaseAPIClient):
     def get_comments(self, document_id: str) -> GetCommentsResponse:
         """
         Get all comments for a document.
-        
+
+        Comment content is returned as Markdown (the same format `post_comment`
+        accepts), including mentions as `@[label](kind:id)`. Legacy comments
+        (`content_version` other than 2) are returned as raw HTML; check
+        `Comment.content_version` to tell the formats apart.
+
         Args:
             document_id (str): The ID of the document to get comments for
-            
+
         Returns:
             GetCommentsResponse: The list of comments for the document
-            
+
         Raises:
             VaizSDKError: If the API request fails
         """
-        request = GetCommentsRequest(document_id=document_id)
+        request = GetCommentsRequest(document_id=document_id, format="markdown")
         
         response_data = self._make_request("getComments", json_data=request.model_dump())
         return GetCommentsResponse(**response_data)

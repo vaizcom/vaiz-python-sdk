@@ -101,9 +101,14 @@ class ReactToCommentResponse(BaseModel):
 
 
 class GetCommentsRequest(BaseModel):
-    """Request model for getting comments."""
+    """Request model for getting comments.
+
+    The SDK always requests markdown: Lexical comments (`content_version == 2`)
+    are returned with `content` as markdown; legacy comments fall back to raw HTML.
+    """
 
     document_id: str = Field(..., alias="documentId")
+    format: Optional[str] = None
 
     model_config = ConfigDict(populate_by_name=True)
 

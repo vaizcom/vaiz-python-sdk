@@ -172,12 +172,15 @@ def test_post_comment_with_markdown(client, test_document_id):
     assert "bold-marker" in comment.content
     assert "list-item-one" in comment.content
 
-    # Verify persistence via get_comments
+    # get_comments returns content back as markdown (full round-trip)
     comments_response = client.get_comments(test_document_id)
     fetched = next((c for c in comments_response.comments if c.id == comment.id), None)
     assert fetched is not None, "Posted markdown comment not found in get_comments"
     assert fetched.content_version == 2
-    assert "<strong" in fetched.content
+    assert "**bold-marker**" in fetched.content
+    assert "- list-item-one" in fetched.content
+    assert "[link-marker](https://vaiz.app)" in fetched.content
+    assert "<strong" not in fetched.content
 
     print(f"Posted markdown comment ID: {comment.id}")
 
@@ -227,7 +230,31 @@ def test_post_comment_with_markdown_mention(client, test_document_id):
     assert f'data-user-id="{member_id}"' in comment.content
     assert "@[Reviewer]" not in comment.content
 
+    # get_comments exports the mention back in markdown syntax
+    comments_response = client.get_comments(test_document_id)
+    fetched = next((c for c in comments_response.comments if c.id == comment.id), None)
+    assert fetched is not None
+    assert f"(user:{member_id})" in fetched.content
+
     print(f"Posted comment with mention: {comment.id}")
+
+
+def test_get_comments_legacy_html_fallback(client, test_document_id):
+    """Legacy HTML comments are returned as-is by get_comments (no markdown conversion)."""
+    response = client.post_comment(
+        document_id=test_document_id,
+        content="<p>Legacy <strong>html</strong> comment</p>"
+    )
+    comment = response.comment
+    assert comment.content_version is None
+
+    comments_response = client.get_comments(test_document_id)
+    fetched = next((c for c in comments_response.comments if c.id == comment.id), None)
+    assert fetched is not None
+    assert fetched.content_version is None
+    assert "<strong>" in fetched.content
+
+    print(f"Legacy comment returned as raw HTML: {comment.id}")
 
 
 def test_comment_markdown_content_mutually_exclusive(client, test_document_id):

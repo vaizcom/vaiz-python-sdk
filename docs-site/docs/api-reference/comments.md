@@ -42,7 +42,7 @@ Post a comment to a document. Provide exactly one of `markdown` (recommended) or
 get_comments(document_id: str) -> GetCommentsResponse
 ```
 
-Get all comments for a document.
+Get all comments for a document. Comment content is returned as Markdown (mentions as `@[label](kind:id)`). Legacy comments (`content_version` other than `2`) are returned as raw HTML.
 
 **Parameters:**
 - `document_id` - Document ID

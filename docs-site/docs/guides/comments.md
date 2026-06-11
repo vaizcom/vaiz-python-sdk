@@ -154,15 +154,21 @@ print(f"Deleted: {response.comment.deleted_at}")
 
 ## Getting Comments
 
+Comment content is returned as Markdown — the same format `post_comment` accepts. Mentions come back as `@[label](kind:id)`, so content can be edited and posted back without losing anything.
+
 ```python
 response = client.get_comments(document_id="document_id")
 
 for comment in response.comments:
     print(f"Author: {comment.author_id}")
-    print(f"Content: {comment.content}")
+    print(f"Content: {comment.content}")  # Markdown
     if comment.reply_to:
         print(f"  Reply to: {comment.reply_to}")
 ```
+
+:::note Legacy comments
+Comments created before the rich editor migration (`content_version` other than `2`) are returned as raw HTML. Check `comment.content_version` to tell the formats apart.
+:::
 
 ## Getting document_id
 
