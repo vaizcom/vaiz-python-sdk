@@ -1,18 +1,62 @@
 # Changelog
 
-## [0.20.0] - 2026-06-11
+## [1.0.0] - 2026-06-11
+
+The SDK is now **Markdown-only** for rich content. All TipTap/JSON document APIs and the document structure DSL have been removed. Markdown is converted to native editor blocks on the server and can be read back as Markdown.
 
 ### Added
 
-- **📝 Markdown Document API**: New recommended methods for working with document content
+- **📝 Markdown Document API**: The only way to work with document content
   - `replace_markdown_document(document_id, markdown)` - Replace document content with Markdown
   - `append_markdown_document(document_id, markdown)` - Append Markdown to existing content
   - `get_markdown_document(document_id)` - Read document content back as a Markdown string
   - Markdown is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.)
+- **🏷️ Markdown Mentions**: New `@[label](kind:id)` syntax for mentions in documents and comments
+  - Supported kinds: `user`, `task`, `document`, `milestone`, `project`, `board`
+  - Example: `@[John](user:6a29be79cb3b2bee09db40bd)` becomes a live mention chip and triggers notifications
+  - Mentions survive markdown round-trips: `get_markdown_document()` exports them in the same syntax
+- **💬 Markdown Comments**: New `markdown` parameter in `post_comment()` and `edit_comment()`
+  - Markdown is converted to rich comment content on the server and stored with `content_version = 2`
+  - `markdown` and `content` are mutually exclusive — provide exactly one (otherwise `ValueError` is raised)
+  - New `Comment.content_version` field (`2` = rich/markdown-based, `None` = legacy HTML)
+  - `get_comments()` now returns comment content as Markdown (full markdown round-trip, mentions included); legacy comments (`content_version` other than `2`) are returned as raw HTML
+- New `Tree` icon in the `Icon` enum
 
-### Deprecated
+### Removed (Breaking)
 
-- JSON document methods (`replace_json_document`, `append_json_document`, `get_json_document`) and the JSON document DSL remain supported for backward compatibility, but Markdown methods are now the recommended way to write document content
+- **TipTap/JSON document methods**: `get_json_document()`, `replace_json_document()`, `append_json_document()`, `replace_document()`, `append_document()` and their request/response models
+- **Document structure DSL** (`vaiz.helpers.document_structure`): all node builders (`paragraph()`, `heading()`, `bullet_list()`, `table()`, `image_block()`, `embed_block()`, `mention_*()`, etc.), all node types, and the `EmbedType` enum
+
+### Changed (Breaking)
+
+- `Task.get_task_description(client)` now returns the description as a Markdown string (previously a parsed JSON dict)
+- `Task.update_task_description(client, markdown)` now accepts Markdown and uses `replace_markdown_document()` under the hood
+- `post_comment()` and `edit_comment()`: the `content` parameter is now optional; provide exactly one of `content` (legacy HTML) or `markdown` (recommended)
+- `get_space_members()` now excludes bot members (AI, automation, and integration bots) from the result
+- `toggle_milestone()` no longer sets the task's main `milestone` field — only the `milestones` list is updated
+
+### Migration Guide
+
+| Removed (TipTap / JSON DSL) | Replacement (Markdown) |
+| --- | --- |
+| `client.replace_json_document(doc_id, [heading(1, "Title"), paragraph("text")])` | `client.replace_markdown_document(doc_id, "# Title\n\ntext")` |
+| `client.append_json_document(doc_id, [paragraph("more")])` | `client.append_markdown_document(doc_id, "more")` |
+| `client.replace_document(doc_id, "plain text")` | `client.replace_markdown_document(doc_id, "plain text")` |
+| `client.append_document(doc_id, "plain text")` | `client.append_markdown_document(doc_id, "plain text")` |
+| `client.get_json_document(doc_id)` | `client.get_markdown_document(doc_id)` |
+| `paragraph("Hello ", text("World", bold=True))` | `"Hello **World**"` |
+| `heading(2, "Section")` | `"## Section"` |
+| `bullet_list("a", "b")` / `ordered_list("a", "b")` | `"- a\n- b"` / `"1. a\n2. b"` |
+| `task_list(task_item("Do it", checked=True))` | `"- [x] Do it"` |
+| `table(table_row(table_header("H")), table_row("v"))` | `"\| H \|\n\| --- \|\n\| v \|"` |
+| `code_block("print(1)", language="python")` | <code>"```python\nprint(1)\n```"</code> |
+| `link_text("Vaiz", "https://vaiz.app")` | `"[Vaiz](https://vaiz.app)"` |
+| `mention_user("id")` / `mention_task("id")` / ... | `"@[label](user:id)"` / `"@[label](task:id)"` / ... |
+| `embed_block(...)`, `image_block(...)`, `toc_block()`, etc. | No direct replacement; managed by the editor UI |
+| `client.post_comment(doc_id, content="<p>Hi <strong>there</strong></p>")` | `client.post_comment(doc_id, markdown="Hi **there**")` |
+| Rich `create_task(description=...)` | `description` is plain text only; for rich content: `task = client.create_task(...).task` then `client.replace_markdown_document(task.document, markdown)` |
+
+Old SDK versions (≤ 0.19.x) keep working: the server-side JSON document endpoints are not removed, only the SDK surface.
 
 ## [0.19.0] - 2026-02-17
 

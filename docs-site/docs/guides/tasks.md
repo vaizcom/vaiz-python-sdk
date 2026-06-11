@@ -222,9 +222,7 @@ You can move tasks to different groups in a single request. Each move specifies 
 
 ## Task Descriptions
 
-Tasks store descriptions as structured JSON documents. The SDK provides convenient methods to work with descriptions directly from Task objects.
-
-**Important:** Task descriptions support rich content using the same [document structure format](../api-reference/document-structure) as standalone documents. You can use `replace_json_document` to create formatted task descriptions with headings, lists, links, and more.
+Every task stores its description as a document (the `task.document` field). The recommended way to read and write descriptions is Markdown — it is converted to native rich blocks on the server.
 
 ### Get Task Description
 
@@ -234,9 +232,9 @@ task_response = client.get_task("PRJ-123")
 task = task_response.task
 document_id = task.document
 
-# Get document content
-description = client.get_json_document(document_id)
-print(description)  # JSON structure
+# Get description as Markdown
+description = client.get_markdown_document(document_id)
+print(description)
 ```
 
 ### Update Task Description
@@ -248,111 +246,44 @@ Replace task description completely:
 task_response = client.get_task("PRJ-123")
 document_id = task_response.task.document
 
-# Update description
+# Update description with Markdown
 new_content = """
 # Updated Description
 
 This completely replaces the previous content.
 
 ## Features
-- Complete replacement
-- Plain text support
-- Direct API access
+- **Rich formatting** with Markdown
+- Lists, tables, code blocks
+- Links and checklists
 """
 
-client.replace_document(
-    document_id=document_id,
-    description=new_content
+client.replace_markdown_document(document_id, new_content)
+```
+
+### Appending Content
+
+Add content to the end of the description without removing existing content:
+
+```python
+client.append_markdown_document(
+    document_id,
+    "## Update\n\nAdditional notes"
 )
 ```
 
-### Rich Formatted Descriptions
+### Convenience Methods on Task
 
-For rich content with formatting, lists, and links, use `replace_json_document`:
-
-```python
-from vaiz import heading, paragraph, text, bullet_list
-
-# Get task
-task_response = client.get_task("PRJ-123")
-document_id = task_response.task.document
-
-# Create rich content
-content = [
-    heading(1, "Task Overview"),
-    paragraph(
-        "This task requires ",
-        text("immediate attention", bold=True),
-        "."
-    ),
-    heading(2, "Requirements"),
-    bullet_list(
-        "Review design mockups",
-        "Update documentation",
-        "Test functionality"
-    ),
-    paragraph(
-        "See ",
-        text("project docs", link="https://docs.example.com"),
-        " for details."
-    )
-]
-
-# Replace with rich content
-client.replace_json_document(document_id, content)
-```
-
-See [Document Structure](../api-reference/document-structure) for complete format reference and [Document Structure Helpers](./document-structure-helpers) for helper functions.
-
-### Using Task Helper Methods
-
-The Task model provides convenient helper methods:
+The `Task` model provides shortcuts for working with descriptions:
 
 ```python
-# Get task
-task_response = client.create_task(task)
-task_obj = task_response.task
+task = client.get_task("PRJ-123").task
 
-# Get description using helper
-description = task_obj.get_task_description(client)
-print(description)
+# Read description as Markdown
+markdown = task.get_task_description(client)
 
-# Update description using helper
-task_obj.update_task_description(
-    client, 
-    "New task description content"
-)
-```
-
-### Full Workflow Example
-
-```python
-from vaiz.models import CreateTaskRequest
-
-# 1. Create task with initial description
-task = CreateTaskRequest(
-    name="Documentation Task",
-    board="board_id",
-    group="group_id"
-)
-
-response = client.create_task(
-    task,
-    description="Initial task description"
-)
-
-# 2. Get task object
-task_obj = response.task
-
-# 3. Update description later
-task_obj.update_task_description(
-    client,
-    "Updated task description with more details"
-)
-
-# 4. Read current content
-content = task_obj.get_task_description(client)
-print(content)
+# Replace description with Markdown
+task.update_task_description(client, "# New Description\n\nWith **markdown**.")
 ```
 
 ### Programmatic Description Updates
@@ -367,19 +298,12 @@ def add_status_update(task_id: str, status: str):
     task_response = client.get_task(task_id)
     doc_id = task_response.task.document
     
-    # Get current content
-    current = client.get_json_document(doc_id)
-    
-    # Add status update
+    # Append status update
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    new_content = f"""
-{current}
-
----
-**Status Update ({timestamp})**: {status}
-"""
-    
-    client.replace_document(doc_id, new_content)
+    client.append_markdown_document(
+        doc_id,
+        f"---\n**Status Update ({timestamp})**: {status}"
+    )
 
 # Usage
 add_status_update("PRJ-123", "Design phase completed")

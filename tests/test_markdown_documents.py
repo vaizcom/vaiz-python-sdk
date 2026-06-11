@@ -245,6 +245,39 @@ def test_markdown_complex_document_roundtrip():
     print(f"✅ Complex document round-trip preserved all structures for document {document_id}")
 
 
+def test_markdown_mentions_roundtrip():
+    """Test that mentions written as @[label](kind:id) survive a markdown round-trip."""
+    client = get_test_client()
+    document_id = _create_test_document(client, "Test Markdown Mentions")
+
+    # Use the current member as a real mention target
+    profile = client.get_profile()
+    member_id = profile.profile.member_id
+
+    markdown = (
+        f"Please review, @[Reviewer](user:{member_id})\n\n"
+        f"Related doc: @[Spec](document:{document_id})"
+    )
+
+    client.replace_markdown_document(document_id, markdown)
+
+    result = client.get_markdown_document(document_id)
+
+    # Mentions are exported back with a generic label but the same kind:id
+    assert f"(user:{member_id})" in result
+    assert f"(document:{document_id})" in result
+    # The raw syntax must not be flattened into plain text
+    assert "@[Reviewer]" not in result or f"(user:{member_id})" in result
+
+    # Write the exported markdown back: mentions must survive a second pass
+    client.replace_markdown_document(document_id, result)
+    second = client.get_markdown_document(document_id)
+    assert f"(user:{member_id})" in second
+    assert f"(document:{document_id})" in second
+
+    print(f"✅ Mentions survived markdown round-trip in document {document_id}")
+
+
 def test_markdown_append_table_to_existing_content():
     """Test appending a table after existing rich content keeps both parts intact."""
     client = get_test_client()

@@ -119,7 +119,7 @@ def create_project_wiki(client, project_id: str):
             
             # Add initial content
             content = f"# {page_name}\n\n[Add content here]"
-            client.replace_document(page.id, content)
+            client.replace_markdown_document(page.id, content)
     
     return wiki
 
