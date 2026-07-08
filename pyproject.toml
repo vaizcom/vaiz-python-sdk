@@ -26,7 +26,7 @@ dependencies = ["requests>=2.31.0", "pydantic>=2.0", "python-dotenv>=0.9.0"]
 dev = ["pytest>=8.0.0", "pytest-mock>=3.12.0"]
 
 [project.urls]
-Homepage = "https://github.com/vaizcom/vaiz-python-sdk"
+Homepage = "https://docs-python-sdk.vaiz.com"
 Repository = "https://github.com/vaizcom/vaiz-python-sdk"
 Issues = "https://github.com/vaizcom/vaiz-python-sdk/issues"
 
