@@ -154,12 +154,12 @@ def main():
 This document was created and populated automatically via SDK.
 """
             
-            client.replace_document(doc.id, content)
+            client.replace_markdown_document(doc.id, content)
             print("✅ Document populated with content")
             
             # Verify
-            retrieved = client.get_json_document(doc.id)
-            print(f"✅ Content verified (keys: {list(retrieved.keys())})")
+            retrieved = client.get_markdown_document(doc.id)
+            print(f"✅ Content verified ({len(retrieved)} characters)")
         else:
             print("No projects available")
     except Exception as e:

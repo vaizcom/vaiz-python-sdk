@@ -10,28 +10,46 @@ class CommentsAPIClient(BaseAPIClient):
     def post_comment(
         self, 
         document_id: str, 
-        content: str, 
+        content: Optional[str] = None,
         file_ids: Optional[List[str]] = None,
-        reply_to: Optional[str] = None
+        reply_to: Optional[str] = None,
+        markdown: Optional[str] = None
     ) -> PostCommentResponse:
         """
         Post a comment to a document.
-        
+
+        Markdown is the recommended content format: it is converted to rich
+        comment content on the server. HTML `content` remains supported as
+        the legacy format. Exactly one of `content` or `markdown` must be
+        provided.
+
         Args:
             document_id (str): The ID of the document to comment on
-            content (str): The comment content (can include HTML)
+            content (Optional[str]): The comment content as HTML (legacy format)
             file_ids (Optional[List[str]]): List of file IDs to attach to the comment
             reply_to (Optional[str]): ID of the comment to reply to (for threaded replies)
-            
+            markdown (Optional[str]): The comment content as Markdown (recommended)
+
         Returns:
             PostCommentResponse: The created comment information
-            
+
         Raises:
+            ValueError: If both or neither of `content` and `markdown` are provided
             VaizSDKError: If the API request fails
+
+        Example:
+            >>> client.post_comment(
+            ...     document_id="doc_id",
+            ...     markdown="Some **bold** text\\n\\n- item 1\\n- item 2"
+            ... )
         """
+        if (content is None) == (markdown is None):
+            raise ValueError("Provide exactly one of 'content' or 'markdown'")
+
         request = PostCommentRequest(
             document_id=document_id,
             content=content,
+            markdown=markdown,
             file_ids=file_ids or [],
             reply_to=reply_to
         )
@@ -113,17 +131,22 @@ class CommentsAPIClient(BaseAPIClient):
     def get_comments(self, document_id: str) -> GetCommentsResponse:
         """
         Get all comments for a document.
-        
+
+        Comment content is returned as Markdown (the same format `post_comment`
+        accepts), including mentions as `@[label](kind:id)`. Legacy comments
+        (`content_version` other than 2) are returned as raw HTML; check
+        `Comment.content_version` to tell the formats apart.
+
         Args:
             document_id (str): The ID of the document to get comments for
-            
+
         Returns:
             GetCommentsResponse: The list of comments for the document
-            
+
         Raises:
             VaizSDKError: If the API request fails
         """
-        request = GetCommentsRequest(document_id=document_id)
+        request = GetCommentsRequest(document_id=document_id, format="markdown")
         
         response_data = self._make_request("getComments", json_data=request.model_dump())
         return GetCommentsResponse(**response_data)
@@ -131,29 +154,47 @@ class CommentsAPIClient(BaseAPIClient):
     def edit_comment(
         self, 
         comment_id: str, 
-        content: str, 
+        content: Optional[str] = None,
         add_file_ids: Optional[List[str]] = None,
         order_file_ids: Optional[List[str]] = None,
-        remove_file_ids: Optional[List[str]] = None
+        remove_file_ids: Optional[List[str]] = None,
+        markdown: Optional[str] = None
     ) -> EditCommentResponse:
         """
         Edit an existing comment.
-        
+
+        Markdown is the recommended content format: it is converted to rich
+        comment content on the server. HTML `content` remains supported as
+        the legacy format. Exactly one of `content` or `markdown` must be
+        provided.
+
         Args:
             comment_id (str): The ID of the comment to edit
-            content (str): The new content for the comment (HTML supported)
+            content (Optional[str]): The new content as HTML (legacy format)
             add_file_ids (Optional[List[str]]): File IDs to add to the comment
             order_file_ids (Optional[List[str]]): File IDs in new order
             remove_file_ids (Optional[List[str]]): File IDs to remove from the comment
-            
+            markdown (Optional[str]): The new content as Markdown (recommended)
+
         Returns:
             EditCommentResponse: The updated comment
-            
+
         Raises:
+            ValueError: If both or neither of `content` and `markdown` are provided
             VaizSDKError: If the API request fails
+
+        Example:
+            >>> client.edit_comment(
+            ...     comment_id="comment_id",
+            ...     markdown="Updated with a [link](https://vaiz.app)"
+            ... )
         """
+        if (content is None) == (markdown is None):
+            raise ValueError("Provide exactly one of 'content' or 'markdown'")
+
         request = EditCommentRequest(
             content=content,
+            markdown=markdown,
             comment_id=comment_id,
             add_file_ids=add_file_ids or [],
             order_file_ids=order_file_ids or [],

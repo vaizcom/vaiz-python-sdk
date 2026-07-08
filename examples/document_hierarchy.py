@@ -218,7 +218,7 @@ Document ID: {doc.id}
 Kind: {doc.kind}
 """
                 
-                client.replace_document(doc.id, content)
+                client.replace_markdown_document(doc.id, content)
                 print(f"  ✅ Updated: {doc.title}")
             
             print(f"\n✅ Populated {min(3, len(docs.payload.documents))} documents with content")

@@ -147,7 +147,7 @@ content = """
 [Meeting content here]
 """
 
-client.replace_document(doc_id, content)
+client.replace_markdown_document(doc_id, content)
 print(f"✅ Document created and populated: {doc_id}")
 ```
 
@@ -323,9 +323,9 @@ if updated_doc:
 
 In addition to listing and creating documents, you can work with their content using document API methods.
 
-### Markdown Methods (Recommended)
+### Markdown Methods
 
-The simplest and recommended way to read and write document content is Markdown. It is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.):
+Document content is read and written as Markdown. It is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.):
 
 ```python
 # Replace document content with Markdown
@@ -345,151 +345,38 @@ markdown = client.get_markdown_document("document_id")
 print(markdown)
 ```
 
-The JSON-based methods below remain supported for backward compatibility.
-
-### Get Document Content
-
-Retrieve the JSON content of any document:
-
-```python
-# Get document content by ID
-content = client.get_json_document("document_id")
-print(content)  # Returns parsed JSON structure
-```
-
-This method is universal and works for:
+These methods are universal and work for:
 - Task descriptions
 - Standalone documents
 - Any document by its ID
 
-### Replace Document Content (Plain Text)
-
-Replace the entire content of a document with plain text:
-
-```python
-# Replace document content with plain text
-client.replace_document(
-    document_id="document_id",
-    description="New content here"
-)
-```
-
-**Use cases:**
-- Updating task descriptions programmatically
-- Bulk content updates
-- Template-based content generation
-
-### Replace Document Content (Rich JSON)
-
-Replace document content with structured rich content.
-
-**💡 Tip:** Use [Document Structure helper functions](./document-structure-helpers) for type-safe, readable content creation!
-
-```python
-# Replace with rich formatted content
-json_content = [
-    {
-        "type": "heading",
-        "attrs": {"level": 1},
-        "content": [
-            {"type": "text", "text": "Project Overview"}
-        ]
-    },
-    {
-        "type": "paragraph",
-        "content": [
-            {"type": "text", "text": "This is "},
-            {
-                "type": "text",
-                "marks": [{"type": "bold"}],
-                "text": "bold text"
-            },
-            {"type": "text", "text": " and this is "},
-            {
-                "type": "text",
-                "marks": [{"type": "italic"}],
-                "text": "italic text"
-            }
-        ]
-    },
-    {
-        "type": "bulletList",
-        "content": [
-            {
-                "type": "listItem",
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "content": [
-                            {"type": "text", "text": "First item"}
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "listItem",
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "content": [
-                            {"type": "text", "text": "Second item"}
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-]
-
-client.replace_json_document(
-    document_id="document_id",
-    content=json_content
-)
-```
-
-**Document Structure Format features:**
-- **Rich text formatting**: Bold, italic, underline, strikethrough, code
+**Supported Markdown features:**
+- **Rich text formatting**: Bold, italic, strikethrough, inline code
 - **Headings**: Multiple levels (h1-h6)
-- **Lists**: Bullet lists, numbered lists, task lists
-- **Links**: Hyperlinks with custom attributes
-- **Code blocks**: Syntax highlighted code
-- **Tables**: Structured tabular data
-- **And more**: Blockquotes, horizontal rules, mentions, etc.
+- **Lists**: Bullet lists, numbered lists, task lists (`- [ ]` / `- [x]`)
+- **Links**: Standard Markdown links
+- **Code blocks**: Fenced code blocks with syntax highlighting
+- **Tables**: Markdown tables
+- **Mentions**: `@[label](kind:id)` syntax (see below)
+- **And more**: Blockquotes, horizontal rules, etc.
 
-**Use cases:**
-- Creating structured documentation programmatically
-- Importing content from other systems with formatting
-- Generating reports with rich formatting
-- Building document templates with complex layouts
+### Mentions
 
-**With helper functions (recommended):**
+Mentions are written with a dedicated Markdown syntax and become live mention chips in the editor:
+
 ```python
-from vaiz import heading, paragraph, text, bullet_list, link_text, horizontal_rule
+member_id = client.get_profile().profile.member_id
 
-content = [
-    heading(1, "📚 Documentation"),
-    paragraph(
-        "Welcome to our ",
-        text("project docs", bold=True),
-        "!"
-    ),
-    horizontal_rule(),
-    heading(2, "Features"),
-    bullet_list(
-        "Easy to use",
-        "Type-safe",
-        "Well documented"
-    ),
-    paragraph(
-        "Learn more at ",
-        link_text("our docs", "https://docs.vaiz.app")
-    )
-]
-
-client.replace_json_document(document_id, content)
+client.replace_markdown_document(
+    document_id,
+    f"Please review, @[Reviewer](user:{member_id})\n\n"
+    f"Related: @[Spec](document:{document_id})"
+)
 ```
 
-See [Document Structure Helpers Guide](./document-structure-helpers) for complete documentation.
+Supported kinds: `user`, `task`, `document`, `milestone`, `project`, `board`.
+
+The label inside `[...]` is cosmetic — only the kind and ID are stored, and the editor renders the live entity name. When reading content back with `get_markdown_document()`, mentions are exported in the same syntax (with a generic label), so they survive read-edit-write round-trips.
 
 ### Update Project Document
 
@@ -512,7 +399,7 @@ target_doc = next(
 
 if target_doc:
     # 3. Get current content
-    current_content = client.get_json_document(target_doc.id)
+    current_markdown = client.get_markdown_document(target_doc.id)
     print(f"Current size: {target_doc.size} bytes")
     
     # 4. Update content
@@ -528,20 +415,16 @@ if target_doc:
 - Update documentation
 """
     
-    client.replace_document(target_doc.id, new_content)
+    client.replace_markdown_document(target_doc.id, new_content)
     print(f"✅ Updated: {target_doc.title}")
 ```
 
 ### Document Content Format
 
-Documents are stored as structured JSON. When you use `replace_document`, the content is converted to the appropriate format:
+Documents are stored in the Lexical editor format on the server. Markdown is the recommended way to write content — it is converted to native rich blocks (headings, lists, tables, bold/italic text, etc.):
 
 ```python
-# Plain text
-client.replace_document(doc_id, "Simple text")
-
-# Markdown-style formatting (as plain text)
-client.replace_document(
+client.replace_markdown_document(
     doc_id,
     """
 # Header
@@ -553,50 +436,6 @@ client.replace_document(
 **Bold** and *italic* text
 """
 )
-
-# Rich JSON format (with actual formatting)
-json_content = [
-    {
-        "type": "heading",
-        "attrs": {"level": 1},
-        "content": [{"type": "text", "text": "Header"}]
-    },
-    {
-        "type": "heading",
-        "attrs": {"level": 2},
-        "content": [{"type": "text", "text": "Subheader"}]
-    },
-    {
-        "type": "bulletList",
-        "content": [
-            {
-                "type": "listItem",
-                "content": [{
-                    "type": "paragraph",
-                    "content": [{"type": "text", "text": "List item 1"}]
-                }]
-            },
-            {
-                "type": "listItem",
-                "content": [{
-                    "type": "paragraph",
-                    "content": [{"type": "text", "text": "List item 2"}]
-                }]
-            }
-        ]
-    },
-    {
-        "type": "paragraph",
-        "content": [
-            {"type": "text", "marks": [{"type": "bold"}], "text": "Bold"},
-            {"type": "text", "text": " and "},
-            {"type": "text", "marks": [{"type": "italic"}], "text": "italic"},
-            {"type": "text", "text": " text"}
-        ]
-    }
-]
-
-client.replace_json_document(doc_id, json_content)
 ```
 
 ## See Also

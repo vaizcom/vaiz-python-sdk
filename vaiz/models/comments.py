@@ -23,6 +23,7 @@ class Comment(VaizBaseModel):
     document_id: str = Field(..., alias="documentId")
     author_id: str = Field(..., alias="authorId")
     content: str
+    content_version: Optional[int] = Field(default=None, alias="contentVersion")
     files: List[UploadedFile] = []
     reactions: List["CommentReaction"] = []
     reply_to: Optional[str] = Field(default=None, alias="replyTo")
@@ -36,9 +37,14 @@ class Comment(VaizBaseModel):
 
 
 class PostCommentRequest(BaseModel):
-    """Request model for creating a comment."""
+    """Request model for creating a comment.
 
-    content: str
+    Either `content` (HTML, legacy) or `markdown` must be provided.
+    Markdown is converted to rich comment content on the server.
+    """
+
+    content: Optional[str] = None
+    markdown: Optional[str] = None
     file_ids: List[str] = Field(default_factory=list, alias="fileIds")
     document_id: str = Field(..., alias="documentId")
     reply_to: Optional[str] = Field(default=None, alias="replyTo")
@@ -95,9 +101,14 @@ class ReactToCommentResponse(BaseModel):
 
 
 class GetCommentsRequest(BaseModel):
-    """Request model for getting comments."""
+    """Request model for getting comments.
+
+    The SDK always requests markdown: Lexical comments (`content_version == 2`)
+    are returned with `content` as markdown; legacy comments fall back to raw HTML.
+    """
 
     document_id: str = Field(..., alias="documentId")
+    format: Optional[str] = None
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -120,9 +131,14 @@ class GetCommentsResponse(BaseModel):
 
 
 class EditCommentRequest(BaseModel):
-    """Request model for editing a comment."""
+    """Request model for editing a comment.
 
-    content: str
+    Either `content` (HTML, legacy) or `markdown` may be provided.
+    Markdown is converted to rich comment content on the server.
+    """
+
+    content: Optional[str] = None
+    markdown: Optional[str] = None
     comment_id: str = Field(..., alias="commentId")
     add_file_ids: List[str] = Field(default_factory=list, alias="addFileIds")
     order_file_ids: List[str] = Field(default_factory=list, alias="orderFileIds")

@@ -35,23 +35,11 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`get_documents.py`** - List documents by scope (Space/Member/Project)
 - **`create_document.py`** - Create new documents
 - **`edit_document.py`** - Edit document metadata (e.g., title)
-- **`get_document.py`** - Get single document
-- **`replace_document.py`** - Replace document content with plain text
-- **`replace_json_document.py`** - Replace document content with rich JSON (document structure format)
-- **`replace_json_document_complex.py`** - Complex document with nested lists, inline code, links, and more
-- **`replace_json_document_with_helpers.py`** - Type-safe content creation using document structure helper functions
-- **`replace_json_document_with_table.py`** - Creating documents with tables for status reports and metrics
-- **`append_json_document.py`** - Appending content to existing documents (incremental updates)
+- **`get_document.py`** - Get document content as Markdown
+- **`markdown_documents.py`** - Replace, append, and read document content with Markdown (tables, checklists, code blocks)
 
 ### Advanced Workflows
 - **`document_hierarchy.py`** - Build nested document structures
-- **`document_content_management.py`** - Work with document content
-- **`advanced_document_workflows.py`** - Complex document scenarios
-- **`mention_blocks.py`** - Create documents with user, task, document, and milestone mentions
-- **`advanced_mention_usage.py`** - Advanced usage of mentions in tables, lists, and complex documents
-- **`document_navigation_blocks.py`** - TOC, Anchors, and Siblings navigation blocks
-- **`document_with_code_blocks.py`** - Code blocks with syntax highlighting
-- **`embed_blocks_example.py`** - Embed external content (YouTube, Figma, CodeSandbox, etc.)
 
 ## Custom Fields
 

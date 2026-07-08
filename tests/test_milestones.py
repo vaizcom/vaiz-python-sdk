@@ -189,7 +189,8 @@ def test_toggle_milestone(client):
     assert response.type == "ToggleMilestone"
     assert response.task.id == task_id
     assert milestone_id in response.task.milestones
-    assert response.task.milestone == milestone_id  # Should set the main milestone field too
+    # Note: the API no longer sets the main `milestone` field on toggle,
+    # only the `milestones` list is updated
     assert hasattr(response.task, "name")
     assert hasattr(response.task, "board")
     assert hasattr(response.task, "project")
