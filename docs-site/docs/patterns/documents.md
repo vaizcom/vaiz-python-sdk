@@ -11,7 +11,7 @@ Patterns for document management and hierarchies.
 
 ## Getting the Right Member ID
 
-For Member (personal) documents, use `member_id` from profile, not user `id`:
+For Member (personal) documents, use `member_id` from profile, not `user_id`:
 
 ```python
 # ✅ Correct way
@@ -29,7 +29,7 @@ docs = client.get_documents(
 )
 
 # ❌ Wrong way
-user_id = profile.profile.id  # This won't work for Member documents!
+user_id = profile.profile.user_id  # This won't work for Member documents!
 ```
 
 ## Creating Document Hierarchies

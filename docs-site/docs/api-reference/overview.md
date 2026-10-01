@@ -28,9 +28,9 @@ Complete reference documentation for all Vaiz SDK methods, models, and enums.
 
 ### User & Organization
 
-- [Profile](./profile) - User profile methods
+- [Profile](./profile) - Get and edit the current member profile
 - [Spaces](./spaces) - Space information methods
-- [Members](./members) - Space members methods
+- [Members](./members) - Space members and member lookup by IDs
 - [History](./history) - Change history methods
 
 ### System

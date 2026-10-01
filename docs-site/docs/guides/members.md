@@ -24,6 +24,20 @@ for member in response.members:
 See the [Members API Reference](../api-reference/members) for the complete Member model definition.
 :::
 
+## Get Members by IDs
+
+Tasks, comments and history reference members by ID. Use `get_members()` to resolve those IDs into names and emails without loading the whole space:
+
+```python
+task = client.get_task("PRJ-123").task
+
+response = client.get_members(task.assignees)
+for member in response.members:
+    print(f"👤 {member.full_name or member.nick_name} ({member.email})")
+```
+
+Unknown or invalid IDs are skipped.
+
 ## Color Configuration
 
 The member color includes the hex code and a brightness flag for UI contrast:

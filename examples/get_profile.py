@@ -5,7 +5,7 @@ Module demonstrating profile retrieval functionality.
 from .config import get_client
 
 def get_profile():
-    """Get user profile using the Vaiz SDK."""
+    """Get the current member's profile using the Vaiz SDK."""
     client = get_client()
     
     try:
@@ -13,20 +13,18 @@ def get_profile():
         profile = response.profile
         
         print("Profile retrieved successfully!")
-        print(f"ID: {profile.id}")
+        print(f"Member ID: {profile.member_id}")
+        print(f"User ID: {profile.user_id}")
+        print(f"Space: {profile.space}")
         print(f"Full Name: {profile.full_name}")
         print(f"Nickname: {profile.nick_name}")
         print(f"Email: {profile.email}")
-        print("\nEmail Addresses:")
-        for email in profile.emails:
-            print(f"  - {email.email} (Primary: {email.primary}, Confirmed: {email.confirmed})")
+        print(f"Position: {profile.position}")
         print(f"\nAvatar Mode: {profile.avatar_mode}")
-        print(f"Incomplete Steps: {profile.incomplete_steps}")
-        print(f"Member ID: {profile.member_id}")
-        print(f"Created: {profile.created_at}")
+        print(f"Joined: {profile.joined_date}")
         print(f"Updated: {profile.updated_at}")
         
-        return profile.id
+        return profile.member_id
     except Exception as e:
         print(f"Error retrieving profile: {e}")
         if hasattr(e, 'response') and e.response is not None:

@@ -29,7 +29,7 @@ document_id = task.document       # ✅ Type-safe
 profile_response = client.get_profile()
 profile = profile_response.profile   # ✅ Typed property
 user_name = profile.full_name        # ✅ Attribute access
-user_id = profile.id                 # ✅ Type-safe
+member_id = profile.member_id        # ✅ Type-safe
 
 # Get board
 board_response = client.get_board("board_id")

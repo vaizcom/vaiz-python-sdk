@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.21.0] - 2026-10-01
+
+### Added
+
+- **👤 Edit Profile**: New `edit_profile(EditProfileRequest(...))` method to update the current member's `full_name`, `nick_name`, `position`, `bio` and `phone_number` in the current space
+- **👥 Members by IDs**: New `get_members(member_ids)` method to resolve member IDs (assignees, comment authors, history) into members
+
+### Fixed
+
+- **👤 Profile**: `get_profile()` works with the per-space member profile introduced in Vaiz Release 100 (previously failed with a validation error on `registeredDate`)
+
+### Changed
+
+- **👤 Profile is per space**: `Profile.id` is now the member ID (it was the user ID). `profile.member_id` keeps returning the member ID on both old and new API versions
+  - New fields: `user_id`, `space`, `status`, `position`, `bio`, `joined_date`, `invited_by`, `kind`
+  - User account fields (`emails`, `registered_date`, `incomplete_steps`, `recovery_codes`, `webauthn_credentials`, etc.) are no longer returned by the API and are now optional/empty
+  - Migration: use `profile.member_id` for assignees, mentions and Member documents, and `profile.user_id` if you need the account ID
+- **👥 Members**: `Member` now exposes `position`, `bio`, `phone_number` and `invited_by`
+
 ## [0.20.0] - 2026-10-01
 
 ### Added

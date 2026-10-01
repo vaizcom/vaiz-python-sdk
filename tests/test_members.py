@@ -1,5 +1,5 @@
 import re
-from vaiz.models import GetSpaceMembersResponse, Member, ColorInfo, AvatarMode
+from vaiz.models import GetSpaceMembersResponse, GetMembersRequest, GetMembersResponse, Member, ColorInfo, AvatarMode
 from tests.test_config import get_test_client
 
 
@@ -74,6 +74,51 @@ def test_get_space_members():
     assert len(member.updated_at) > 0
     
     print(f"✓ Members test passed: {len(members)} member(s) found")
+
+
+def test_get_members_by_ids():
+    client = get_test_client()
+    space_members = client.get_space_members().members
+    expected = {m.id: m for m in space_members[:3]}
+
+    response = client.get_members(list(expected))
+
+    assert isinstance(response, GetMembersResponse)
+    assert response.type == "GetMembers"
+    assert {m.id for m in response.members} == set(expected)
+    for member in response.members:
+        assert isinstance(member, Member)
+        assert member.email == expected[member.id].email
+        assert member.full_name == expected[member.id].full_name
+
+
+def test_get_members_current_member():
+    client = get_test_client()
+    profile = client.get_profile().profile
+
+    members = client.get_members([profile.member_id]).members
+
+    assert len(members) == 1
+    assert members[0].id == profile.member_id
+    assert members[0].email == profile.email
+
+
+def test_get_members_skips_unknown_ids():
+    client = get_test_client()
+    profile = client.get_profile().profile
+
+    members = client.get_members([profile.member_id, "not-an-object-id", "000000000000000000000000"]).members
+
+    assert [m.id for m in members] == [profile.member_id]
+
+
+def test_get_members_empty_list():
+    client = get_test_client()
+    assert client.get_members([]).members == []
+
+
+def test_get_members_request_serialization():
+    assert GetMembersRequest(member_ids=["a", "b"]).model_dump() == {"memberIds": ["a", "b"]}
 
 
 if __name__ == "__main__":
