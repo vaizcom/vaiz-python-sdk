@@ -6,7 +6,7 @@ in the document editor format, allowing for rich formatting, links, and other fe
 """
 
 import json
-from examples.config import get_client
+from examples.config import get_client, BOARD_ID, GROUP_ID
 from vaiz.models import CreateTaskRequest, TaskPriority
 
 
@@ -17,8 +17,8 @@ def main():
     # First, create a task with initial description to get a document ID
     task = CreateTaskRequest(
         name="Task for JSON Document Replacement Demo",
-        group=client.space_id,  # Using space_id as fallback for demo
-        board="your_board_id",
+        board=BOARD_ID,
+        group=GROUP_ID,
         priority=TaskPriority.General,
         description="Initial description that will be replaced with rich content"
     )

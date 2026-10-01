@@ -13,7 +13,7 @@ This example demonstrates creating a comprehensive document with various documen
 """
 
 import json
-from examples.config import get_client
+from examples.config import get_client, BOARD_ID, GROUP_ID
 from vaiz.models import CreateTaskRequest, TaskPriority
 
 
@@ -24,8 +24,8 @@ def main():
     # Create a task to get a document ID
     task = CreateTaskRequest(
         name="Complex Document Structure Demo",
-        group=client.space_id,
-        board="your_board_id",
+        board=BOARD_ID,
+        group=GROUP_ID,
         priority=TaskPriority.General,
         description="Initial description"
     )

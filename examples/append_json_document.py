@@ -5,7 +5,7 @@ This example demonstrates how to add new content to documents without
 removing existing content - useful for incremental updates, logs, and notes.
 """
 
-from examples.config import get_client
+from examples.config import get_client, BOARD_ID, GROUP_ID
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz import heading, paragraph, text, bullet_list, horizontal_rule, blockquote
 
@@ -17,8 +17,8 @@ def main():
     # Create a task with initial content
     task = CreateTaskRequest(
         name="Incremental Document Updates Demo",
-        group=client.space_id,
-        board="your_board_id",
+        board=BOARD_ID,
+        group=GROUP_ID,
         priority=TaskPriority.General,
         description="Initial task description - this will remain"
     )

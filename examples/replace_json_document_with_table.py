@@ -5,7 +5,7 @@ This example demonstrates how to create structured tables in documents
 using the table helper functions.
 """
 
-from examples.config import get_client
+from examples.config import get_client, BOARD_ID, GROUP_ID
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz import (
     heading, paragraph, text, table, table_row,
@@ -20,8 +20,8 @@ def main():
     # Create a task
     task = CreateTaskRequest(
         name="Project Status Report with Table",
-        group=client.space_id,
-        board="your_board_id",
+        board=BOARD_ID,
+        group=GROUP_ID,
         priority=TaskPriority.General,
         description="Initial description"
     )
