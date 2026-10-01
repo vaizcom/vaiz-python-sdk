@@ -28,9 +28,10 @@ def test_get_projects(client):
 def test_get_project(client):
     # First get all projects to have a valid project ID
     projects_response = client.get_projects()
-    assert projects_response.projects, "No projects available for testing"
+    active_projects = [p for p in projects_response.projects if p.archived_at is None]
+    assert active_projects, "No active projects available for testing"
     
-    project_id = projects_response.projects[0].id
+    project_id = active_projects[0].id
     response = client.get_project(project_id)
     
     assert response.type == "GetProject"

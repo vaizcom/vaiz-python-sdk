@@ -30,7 +30,7 @@ def main():
         
         # Get initial content
         initial_content = client.get_json_document(document_id)
-        print(f"Initial content present: {len(initial_content.get('default', {}).get('content', []))} blocks")
+        print(f"Initial content present: {len(initial_content.get('root', {}).get('children', []))} blocks")
         
         # Append first update
         print("\n=== Appending Update #1 ===")
@@ -94,7 +94,7 @@ def main():
         
         # Verify all content exists
         final_content = client.get_json_document(document_id)
-        final_blocks = final_content.get('default', {}).get('content', [])
+        final_blocks = final_content.get('root', {}).get('children', [])
         
         print(f"\n📊 Final Document Summary:")
         print(f"   Total blocks: {len(final_blocks)}")

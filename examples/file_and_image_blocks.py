@@ -8,7 +8,7 @@ This example demonstrates how to:
 4. Combine them in rich document content
 """
 
-from examples.config import get_client, SPACE_ID
+from examples.config import get_client, count_lexical_nodes, SPACE_ID
 from vaiz import (
     heading,
     paragraph,
@@ -159,14 +159,8 @@ def main():
         print("\nVerifying blocks...")
         doc_content = client.get_json_document(document_id)
         
-        image_block_count = 0
-        files_block_count = 0
-        
-        for node in doc_content.get("default", {}).get("content", []):
-            if node.get("type") == "image-block":
-                image_block_count += 1
-            elif node.get("type") == "files":
-                files_block_count += 1
+        image_block_count = count_lexical_nodes(doc_content, "document-image")
+        files_block_count = count_lexical_nodes(doc_content, "document-files")
         
         print(f"✓ Found {image_block_count} image block(s)")
         print(f"✓ Found {files_block_count} files block(s)")

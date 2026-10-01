@@ -5,7 +5,7 @@ This example demonstrates combining mentions, files, images, tables,
 and other document elements in one rich document.
 """
 
-from examples.config import get_client, SPACE_ID
+from examples.config import get_client, count_lexical_nodes, SPACE_ID
 from vaiz import (
     heading,
     paragraph,
@@ -226,24 +226,10 @@ def main():
         print("\nVerifying blocks...")
         doc_content = client.get_json_document(document_id)
         
-        mention_count = 0
-        image_block_count = 0
-        files_block_count = 0
-        table_count = 0
-        
-        for node in doc_content.get("default", {}).get("content", []):
-            node_type = node.get("type")
-            
-            if node_type == "paragraph" and "content" in node:
-                for child in node["content"]:
-                    if child.get("type") == "custom-mention":
-                        mention_count += 1
-            elif node_type == "image-block":
-                image_block_count += 1
-            elif node_type == "files":
-                files_block_count += 1
-            elif node_type == "extension-table":
-                table_count += 1
+        mention_count = count_lexical_nodes(doc_content, "user-mention", "entity-mention")
+        image_block_count = count_lexical_nodes(doc_content, "document-image")
+        files_block_count = count_lexical_nodes(doc_content, "document-files")
+        table_count = count_lexical_nodes(doc_content, "table")
         
         print(f"✓ Found {mention_count} mention(s)")
         print(f"✓ Found {image_block_count} image block(s)")

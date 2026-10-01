@@ -11,7 +11,7 @@ This module tests the complete workflow of:
 import pytest
 import time
 from typing import List
-from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
+from tests.test_config import get_test_client, unique_name, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
 from vaiz.models import (
     CreateBoardCustomFieldRequest,
     EditBoardCustomFieldRequest, 
@@ -52,8 +52,9 @@ class TestMultiSelectCustomField:
         board_id = TEST_BOARD_ID
         
         # Step 1: Create the custom field
+        field_name = unique_name("Test Countries Field")
         create_request = CreateBoardCustomFieldRequest(
-            name="Test Countries Field",
+            name=field_name,
             type=CustomFieldType.SELECT,
             board_id=board_id,
             description="Test field for country selection",
@@ -66,7 +67,7 @@ class TestMultiSelectCustomField:
         assert response.custom_field is not None
         
         custom_field = response.custom_field
-        assert custom_field.name == "Test Countries Field"
+        assert custom_field.name == field_name
         assert custom_field.type == CustomFieldType.SELECT
         assert custom_field.description == "Test field for country selection"
         assert custom_field.hidden is False
@@ -116,7 +117,7 @@ class TestMultiSelectCustomField:
         
         test_option = make_select_option("Test Country", Color.Red, Icon.User)
         select_field_request = make_select_field(
-            name="Test Countries Single",
+            name=unique_name("Test Countries Single"),
             board_id=board_id,
             options=[test_option],
             description="Test select field for single selection"
@@ -172,7 +173,7 @@ class TestMultiSelectCustomField:
         from vaiz.helpers import make_select_field
         
         select_field_request = make_select_field(
-            name="Test Countries Multi",
+            name=unique_name("Test Countries Multi"),
             board_id=board_id,
             options=country_options,
             description="Test select field for multi selection"
@@ -241,7 +242,7 @@ class TestMultiSelectCustomField:
         
         # Create select field with country options
         select_field_request = make_select_field(
-            name="Test Countries Retrieve",
+            name=unique_name("Test Countries Retrieve"),
             board_id=board_id,
             options=country_options,
             description="Test select field for retrieval test"
@@ -314,7 +315,7 @@ class TestMultiSelectCustomField:
         
         # Step 1: Create custom field
         create_request = CreateBoardCustomFieldRequest(
-            name="Test Complete Workflow",
+            name=unique_name("Test Complete Workflow"),
             type=CustomFieldType.SELECT,
             board_id=board_id,
             description="Complete workflow test field",

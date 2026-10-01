@@ -19,18 +19,53 @@ These methods work with document content for both task descriptions and standalo
 get_json_document(document_id: str) -> Dict[str, Any]
 ```
 
-Get the JSON content of a specific document or task description.
+Get the content of a specific document or task description as Lexical JSON (the format of the Vaiz rich editor).
 
 **Parameters:**
 - `document_id` - Document ID (from task or standalone document)
 
-**Returns:** `Dict[str, Any]` - Parsed JSON structure
+**Returns:** `Dict[str, Any]` - Lexical `SerializedEditorState`:
+
+```python
+{
+    "root": {
+        "type": "root",
+        "children": [
+            {"type": "heading", "tag": "h1", "children": [{"type": "text", "text": "Title", "format": 0}]},
+            {"type": "list", "listType": "check", "children": [
+                {"type": "listitem", "checked": True, "children": [{"type": "text", "text": "Done"}]}
+            ]},
+        ]
+    }
+}
+```
+
+The write methods below accept the document structure format described on this page and convert it to Lexical on the server, so the JSON you read back is shaped differently from the JSON you write. For reading content as text prefer [`get_markdown_document`](./documents#get_markdown_document).
+
+| Written block | Lexical node `type` |
+|---------------|---------------------|
+| `paragraph`, `heading` | `paragraph`, `heading` (`tag`: `h1`…`h6`) |
+| `bulletList` / `orderedList` / `taskList` | `list` with `listType`: `bullet` / `number` / `check` |
+| `listItem`, `taskItem` | `listitem` (`checked` for checklists) |
+| `blockquote` | `quote` |
+| `codeBlock` | `code` (`language`) |
+| `horizontalRule` | `document-hr` |
+| `extension-table` | `table` → `tablerow` → `tablecell` (`colSpan`, `rowSpan`, `headerState`) |
+| `details` | `details` → `detailsSummary`, `detailsContent` |
+| `custom-mention` | `user-mention` (`userId`) or `entity-mention` (`entityKind`, `entityId`) |
+| `image-block` | `document-image` (`data.src`, `data.caption`) |
+| `files` | `document-files` (`data.files`) |
+| `embed` | `document-embed` (`data.provider`, `data.url`) |
+| `doc-siblings` | `document-navigation` (`data.navigationType`) |
+
+Text marks are stored as a `format` bitmask on `text` nodes: bold = 1, italic = 2, strikethrough = 4, underline = 8, code = 16. Links are `link` nodes with `url`.
 
 **Example:**
 ```python
 # Get standalone document content
 content = client.get_json_document("document_id")
-print(content)
+for block in content["root"]["children"]:
+    print(block["type"])
 
 # Get task description
 task_response = client.get_task("PRJ-123")

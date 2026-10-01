@@ -4,6 +4,7 @@ Tests for Document Structure helper functions.
 
 import pytest
 from tests.test_config import get_test_client
+from tests.lexical_utils import root_children
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz.helpers.document_structure import (
     text, paragraph, heading, bullet_list, ordered_list,
@@ -854,16 +855,16 @@ def test_create_comprehensive_document_with_all_features():
     
     # Verify the document was created successfully
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
+    saved_blocks = root_children(saved)
     
     # Count different element types
     headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
     paragraphs = sum(1 for b in saved_blocks if b.get("type") == "paragraph")
-    tables = sum(1 for b in saved_blocks if b.get("type") == "extension-table")
-    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "bulletList")
-    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "orderedList")
-    hrs = sum(1 for b in saved_blocks if b.get("type") == "horizontalRule")
-    blockquotes = sum(1 for b in saved_blocks if b.get("type") == "blockquote")
+    tables = sum(1 for b in saved_blocks if b.get("type") == "table")
+    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "list" and b.get("listType") == "bullet")
+    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "list" and b.get("listType") == "number")
+    hrs = sum(1 for b in saved_blocks if b.get("type") == "document-hr")
+    blockquotes = sum(1 for b in saved_blocks if b.get("type") == "quote")
     details_blocks = sum(1 for b in saved_blocks if b.get("type") == "details")
     
     # Verify we have a good variety of content
@@ -879,19 +880,16 @@ def test_create_comprehensive_document_with_all_features():
     # Verify table headers are used correctly
     found_table_headers = False
     for block in saved_blocks:
-        if block.get("type") == "extension-table":
-            table_content = block.get("content", [])
+        if block.get("type") == "table":
+            table_content = block.get("children", [])
             if table_content:
-                first_row = table_content[0]
-                first_row_cells = first_row.get("content", [])
-                if first_row_cells:
-                    # Check if first cell is a header
-                    first_cell_type = first_row_cells[0].get("type")
-                    if first_cell_type == "tableHeader":
-                        found_table_headers = True
-                        break
+                first_row_cells = table_content[0].get("children", [])
+                # Lexical marks header cells with a non-zero headerState
+                if first_row_cells and first_row_cells[0].get("headerState"):
+                    found_table_headers = True
+                    break
     
-    assert found_table_headers, "At least one table should use tableHeader cells"
+    assert found_table_headers, "At least one table should use header cells"
     
     print("✅ Comprehensive document created successfully")
     print(f"   Total blocks: {len(saved_blocks)}")

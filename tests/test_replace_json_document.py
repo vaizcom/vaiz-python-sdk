@@ -4,6 +4,9 @@ Tests for replaceJSONDocument API endpoint.
 
 import pytest
 from tests.test_config import get_test_client
+from tests.lexical_utils import (
+    TEXT_FORMAT_BOLD, TEXT_FORMAT_CODE, TEXT_FORMAT_ITALIC, find_nodes, has_text_format, root_children,
+)
 
 
 def test_replace_json_document():
@@ -774,20 +777,21 @@ def test_replace_json_document_complete_replacement():
     assert "Verified Structure" in saved_text, "New heading not found"
     
     # Verify structure elements are saved correctly
-    saved_blocks = saved_content.get("default", {}).get("content", [])
+    saved_blocks = root_children(saved_content)
     
     # Verify we have all expected block types
     block_types = [block.get("type") for block in saved_blocks]
+    list_types = [block.get("listType") for block in saved_blocks if block.get("type") == "list"]
     assert "heading" in block_types, "Heading not saved"
     assert "paragraph" in block_types, "Paragraph not saved"
-    assert "bulletList" in block_types, "Bullet list not saved"
-    assert "orderedList" in block_types, "Ordered list not saved"
+    assert "bullet" in list_types, "Bullet list not saved"
+    assert "number" in list_types, "Ordered list not saved"
     
-    # Verify marks are preserved
-    assert "bold" in saved_text, "Bold formatting not preserved"
-    assert "italic" in saved_text, "Italic formatting not preserved"
-    assert "code" in saved_text, "Code formatting not preserved"
-    assert "vaiz.app" in saved_text, "Link not preserved"
+    # Verify marks are preserved (Lexical text format bitmask)
+    assert has_text_format(saved_content, TEXT_FORMAT_BOLD), "Bold formatting not preserved"
+    assert has_text_format(saved_content, TEXT_FORMAT_ITALIC), "Italic formatting not preserved"
+    assert has_text_format(saved_content, TEXT_FORMAT_CODE), "Code formatting not preserved"
+    assert any("vaiz.app" in (link.get("url") or "") for link in find_nodes(saved_content, "link")), "Link not preserved"
     
     print(f"✅ STRICT TEST PASSED: Complete replacement verified")
     print(f"   ✓ Old content removed (OLD_CONTENT_MARKER not found)")

@@ -74,20 +74,16 @@ def test_get_task(client, task_id):
 
 def test_get_history(client, task_id):
     """Test the get_history API method for a task."""
-    request = GetHistoryRequest(
-        kind=Kind.Task,
-        kindId=task_id,
-        excludeKeys=["TASK_COMMENTED", "MILESTONE_COMMENTED", "DOCUMENT_COMMENTED"],
-        lastLoadedDate=0
-    )
+    request = GetHistoryRequest(kind=Kind.Task, kindId=task_id)
     response = client.get_history(request)
     assert isinstance(response, GetHistoryResponse)
     assert response.type == "GetHistory"
-    assert hasattr(response.payload, "histories")
-    assert isinstance(response.payload.histories, list)
-    # Optionally check that each item is a HistoryItem
-    if response.payload.histories:
-        assert isinstance(response.payload.histories[0], HistoryItem)
+    assert isinstance(response.payload.items, list)
+    assert response.payload.page is not None
+    assert isinstance(response.payload.page.hasMore, bool)
+    assert response.payload.items, "Newly created task should have a TASK_CREATED history record"
+    assert isinstance(response.payload.items[0], HistoryItem)
+    assert response.payload.items[0].id
 
 
 def test_get_history_with_all_params(client, task_id):
@@ -95,45 +91,78 @@ def test_get_history_with_all_params(client, task_id):
     request = GetHistoryRequest(
         kind=Kind.Task,
         kindId=task_id,
-        createdBy=[str(TEST_ASSIGNEE_ID)] if TEST_ASSIGNEE_ID else None,
+        memberIds=[str(TEST_ASSIGNEE_ID)] if TEST_ASSIGNEE_ID else None,
         dateRangeStart=datetime(2025, 1, 1),
-        dateRangeEnd=datetime(2026, 12, 31),
+        dateRangeEnd=datetime(2100, 1, 1),
         limit=10,
-        lastLoadedDate=0,
-        keys=["TASK_CREATED"],
-        excludeKeys=None,
-        tasksIds=[task_id],
-        groupsIds=[TEST_GROUP_ID] if TEST_GROUP_ID else None,
+        eventKeys=["TASK_CREATED"],
     )
     response = client.get_history(request)
     assert isinstance(response, GetHistoryResponse)
     assert response.type == "GetHistory"
-    assert isinstance(response.payload.histories, list)
+    assert isinstance(response.payload.items, list)
+    assert all(item.key == "TASK_CREATED" for item in response.payload.items)
+
+
+def test_get_history_pagination(client, task_id):
+    """Test cursor pagination through history with limit=1."""
+    first = client.get_history(GetHistoryRequest(kind=Kind.Task, kindId=task_id, limit=1))
+    assert len(first.payload.items) <= 1
+    if first.payload.page and first.payload.page.hasMore:
+        second = client.get_history(GetHistoryRequest(
+            kind=Kind.Task,
+            kindId=task_id,
+            limit=1,
+            nextCursor=first.payload.page.nextCursor,
+        ))
+        assert second.payload.items
+        assert second.payload.items[0].id != first.payload.items[0].id
 
 
 def test_get_history_request_model_dump():
     """Test that GetHistoryRequest model_dump excludes None values."""
-    request = GetHistoryRequest(
-        kind=Kind.Task,
-        kindId="test_task_id",
-        lastLoadedDate=0,
-    )
+    request = GetHistoryRequest(kind=Kind.Task, kindId="test_task_id")
     dumped = request.model_dump(by_alias=True)
 
-    # These should be present
-    assert "kind" in dumped
-    assert "kindId" in dumped
-    assert "lastLoadedDate" in dumped
+    assert dumped == {"kind": "Task", "kindId": "test_task_id"}
 
-    # These should be excluded (None)
-    assert "createdBy" not in dumped
-    assert "dateRangeStart" not in dumped
-    assert "dateRangeEnd" not in dumped
-    assert "limit" not in dumped
-    assert "keys" not in dumped
-    assert "excludeKeys" not in dumped
-    assert "tasksIds" not in dumped
-    assert "groupsIds" not in dumped
+
+def test_get_history_request_deprecated_aliases():
+    """Old filter names are mapped to the new ones with a DeprecationWarning."""
+    with pytest.warns(DeprecationWarning):
+        request = GetHistoryRequest(
+            kind=Kind.Task,
+            kindId="test_task_id",
+            createdBy=["member1"],
+            keys=["TASK_CREATED"],
+            groupsIds=["group1"],
+            lastLoadedDate=1700000000,
+            excludeKeys=["TASK_COMMENTED"],
+            tasksIds=["task1"],
+        )
+    dumped = request.model_dump(by_alias=True)
+    assert dumped == {
+        "kind": "Task",
+        "kindId": "test_task_id",
+        "memberIds": ["member1"],
+        "eventKeys": ["TASK_CREATED"],
+        "groupIds": ["group1"],
+        "nextCursor": 1700000000,
+    }
+
+
+def test_get_history_request_last_loaded_date_zero_is_dropped():
+    """lastLoadedDate=0 (old default) means 'from the newest record' and is not sent."""
+    with pytest.warns(DeprecationWarning):
+        request = GetHistoryRequest(kind=Kind.Task, kindId="t", lastLoadedDate=0)
+    assert "nextCursor" not in request.model_dump(by_alias=True)
+
+
+def test_get_history_payload_histories_alias():
+    """payload.histories is kept as a deprecated alias for payload.items."""
+    response = GetHistoryResponse(type="GetHistory", payload={"items": [], "page": {"hasMore": False}})
+    with pytest.warns(DeprecationWarning):
+        assert response.payload.histories == []
 
 
 def test_get_history_request_with_date_range():
@@ -163,38 +192,27 @@ def test_get_history_request_all_fields_populated():
     request = GetHistoryRequest(
         kind=Kind.Project,
         kindId="project_abc",
-        createdBy=["member1", "member2"],
+        memberIds=["member1", "member2"],
+        boardIds=["board1"],
+        groupIds=["group1"],
+        agentId="agent1",
+        eventKeys=["TASK_CREATED", "TASK_COMPLETED"],
         dateRangeStart=datetime(2025, 1, 1),
         dateRangeEnd=datetime(2025, 12, 31),
         limit=25,
-        lastLoadedDate=1700000000,
-        keys=["TASK_CREATED", "TASK_COMPLETED"],
-        excludeKeys=["TASK_COMMENTED"],
-        tasksIds=["task1", "task2"],
-        groupsIds=["group1"],
+        nextCursor=1700000000000,
     )
     assert request.kind == Kind.Project
     assert request.kindId == "project_abc"
-    assert request.createdBy == ["member1", "member2"]
-    assert request.dateRangeStart == datetime(2025, 1, 1)
-    assert request.dateRangeEnd == datetime(2025, 12, 31)
-    assert request.limit == 25
-    assert request.lastLoadedDate == 1700000000
-    assert request.keys == ["TASK_CREATED", "TASK_COMPLETED"]
-    assert request.excludeKeys == ["TASK_COMMENTED"]
-    assert request.tasksIds == ["task1", "task2"]
-    assert request.groupsIds == ["group1"]
+    assert request.memberIds == ["member1", "member2"]
+    assert request.groupIds == ["group1"]
+    assert request.eventKeys == ["TASK_CREATED", "TASK_COMPLETED"]
+    assert request.nextCursor == 1700000000000
 
     dumped = request.model_dump(by_alias=True)
-    # All fields should be present when populated
-    assert "createdBy" in dumped
-    assert "dateRangeStart" in dumped
-    assert "dateRangeEnd" in dumped
-    assert "limit" in dumped
-    assert "keys" in dumped
-    assert "excludeKeys" in dumped
-    assert "tasksIds" in dumped
-    assert "groupsIds" in dumped
+    for key in ("memberIds", "boardIds", "groupIds", "agentId", "eventKeys",
+                "dateRangeStart", "dateRangeEnd", "limit", "nextCursor"):
+        assert key in dumped
 
 
 def test_task_get_description_method_with_initial_content(client):

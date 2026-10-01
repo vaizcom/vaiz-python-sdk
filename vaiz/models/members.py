@@ -14,10 +14,11 @@ class Member(VaizBaseModel):
     avatar: Optional[str] = None
     avatar_mode: AvatarMode = Field(..., alias="avatarMode")
     color: ColorInfo
-    space: str
+    space: Optional[str] = None  # Absent for global bot members (AI, GitHub, Cursor, etc.)
     status: str
     joined_date: str = Field(..., alias="joinedDate")  # String date from API
     updated_at: str = Field(..., alias="updatedAt")    # String date from API
+    kind: Optional[str] = None  # Bot kind, e.g. "AiBot", "GitHubBot"; None for regular members
 
 
 class GetSpaceMembersPayload(BaseModel):

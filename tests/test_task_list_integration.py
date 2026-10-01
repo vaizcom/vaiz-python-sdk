@@ -10,6 +10,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from test_config import get_test_client, TEST_BOARD_ID, TEST_GROUP_ID
+from lexical_utils import find_nodes, root_children
 from vaiz import (
     CreateTaskRequest,
     heading,
@@ -22,6 +23,18 @@ from vaiz import (
 def get_client():
     """Get test client."""
     return get_test_client()
+
+
+def is_check_list(node):
+    return node.get("type") == "list" and node.get("listType") == "check"
+
+
+def check_items(check_list):
+    """Checklist items of a Lexical check list, skipping wrapper items that only hold a nested list."""
+    return [
+        item for item in check_list.get("children", [])
+        if not all(child.get("type") == "list" for child in item.get("children", []))
+    ]
 
 
 def get_board_id():
@@ -78,24 +91,14 @@ def test_create_task_with_simple_checklist():
     doc_content = client.get_json_document(task.task.document)
     
     # Verify structure
-    assert "default" in doc_content
-    content_blocks = doc_content["default"]["content"]
-    
-    # Find task list block
-    task_list_block = None
-    for block in content_blocks:
-        if block.get("type") == "taskList":
-            task_list_block = block
-            break
+    task_list_block = next((b for b in root_children(doc_content) if is_check_list(b)), None)
     
     assert task_list_block is not None, "Task list block not found in document"
-    assert len(task_list_block["content"]) == 3
+    items = check_items(task_list_block)
+    assert len(items) == 3
     
     # Verify task items
-    items = task_list_block["content"]
-    assert items[0]["attrs"]["checked"] == True
-    assert items[1]["attrs"]["checked"] == False
-    assert items[2]["attrs"]["checked"] == False
+    assert [item.get("checked") for item in items] == [True, False, False]
     
     print(f"✅ Created task with checklist: {task_id}")
     return task_id
@@ -162,32 +165,17 @@ def test_create_task_with_nested_checklist():
     doc_content = client.get_json_document(task.task.document)
     
     # Verify nested structure exists
-    assert "default" in doc_content
-    content_blocks = doc_content["default"]["content"]
-    
-    # Find main task list
-    main_task_list = None
-    for block in content_blocks:
-        if block.get("type") == "taskList":
-            main_task_list = block
-            break
+    main_task_list = next((b for b in root_children(doc_content) if is_check_list(b)), None)
     
     assert main_task_list is not None
-    assert len(main_task_list["content"]) == 2
+    top_items = check_items(main_task_list)
+    assert len(top_items) == 2
+    assert top_items[0].get("checked") == True
+    assert top_items[1].get("checked") == False
     
-    # Verify first item has nested list
-    first_item = main_task_list["content"][0]
-    assert first_item["attrs"]["checked"] == True
-    
-    # Find nested task list in first item
-    nested_list = None
-    for item in first_item["content"]:
-        if isinstance(item, dict) and item.get("type") == "taskList":
-            nested_list = item
-            break
-    
-    assert nested_list is not None
-    assert len(nested_list["content"]) == 3
+    # Nested checklists: Phase 1 (3 items), Phase 2 (3 items), Testing (2 items)
+    nested_lists = [n for n in find_nodes(doc_content, "list", listType="check") if n is not main_task_list]
+    assert [len(check_items(n)) for n in nested_lists] == [3, 3, 2]
     
     print(f"✅ Created task with nested checklist: {task_id}")
     return task_id
@@ -226,10 +214,10 @@ def test_update_task_with_checklist():
     
     # Verify update
     doc_content = client.get_json_document(document_id)
-    content_blocks = doc_content["default"]["content"]
+    content_blocks = root_children(doc_content)
     
     # Find task list
-    has_task_list = any(block.get("type") == "taskList" for block in content_blocks)
+    has_task_list = any(is_check_list(block) for block in content_blocks)
     assert has_task_list, "Task list not found after update"
     
     print(f"✅ Updated task with checklist: {task_id}")
@@ -285,10 +273,10 @@ def test_task_list_with_mixed_content():
     # Verify content
     task = client.get_task(task_id)
     doc_content = client.get_json_document(task.task.document)
-    content_blocks = doc_content["default"]["content"]
+    content_blocks = root_children(doc_content)
     
     # Count task lists
-    task_lists = [block for block in content_blocks if block.get("type") == "taskList"]
+    task_lists = [block for block in content_blocks if is_check_list(block)]
     assert len(task_lists) == 2, "Should have 2 task lists"
     
     # Count headings

@@ -37,6 +37,7 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`edit_document.py`** - Edit document metadata (e.g., title)
 - **`get_document.py`** - Get single document
 - **`replace_document.py`** - Replace document content with plain text
+- **`markdown_document.py`** - Replace, append, and read document content as Markdown (recommended)
 - **`replace_json_document.py`** - Replace document content with rich JSON (document structure format)
 - **`replace_json_document_complex.py`** - Complex document with nested lists, inline code, links, and more
 - **`replace_json_document_with_helpers.py`** - Type-safe content creation using document structure helper functions

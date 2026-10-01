@@ -1,5 +1,5 @@
 from .base import TaskFollower, TaskPriority, CustomField, VaizBaseModel, ColorInfo
-from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField, GetHistoryRequest, GetHistoryResponse, HistoryItem, HistoryData, GetHistoryPayload, GetTasksRequest, GetTasksResponse, GetTasksPayload, MoveTaskItem, MoveTasksRequest, MoveTasksPayload, MoveTasksResponse
+from .tasks import Task, TaskResponse, CreateTaskRequest, EditTaskRequest, TaskFile, TaskUploadFile, TaskCustomField, GetHistoryRequest, GetHistoryResponse, HistoryItem, HistoryData, HistoryPage, GetHistoryPayload, GetTasksRequest, GetTasksResponse, GetTasksPayload, MoveTaskItem, MoveTasksRequest, MoveTasksPayload, MoveTasksResponse
 from .boards import Board, BoardResponse, BoardsResponse, CustomFieldType, CreateBoardTypeRequest, CreateBoardTypeResponse, EditBoardTypeRequest, EditBoardTypeResponse, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse, CreateBoardCustomFieldRequest, CreateBoardCustomFieldResponse, EditBoardCustomFieldRequest, EditBoardCustomFieldResponse
 from .profile import Profile, ProfileResponse
 from .projects import Project, ProjectsResponse, ProjectResponse
@@ -31,6 +31,7 @@ __all__ = [
     'GetHistoryResponse',
     'HistoryItem',
     'HistoryData',
+    'HistoryPage',
     'GetHistoryPayload',
     'GetTasksRequest',
     'GetTasksResponse',

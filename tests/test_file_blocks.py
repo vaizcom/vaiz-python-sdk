@@ -13,6 +13,7 @@ from vaiz.helpers import (
 from vaiz.models import CreateDocumentRequest, Kind
 from vaiz.models.enums import UploadFileType
 from tests.test_config import get_test_client, TEST_SPACE_ID
+from tests.lexical_utils import root_children
 import json
 
 
@@ -309,31 +310,21 @@ def test_create_document_with_file_blocks():
         # Verify blocks were created
         doc_content = client.get_json_document(test_doc_id)
         
-        assert doc_content is not None
-        assert "default" in doc_content
-        assert "content" in doc_content["default"]
-        
-        doc_nodes = doc_content["default"]["content"]
+        doc_nodes = root_children(doc_content)
         
         # Find file blocks
-        image_blocks = [n for n in doc_nodes if n.get("type") == "image-block"]
-        files_blocks = [n for n in doc_nodes if n.get("type") == "files"]
+        image_blocks = [n for n in doc_nodes if n.get("type") == "document-image"]
+        files_blocks = [n for n in doc_nodes if n.get("type") == "document-files"]
         
         assert len(image_blocks) == 1, "Image block not found"
         assert len(files_blocks) == 1, "Files block not found"
         
         # Verify image block structure
-        image_block_node = image_blocks[0]
-        assert "content" in image_block_node
-        image_content = image_block_node["content"][0]["text"]
-        image_data = json.loads(image_content)
-        assert image_data["fileId"] == image_uploaded.file.id
+        image_data = image_blocks[0]["data"]
+        assert image_data["src"] == image_uploaded.file.url
         
         # Verify files block structure
-        files_block_node = files_blocks[0]
-        assert "content" in files_block_node
-        files_content = files_block_node["content"][0]["text"]
-        files_data = json.loads(files_content)
+        files_data = files_blocks[0]["data"]
         assert "files" in files_data
         assert len(files_data["files"]) == 1
         assert files_data["files"][0]["fileId"] == pdf_uploaded.file.id
@@ -414,28 +405,22 @@ def test_add_images_with_captions_to_existing_document():
     # Verify blocks were created with captions
     doc_content = client.get_json_document(document_id)
     
-    assert doc_content is not None
-    assert "default" in doc_content
-    assert "content" in doc_content["default"]
-    
-    doc_nodes = doc_content["default"]["content"]
+    doc_nodes = root_children(doc_content)
     
     # Find image blocks
-    image_blocks = [n for n in doc_nodes if n.get("type") == "image-block"]
+    image_blocks = [n for n in doc_nodes if n.get("type") == "document-image"]
     
     assert len(image_blocks) == 3, f"Expected 3 image blocks, found {len(image_blocks)}"
     
     # Verify all images have captions
     captions_found = 0
     for idx, image_block_node in enumerate(image_blocks):
-        assert "content" in image_block_node
-        image_content = image_block_node["content"][0]["text"]
-        image_data = json.loads(image_content)
+        image_data = image_block_node["data"]
         
-        assert image_data["fileId"] == image_uploaded.file.id
+        assert image_data["src"] == image_uploaded.file.url
         
         # Check caption exists
-        if "caption" in image_data:
+        if image_data.get("caption"):
             captions_found += 1
             print(f"   Image {idx + 1} caption: {image_data['caption'][:50]}...")
     

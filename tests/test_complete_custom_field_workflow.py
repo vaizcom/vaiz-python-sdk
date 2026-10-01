@@ -7,7 +7,7 @@ and verifies that everything appears correctly on the board.
 
 import pytest
 from datetime import datetime, timedelta
-from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
+from tests.test_config import get_test_client, unique_name, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
 
 from vaiz import (
     # Field creation helpers
@@ -76,7 +76,7 @@ class TestCompleteCustomFieldWorkflow:
         field_data = {}
         # Text field
         text_field = make_text_field(
-            name="🏢 Company Name",
+            name=unique_name("🏢 Company Name"),
             board_id=TEST_BOARD_ID,
             description="Name of the client company"
         )
@@ -90,7 +90,7 @@ class TestCompleteCustomFieldWorkflow:
         print(f"  ✅ Created text field: {response.custom_field.id}")
         # Number field
         number_field = make_number_field(
-            name="💰 Budget Amount",
+            name=unique_name("💰 Budget Amount"),
             board_id=TEST_BOARD_ID,
             description="Project budget in USD"
         )
@@ -104,7 +104,7 @@ class TestCompleteCustomFieldWorkflow:
         print(f"  ✅ Created number field: {response.custom_field.id}")
         # Checkbox field
         checkbox_field = make_checkbox_field(
-            name="✅ Client Approved",
+            name=unique_name("✅ Client Approved"),
             board_id=TEST_BOARD_ID,
             description="Has the client approved this?"
         )
@@ -118,7 +118,7 @@ class TestCompleteCustomFieldWorkflow:
         print(f"  ✅ Created checkbox field: {response.custom_field.id}")
         # Date field
         date_field = make_date_field(
-            name="📅 Launch Date",
+            name=unique_name("📅 Launch Date"),
             board_id=TEST_BOARD_ID,
             description="Planned launch date"
         )
@@ -132,7 +132,7 @@ class TestCompleteCustomFieldWorkflow:
         print(f"  ✅ Created date field: {response.custom_field.id}")
         # URL field
         url_field = make_url_field(
-            name="🔗 Project Link",
+            name=unique_name("🔗 Project Link"),
             board_id=TEST_BOARD_ID,
             description="Link to project documentation"
         )
@@ -152,7 +152,7 @@ class TestCompleteCustomFieldWorkflow:
             make_select_option("🌱 Low", Color.Green, Icon.Target)
         ]
         select_field = make_select_field(
-            name="🎯 Priority Level",
+            name=unique_name("🎯 Priority Level"),
             board_id=TEST_BOARD_ID,
             options=priority_options,
             description="Task priority level"

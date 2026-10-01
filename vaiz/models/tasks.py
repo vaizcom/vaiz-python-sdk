@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, ConfigDict
+import warnings
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from datetime import datetime
 from .base import TaskPriority, CustomField, VaizBaseModel
@@ -31,7 +32,7 @@ class TaskFile(VaizBaseModel):
 
 class TaskCustomField(BaseModel):
     id: str
-    value: Any
+    value: Any = None
     _id: str
 
 
@@ -65,7 +66,7 @@ class Task(VaizBaseModel):
     updated_at: datetime = Field(..., alias="updatedAt")
     document: str
     editor: Optional[str] = None
-    milestone: Optional[str] = None
+    milestone: Optional[str] = None  # Deprecated: no longer returned by the API, use `milestones`
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -76,7 +77,7 @@ class Task(VaizBaseModel):
             client (VaizClient): An initialized Vaiz client instance
 
         Returns:
-            Dict[str, Any]: Parsed JSON document body for this task's description
+            Dict[str, Any]: Lexical editor state of this task's description
         """
         return client.get_json_document(self.document)
 
@@ -203,18 +204,54 @@ class TaskUploadFile(BaseModel):
         return UploadFileType.Pdf 
 
 
+_RENAMED_HISTORY_FILTERS = {
+    "createdBy": "memberIds",
+    "keys": "eventKeys",
+    "groupsIds": "groupIds",
+    "lastLoadedDate": "nextCursor",
+}
+_UNSUPPORTED_HISTORY_FILTERS = ("excludeKeys", "tasksIds")
+
+
 class GetHistoryRequest(VaizBaseModel):
     kind: Kind
     kindId: str
-    createdBy: Optional[List[str]] = None
+    memberIds: Optional[List[str]] = None
+    boardIds: Optional[List[str]] = None
+    groupIds: Optional[List[str]] = None
+    agentId: Optional[str] = None
+    eventKeys: Optional[List[str]] = None
     dateRangeStart: Optional[datetime] = None
     dateRangeEnd: Optional[datetime] = None
     limit: Optional[int] = None
-    lastLoadedDate: Optional[int] = 0
-    keys: Optional[List[str]] = None
-    excludeKeys: Optional[List[str]] = None
-    tasksIds: Optional[List[str]] = None
-    groupsIds: Optional[List[str]] = None
+    nextCursor: Optional[int] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _migrate_deprecated_filters(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        data = dict(data)
+        for old, new in _RENAMED_HISTORY_FILTERS.items():
+            if old not in data:
+                continue
+            value = data.pop(old)
+            warnings.warn(
+                f"GetHistoryRequest.{old} is deprecated, use {new} instead",
+                DeprecationWarning,
+                stacklevel=4,
+            )
+            # lastLoadedDate=0 used to mean "from the newest record", which is nextCursor=None now
+            if value and data.get(new) is None:
+                data[new] = value
+        for name in _UNSUPPORTED_HISTORY_FILTERS:
+            if data.pop(name, None) is not None:
+                warnings.warn(
+                    f"GetHistoryRequest.{name} is no longer supported by the API and is ignored",
+                    DeprecationWarning,
+                    stacklevel=4,
+                )
+        return data
 
     def model_dump(self, **kwargs):
         data = super().model_dump(**kwargs)
@@ -235,18 +272,39 @@ class HistoryData(VaizBaseModel):
     model_config = ConfigDict(extra="allow")  # Accept arbitrary extra fields
 
 class HistoryItem(VaizBaseModel):
-    _id: str
-    taskId: str
+    id: str = Field(..., alias="_id")
     creatorId: str
     createdAt: str
     data: HistoryData
     key: str
     type: int
-    updatedAt: str
+    taskId: Optional[str] = None
     boardId: Optional[str] = None
+    projectId: Optional[str] = None
+    documentId: Optional[str] = None
+    milestoneId: Optional[str] = None
+    memberId: Optional[str] = None
+    spaceId: Optional[str] = None
+    agentId: Optional[str] = None
+    updatedAt: Optional[str] = None
+
+class HistoryPage(VaizBaseModel):
+    hasMore: bool
+    nextCursor: Optional[int] = None
 
 class GetHistoryPayload(VaizBaseModel):
-    histories: List[HistoryItem]
+    items: List[HistoryItem]
+    page: Optional[HistoryPage] = None
+
+    @property
+    def histories(self) -> List[HistoryItem]:
+        """Deprecated alias for `items`."""
+        warnings.warn(
+            "GetHistoryPayload.histories is deprecated, use items instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.items
 
 class GetHistoryResponse(VaizBaseModel):
     payload: GetHistoryPayload

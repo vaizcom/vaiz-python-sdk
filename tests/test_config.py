@@ -4,6 +4,7 @@ Contains test credentials and helper functions for testing.
 """
 
 import os
+import uuid
 from pathlib import Path
 from dotenv import load_dotenv
 from vaiz import VaizClient
@@ -36,4 +37,9 @@ def get_test_client():
         space_id=TEST_SPACE_ID,
         verify_ssl=False,
         base_url=BASE_URL,
-    ) 
+    )
+
+
+def unique_name(base: str) -> str:
+    """Board custom field names must be unique per board, so tests suffix them."""
+    return f"{base} {uuid.uuid4().hex[:8]}"

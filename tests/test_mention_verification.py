@@ -6,6 +6,7 @@ import pytest
 from vaiz.helpers import mention_user, mention_document, mention_task, mention_milestone, paragraph, text, heading
 from vaiz.models import CreateDocumentRequest, Kind, GetDocumentsRequest, GetTasksRequest
 from tests.test_config import get_test_client, TEST_SPACE_ID
+from tests.lexical_utils import mentions
 import json
 
 
@@ -90,54 +91,20 @@ def test_verify_mention_structure_after_creation():
         print(json.dumps(doc_content, indent=2))
         
         # Extract mentions from response
-        received_mentions = []
-        for node in doc_content.get("default", {}).get("content", []):
-            if node.get("type") == "paragraph" and "content" in node:
-                for child in node["content"]:
-                    if child.get("type") == "custom-mention":
-                        received_mentions.append(child)
+        received_mentions = mentions(doc_content)
         
         print(f"\n✅ Found {len(received_mentions)} mention(s) in response")
+        for kind, entity_id in received_mentions:
+            print(f"    {kind}: {entity_id}")
         
-        # Detailed verification
-        print(f"\n🔍 Detailed verification:")
-        
-        attrs_present = 0
-        for i, mention in enumerate(received_mentions, 1):
-            print(f"\n  Mention {i}:")
-            print(f"    Type: {mention.get('type')}")
-            print(f"    Has 'attrs': {('attrs' in mention)}")
-            print(f"    Has 'content': {('content' in mention)}")
-            
-            if 'attrs' in mention:
-                attrs_present += 1
-                attrs = mention['attrs']
-                print(f"    Attributes present: {list(attrs.keys())}")
-                
-                if 'data' in attrs and 'item' in attrs['data']:
-                    item = attrs['data']['item']
-                    print(f"    Item ID: {item.get('id')}")
-                    print(f"    Item Kind: {item.get('kind')}")
-        
-        # Assertions
         assert len(received_mentions) == len(sent_mentions), \
             f"Expected {len(sent_mentions)} mentions, got {len(received_mentions)}"
         
-        # Check that all are mention types
-        for mention in received_mentions:
-            assert mention.get("type") == "custom-mention", \
-                f"Expected type 'custom-mention', got {mention.get('type')}"
+        # Kinds and ids must round-trip exactly, in order
+        expected = [(kind, entity_id) for kind, entity_id, _ in sent_mentions]
+        assert received_mentions == expected, f"Expected {expected}, got {received_mentions}"
         
-        print(f"\n📊 Summary:")
-        print(f"  ✅ Sent: {len(sent_mentions)} mentions with full structure")
-        print(f"  ✅ Received: {len(received_mentions)} mentions with full structure")
-        print(f"  ✅ All mentions have 'attrs' field: {attrs_present}/{len(received_mentions)}")
         print(f"\n🔗 Verify visually in browser: https://vaiz.app/document/{test_doc_id}")
-        print(f"   Mentions should display with avatars/icons and be clickable")
-        
-        # Additional assertion - verify attrs present
-        assert attrs_present == len(received_mentions), \
-            f"Expected all {len(received_mentions)} mentions to have attrs, but only {attrs_present} have it"
         
     finally:
         pass  # Could add cleanup here

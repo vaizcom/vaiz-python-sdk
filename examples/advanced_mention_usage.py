@@ -5,7 +5,7 @@ This example demonstrates how to create task descriptions with mentions,
 combining them with other document elements for rich content.
 """
 
-from examples.config import get_client, PROJECT_ID, BOARD_ID
+from examples.config import get_client, count_lexical_nodes, PROJECT_ID, BOARD_ID
 from vaiz import (
     CreateTaskRequest,
     TaskPriority,
@@ -275,32 +275,8 @@ def main():
         print("\nVerifying mentions...")
         doc_content = client.get_json_document(document_id)
         
-        mention_count = 0
-        for node in doc_content.get("default", {}).get("content", []):
-            if node.get("type") == "paragraph" and "content" in node:
-                for child in node["content"]:
-                    if child.get("type") == "custom-mention":
-                        mention_count += 1
-            elif node.get("type") == "extension-table" and "content" in node:
-                # Check mentions in tables
-                for row in node["content"]:
-                    if "content" in row:
-                        for cell in row["content"]:
-                            if "content" in cell:
-                                for cell_node in cell["content"]:
-                                    if cell_node.get("type") == "paragraph" and "content" in cell_node:
-                                        for child in cell_node["content"]:
-                                            if child.get("type") == "custom-mention":
-                                                mention_count += 1
-            elif node.get("type") == "bulletList" and "content" in node:
-                # Check mentions in lists
-                for item in node["content"]:
-                    if "content" in item:
-                        for item_node in item["content"]:
-                            if item_node.get("type") == "paragraph" and "content" in item_node:
-                                for child in item_node["content"]:
-                                    if child.get("type") == "custom-mention":
-                                        mention_count += 1
+        # Counts mentions anywhere: paragraphs, table cells, list items
+        mention_count = count_lexical_nodes(doc_content, "user-mention", "entity-mention")
         
         print(f"✓ Found {mention_count} mention block(s) in document")
         

@@ -349,13 +349,16 @@ The JSON-based methods below remain supported for backward compatibility.
 
 ### Get Document Content
 
-Retrieve the JSON content of any document:
+Retrieve the content of any document as Lexical JSON (the rich editor format):
 
 ```python
 # Get document content by ID
 content = client.get_json_document("document_id")
-print(content)  # Returns parsed JSON structure
+for block in content["root"]["children"]:
+    print(block["type"])  # "heading", "paragraph", "list", "table", ...
 ```
+
+The JSON you read back is Lexical, not the document structure format you write. See [`get_json_document`](../api-reference/document-structure#get_json_document) for the node types; to read content as text use `get_markdown_document()`.
 
 This method is universal and works for:
 - Task descriptions

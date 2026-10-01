@@ -7,7 +7,7 @@ which weren't included in our main workflow test.
 
 import pytest
 from datetime import datetime
-from tests.test_config import get_test_client, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
+from tests.test_config import get_test_client, unique_name, TEST_BOARD_ID, TEST_PROJECT_ID, TEST_GROUP_ID
 
 from vaiz import (
     make_member_field,
@@ -32,7 +32,7 @@ class TestMissingFieldTypes:
         print("\n👥 Testing Member field...")
         # Create member field
         member_field = make_member_field(
-            name="👥 Assigned Reviewers",
+            name=unique_name("👥 Assigned Reviewers"),
             board_id=TEST_BOARD_ID,
             description="Team members assigned to review this task"
         )
@@ -76,7 +76,7 @@ class TestMissingFieldTypes:
         print("\n🔗 Testing TaskRelations field...")
         # Create task relations field
         relations_field = make_task_relations_field(
-            name="🔗 Related Tasks",
+            name=unique_name("🔗 Related Tasks"),
             board_id=TEST_BOARD_ID,
             description="Tasks that are dependencies or related to this task"
         )
@@ -139,7 +139,7 @@ class TestMissingFieldTypes:
         print("\n🔄 Testing complete Member + TaskRelations workflow...")
         # Create member field
         member_field = make_member_field(
-            name="👥 Workflow Reviewers",
+            name=unique_name("👥 Workflow Reviewers"),
             board_id=TEST_BOARD_ID,
             description="Team members for workflow testing"
         )
@@ -148,7 +148,7 @@ class TestMissingFieldTypes:
         print(f"  ✅ Created member field: {member_field_id}")
         # Create task relations field
         relations_field = make_task_relations_field(
-            name="🔗 Workflow Relations",
+            name=unique_name("🔗 Workflow Relations"),
             board_id=TEST_BOARD_ID,
             description="Task dependencies for workflow testing"
         )

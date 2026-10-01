@@ -100,6 +100,75 @@ docs = client.get_documents(
 
 ---
 
+### `replace_markdown_document`
+
+```python
+replace_markdown_document(document_id: str, markdown: str) -> ReplaceMarkdownDocumentResponse
+```
+
+Replace document content with Markdown. Markdown is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.). This is the recommended way to write document content.
+
+**Parameters:**
+- `document_id` - Document ID to replace content for
+- `markdown` - New content as a Markdown string
+
+**Returns:** `ReplaceMarkdownDocumentResponse` (empty on success)
+
+**Example:**
+```python
+client.replace_markdown_document(
+    document_id="doc_id",
+    markdown="# Title\n\nSome **bold** text\n\n- item 1\n- item 2"
+)
+```
+
+---
+
+### `append_markdown_document`
+
+```python
+append_markdown_document(document_id: str, markdown: str) -> AppendMarkdownDocumentResponse
+```
+
+Append Markdown content to the end of a document without removing existing content.
+
+**Parameters:**
+- `document_id` - Document ID to append content to
+- `markdown` - Content to append as a Markdown string
+
+**Returns:** `AppendMarkdownDocumentResponse` (empty on success)
+
+**Example:**
+```python
+client.append_markdown_document(
+    document_id="doc_id",
+    markdown="## Update\n\nAdditional notes"
+)
+```
+
+---
+
+### `get_markdown_document`
+
+```python
+get_markdown_document(document_id: str) -> str
+```
+
+Fetch document content rendered as Markdown. Returns an empty string for legacy documents that have no rich content yet.
+
+**Parameters:**
+- `document_id` - Document ID to fetch
+
+**Returns:** `str` - Document content as Markdown
+
+**Example:**
+```python
+markdown = client.get_markdown_document("doc_id")
+print(markdown)
+```
+
+---
+
 ## Models
 
 ### Document
@@ -291,6 +360,77 @@ class ReplaceJSONDocumentRequest:
 class ReplaceJSONDocumentResponse:
     # Empty response on success
     pass
+```
+
+---
+
+### ReplaceMarkdownDocumentRequest
+
+```python
+class ReplaceMarkdownDocumentRequest:
+    document_id: str                    # Required - Document ID
+    markdown: str                       # Required - New content as Markdown
+```
+
+---
+
+### ReplaceMarkdownDocumentResponse
+
+```python
+class ReplaceMarkdownDocumentResponse:
+    # Empty response on success
+    pass
+```
+
+---
+
+### AppendMarkdownDocumentRequest
+
+```python
+class AppendMarkdownDocumentRequest:
+    document_id: str                    # Required - Document ID
+    markdown: str                       # Required - Content to append as Markdown
+```
+
+---
+
+### AppendMarkdownDocumentResponse
+
+```python
+class AppendMarkdownDocumentResponse:
+    # Empty response on success
+    pass
+```
+
+---
+
+### GetMarkdownDocumentRequest
+
+```python
+class GetMarkdownDocumentRequest:
+    document_id: str                    # Required - Document ID
+```
+
+---
+
+### GetMarkdownDocumentResponse
+
+```python
+class GetMarkdownDocumentResponse:
+    payload: GetMarkdownDocumentPayload # Response payload
+    type: str                           # Response type
+
+    @property
+    def markdown(self) -> str: ...      # Shortcut for payload.markdown
+```
+
+---
+
+### GetMarkdownDocumentPayload
+
+```python
+class GetMarkdownDocumentPayload:
+    markdown: str                       # Document content as Markdown ("" if empty)
 ```
 
 ---

@@ -235,8 +235,11 @@ task = task_response.task
 document_id = task.document
 
 # Get document content
-description = client.get_json_document(document_id)
-print(description)  # JSON structure
+description = client.get_markdown_document(document_id)
+print(description)  # Markdown text
+
+# Or the raw Lexical JSON
+description_json = client.get_json_document(document_id)
 ```
 
 ### Update Task Description
@@ -363,23 +366,14 @@ from datetime import datetime
 def add_status_update(task_id: str, status: str):
     """Append status update to task description"""
     
-    # Get task
     task_response = client.get_task(task_id)
     doc_id = task_response.task.document
     
-    # Get current content
-    current = client.get_json_document(doc_id)
-    
-    # Add status update
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    new_content = f"""
-{current}
-
----
-**Status Update ({timestamp})**: {status}
-"""
-    
-    client.replace_document(doc_id, new_content)
+    client.append_markdown_document(
+        doc_id,
+        f"---\n\n**Status Update ({timestamp})**: {status}"
+    )
 
 # Usage
 add_status_update("PRJ-123", "Design phase completed")

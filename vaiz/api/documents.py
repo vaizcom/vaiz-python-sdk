@@ -37,27 +37,32 @@ class DocumentsAPIClient(BaseAPIClient):
 
     def get_json_document(self, document_id: str) -> Dict[str, Any]:
         """
-        Fetch JSON document content by document ID.
+        Fetch document content as Lexical JSON by document ID.
 
         This universal method allows retrieving the content of a task description
-        or a standalone document body.
+        or a standalone document body. The content is returned as a Lexical
+        `SerializedEditorState`: `{"root": {"type": "root", "children": [...]}}`.
+
+        For plain reading prefer `get_markdown_document()`.
 
         Args:
             document_id: The document ID to fetch
 
         Returns:
-            Dict[str, Any]: The JSON document as returned by the API (unmodeled)
+            Dict[str, Any]: The Lexical editor state as returned by the API (unmodeled)
         """
         request = GetDocumentRequest(document_id=document_id)
-        response_data = self._make_request("getJSONDocument", json_data=request.model_dump())
-        # API returns shape: { payload: { json: "{...}" }, type: "GetJSONDocument" }
-        payload = response_data.get("payload", {})
-        json_str = payload.get("json", "{}")
-        try:
-            parsed = json.loads(json_str)
-        except (TypeError, json.JSONDecodeError):
-            parsed = {}
-        return parsed
+        response_data = self._make_request(
+            "getJSONDocument",
+            json_data={**request.model_dump(), "format": "lexical"},
+        )
+        content = response_data.get("payload", {}).get("json", {})
+        if isinstance(content, str):
+            try:
+                content = json.loads(content)
+            except json.JSONDecodeError:
+                content = {}
+        return content if isinstance(content, dict) else {}
 
     def replace_document(self, document_id: str, description: str) -> ReplaceDocumentResponse:
         """

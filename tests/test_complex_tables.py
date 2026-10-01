@@ -4,6 +4,7 @@ Tests for complex table structures with colspan, rowspan, and multiple columns.
 
 import pytest
 from tests.test_config import get_test_client
+from tests.lexical_utils import find_nodes, root_children
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz import heading, paragraph, text, table, table_row, table_cell, table_header, horizontal_rule
 
@@ -70,9 +71,9 @@ def test_create_complex_table_with_colspan():
     saved = client.get_json_document(document_id)
     saved_text = str(saved)
     
-    assert "extension-table" in saved_text
+    assert find_nodes(saved, "table"), "Table not found"
     assert "Q1-Q4 Performance" in saved_text
-    assert "colspan" in saved_text
+    assert len(find_nodes(saved, "tablecell", colSpan=4)) == 2
     
     print(f"✅ Complex table with colspan created successfully")
 
@@ -151,7 +152,8 @@ def test_create_complex_table_with_rowspan():
     saved = client.get_json_document(document_id)
     saved_text = str(saved)
     
-    assert "rowspan" in saved_text
+    assert find_nodes(saved, "tablecell", rowSpan=3)
+    assert find_nodes(saved, "tablecell", rowSpan=2)
     assert "Engineering" in saved_text
     assert "Design" in saved_text
     
@@ -227,18 +229,15 @@ def test_create_large_table_many_columns():
     
     # Verify
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    # Find table
-    tables = [b for b in saved_blocks if b.get("type") == "extension-table"]
+    tables = find_nodes(saved, "table")
     assert len(tables) > 0, "Table not found"
     
     # Verify table has rows
-    table_content = tables[0].get("content", [])
+    table_content = tables[0].get("children", [])
     assert len(table_content) == 4, f"Expected 4 rows (header + 3 data), got {len(table_content)}"
     
     # Verify first row has 13 cells (Metric + 12 months)
-    first_row = table_content[0].get("content", [])
+    first_row = table_content[0].get("children", [])
     assert len(first_row) == 13, f"Expected 13 columns, got {len(first_row)}"
     
     print(f"✅ Large table with 13 columns created successfully")
@@ -342,19 +341,17 @@ def test_create_complex_table_with_formatting():
     saved = client.get_json_document(document_id)
     saved_text = str(saved)
     
-    assert "extension-table" in saved_text
-    assert "colspan" in saved_text
-    assert "rowspan" in saved_text
+    assert find_nodes(saved, "tablecell", colSpan=5)
+    assert find_nodes(saved, "tablecell", rowSpan=3)
     assert "Project Dashboard" in saved_text
     assert "Phase 1: Design" in saved_text
     assert "Phase 2: Development" in saved_text
     
     # Verify table structure
-    saved_blocks = saved.get("default", {}).get("content", [])
-    tables = [b for b in saved_blocks if b.get("type") == "extension-table"]
+    tables = find_nodes(saved, "table")
     assert len(tables) > 0
     
-    table_rows = tables[0].get("content", [])
+    table_rows = tables[0].get("children", [])
     assert len(table_rows) >= 7, f"Expected at least 7 rows, got {len(table_rows)}"
     
     print(f"✅ Ultra complex table with colspan, rowspan, and formatting created")
@@ -451,9 +448,7 @@ def test_append_multiple_complex_tables():
     
     # Verify all 3 tables present
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    
-    tables = [b for b in saved_blocks if b.get("type") == "extension-table"]
+    tables = find_nodes(saved, "table")
     assert len(tables) == 3, f"Expected 3 tables, found {len(tables)}"
     
     saved_text = str(saved)
@@ -546,13 +541,13 @@ def test_create_nested_table_structure():
     
     # Verify structure
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
+    saved_blocks = root_children(saved)
     
     # Count different element types
     headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
-    tables = sum(1 for b in saved_blocks if b.get("type") == "extension-table")
-    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "bulletList")
-    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "orderedList")
+    tables = sum(1 for b in saved_blocks if b.get("type") == "table")
+    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "list" and b.get("listType") == "bullet")
+    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "list" and b.get("listType") == "number")
     
     assert headings >= 3, "Should have at least 3 headings"
     assert tables >= 1, "Should have at least 1 table"

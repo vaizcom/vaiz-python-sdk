@@ -15,6 +15,7 @@ from vaiz.helpers import (
 )
 from vaiz.models import CreateDocumentRequest, Kind, GetDocumentsRequest, GetTasksRequest
 from tests.test_config import get_test_client, TEST_SPACE_ID
+from tests.lexical_utils import mentions
 
 
 def test_mention_user():
@@ -207,36 +208,14 @@ def test_create_document_with_real_mentions():
         # Verify mentions were created by reading document
         doc_content = client.get_json_document(test_doc_id)
         
-        assert doc_content is not None
-        assert "default" in doc_content
-        assert "content" in doc_content["default"]
-        
-        doc_nodes = doc_content["default"]["content"]
-        
-        # Find mention nodes in content
-        mention_nodes = []
-        for node in doc_nodes:
-            if node.get("type") == "paragraph" and "content" in node:
-                for child in node["content"]:
-                    if child.get("type") == "custom-mention":
-                        mention_nodes.append(child)
+        mention_nodes = mentions(doc_content)
         
         # Verify at least user mention was created
         assert len(mention_nodes) > 0, "No mention blocks found in document"
+        assert all(kind and entity_id for kind, entity_id in mention_nodes), "Mention missing kind or id"
         
-        # Verify all are mention nodes with full structure
-        for mention_node in mention_nodes:
-            assert mention_node["type"] == "custom-mention", f"Expected custom-mention, got {mention_node.get('type')}"
-            assert "attrs" in mention_node, "Mention node missing 'attrs' field"
-            assert "data" in mention_node["attrs"], "Mention attrs missing 'data' field"
-            assert "item" in mention_node["attrs"]["data"], "Mention data missing 'item' field"
-            assert "id" in mention_node["attrs"]["data"]["item"], "Mention item missing 'id' field"
-            assert "kind" in mention_node["attrs"]["data"]["item"], "Mention item missing 'kind' field"
-        
-        # Verify specific mention IDs and kinds match
-        mention_items = [m["attrs"]["data"]["item"] for m in mention_nodes]
-        mention_ids = [item["id"] for item in mention_items]
-        mention_kinds = [item["kind"] for item in mention_items]
+        mention_kinds = [kind for kind, _ in mention_nodes]
+        mention_ids = [entity_id for _, entity_id in mention_nodes]
         
         assert member_id in mention_ids, "User mention not found in document"
         assert "User" in mention_kinds, "User kind not found"
@@ -253,7 +232,6 @@ def test_create_document_with_real_mentions():
         
         print(f"\n✅ Successfully created and verified document with {len(mention_nodes)} mention block(s)")
         print(f"   Document ID: {test_doc_id}")
-        print(f"   All mentions have full structure with attrs, data, and item fields")
         print(f"   View at: https://vaiz.app/document/{test_doc_id}")
         
     finally:

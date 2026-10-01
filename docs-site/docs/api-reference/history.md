@@ -20,9 +20,9 @@ get_history(request: GetHistoryRequest) -> GetHistoryResponse
 Get change history for an entity.
 
 **Parameters:**
-- `request` - History request (kind, kindId, optional filters)
+- `request` - History request (kind, kindId, optional filters and cursor)
 
-**Returns:** `GetHistoryResponse` with list of history events
+**Returns:** `GetHistoryResponse` with a page of history events (newest first) and pagination info
 
 ---
 
@@ -34,15 +34,33 @@ Main history event model.
 
 ```python
 class HistoryItem:
-    _id: str                         # History event ID
-    taskId: str                      # Task ID
-    creatorId: str                   # User who made the change
+    id: str                          # History event ID (alias "_id")
+    creatorId: str                   # Member who made the change
     createdAt: str                   # Timestamp of change
     data: HistoryData                # Changed data
-    key: str                         # Change type key
+    key: str                         # Event key, e.g. "TASK_CREATED"
     type: int                        # Event type
-    updatedAt: str                   # Last update timestamp
-    boardId: Optional[str]           # Board ID (if applicable)
+    taskId: Optional[str]            # Task ID (for task events)
+    boardId: Optional[str]           # Board ID
+    projectId: Optional[str]         # Project ID
+    documentId: Optional[str]        # Document ID
+    milestoneId: Optional[str]       # Milestone ID
+    memberId: Optional[str]          # Member ID
+    spaceId: Optional[str]           # Space ID
+    agentId: Optional[str]           # Agent ID (for changes made by an agent)
+    updatedAt: Optional[str]         # Last update timestamp
+```
+
+---
+
+### HistoryPage
+
+Cursor pagination info.
+
+```python
+class HistoryPage:
+    hasMore: bool                    # More events are available
+    nextCursor: Optional[int]        # Pass as GetHistoryRequest.nextCursor to load the next page
 ```
 
 ---
@@ -77,33 +95,33 @@ class HistoryData:
 class GetHistoryRequest:
     kind: Kind                           # Required - Entity type (Task, Project, Board, etc.)
     kindId: str                          # Required - Entity ID
-    createdBy: Optional[List[str]]       # Filter by creator member IDs
+    memberIds: Optional[List[str]]       # Filter by member IDs who made the changes
+    boardIds: Optional[List[str]]        # Filter by board IDs
+    groupIds: Optional[List[str]]        # Filter by group IDs (requires boardIds)
+    agentId: Optional[str]               # Only events of this agent
+    eventKeys: Optional[List[str]]       # Only include these event keys
     dateRangeStart: Optional[datetime]   # Start of date range filter
     dateRangeEnd: Optional[datetime]     # End of date range filter
-    limit: Optional[int]                 # Max number of history events to return
-    lastLoadedDate: Optional[int]        # Timestamp for pagination (default: 0)
-    keys: Optional[List[str]]            # Only include these event keys
-    excludeKeys: Optional[List[str]]     # Exclude these event keys
-    tasksIds: Optional[List[str]]        # Filter by specific task IDs
-    groupsIds: Optional[List[str]]       # Filter by specific group IDs
+    limit: Optional[int]                 # Page size
+    nextCursor: Optional[int]            # Cursor from the previous page
 ```
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `kind` | `Kind` | Yes | Entity type — `Kind.Task`, `Kind.Project`, `Kind.Board`, etc. |
 | `kindId` | `str` | Yes | ID of the entity to get history for |
-| `createdBy` | `List[str]` | No | Filter events by member IDs who made the changes |
+| `memberIds` | `List[str]` | No | Filter events by member IDs who made the changes |
+| `boardIds` | `List[str]` | No | Filter events by board IDs |
+| `groupIds` | `List[str]` | No | Filter events by group IDs; applied only together with `boardIds` |
+| `agentId` | `str` | No | Only events of this agent |
+| `eventKeys` | `List[str]` | No | Only include events matching these keys (e.g. `["TASK_CREATED"]`) |
 | `dateRangeStart` | `datetime` | No | Return events after this date |
 | `dateRangeEnd` | `datetime` | No | Return events before this date |
-| `limit` | `int` | No | Maximum number of events to return |
-| `lastLoadedDate` | `int` | No | Timestamp for pagination (default: `0`) |
-| `keys` | `List[str]` | No | Only include events matching these keys (e.g. `["TASK_CREATED"]`) |
-| `excludeKeys` | `List[str]` | No | Exclude events matching these keys |
-| `tasksIds` | `List[str]` | No | Filter events related to specific task IDs |
-| `groupsIds` | `List[str]` | No | Filter events related to specific group IDs |
+| `limit` | `int` | No | Page size |
+| `nextCursor` | `int` | No | `payload.page.nextCursor` from the previous response |
 
-:::tip Filtering
-Use `keys` to include only specific event types, or `excludeKeys` to exclude them. These are mutually exclusive — use one or the other.
+:::caution Deprecated parameters
+The old names are still accepted with a `DeprecationWarning` and mapped to the new ones: `createdBy` → `memberIds`, `keys` → `eventKeys`, `groupsIds` → `groupIds`, `lastLoadedDate` → `nextCursor`. `excludeKeys` and `tasksIds` are no longer supported by the API and are ignored.
 :::
 
 ---
@@ -124,7 +142,11 @@ class GetHistoryResponse:
 
 ```python
 class GetHistoryPayload:
-    histories: List[HistoryItem]     # List of history events
+    items: List[HistoryItem]         # Page of history events, newest first
+    page: Optional[HistoryPage]      # Pagination info
+
+    @property
+    def histories(self) -> List[HistoryItem]: ...  # Deprecated alias for items
 ```
 
 ---

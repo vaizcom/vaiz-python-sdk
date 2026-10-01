@@ -3,6 +3,7 @@ Integration test for embed blocks - creates a real document with various embed t
 """
 
 from tests.test_config import get_test_client
+from tests.lexical_utils import root_children
 from vaiz.models import CreateDocumentRequest, Kind
 from vaiz import (
     heading, paragraph, text,
@@ -132,36 +133,28 @@ def test_create_document_with_embed_blocks():
     
     # Verify content was saved
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
+    saved_blocks = root_children(saved)
     
     assert len(saved_blocks) > 0, "Document should have content blocks"
     
     # Count embed blocks
-    embed_blocks = sum(1 for b in saved_blocks if b.get("type") == "embed")
+    embed_blocks = sum(1 for b in saved_blocks if b.get("type") == "document-embed")
     headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
     
     assert embed_blocks >= 6, f"Should have at least 6 embed blocks, found {embed_blocks}"
     assert headings >= 7, f"Should have at least 7 headings, found {headings}"
     
     # Verify embed block structure
-    first_embed = next((b for b in saved_blocks if b.get("type") == "embed"), None)
+    first_embed = next((b for b in saved_blocks if b.get("type") == "document-embed"), None)
     assert first_embed is not None, "Should find at least one embed block"
-    assert "content" in first_embed, "Embed block should have content"
     
-    # Verify embed data is in content
-    embed_content = first_embed["content"]
-    assert len(embed_content) > 0, "Embed should have content"
-    assert embed_content[0]["type"] == "text", "Embed content should be text node"
-    
-    # Parse embed data JSON
-    import json
-    embed_data = json.loads(embed_content[0]["text"])
-    assert "type" in embed_data, "Embed data should have type"
-    assert "url" in embed_data, "Embed data should have url"
-    assert "extractedUrl" in embed_data, "Embed data should have extractedUrl"
+    embed_data = first_embed.get("data", {})
+    assert embed_data.get("provider"), "Embed data should have provider"
+    assert embed_data.get("url"), "Embed data should have url"
+    assert "embedUrl" in embed_data, "Embed data should have embedUrl"
     
     print(f"\n✅ First embed block structure:")
-    print(f"   Type: {embed_data['type']}")
+    print(f"   Provider: {embed_data['provider']}")
     print(f"   URL: {embed_data['url']}")
     
     print(f"\n✅ Document with embed blocks created successfully!")

@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.20.0] - 2026-06-11
+## [0.20.0] - 2026-10-01
 
 ### Added
 
@@ -10,9 +10,29 @@
   - `get_markdown_document(document_id)` - Read document content back as a Markdown string
   - Markdown is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.)
 
+- **📜 History pagination**: `GetHistoryRequest.limit` / `nextCursor` and `payload.page` (`hasMore`, `nextCursor`) for cursor pagination
+- **📜 History filters**: `boardIds` and `agentId`
+
+### Changed
+
+- **🔧 Breaking**: `get_json_document()` now returns the current document content as Lexical JSON (`{"root": {"children": [...]}}`) instead of the legacy TipTap format (`{"default": {"content": [...]}}`). The legacy format was frozen on the server at the Lexical migration and no longer reflected document content
+  - Migration: read blocks from `content["root"]["children"]` (node types are listed in the Document Structure reference), or use `get_markdown_document()` to read content as text
+  - Writing with `replace_json_document()` / `append_json_document()` and the document structure helpers is unchanged
+- **🔧 Breaking**: `get_history()` follows the new API contract
+  - Response: `payload.histories` → `payload.items` (`histories` is kept as a deprecated alias)
+  - Filters renamed: `createdBy` → `memberIds`, `keys` → `eventKeys`, `groupsIds` → `groupIds`, `lastLoadedDate` → `nextCursor`. Old names still work with a `DeprecationWarning`
+  - `excludeKeys` and `tasksIds` are no longer supported by the API and are ignored with a warning
+  - `HistoryItem.id` replaces `_id`; `taskId` and `updatedAt` are now optional
+
+### Fixed
+
+- `get_space_members()` failing on bot members (AI, GitHub, Cursor, Claude, automation) that have no `space`; `Member.kind` is now exposed
+- `get_tasks()` / `get_task()` failing on custom fields without a value
+
 ### Deprecated
 
-- JSON document methods (`replace_json_document`, `append_json_document`, `get_json_document`) and the JSON document DSL remain supported for backward compatibility, but Markdown methods are now the recommended way to write document content
+- `Task.milestone` is no longer returned by the API, use `Task.milestones`
+- JSON document write methods (`replace_json_document`, `append_json_document`) and the JSON document DSL remain supported for backward compatibility, but Markdown methods are now the recommended way to write document content
 
 ## [0.19.0] - 2026-02-17
 

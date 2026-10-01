@@ -11,7 +11,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from config import get_client
+from config import get_client, count_lexical_nodes
 from vaiz import (
     heading, paragraph, text, table, table_row, 
     table_cell, table_header, horizontal_rule
@@ -165,10 +165,7 @@ def main():
     
     # Verify
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
-    tables = [b for b in saved_blocks if b.get("type") == "extension-table"]
-    
-    print(f"✅ Created {len(tables)} tables with proper headers")
+    print(f"✅ Created {count_lexical_nodes(saved, 'table')} tables with proper headers")
     print(f"\nDocument ID: {document_id}")
     print("View this document in Vaiz to see the table headers!")
 

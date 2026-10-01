@@ -5,6 +5,7 @@ These documents appear in document lists, not in tasks.
 
 import pytest
 from tests.test_config import get_test_client
+from tests.lexical_utils import root_children
 from vaiz.models import CreateDocumentRequest, Kind
 from vaiz import (
     heading, paragraph, text, 
@@ -83,13 +84,13 @@ def test_create_space_document_with_content():
     
     # Verify content was saved
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
+    saved_blocks = root_children(saved)
     
     assert len(saved_blocks) > 0, "Document should have content blocks"
     
     # Verify we have headings and tables
     headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
-    tables = sum(1 for b in saved_blocks if b.get("type") == "extension-table")
+    tables = sum(1 for b in saved_blocks if b.get("type") == "table")
     
     assert headings >= 2, "Should have at least 2 headings"
     assert tables >= 1, "Should have at least 1 table"
@@ -207,15 +208,15 @@ def test_create_personal_document_with_content():
     
     # Verify content was saved
     saved = client.get_json_document(document_id)
-    saved_blocks = saved.get("default", {}).get("content", [])
+    saved_blocks = root_children(saved)
     
     assert len(saved_blocks) > 0, "Document should have content blocks"
     
     # Count elements
     headings = sum(1 for b in saved_blocks if b.get("type") == "heading")
-    tables = sum(1 for b in saved_blocks if b.get("type") == "extension-table")
-    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "bulletList")
-    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "orderedList")
+    tables = sum(1 for b in saved_blocks if b.get("type") == "table")
+    bullet_lists = sum(1 for b in saved_blocks if b.get("type") == "list" and b.get("listType") == "bullet")
+    ordered_lists = sum(1 for b in saved_blocks if b.get("type") == "list" and b.get("listType") == "number")
     
     assert headings >= 4, "Should have at least 4 headings"
     assert tables >= 1, "Should have at least 1 table"

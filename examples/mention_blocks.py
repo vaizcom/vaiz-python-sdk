@@ -5,7 +5,7 @@ This example demonstrates how to create documents with mention blocks
 that reference users, documents, tasks, and milestones.
 """
 
-from examples.config import get_client
+from examples.config import get_client, count_lexical_nodes
 from vaiz.helpers import (
     paragraph,
     text,
@@ -143,12 +143,7 @@ def main():
         print("\nVerifying mentions...")
         doc_content = client.get_json_document(document_id)
         
-        mention_count = 0
-        for node in doc_content.get("default", {}).get("content", []):
-            if node.get("type") == "paragraph" and "content" in node:
-                for child in node["content"]:
-                    if child.get("type") == "custom-mention":
-                        mention_count += 1
+        mention_count = count_lexical_nodes(doc_content, "user-mention", "entity-mention")
         
         print(f"✓ Found {mention_count} mention block(s) in document")
         

@@ -1,7 +1,7 @@
 import pytest
 from vaiz.models import BoardsResponse, Board, BoardResponse
 from vaiz.models.enums import Color
-from tests.test_config import get_test_client, TEST_BOARD_ID
+from tests.test_config import get_test_client, unique_name, TEST_BOARD_ID
 from vaiz.models import CreateBoardTypeRequest, EditBoardTypeRequest, CreateBoardCustomFieldRequest, EditBoardCustomFieldRequest, CustomFieldType, CreateBoardGroupRequest, CreateBoardGroupResponse, EditBoardGroupRequest, EditBoardGroupResponse
 
 @pytest.fixture
@@ -95,8 +95,9 @@ def test_edit_board_type(board_type_id):
 
 def test_create_board_custom_field():
     client = get_test_client()
+    field_name = unique_name("Test Date Field")
     request = CreateBoardCustomFieldRequest(
-        name="Test Date Field",
+        name=field_name,
         type=CustomFieldType.DATE,
         board_id=TEST_BOARD_ID,
         description="Test date field description",
@@ -104,7 +105,7 @@ def test_create_board_custom_field():
     )
     response = client.create_board_custom_field(request)
     assert response.type == "CreateBoardCustomField"
-    assert response.custom_field.name == "Test Date Field"
+    assert response.custom_field.name == field_name
     assert response.custom_field.type == CustomFieldType.DATE
     assert response.custom_field.description == "Test date field description"
     assert response.custom_field.hidden is False
@@ -115,7 +116,7 @@ def test_create_board_custom_field():
     found = False
     for cf in (board.custom_fields or []):
         if cf.id == response.custom_field.id:
-            assert cf.name == "Test Date Field"
+            assert cf.name == field_name
             assert cf.type == CustomFieldType.DATE
             found = True
     assert found, "Created custom field not found in board"
@@ -125,7 +126,7 @@ def test_edit_board_custom_field():
     
     # First create a custom field
     create_request = CreateBoardCustomFieldRequest(
-        name="Test Field",
+        name=unique_name("Test Field"),
         type=CustomFieldType.TEXT,
         board_id=TEST_BOARD_ID,
         hidden=False,

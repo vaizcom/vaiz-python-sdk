@@ -22,35 +22,24 @@ request = GetHistoryRequest(
 
 response = client.get_history(request)
 
-for history in response.payload.histories:
+for history in response.payload.items:
     print(f"{history.key}: {history.createdAt}")
     print(f"  Changed by: {history.creatorId}")
     print(f"  Data: {history.data}")
 ```
 
+Events are returned newest first, one page at a time.
+
 ## Filter History
 
-### Exclude specific keys
-
-```python
-# Track everything except description changes
-request = GetHistoryRequest(
-    kind=Kind.Task,
-    kindId="task_id",
-    excludeKeys=["description", "customFields"]
-)
-
-response = client.get_history(request)
-```
-
-### Include only specific keys
+### Include only specific events
 
 ```python
 # Only get task creation and completion events
 request = GetHistoryRequest(
     kind=Kind.Task,
     kindId="task_id",
-    keys=["TASK_CREATED", "TASK_COMPLETED"]
+    eventKeys=["TASK_CREATED", "TASK_COMPLETED"]
 )
 
 response = client.get_history(request)
@@ -78,37 +67,51 @@ response = client.get_history(request)
 request = GetHistoryRequest(
     kind=Kind.Task,
     kindId="task_id",
-    createdBy=["member_id_1", "member_id_2"]
+    memberIds=["member_id_1", "member_id_2"]
 )
 
 response = client.get_history(request)
 ```
 
-### Limit results
+### Filter by boards and groups
 
 ```python
-# Get only the last 10 events
+# Project history narrowed to one board and one of its groups
 request = GetHistoryRequest(
-    kind=Kind.Task,
-    kindId="task_id",
-    limit=10
+    kind=Kind.Project,
+    kindId="project_id",
+    boardIds=["board_id"],
+    groupIds=["group_id"]
 )
 
 response = client.get_history(request)
 ```
 
-### Filter by tasks and groups
+`groupIds` is applied only together with `boardIds`.
+
+## Pagination
+
+Use `limit` for the page size and pass `payload.page.nextCursor` to load the next page:
 
 ```python
-# Get board history filtered by specific tasks and groups
-request = GetHistoryRequest(
-    kind=Kind.Board,
-    kindId="board_id",
-    tasksIds=["task_id_1", "task_id_2"],
-    groupsIds=["group_id_1"]
-)
+def iter_history(kind, kind_id, page_size=50):
+    cursor = None
+    while True:
+        response = client.get_history(GetHistoryRequest(
+            kind=kind,
+            kindId=kind_id,
+            limit=page_size,
+            nextCursor=cursor,
+        ))
+        yield from response.payload.items
 
-response = client.get_history(request)
+        page = response.payload.page
+        if not page or not page.hasMore:
+            break
+        cursor = page.nextCursor
+
+for event in iter_history(Kind.Task, "task_id"):
+    print(event.key, event.createdAt)
 ```
 
 ## Use Cases
@@ -117,22 +120,11 @@ response = client.get_history(request)
 
 ```python
 def get_task_audit_trail(task_id: str):
-    """Get complete audit trail for a task"""
-    request = GetHistoryRequest(
-        kind=Kind.Task,
-        kindId=task_id
-    )
-    
-    response = client.get_history(request)
-    
-    print(f"Audit Trail for {task_id}")
-    print("-" * 50)
-    
-    for event in response.payload.histories:
-        print(f"{event.createdAt}: {event.key} changed")
+    """Get audit trail for a task"""
+    for event in iter_history(Kind.Task, task_id):
+        print(f"{event.createdAt}: {event.key}")
         print(f"  By: {event.creatorId}")
         print(f"  Value: {event.data}")
-        print()
 
 get_task_audit_trail("task_id")
 ```
@@ -145,20 +137,18 @@ from datetime import datetime, timedelta
 def weekly_activity_report(task_id: str):
     """Get activity for the last 7 days"""
     now = datetime.now()
-    week_ago = now - timedelta(days=7)
 
     request = GetHistoryRequest(
         kind=Kind.Task,
         kindId=task_id,
-        dateRangeStart=week_ago,
+        dateRangeStart=now - timedelta(days=7),
         dateRangeEnd=now,
-        excludeKeys=["description", "files"]
     )
-    
+
     response = client.get_history(request)
-    
-    for event in response.payload.histories:
-        print(f"{event.key} changed at {event.createdAt}")
+
+    for event in response.payload.items:
+        print(f"{event.key} at {event.createdAt}")
         print(f"  New value: {event.data}")
 ```
 
@@ -167,22 +157,14 @@ def weekly_activity_report(task_id: str):
 ```python
 def generate_activity_report(task_id: str):
     """Generate activity report for a task"""
-    request = GetHistoryRequest(
-        kind=Kind.Task,
-        kindId=task_id
-    )
-    
-    response = client.get_history(request)
-    histories = response.payload.histories
-    
-    # Count changes by type
+    histories = list(iter_history(Kind.Task, task_id))
+
     changes = {}
     for event in histories:
         changes[event.key] = changes.get(event.key, 0) + 1
-    
-    # Count contributors
+
     contributors = set(event.creatorId for event in histories)
-    
+
     print(f"Total changes: {len(histories)}")
     print(f"Contributors: {len(contributors)}")
     print("\nChanges by type:")
@@ -190,49 +172,10 @@ def generate_activity_report(task_id: str):
         print(f"  {key}: {count}")
 ```
 
-## Complete example
-
-```python
-from datetime import datetime
-from vaiz import VaizClient
-from vaiz.models import GetHistoryRequest
-from vaiz.models.enums import Kind
-
-client = VaizClient(api_key="...", space_id="...")
-
-# Get task
-task_response = client.get_task("PRJ-123")
-task_id = task_response.task.id
-
-# Get all history
-request = GetHistoryRequest(
-    kind=Kind.Task,
-    kindId=task_id
-)
-
-response = client.get_history(request)
-print(f"Total changes: {len(response.payload.histories)}")
-
-# Get history with all filters
-filtered = GetHistoryRequest(
-    kind=Kind.Task,
-    kindId=task_id,
-    dateRangeStart=datetime(2025, 1, 1),
-    dateRangeEnd=datetime(2025, 12, 31),
-    limit=20,
-    excludeKeys=["description", "files", "customFields"]
-)
-
-response = client.get_history(filtered)
-print(f"Important changes: {len(response.payload.histories)}")
-
-for event in response.payload.histories:
-    print(f"  {event.key}: {event.createdAt}")
-```
+See [GetHistoryRequest](../api-reference/history#gethistoryrequest) for all parameters and deprecated aliases.
 
 ## See Also
 
 - [Tasks API](./tasks) - Task operations
 - [Profile](./profile) - User information
 - [Examples](../patterns/introduction) - More examples
-

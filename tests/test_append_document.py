@@ -4,6 +4,7 @@ Tests for appendDocument and appendJSONDocument API endpoints.
 
 import pytest
 from tests.test_config import get_test_client
+from tests.lexical_utils import root_children
 from vaiz.models import CreateTaskRequest, TaskPriority
 from vaiz import heading, paragraph, text, bullet_list
 
@@ -362,7 +363,7 @@ def test_append_json_document_race_condition():
     assert "APPEND_3_MARKER" in final_text, "Append 3 missing - race condition or lost update!"
     
     # Count actual markers in content blocks to ensure they're in document structure
-    final_blocks = final.get("default", {}).get("content", [])
+    final_blocks = root_children(final)
     
     # Verify we have at least 4 blocks (could be more with formatting)
     # Initial paragraph + 3 appended paragraphs
