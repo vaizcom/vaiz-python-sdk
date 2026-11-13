@@ -23,7 +23,6 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`move_tasks.py`** - Move tasks between board groups (single and batch)
 
 ### Tasks with Files
-- **`create_task_with_files.py`** - Tasks with file attachments
 - **`create_task_with_file.py`** - Single file attachment
 - **`create_task_with_external_file.py`** - Attach files from URLs
 - **`edit_task_with_files.py`** - Update task files
@@ -38,21 +37,22 @@ The SDK includes a collection of ready-to-run examples in the [`/examples`](http
 - **`get_document.py`** - Get single document
 - **`replace_document.py`** - Replace document content with plain text
 - **`markdown_document.py`** - Replace, append, and read document content as Markdown (recommended)
-- **`replace_json_document.py`** - Replace document content with rich JSON (document structure format)
-- **`replace_json_document_complex.py`** - Complex document with nested lists, inline code, links, and more
-- **`replace_json_document_with_helpers.py`** - Type-safe content creation using document structure helper functions
-- **`replace_json_document_with_table.py`** - Creating documents with tables for status reports and metrics
-- **`append_json_document.py`** - Appending content to existing documents (incremental updates)
+- **`replace_markdown_document.py`** - Replace document content with rich Markdown (headings, lists, links, quotes)
+- **`replace_markdown_document_complex.py`** - Complex document: nested lists, checklists, tables, code, Mermaid, equations, callouts, details, columns
+- **`markdown_details_and_quotes.py`** - Collapsible sections, blockquotes, ordered lists and links
+- **`markdown_tables.py`** - Documents with tables for status reports and metrics
+- **`table_with_headers.py`** - Tables with header rows, formatted cells and mentions in a Personal document
+- **`task_list_checklist.py`** - Simple, nested and mixed checklists
+- **`append_markdown_document.py`** - Appending content to existing documents (incremental updates)
 
 ### Advanced Workflows
 - **`document_hierarchy.py`** - Build nested document structures
 - **`document_content_management.py`** - Work with document content
 - **`advanced_document_workflows.py`** - Complex document scenarios
-- **`mention_blocks.py`** - Create documents with user, task, document, and milestone mentions
+- **`mention_blocks.py`** - Write user, task, document, and milestone mentions in Markdown
 - **`advanced_mention_usage.py`** - Advanced usage of mentions in tables, lists, and complex documents
-- **`document_navigation_blocks.py`** - TOC, Anchors, and Siblings navigation blocks
-- **`document_with_code_blocks.py`** - Code blocks with syntax highlighting
-- **`embed_blocks_example.py`** - Embed external content (YouTube, Figma, CodeSandbox, etc.)
+- **`document_with_code_blocks.py`** - Fenced code blocks with syntax highlighting and Mermaid diagrams
+- **`comprehensive_blocks_example.py`** - One document combining mentions, an image, tables, checklists, callouts and quotes
 
 ## Custom Fields
 

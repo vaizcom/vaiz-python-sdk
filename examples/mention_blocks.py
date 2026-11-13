@@ -1,158 +1,96 @@
 """
-Example: Using Mention Blocks in Documents
+Example: Using mentions in documents with Markdown.
 
-This example demonstrates how to create documents with mention blocks
-that reference users, documents, tasks, and milestones.
+Mentions use the syntax `@[Label](kind:id)` where kind is one of
+`user`, `task`, `document`, `milestone`, `project` or `board`.
+The label is cosmetic: only the kind and the ID are stored, and the editor
+renders the live entity name.
 """
 
-from examples.config import get_client, count_lexical_nodes
-from vaiz.helpers import (
-    paragraph,
-    text,
-    heading,
-    mention_user,
-    mention_document,
-    mention_task,
-    mention_milestone,
-)
+from examples.config import get_client, SPACE_ID
+from vaiz.models import CreateDocumentRequest, GetDocumentsRequest, GetTasksRequest, Kind
 
 
 def main():
     client = get_client()
     client.verbose = True
-    
-    print("=== Creating Document with Mention Blocks ===\n")
-    
+
+    print("=== Creating Document with Mentions ===\n")
+
     # Get real IDs from API
     print("Getting real IDs from API...")
-    
-    # Get current member ID (for user mentions)
-    profile = client.get_profile()
-    member_id = profile.profile.member_id
+
+    member_id = client.get_profile().profile.member_id
     print(f"✓ Member ID: {member_id}")
-    
-    # Get a document ID
-    from vaiz.models import GetDocumentsRequest, Kind, CreateDocumentRequest
-    from examples.config import SPACE_ID
-    
-    docs_response = client.get_documents(
-        GetDocumentsRequest(kind=Kind.Space, kind_id=SPACE_ID)
-    )
-    reference_doc_id = None
-    if docs_response.payload.documents:
-        reference_doc_id = docs_response.payload.documents[0].id
-        print(f"✓ Reference Document ID: {reference_doc_id}")
-    
-    # Get a task ID
-    from vaiz.models import GetTasksRequest
-    tasks_response = client.get_tasks(GetTasksRequest())
-    task_id = None
-    if tasks_response.payload.tasks:
-        task_id = tasks_response.payload.tasks[0].id
-        print(f"✓ Task ID: {task_id}")
-    
-    # Get a milestone ID
-    milestones_response = client.get_milestones()
-    milestone_id = None
-    if milestones_response.milestones:
-        milestone_id = milestones_response.milestones[0].id
-        print(f"✓ Milestone ID: {milestone_id}")
-    
-    print("\nCreating new document with mentions...")
-    
-    # Create a new document in Space
-    create_request = CreateDocumentRequest(
-        kind=Kind.Space,
-        kind_id=SPACE_ID,
-        title="Example: Mention Blocks",
-        index=0
-    )
-    doc_response = client.create_document(create_request)
-    document_id = doc_response.payload.document.id
-    
-    print(f"✓ Created document: {document_id}")
-    
-    # Build content with real mentions
-    content = [
-        heading(1, "Document with Mentions"),
-        
-        paragraph(
-            text("This document contains various mention types:")
-        ),
-        
-        # Mention a user
-        paragraph(
-            text("User mention: "),
-            mention_user(member_id),
-            text(" - this mentions a user")
-        ),
-    ]
-    
-    # Add document mention if available
+
+    docs_response = client.get_documents(GetDocumentsRequest(kind=Kind.Space, kind_id=SPACE_ID))
+    reference_doc_id = docs_response.payload.documents[0].id if docs_response.payload.documents else None
     if reference_doc_id:
-        content.append(paragraph(
-            text("Document mention: "),
-            mention_document(reference_doc_id),
-            text(" - this mentions another document")
-        ))
-    
-    # Add task mention if available
+        print(f"✓ Reference Document ID: {reference_doc_id}")
+
+    tasks_response = client.get_tasks(GetTasksRequest())
+    task_id = tasks_response.payload.tasks[0].id if tasks_response.payload.tasks else None
     if task_id:
-        content.append(paragraph(
-            text("Task mention: "),
-            mention_task(task_id),
-            text(" - this mentions a task")
-        ))
-    
-    # Add milestone mention if available
+        print(f"✓ Task ID: {task_id}")
+
+    milestones_response = client.get_milestones()
+    milestone_id = milestones_response.milestones[0].id if milestones_response.milestones else None
     if milestone_id:
-        content.append(paragraph(
-            text("Milestone mention: "),
-            mention_milestone(milestone_id),
-            text(" - this mentions a milestone")
-        ))
-    
-    # Add section with multiple mentions
-    content.append(heading(2, "Multiple Mentions in One Paragraph"))
-    
-    multiple_mentions_para = [
-        text("You can mention multiple items: "),
-        mention_user(member_id),
+        print(f"✓ Milestone ID: {milestone_id}")
+
+    print("\nCreating new document with mentions...")
+
+    document_id = client.create_document(
+        CreateDocumentRequest(
+            kind=Kind.Space,
+            kind_id=SPACE_ID,
+            title="Example: Mentions",
+            index=0,
+        )
+    ).payload.document.id
+    print(f"✓ Created document: {document_id}")
+
+    # Build the Markdown with real mentions
+    lines = [
+        "# Document with Mentions",
+        "",
+        "This document contains various mention types:",
+        "",
+        f"User mention: @[Me](user:{member_id}) - this mentions a user",
     ]
-    
+    if reference_doc_id:
+        lines += ["", f"Document mention: @[Document](document:{reference_doc_id}) - this mentions another document"]
     if task_id:
-        multiple_mentions_para.extend([
-            text(" assigned to task "),
-            mention_task(task_id),
-        ])
-    
+        lines += ["", f"Task mention: @[Task](task:{task_id}) - this mentions a task"]
     if milestone_id:
-        multiple_mentions_para.extend([
-            text(" in milestone "),
-            mention_milestone(milestone_id)
-        ])
-    
-    content.append(paragraph(*multiple_mentions_para))
-    
+        lines += ["", f"Milestone mention: @[Milestone](milestone:{milestone_id}) - this mentions a milestone"]
+
+    lines += ["", "## Multiple Mentions in One Paragraph", ""]
+    paragraph = f"You can mention multiple items: @[Me](user:{member_id})"
+    if task_id:
+        paragraph += f" assigned to task @[Task](task:{task_id})"
+    if milestone_id:
+        paragraph += f" in milestone @[Milestone](milestone:{milestone_id})"
+    lines.append(paragraph)
+
     try:
-        client.replace_json_document(document_id, content)
-        print("\n✅ Document updated successfully with mention blocks!")
+        client.replace_markdown_document(document_id, "\n".join(lines) + "\n")
+        print("\n✅ Document updated successfully with mentions!")
         print(f"\n🔗 View document: https://vaiz.app/document/{document_id}")
-        
-        # Verify mentions were created
+
+        # Verify mentions were created: they survive the Markdown round trip
         print("\nVerifying mentions...")
-        doc_content = client.get_json_document(document_id)
-        
-        mention_count = count_lexical_nodes(doc_content, "user-mention", "entity-mention")
-        
-        print(f"✓ Found {mention_count} mention block(s) in document")
-        
+        saved = client.get_markdown_document(document_id)
+        mention_count = saved.count("](user:") + sum(
+            saved.count(f"]({kind}:") for kind in ("task", "document", "milestone")
+        )
+        print(f"✓ Found {mention_count} mention(s) in document")
+
     except Exception as e:
         print(f"❌ Error: {e}")
-    
+
     print("\n=== Example completed ===")
 
 
 if __name__ == "__main__":
     main()
-

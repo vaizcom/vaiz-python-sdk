@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.0] - 2026-11-13
+
+### Removed
+
+- **🔧 Breaking**: Removed the TipTap JSON document write API. The Vaiz server stores documents in Lexical and no longer accepts the legacy TipTap format; Markdown is now the only way to write document content
+  - Removed methods: `replace_json_document()` and `append_json_document()`
+  - Removed models: `ReplaceJSONDocumentRequest`, `ReplaceJSONDocumentResponse`, `AppendJSONDocumentRequest`, `AppendJSONDocumentResponse`
+  - Removed the whole document-structure helper module (`vaiz.helpers.document_structure`) and its exports from `vaiz` and `vaiz.helpers`: `text`, `paragraph`, `heading`, `bullet_list`, `ordered_list`, `list_item`, `task_list`, `task_item`, `link_text`, `horizontal_rule`, `blockquote`, `details`, `details_summary`, `details_content`, `table`, `table_row`, `table_cell`, `table_header`, `mention`, `mention_user`, `mention_document`, `mention_task`, `mention_milestone`, `image_block`, `code_block`, all node `TypedDict`s and the `EmbedType` enum
+  - Dropped without replacement (no Markdown equivalent): `embed_block`, `toc_block`, `anchors_block`, `siblings_block`, `files_block`
+  - Unchanged: `get_json_document()` (returns Lexical JSON; `get_markdown_document()` is the recommended way to read content), `replace_document()` / `append_document()` (plain text) and the custom-field helpers
+  - Migration: write Markdown instead of node builders
+
+    ```python
+    # Before
+    client.replace_json_document(doc_id, [heading(1, "T"), paragraph("x")])
+
+    # After
+    client.replace_markdown_document(doc_id, "# T\n\nx")
+    ```
+
+    Tables, checklists (`- [ ]` / `- [x]`), code blocks, `details`, callouts, columns, images and mentions (`@[Name](user:<memberId>)`) are all expressed in Markdown - see the new "Markdown Syntax" reference page
+
 ## [0.21.0] - 2026-10-01
 
 ### Added

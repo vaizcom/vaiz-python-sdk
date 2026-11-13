@@ -119,7 +119,7 @@ def create_project_wiki(client, project_id: str):
             
             # Add initial content
             content = f"# {page_name}\n\n[Add content here]"
-            client.replace_document(page.id, content)
+            client.replace_markdown_document(page.id, content)
     
     return wiki
 
@@ -128,8 +128,34 @@ wiki = create_project_wiki(client, project_id)
 print(f"✅ Created wiki: {wiki.id}")
 ```
 
+## Writing Content with Markdown
+
+Document content is Markdown, and you can read it back the same way. Mentions use the member ID, not the user ID:
+
+```python
+member_id = client.get_profile().profile.member_id
+
+client.replace_markdown_document(doc_id, f"""# Weekly Report
+
+Owner: @[Me](user:{member_id})
+
+- [x] Ship the release
+- [ ] Update the docs
+
+| Metric | Value |
+| --- | --- |
+| Tasks done | 42 |
+""")
+
+# Add a follow-up section later without touching the existing content
+client.append_markdown_document(doc_id, "## Next week\n\n- [ ] Plan the sprint")
+```
+
+See [Markdown Syntax](../api-reference/markdown-syntax) for the supported dialect.
+
 ## See Also
 
 - [Documents Guide](../guides/documents) - Document API usage
 - [Documents API Reference](../api-reference/documents) - Complete API documentation
+- [Markdown Syntax](../api-reference/markdown-syntax) - Supported Markdown dialect
 

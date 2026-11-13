@@ -2,12 +2,12 @@
 sidebar_position: 9
 sidebar_label: Documents
 title: Documents API — Create & Edit Rich Documents | Vaiz Python SDK
-description: Learn how to use the Vaiz Python SDK to create, edit, and manage rich-text documents with structured content. Includes JSON format, blocks, and formatting.
+description: Learn how to use the Vaiz Python SDK to create, edit, and manage rich-text documents. Write content with Markdown and read it back as Markdown or Lexical JSON.
 ---
 
 # Documents
 
-Complete reference for document-related methods and models.
+Complete reference for document-related methods and models. Document content is written as Markdown - see [Markdown Syntax](./markdown-syntax) for the supported dialect.
 
 ## Methods
 
@@ -106,11 +106,11 @@ docs = client.get_documents(
 replace_markdown_document(document_id: str, markdown: str) -> ReplaceMarkdownDocumentResponse
 ```
 
-Replace document content with Markdown. Markdown is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.). This is the recommended way to write document content.
+Replace document content with Markdown. Markdown is converted to native editor blocks on the server (headings, lists, tables, code blocks, checklists, mentions, callouts, and more). This is the recommended way to write document content. Works for standalone documents and task descriptions.
 
 **Parameters:**
 - `document_id` - Document ID to replace content for
-- `markdown` - New content as a Markdown string
+- `markdown` - New content as a Markdown string (see [Markdown Syntax](./markdown-syntax))
 
 **Returns:** `ReplaceMarkdownDocumentResponse` (empty on success)
 
@@ -165,6 +165,114 @@ Fetch document content rendered as Markdown. Returns an empty string for legacy 
 ```python
 markdown = client.get_markdown_document("doc_id")
 print(markdown)
+```
+
+---
+
+### `get_json_document`
+
+```python
+get_json_document(document_id: str) -> Dict[str, Any]
+```
+
+Fetch document content as Lexical JSON (the format of the Vaiz rich editor). Prefer [`get_markdown_document`](#get_markdown_document) for reading content; use this method only when you need the raw node tree.
+
+**Parameters:**
+- `document_id` - Document ID (from a task or a standalone document)
+
+**Returns:** `Dict[str, Any]` - Lexical `SerializedEditorState`:
+
+```python
+{
+    "root": {
+        "type": "root",
+        "children": [
+            {"type": "heading", "tag": "h1", "children": [{"type": "text", "text": "Title", "format": 0}]},
+            {"type": "list", "listType": "check", "children": [
+                {"type": "listitem", "checked": True, "children": [{"type": "text", "text": "Done"}]}
+            ]},
+        ]
+    }
+}
+```
+
+Common Lexical node types:
+
+| Content | Lexical node `type` |
+|---------|---------------------|
+| Paragraph, heading | `paragraph`, `heading` (`tag`: `h1`…`h6`) |
+| Bullet / ordered list / checklist | `list` with `listType`: `bullet` / `number` / `check` |
+| List item | `listitem` (`checked` for checklists) |
+| Blockquote | `quote` |
+| Code block | `code` (`language`) |
+| Horizontal rule | `document-hr` |
+| Table | `table` → `tablerow` → `tablecell` (`colSpan`, `rowSpan`, `headerState`) |
+| Details | `details` → `detailsSummary`, `detailsContent` |
+| Mention | `user-mention` (`userId`) or `entity-mention` (`entityKind`, `entityId`) |
+| Image | `document-image` (`data.src`, `data.caption`) |
+| Files | `document-files` (`data.files`) |
+| Embed | `document-embed` (`data.provider`, `data.url`) |
+| Navigation (TOC, anchors, siblings) | `document-navigation` (`data.navigationType`) |
+
+Text marks are stored as a `format` bitmask on `text` nodes: bold = 1, italic = 2, strikethrough = 4, underline = 8, code = 16. Links are `link` nodes with `url`.
+
+**Example:**
+```python
+# Standalone document
+content = client.get_json_document("document_id")
+for block in content["root"]["children"]:
+    print(block["type"])
+
+# Task description
+task_response = client.get_task("PRJ-123")
+description = client.get_json_document(task_response.task.document)
+```
+
+---
+
+### `replace_document`
+
+```python
+replace_document(document_id: str, description: str) -> ReplaceDocumentResponse
+```
+
+Replace document content with a plain text string. Use [`replace_markdown_document`](#replace_markdown_document) for formatted content.
+
+**Parameters:**
+- `document_id` - Document ID
+- `description` - New content as plain text
+
+**Returns:** `ReplaceDocumentResponse` (empty on success)
+
+**Example:**
+```python
+client.replace_document(document_id="doc_id", description="New document content")
+```
+
+---
+
+### `append_document`
+
+```python
+append_document(
+    document_id: str,
+    description: Optional[str] = None,
+    files: Optional[List[Any]] = None
+) -> AppendDocumentResponse
+```
+
+Append plain text to the end of a document without removing existing content.
+
+**Parameters:**
+- `document_id` - Document ID
+- `description` - Plain text to append (optional)
+- `files` - Files to attach (optional)
+
+**Returns:** `AppendDocumentResponse` (empty on success)
+
+**Example:**
+```python
+client.append_document(document_id="doc_id", description="\n\nAdditional content")
 ```
 
 ---
@@ -344,20 +452,21 @@ class ReplaceDocumentResponse:
 
 ---
 
-### ReplaceJSONDocumentRequest
+### AppendDocumentRequest
 
 ```python
-class ReplaceJSONDocumentRequest:
+class AppendDocumentRequest:
     document_id: str                    # Required - Document ID
-    content: List[Dict[str, Any]]       # Required - JSONContent array in document structure format
+    description: Optional[str]          # Optional - Plain text to append
+    files: Optional[List[Any]]          # Optional - Files to attach
 ```
 
 ---
 
-### ReplaceJSONDocumentResponse
+### AppendDocumentResponse
 
 ```python
-class ReplaceJSONDocumentResponse:
+class AppendDocumentResponse:
     # Empty response on success
     pass
 ```
@@ -438,5 +547,6 @@ class GetMarkdownDocumentPayload:
 ## See Also
 
 - [Documents Guide](../guides/documents) - Usage examples and patterns
+- [Markdown Syntax](./markdown-syntax) - Supported Markdown dialect, containers and mentions
 - [Enums](./enums) - Kind enum for document scopes
 

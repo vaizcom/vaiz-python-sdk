@@ -76,7 +76,7 @@ Now you know the basics of working with Vaiz SDK! Here's what to explore next:
 - 🎛️ [Custom Fields](./guides/custom-fields) - Extend tasks with custom data
 - 📂 [Projects](./guides/projects) - Project management
 - 👤 [Profile](./guides/profile) - User information
-- 📝 [Documents](./guides/documents) - Task descriptions
+- 📝 [Documents](./guides/documents) - Documents and task descriptions written in Markdown
 - 📜 [History Events](./guides/history) - Change tracking
 - 🔗 [Task Blockers](./guides/blockers) - Manage task dependencies
 - 🛠️ [Helper Functions](./guides/helpers) - Utility functions for common tasks

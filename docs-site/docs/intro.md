@@ -53,6 +53,21 @@ print(response.task.created_at)  # datetime object
 print(response.task.due_end.year)  # 2025
 ```
 
+### 📝 Markdown Documents
+
+Write document and task description content as Markdown - tables, checklists, code, mentions, callouts and more - and read it back the same way:
+
+```python
+client.replace_markdown_document(
+    document_id="document_id",
+    markdown="# Release notes\n\n- [x] Draft\n- [ ] Review\n\nSee **docs** for details."
+)
+
+print(client.get_markdown_document("document_id"))
+```
+
+See [Markdown Syntax](./api-reference/markdown-syntax) for the full dialect.
+
 ### 🎨 Enums for Icons and Colors
 
 The SDK provides enums for all valid values:

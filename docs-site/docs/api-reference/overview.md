@@ -22,7 +22,7 @@ Complete reference documentation for all Vaiz SDK methods, models, and enums.
 ### Content Management
 
 - [Documents](./documents) - Document management methods
-- [Document Structure](./document-structure) - Rich content format for documents and task descriptions
+- [Markdown Syntax](./markdown-syntax) - Markdown dialect for document and task description content
 - [Comments](./comments) - Comment and reaction methods
 - [Files](./files) - File upload methods
 

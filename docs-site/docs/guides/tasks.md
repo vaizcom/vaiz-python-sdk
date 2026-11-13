@@ -222,9 +222,7 @@ You can move tasks to different groups in a single request. Each move specifies 
 
 ## Task Descriptions
 
-Tasks store descriptions as structured JSON documents. The SDK provides convenient methods to work with descriptions directly from Task objects.
-
-**Important:** Task descriptions support rich content using the same [document structure format](../api-reference/document-structure) as standalone documents. You can use `replace_json_document` to create formatted task descriptions with headings, lists, links, and more.
+Every task has a description document, referenced by `task.document`. Descriptions are written as Markdown, exactly like standalone documents: use `replace_markdown_document` to create formatted descriptions with headings, lists, tables, checklists, mentions, and more. See [Markdown Syntax](../api-reference/markdown-syntax) for the full dialect.
 
 ### Get Task Description
 
@@ -238,13 +236,13 @@ document_id = task.document
 description = client.get_markdown_document(document_id)
 print(description)  # Markdown text
 
-# Or the raw Lexical JSON
+# Or the raw Lexical JSON (advanced)
 description_json = client.get_json_document(document_id)
 ```
 
 ### Update Task Description
 
-Replace task description completely:
+Replace the task description completely with Markdown:
 
 ```python
 # Get task
@@ -252,60 +250,54 @@ task_response = client.get_task("PRJ-123")
 document_id = task_response.task.document
 
 # Update description
-new_content = """
-# Updated Description
+new_content = """# Updated Description
 
 This completely replaces the previous content.
 
-## Features
-- Complete replacement
-- Plain text support
-- Direct API access
+## Requirements
+
+- [ ] Review design mockups
+- [ ] Update documentation
+- [ ] Test functionality
+
+See [project docs](https://docs.example.com) for **details**.
 """
 
-client.replace_document(
+client.replace_markdown_document(
     document_id=document_id,
-    description=new_content
+    markdown=new_content
 )
+```
+
+Use `append_markdown_document` to add content without removing the existing description:
+
+```python
+client.append_markdown_document(document_id, "## Update\n\nDesign phase completed.")
 ```
 
 ### Rich Formatted Descriptions
 
-For rich content with formatting, lists, and links, use `replace_json_document`:
+Markdown supports tables, code blocks, collapsible sections, callouts and mentions in descriptions:
 
 ```python
-from vaiz import heading, paragraph, text, bullet_list
+member_id = client.get_profile().profile.member_id
 
-# Get task
-task_response = client.get_task("PRJ-123")
-document_id = task_response.task.document
+client.replace_markdown_document(document_id, f"""# Task Overview
 
-# Create rich content
-content = [
-    heading(1, "Task Overview"),
-    paragraph(
-        "This task requires ",
-        text("immediate attention", bold=True),
-        "."
-    ),
-    heading(2, "Requirements"),
-    bullet_list(
-        "Review design mockups",
-        "Update documentation",
-        "Test functionality"
-    ),
-    paragraph(
-        "See ",
-        text("project docs", link="https://docs.example.com"),
-        " for details."
-    )
-]
+This task requires **immediate attention**. Owner: @[Me](user:{member_id})
 
-# Replace with rich content
-client.replace_json_document(document_id, content)
+| Step | Owner | Status |
+| --- | --- | --- |
+| Design | John | Done |
+| Build | Jane | In progress |
+
+:::details{{summary="Technical notes"}}
+Run `make build` before testing.
+:::
+""")
 ```
 
-See [Document Structure](../api-reference/document-structure) for complete format reference and [Document Structure Helpers](./document-structure-helpers) for helper functions.
+See [Markdown Syntax](../api-reference/markdown-syntax) for the complete reference.
 
 ### Using Task Helper Methods
 
@@ -316,7 +308,7 @@ The Task model provides convenient helper methods:
 task_response = client.create_task(task)
 task_obj = task_response.task
 
-# Get description using helper
+# Get description using helper (returns the raw Lexical JSON)
 description = task_obj.get_task_description(client)
 print(description)
 
@@ -326,6 +318,10 @@ task_obj.update_task_description(
     "New task description content"
 )
 ```
+
+:::note
+`update_task_description` writes plain text. For formatted descriptions use `client.replace_markdown_document(task.document, markdown)`.
+:::
 
 ### Full Workflow Example
 
@@ -353,8 +349,8 @@ task_obj.update_task_description(
     "Updated task description with more details"
 )
 
-# 4. Read current content
-content = task_obj.get_task_description(client)
+# 4. Read current content as Markdown
+content = client.get_markdown_document(task_obj.document)
 print(content)
 ```
 

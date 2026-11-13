@@ -37,16 +37,3 @@ def get_client():
         base_url=BASE_URL
     )
 
-
-def iter_lexical_nodes(doc):
-    """Iterate over every node of a Lexical document returned by get_json_document()."""
-    stack = list(reversed(doc.get("root", {}).get("children", [])))
-    while stack:
-        node = stack.pop()
-        yield node
-        stack.extend(reversed(node.get("children", []) or []))
-
-
-def count_lexical_nodes(doc, *node_types):
-    """Count nodes of the given Lexical types anywhere in the document."""
-    return sum(1 for node in iter_lexical_nodes(doc) if node.get("type") in node_types)

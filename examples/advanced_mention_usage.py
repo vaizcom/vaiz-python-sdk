@@ -1,288 +1,161 @@
 """
-Example: Advanced Mention Usage in Task Descriptions
+Example: Advanced Mention Usage in Task Descriptions and Documents
 
-This example demonstrates how to create task descriptions with mentions,
-combining them with other document elements for rich content.
+This example demonstrates how to combine mentions with other Markdown elements
+(lists, tables, checklists) in task descriptions and standalone documents.
 """
 
-from examples.config import get_client, count_lexical_nodes, PROJECT_ID, BOARD_ID
-from vaiz import (
-    CreateTaskRequest,
-    TaskPriority,
-    # Document structure builders
-    heading,
-    paragraph,
-    text,
-    bullet_list,
-    list_item,
-    horizontal_rule,
-    table,
-    table_row,
-    table_header,
-    table_cell,
-    # Mention helpers
-    mention_user,
-    mention_task,
-    mention_milestone,
-    mention_document,
-)
+from examples.config import get_client, PROJECT_ID, BOARD_ID, SPACE_ID
+from vaiz import CreateTaskRequest, TaskPriority
+from vaiz.models import CreateDocumentRequest, GetDocumentsRequest, GetTasksRequest, Kind
 
 
 def main():
     client = get_client()
     client.verbose = True
-    
+
     print("=== Advanced Mention Usage Example ===\n")
-    
+
     # Get real IDs from API
     print("Getting real IDs from API...")
-    
-    # Get user profile for current member ID
-    profile = client.get_profile()
-    current_member_id = profile.profile.member_id
-    print(f"✓ Member ID: {current_member_id}")
-    
-    # Get real IDs
-    from vaiz.models import GetDocumentsRequest, Kind
-    from examples.config import SPACE_ID
-    
-    # Get document ID
-    docs_response = client.get_documents(
-        GetDocumentsRequest(kind=Kind.Space, kind_id=SPACE_ID)
-    )
-    reference_doc_id = None
-    if docs_response.payload.documents:
-        reference_doc_id = docs_response.payload.documents[0].id
-        print(f"✓ Reference Document ID: {reference_doc_id}")
-    
-    # Get task ID
-    from vaiz.models import GetTasksRequest
-    tasks_response = client.get_tasks(GetTasksRequest())
-    task_id = None
-    if tasks_response.payload.tasks:
-        task_id = tasks_response.payload.tasks[0].id
-        print(f"✓ Task ID: {task_id}")
-    
-    # Get milestone ID
-    milestones_response = client.get_milestones()
-    milestone_id = None
-    if milestones_response.milestones:
-        milestone_id = milestones_response.milestones[0].id
-        print(f"✓ Milestone ID: {milestone_id}")
-    
-    print()
-    
-    # Example 1: Create task with mentions in description
-    print("1. Creating task with rich description including mentions...")
-    
-    # Build rich task description with mentions
-    task_description = [
-        heading(1, "📋 Project Status Update"),
-        
-        paragraph(
-            text("This task is assigned to "),
-            mention_user(current_member_id),
-            text(" and requires coordination with the team.")
-        ),
-        
-        horizontal_rule(),
-        
-        heading(2, "🎯 Objectives"),
-        bullet_list(
-            "Review current progress",
-            "Update documentation",
-            list_item(
-                paragraph(
-                    text("Coordinate with "),
-                    mention_user(current_member_id)
-                )
-            )
-        ),
-        
-        heading(2, "📎 Related Items"),
-    ]
-    
-    # Add related items if available
-    related_items = [text("References: ")]
-    if milestone_id:
-        related_items.extend([
-            text("Milestone "),
-            mention_milestone(milestone_id),
-        ])
+
+    member_id = client.get_profile().profile.member_id
+    print(f"✓ Member ID: {member_id}")
+
+    docs_response = client.get_documents(GetDocumentsRequest(kind=Kind.Space, kind_id=SPACE_ID))
+    reference_doc_id = docs_response.payload.documents[0].id if docs_response.payload.documents else None
     if reference_doc_id:
-        if milestone_id:
-            related_items.append(text(" | "))
-        related_items.extend([
-            text("Document "),
-            mention_document(reference_doc_id),
-        ])
-    
-    task_description.append(paragraph(*related_items))
-    
-    task_description.extend([
-        
-        horizontal_rule(),
-        
-        heading(2, "👥 Team Members"),
-        table(
-            table_row(
-                table_header("Role"),
-                table_header("Member")
-            ),
-            table_row(
-                table_cell("Lead"),
-                table_cell(
-                    paragraph(mention_user(current_member_id))
-                )
-            ),
-            table_row(
-                table_cell("Reviewer"),
-                table_cell(
-                    paragraph(mention_user(current_member_id))
-                )
-            )
-        ),
-    ])
-    
+        print(f"✓ Reference Document ID: {reference_doc_id}")
+
+    tasks_response = client.get_tasks(GetTasksRequest())
+    task_id = tasks_response.payload.tasks[0].id if tasks_response.payload.tasks else None
+    if task_id:
+        print(f"✓ Task ID: {task_id}")
+
+    milestones_response = client.get_milestones()
+    milestone_id = milestones_response.milestones[0].id if milestones_response.milestones else None
+    if milestone_id:
+        print(f"✓ Milestone ID: {milestone_id}")
+
+    user = f"@[Me](user:{member_id})"
+
+    print()
+
+    # Example 1: Create a task with mentions in the description
+    print("1. Creating task with rich description including mentions...")
+
+    references = []
+    if milestone_id:
+        references.append(f"- Milestone: @[Milestone](milestone:{milestone_id})")
+    if reference_doc_id:
+        references.append(f"- Document: @[Document](document:{reference_doc_id})")
+
+    task_description = "\n".join(
+        [
+            "# 📋 Project Status Update",
+            "",
+            f"This task is assigned to {user} and requires coordination with the team.",
+            "",
+            "---",
+            "",
+            "## 🎯 Objectives",
+            "",
+            "- [ ] Review current progress",
+            "- [ ] Update documentation",
+            f"- [ ] Coordinate with {user}",
+            "",
+            "## 📎 Related Items",
+            "",
+            *(references or ["- No related items found"]),
+            "",
+            "## 👥 Team Members",
+            "",
+            "| Role | Member |",
+            "| --- | --- |",
+            f"| Lead | {user} |",
+            f"| Reviewer | {user} |",
+            "",
+        ]
+    )
+
     try:
-        # Note: You need to provide valid PROJECT_ID and BOARD_ID in .env
         if not PROJECT_ID or not BOARD_ID:
             print("⚠️  Please set VAIZ_PROJECT_ID and VAIZ_BOARD_ID in your .env file")
             print("Skipping task creation example...")
         else:
-            task_request = CreateTaskRequest(
-                name="Project Status Update with Mentions",
-                group=PROJECT_ID,
-                board=BOARD_ID,
-                priority=TaskPriority.General,
+            task_response = client.create_task(
+                CreateTaskRequest(
+                    name="Project Status Update with Mentions",
+                    group=PROJECT_ID,
+                    board=BOARD_ID,
+                    priority=TaskPriority.General,
+                )
             )
-            
-            task_response = client.create_task(task_request)
-            task_id = task_response.task.id
-            document_id = task_response.task.document
-            
             print(f"✅ Task created: {task_response.task.hrid}")
-            print(f"Task ID: {task_id}")
-            print(f"Document ID: {document_id}")
-            
-            # Update task description with rich content
-            client.replace_json_document(document_id, task_description)
+
+            client.replace_markdown_document(task_response.task.document, task_description)
             print("✅ Task description updated with mentions!")
-            
+
     except Exception as e:
         print(f"❌ Error creating task: {e}")
-    
-    print("\n" + "="*50)
-    
-    # Example 2: Create document with complex mention structure
+
+    print("\n" + "=" * 50)
+
+    # Example 2: Create a document with mentions in lists and tables
     print("\n2. Creating document with complex mention structure...")
-    
-    # Create new document for testing
-    from vaiz.models import CreateDocumentRequest
-    create_request = CreateDocumentRequest(
-        kind=Kind.Space,
-        kind_id=SPACE_ID,
-        title="Advanced Example: Meeting Notes with Mentions",
-        index=0
-    )
-    doc_response = client.create_document(create_request)
-    document_id = doc_response.payload.document.id
-    print(f"✓ Created document: {document_id}")
-    
-    update_content = [
-        heading(1, "📝 Meeting Notes"),
-        
-        paragraph(
-            text("Date: 2025-10-23", bold=True)
-        ),
-        
-        heading(2, "Attendees"),
-        bullet_list(
-            list_item(paragraph(mention_user(current_member_id))),
-            list_item(paragraph(mention_user(current_member_id))),
-        ),
-        
-        horizontal_rule(),
-        
-        heading(2, "Action Items"),
-    ]
-    
-    # Add action items table if task available
-    if task_id:
-        update_content.append(table(
-            table_row(
-                table_header("Task"),
-                table_header("Assignee"),
-                table_header("Status")
-            ),
-            table_row(
-                table_cell(
-                    paragraph(mention_task(task_id))
-                ),
-                table_cell(
-                    paragraph(mention_user(current_member_id))
-                ),
-                table_cell("In Progress")
-            ),
-            table_row(
-                table_cell("Update documentation"),
-                table_cell(
-                    paragraph(mention_user(current_member_id))
-                ),
-                table_cell("Pending")
-            )
-        ))
-    
-    update_content.append(horizontal_rule())
-    
-    # Add references section
-    update_content.append(heading(2, "References"))
-    
-    references = []
-    if milestone_id:
-        references.append(list_item(
-            paragraph(
-                text("Milestone: "),
-                mention_milestone(milestone_id)
-            )
-        ))
-    if reference_doc_id:
-        references.append(list_item(
-            paragraph(
-                text("Related doc: "),
-                mention_document(reference_doc_id)
-            )
-        ))
-    
-    if references:
-        update_content.append(bullet_list(*references))
-    
-    update_content.extend([
-        
-        paragraph(
-            text("Last updated by "),
-            mention_user(current_member_id),
-            text(" on 2025-10-23", italic=True)
+
+    document_id = client.create_document(
+        CreateDocumentRequest(
+            kind=Kind.Space,
+            kind_id=SPACE_ID,
+            title="Advanced Example: Meeting Notes with Mentions",
+            index=0,
         )
-    ])
-    
+    ).payload.document.id
+    print(f"✓ Created document: {document_id}")
+
+    action_task = f"@[Task](task:{task_id})" if task_id else "Prepare the report"
+    notes = [
+        "# 📝 Meeting Notes",
+        "",
+        "**Date:** 2025-10-23",
+        "",
+        "## Attendees",
+        "",
+        f"- {user}",
+        "",
+        "---",
+        "",
+        "## Action Items",
+        "",
+        "| Task | Assignee | Status |",
+        "| --- | --- | --- |",
+        f"| {action_task} | {user} | In Progress |",
+        f"| Update documentation | {user} | Pending |",
+        "",
+        "---",
+        "",
+        "## References",
+        "",
+        *(references or ["- No references"]),
+        "",
+        f"Last updated by {user} on *2025-10-23*",
+        "",
+    ]
+
     try:
-        client.replace_json_document(document_id, update_content)
+        client.replace_markdown_document(document_id, "\n".join(notes))
         print("✅ Document updated successfully!")
         print(f"\n🔗 View at: https://vaiz.app/document/{document_id}")
-        
-        # Verify mentions were created
+
         print("\nVerifying mentions...")
-        doc_content = client.get_json_document(document_id)
-        
-        # Counts mentions anywhere: paragraphs, table cells, list items
-        mention_count = count_lexical_nodes(doc_content, "user-mention", "entity-mention")
-        
-        print(f"✓ Found {mention_count} mention block(s) in document")
-        
+        saved = client.get_markdown_document(document_id)
+        mention_count = saved.count("](user:") + saved.count("](task:")
+        print(f"✓ Found {mention_count} user/task mention(s) in document (tables and lists included)")
+
     except Exception as e:
         print(f"❌ Error updating document: {e}")
-    
+
     print("\n=== Example completed ===")
 
 

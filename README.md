@@ -17,6 +17,25 @@ This SDK provides a complete Python interface to the Vaiz API, making it easy to
 pip install vaiz-sdk
 ```
 
+## Quick Start
+
+```python
+from vaiz import VaizClient, CreateTaskRequest
+
+client = VaizClient(api_key="your_api_key", space_id="your_space_id")
+
+task = client.create_task(
+    CreateTaskRequest(name="Write release notes", board="board_id", group="group_id")
+).task
+
+# Documents and task descriptions are written in Markdown
+client.replace_markdown_document(
+    task.document,
+    "# Release notes\n\n- [x] Draft\n- [ ] Review\n\nSee **docs** for details.",
+)
+print(client.get_markdown_document(task.document))
+```
+
 ## Documentation
 
 **[Documentation](https://docs-python-sdk.vaiz.com)**

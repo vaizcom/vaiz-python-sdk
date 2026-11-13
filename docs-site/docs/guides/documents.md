@@ -2,7 +2,7 @@
 sidebar_position: 9
 sidebar_label: Documents
 title: Working with Documents — Rich Content & Formatting | Vaiz Python SDK
-description: Learn how to create and manage rich-text documents in Vaiz using the Python SDK. Includes JSON format, blocks, tables, mentions, and formatting.
+description: Learn how to create and manage rich-text documents in Vaiz using the Python SDK. Write content with Markdown, including tables, checklists, mentions, and containers.
 ---
 
 # Documents
@@ -147,7 +147,7 @@ content = """
 [Meeting content here]
 """
 
-client.replace_document(doc_id, content)
+client.replace_markdown_document(doc_id, content)
 print(f"✅ Document created and populated: {doc_id}")
 ```
 
@@ -321,180 +321,124 @@ if updated_doc:
 
 ## Working with Document Content
 
-In addition to listing and creating documents, you can work with their content using document API methods.
+Document content is written as **Markdown**. The server converts it to native editor blocks (headings, lists, tables, code blocks, checklists, mentions, callouts, and more), and you can read it back as Markdown. The same methods work for standalone documents and task descriptions.
 
-### Markdown Methods (Recommended)
+See [Markdown Syntax](../api-reference/markdown-syntax) for the full dialect.
 
-The simplest and recommended way to read and write document content is Markdown. It is converted to native rich editor blocks on the server (headings, lists, tables, code blocks, checklists, links, etc.):
+### Replace Content
 
 ```python
-# Replace document content with Markdown
 client.replace_markdown_document(
     document_id="document_id",
     markdown="# Title\n\nSome **bold** text\n\n- item 1\n- item 2"
 )
+```
 
-# Append Markdown to existing content
+**Use cases:**
+- Generating reports and documentation programmatically
+- Updating task descriptions
+- Importing content from other systems
+- Building document templates
+
+### Append Content
+
+Add content to the end of a document without removing what is already there - useful for logs, notes and incremental updates:
+
+```python
 client.append_markdown_document(
     document_id="document_id",
-    markdown="## Update\n\nAdditional notes"
+    markdown="---\n\n## Update #1\n\n**Status:** design completed\n\n- [x] Mockups\n- [ ] Review"
 )
+```
 
-# Read document content back as Markdown
+### Read Content
+
+```python
 markdown = client.get_markdown_document("document_id")
 print(markdown)
 ```
 
-The JSON-based methods below remain supported for backward compatibility.
-
-### Get Document Content
-
-Retrieve the content of any document as Lexical JSON (the rich editor format):
+Because reads return the same dialect you write, you can read a document, edit the string and write it back:
 
 ```python
-# Get document content by ID
-content = client.get_json_document("document_id")
-for block in content["root"]["children"]:
-    print(block["type"])  # "heading", "paragraph", "list", "table", ...
+markdown = client.get_markdown_document(doc_id)
+client.replace_markdown_document(doc_id, markdown.replace("TODO", "DONE"))
 ```
 
-The JSON you read back is Lexical, not the document structure format you write. See [`get_json_document`](../api-reference/document-structure#get_json_document) for the node types; to read content as text use `get_markdown_document()`.
+### Rich Content Examples
 
-This method is universal and works for:
-- Task descriptions
-- Standalone documents
-- Any document by its ID
-
-### Replace Document Content (Plain Text)
-
-Replace the entire content of a document with plain text:
+**Tables and checklists:**
 
 ```python
-# Replace document content with plain text
-client.replace_document(
-    document_id="document_id",
-    description="New content here"
+client.replace_markdown_document(doc_id, """# Sprint Status
+
+| Task | Assignee | Status |
+| --- | --- | --- |
+| API | John | Done |
+| Docs | Jane | In progress |
+
+## Checklist
+
+- [x] Deploy API
+- [ ] Deploy app
+    - [ ] Smoke tests
+""")
+```
+
+**Code and diagrams:**
+
+````python
+client.replace_markdown_document(doc_id, """# Snippets
+
+```python
+print("Hello, Vaiz!")
+```
+
+```mermaid
+graph LR
+    A[Write] --> B[Publish]
+```
+""")
+````
+
+**Collapsible sections, callouts and columns:**
+
+```python
+client.replace_markdown_document(doc_id, """:::callout{icon="Light" color="blue"}
+Remember to review before publishing.
+:::
+
+:::details{summary="Details" open}
+Hidden **content** goes here.
+:::
+
+:::columns
+::col
+Left column
+::col
+Right column
+:::
+""")
+```
+
+**Mentions** reference users, tasks, documents and milestones by ID:
+
+```python
+member_id = client.get_profile().profile.member_id
+
+client.append_markdown_document(
+    doc_id,
+    f"Owner: @[Me](user:{member_id}), related task: @[Task](task:{task_id})"
 )
 ```
 
-**Use cases:**
-- Updating task descriptions programmatically
-- Bulk content updates
-- Template-based content generation
-
-### Replace Document Content (Rich JSON)
-
-Replace document content with structured rich content.
-
-**💡 Tip:** Use [Document Structure helper functions](./document-structure-helpers) for type-safe, readable content creation!
+**Images** are standalone image lines that point to a URL (for example the URL of an uploaded file):
 
 ```python
-# Replace with rich formatted content
-json_content = [
-    {
-        "type": "heading",
-        "attrs": {"level": 1},
-        "content": [
-            {"type": "text", "text": "Project Overview"}
-        ]
-    },
-    {
-        "type": "paragraph",
-        "content": [
-            {"type": "text", "text": "This is "},
-            {
-                "type": "text",
-                "marks": [{"type": "bold"}],
-                "text": "bold text"
-            },
-            {"type": "text", "text": " and this is "},
-            {
-                "type": "text",
-                "marks": [{"type": "italic"}],
-                "text": "italic text"
-            }
-        ]
-    },
-    {
-        "type": "bulletList",
-        "content": [
-            {
-                "type": "listItem",
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "content": [
-                            {"type": "text", "text": "First item"}
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "listItem",
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "content": [
-                            {"type": "text", "text": "Second item"}
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-]
-
-client.replace_json_document(
-    document_id="document_id",
-    content=json_content
-)
+client.append_markdown_document(doc_id, "![Architecture](https://example.com/diagram.png)")
 ```
 
-**Document Structure Format features:**
-- **Rich text formatting**: Bold, italic, underline, strikethrough, code
-- **Headings**: Multiple levels (h1-h6)
-- **Lists**: Bullet lists, numbered lists, task lists
-- **Links**: Hyperlinks with custom attributes
-- **Code blocks**: Syntax highlighted code
-- **Tables**: Structured tabular data
-- **And more**: Blockquotes, horizontal rules, mentions, etc.
-
-**Use cases:**
-- Creating structured documentation programmatically
-- Importing content from other systems with formatting
-- Generating reports with rich formatting
-- Building document templates with complex layouts
-
-**With helper functions (recommended):**
-```python
-from vaiz import heading, paragraph, text, bullet_list, link_text, horizontal_rule
-
-content = [
-    heading(1, "📚 Documentation"),
-    paragraph(
-        "Welcome to our ",
-        text("project docs", bold=True),
-        "!"
-    ),
-    horizontal_rule(),
-    heading(2, "Features"),
-    bullet_list(
-        "Easy to use",
-        "Type-safe",
-        "Well documented"
-    ),
-    paragraph(
-        "Learn more at ",
-        link_text("our docs", "https://docs.vaiz.app")
-    )
-]
-
-client.replace_json_document(document_id, content)
-```
-
-See [Document Structure Helpers Guide](./document-structure-helpers) for complete documentation.
-
-### Update Project Document
+### Update a Project Document
 
 ```python
 from vaiz.models import GetDocumentsRequest, Kind
@@ -514,97 +458,50 @@ target_doc = next(
 )
 
 if target_doc:
-    # 3. Get current content
-    current_content = client.get_json_document(target_doc.id)
+    # 3. Read the current content
+    current = client.get_markdown_document(target_doc.id)
     print(f"Current size: {target_doc.size} bytes")
-    
-    # 4. Update content
-    new_content = """
-# Meeting Notes - Updated
+
+    # 4. Replace it
+    client.replace_markdown_document(target_doc.id, """# Meeting Notes - Updated
 
 ## Attendees
 - John Doe
 - Jane Smith
 
 ## Action Items
-- Review design mockups
-- Update documentation
-"""
-    
-    client.replace_document(target_doc.id, new_content)
+- [ ] Review design mockups
+- [ ] Update documentation
+""")
     print(f"✅ Updated: {target_doc.title}")
 ```
 
-### Document Content Format
+### Plain Text Methods
 
-Documents are stored as structured JSON. When you use `replace_document`, the content is converted to the appropriate format:
+`replace_document` and `append_document` write plain text without any formatting. Prefer the Markdown methods above for anything beyond a single line:
 
 ```python
-# Plain text
-client.replace_document(doc_id, "Simple text")
-
-# Markdown-style formatting (as plain text)
-client.replace_document(
-    doc_id,
-    """
-# Header
-## Subheader
-
-- List item 1
-- List item 2
-
-**Bold** and *italic* text
-"""
-)
-
-# Rich JSON format (with actual formatting)
-json_content = [
-    {
-        "type": "heading",
-        "attrs": {"level": 1},
-        "content": [{"type": "text", "text": "Header"}]
-    },
-    {
-        "type": "heading",
-        "attrs": {"level": 2},
-        "content": [{"type": "text", "text": "Subheader"}]
-    },
-    {
-        "type": "bulletList",
-        "content": [
-            {
-                "type": "listItem",
-                "content": [{
-                    "type": "paragraph",
-                    "content": [{"type": "text", "text": "List item 1"}]
-                }]
-            },
-            {
-                "type": "listItem",
-                "content": [{
-                    "type": "paragraph",
-                    "content": [{"type": "text", "text": "List item 2"}]
-                }]
-            }
-        ]
-    },
-    {
-        "type": "paragraph",
-        "content": [
-            {"type": "text", "marks": [{"type": "bold"}], "text": "Bold"},
-            {"type": "text", "text": " and "},
-            {"type": "text", "marks": [{"type": "italic"}], "text": "italic"},
-            {"type": "text", "text": " text"}
-        ]
-    }
-]
-
-client.replace_json_document(doc_id, json_content)
+client.replace_document(document_id="document_id", description="New content here")
+client.append_document(document_id="document_id", description="\n\nMore content")
 ```
+
+### Raw Lexical JSON (Read Only)
+
+For advanced cases you can read the raw editor tree with `get_json_document`. See the [API reference](../api-reference/documents#get_json_document) for the node types:
+
+```python
+content = client.get_json_document("document_id")
+for block in content["root"]["children"]:
+    print(block["type"])  # "heading", "paragraph", "list", "table", ...
+```
+
+JSON content cannot be written - use the Markdown methods for all writes.
 
 ## See Also
 
 - [Tasks](./tasks) - Task operations and descriptions
+- [Markdown Syntax](../api-reference/markdown-syntax) - Supported Markdown dialect
+- [Documents API Reference](../api-reference/documents) - Methods and models
 - [Comments](./comments) - Add comments to tasks and documents
 - [Projects](./projects) - Project management
 

@@ -260,7 +260,7 @@ Explore detailed documentation for each SDK feature:
 - [Custom Fields](./custom-fields) - Extend tasks with custom data
 - [Projects](./projects) - Project management
 - [Profile](./profile) - User information
-- [Documents](./documents) - Document lists (Space, Member, Project)
+- [Documents](./documents) - Document lists (Space, Member, Project) and Markdown content
 - [History Events](./history) - Change tracking
 - [Task Blockers](./blockers) - Manage task dependencies
 - [Helper Functions](./helpers) - Utility functions

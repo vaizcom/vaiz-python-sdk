@@ -25,12 +25,12 @@ Create a new task with optional description and file upload.
 
 **Parameters:**
 - `task` - Task configuration (name, board required; group, project optional)
-- `description` - Optional task description (plain text). For rich content, use `replace_json_document` with [document structure format](./document-structure)
+- `description` - Optional task description (plain text). For rich content, use `replace_markdown_document` with [Markdown syntax](./markdown-syntax)
 - `file` - Optional file to upload and attach
 
 **Returns:** `TaskResponse` with created task
 
-**Note:** To add rich formatted content to task descriptions, create the task first, then use `replace_json_document(task.document, content)`. See [Document Structure](./document-structure) for details.
+**Note:** To add rich formatted content to task descriptions, create the task first, then use `replace_markdown_document(task.document, markdown)`. See [Markdown Syntax](./markdown-syntax) for details.
 
 ---
 
@@ -343,6 +343,6 @@ class MoveTasksPayload:
 ## See Also
 
 - [Tasks Guide](../guides/tasks) - Usage examples and patterns
-- [Document Structure](./document-structure) - Format for task descriptions with rich content
+- [Markdown Syntax](./markdown-syntax) - Format for task descriptions with rich content
 - [Enums](./enums) - TaskPriority and other enums
 

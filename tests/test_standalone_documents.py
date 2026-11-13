@@ -7,12 +7,6 @@ import pytest
 from tests.test_config import get_test_client
 from tests.lexical_utils import root_children
 from vaiz.models import CreateDocumentRequest, Kind
-from vaiz import (
-    heading, paragraph, text, 
-    bullet_list, ordered_list, list_item,
-    table, table_row, table_cell, table_header,
-    horizontal_rule, link_text
-)
 
 
 def test_create_space_document_with_content():
@@ -33,53 +27,35 @@ def test_create_space_document_with_content():
     assert document_id is not None
     
     # Add comprehensive content
-    content = [
-        heading(1, "📄 SDK Test - Space Document"),
-        
-        paragraph(
-            "This is a ",
-            text("standalone Space document", bold=True),
-            " created by the Vaiz Python SDK test suite. ",
-            "It should appear in the ",
-            text("Space docs", italic=True),
-            " section."
-        ),
-        
-        horizontal_rule(),
-        
-        heading(2, "✨ Features Demonstrated"),
-        
-        bullet_list(
-            "Text formatting (bold, italic, code)",
-            "Lists (bullet and ordered)",
-            "Tables with headers",
-            "Horizontal rules",
-            "Links"
-        ),
-        
-        heading(2, "📊 Sample Table"),
-        
-        table(
-            table_row(
-                table_header("Feature"),
-                table_header("Status"),
-                table_header("Version")
-            ),
-            table_row("Document creation", "✅ Working", "0.9.0"),
-            table_row("Content helpers", "✅ Working", "0.8.0"),
-            table_row("Table headers", "✅ Working", "0.9.0")
-        ),
-        
-        horizontal_rule(),
-        
-        paragraph(
-            text("Learn more: ", bold=True),
-            link_text("Vaiz Documentation", "https://docs.vaiz.app")
-        )
-    ]
-    
+    markdown = """# 📄 SDK Test - Space Document
+
+This is a **standalone Space document** created by the Vaiz Python SDK test suite. It should appear in the *Space docs* section.
+
+---
+
+## ✨ Features Demonstrated
+
+- Text formatting (bold, italic, code)
+- Lists (bullet and ordered)
+- Tables with headers
+- Horizontal rules
+- Links
+
+## 📊 Sample Table
+
+| Feature | Status | Version |
+| --- | --- | --- |
+| Document creation | ✅ Working | 0.9.0 |
+| Markdown content | ✅ Working | 1.0.0 |
+| Table headers | ✅ Working | 0.9.0 |
+
+---
+
+**Learn more:** [Vaiz Documentation](https://docs.vaiz.app)
+"""
+
     # Add content to document
-    response = client.replace_json_document(document_id, content)
+    response = client.replace_markdown_document(document_id, markdown)
     assert response is not None
     
     # Verify content was saved
@@ -124,86 +100,51 @@ def test_create_personal_document_with_content():
     assert document_id is not None
     
     # Add comprehensive content
-    content = [
-        heading(1, "📝 Personal Notes - SDK Test"),
-        
-        paragraph(
-            "This is a ",
-            text("personal document", bold=True),
-            " created by the SDK. ",
-            "It should appear in the ",
-            text("Personal docs", italic=True),
-            " section."
-        ),
-        
-        horizontal_rule(),
-        
-        heading(2, "🎯 My Tasks Today"),
-        
-        ordered_list(
-            "Review SDK test results",
-            "Update documentation",
-            "Test new table_header feature",
-            "Commit changes to repository"
-        ),
-        
-        heading(2, "💡 Ideas"),
-        
-        bullet_list(
-            list_item(
-                paragraph(text("Document Structure", bold=True)),
-                bullet_list(
-                    "Add more examples",
-                    "Create video tutorials"
-                )
-            ),
-            list_item(
-                paragraph(text("SDK Improvements", bold=True)),
-                bullet_list(
-                    "Better error messages",
-                    "More helper functions"
-                )
-            )
-        ),
-        
-        heading(2, "📈 Progress Tracking"),
-        
-        table(
-            table_row(
-                table_header("Week"),
-                table_header("Tasks Completed"),
-                table_header("Status")
-            ),
-            table_row("Week 1", "12", "✅ Good"),
-            table_row("Week 2", "15", "✅ Excellent"),
-            table_row("Week 3", "10", "⚠️ Need improvement"),
-            table_row(
-                table_cell(text("Total", bold=True)),
-                table_cell(text("37", bold=True)),
-                table_cell("📊")
-            )
-        ),
-        
-        horizontal_rule(),
-        
-        heading(2, "🔗 Useful Links"),
-        
-        paragraph(
-            "• ", link_text("Vaiz Docs", "https://docs.vaiz.app"), "\n",
-            "• ", link_text("Python SDK", "https://github.com/vaiz/vaiz-python-sdk"), "\n",
-            "• ", link_text("API Reference", "https://api.vaiz.app")
-        ),
-        
-        horizontal_rule(),
-        
-        paragraph(
-            text("Created with: ", italic=True),
-            text("Vaiz Python SDK", code=True)
-        )
-    ]
-    
+    markdown = """# 📝 Personal Notes - SDK Test
+
+This is a **personal document** created by the SDK. It should appear in the *Personal docs* section.
+
+---
+
+## 🎯 My Tasks Today
+
+1. Review SDK test results
+2. Update documentation
+3. Test markdown tables
+4. Commit changes to repository
+
+## 💡 Ideas
+
+- **Document Structure**
+    - Add more examples
+    - Create video tutorials
+- **SDK Improvements**
+    - Better error messages
+    - More examples
+
+## 📈 Progress Tracking
+
+| Week | Tasks Completed | Status |
+| --- | --- | --- |
+| Week 1 | 12 | ✅ Good |
+| Week 2 | 15 | ✅ Excellent |
+| Week 3 | 10 | ⚠️ Need improvement |
+| **Total** | **37** | 📊 |
+
+---
+
+## 🔗 Useful Links
+
+- [Vaiz Docs](https://docs.vaiz.app)
+- [Python SDK](https://github.com/vaizcom/vaiz-python-sdk)
+
+---
+
+*Created with:* `Vaiz Python SDK`
+"""
+
     # Add content to document
-    response = client.replace_json_document(document_id, content)
+    response = client.replace_markdown_document(document_id, markdown)
     assert response is not None
     
     # Verify content was saved

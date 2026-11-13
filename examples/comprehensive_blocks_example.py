@@ -1,252 +1,158 @@
 """
-Example: Comprehensive Document with All Block Types
+Example: Comprehensive Document Combining Many Markdown Elements
 
-This example demonstrates combining mentions, files, images, tables,
-and other document elements in one rich document.
+This example combines mentions, an image, tables, checklists, quotes and
+containers in one rich document written entirely in Markdown.
 """
 
-from examples.config import get_client, count_lexical_nodes, SPACE_ID
-from vaiz import (
-    heading,
-    paragraph,
-    text,
-    bullet_list,
-    list_item,
-    table,
-    table_row,
-    table_header,
-    table_cell,
-    horizontal_rule,
-    blockquote,
-    mention_user,
-    mention_task,
-    mention_document,
-    image_block,
-    files_block,
-)
-from vaiz.models import CreateDocumentRequest, Kind, GetDocumentsRequest, GetTasksRequest
-from vaiz.models.enums import UploadFileType
 import os
+
+from examples.config import get_client, SPACE_ID
+from vaiz.models import CreateDocumentRequest, GetDocumentsRequest, GetTasksRequest, Kind
+from vaiz.models.enums import UploadFileType
 
 
 def main():
     client = get_client()
     client.verbose = True
-    
-    print("=== Creating Comprehensive Document with All Block Types ===\n")
-    
+
+    print("=== Creating Comprehensive Markdown Document ===\n")
+
     # Step 1: Get entity IDs for mentions
     print("Step 1: Getting entity IDs...")
-    
-    profile = client.get_profile()
-    member_id = profile.profile.member_id
+
+    member_id = client.get_profile().profile.member_id
     print(f"✓ Member ID: {member_id}")
-    
-    docs_response = client.get_documents(
-        GetDocumentsRequest(kind=Kind.Space, kind_id=SPACE_ID)
-    )
+
+    docs_response = client.get_documents(GetDocumentsRequest(kind=Kind.Space, kind_id=SPACE_ID))
     ref_doc_id = docs_response.payload.documents[0].id if docs_response.payload.documents else None
     if ref_doc_id:
         print(f"✓ Reference Document ID: {ref_doc_id}")
-    
+
     tasks_response = client.get_tasks(GetTasksRequest())
     task_id = tasks_response.payload.tasks[0].id if tasks_response.payload.tasks else None
     if task_id:
         print(f"✓ Task ID: {task_id}")
-    
-    # Step 2: Upload files
-    print("\nStep 2: Uploading files...")
-    
+
+    # Step 2: Upload an image (it is referenced by URL in the Markdown)
+    print("\nStep 2: Uploading image...")
+
     image_path = "assets/example.png"
-    pdf_path = "assets/example.pdf"
-    
-    image_uploaded = None
+    image_url = None
     if os.path.exists(image_path):
-        image_uploaded = client.upload_file(image_path, file_type=UploadFileType.Image)
-        print(f"✓ Uploaded image: {image_uploaded.file.name}")
-    
-    pdf_uploaded = None
-    if os.path.exists(pdf_path):
-        pdf_uploaded = client.upload_file(pdf_path, file_type=UploadFileType.Pdf)
-        print(f"✓ Uploaded PDF: {pdf_uploaded.file.name}")
-    
+        uploaded = client.upload_file(image_path, file_type=UploadFileType.Image)
+        image_url = uploaded.file.url
+        print(f"✓ Uploaded image: {uploaded.file.name}")
+    else:
+        print(f"⚠️  {image_path} not found, skipping the image section")
+
     # Step 3: Create document
     print("\nStep 3: Creating document...")
-    
-    create_request = CreateDocumentRequest(
-        kind=Kind.Space,
-        kind_id=SPACE_ID,
-        title="Comprehensive Example: All Block Types",
-        index=0
-    )
-    doc_response = client.create_document(create_request)
-    document_id = doc_response.payload.document.id
-    print(f"✓ Created document: {document_id}")
-    
-    # Step 4: Build rich content with all block types
-    print("\nStep 4: Building comprehensive content...")
-    
-    content = [
-        heading(1, "📋 Project Status Report"),
-        
-        paragraph(
-            text("Report Date: 2025-10-23", bold=True),
-            text(" | Prepared by: "),
-            mention_user(member_id) if member_id else text("Team")
-        ),
-        
-        horizontal_rule(),
-        
-        # Section with task assignment
-        heading(2, "👥 Team Assignments"),
-        
-        paragraph(
-            text("Current assignee: "),
-            mention_user(member_id) if member_id else text("TBD")
-        ),
-    ]
-    
-    # Add table with mentions if task available
-    if task_id and member_id:
-        content.extend([
-            paragraph(text("Task assignments table:")),
-            
-            table(
-                table_row(
-                    table_header("Assignee"),
-                    table_header("Task"),
-                    table_header("Status")
-                ),
-                table_row(
-                    table_cell(paragraph(mention_user(member_id))),
-                    table_cell(paragraph(mention_task(task_id))),
-                    table_cell("In Progress")
-                )
-            ),
-        ])
-    
-    content.append(horizontal_rule())
-    
-    # Section with image
-    if image_uploaded:
-        content.extend([
-            heading(2, "📸 Visual Assets"),
-            
-            paragraph(text("Project screenshot:")),
-            
-            # New simple API - just pass the file!
-            image_block(
-                file=image_uploaded.file,
-                caption="Project Screenshot",
-                width_percent=80
-            ),
-            
-            paragraph(text("Image caption: Project Screenshot", italic=True)),
-            
-            horizontal_rule(),
-        ])
-    
-    # Section with files
-    files_to_attach = []
-    
-    if pdf_uploaded:
-        files_to_attach.append({
-            "fileId": pdf_uploaded.file.id,
-            "url": pdf_uploaded.file.url,
-            "name": pdf_uploaded.file.name,
-            "size": pdf_uploaded.file.size,
-            "extension": pdf_uploaded.file.ext,
-            "type": "Pdf"
-        })
-    
-    if files_to_attach:
-        content.extend([
-            heading(2, "📎 Attached Documents"),
-            
-            paragraph(text("Reference materials:")),
-            
-            files_block(*files_to_attach),
-            
-            paragraph(
-                text(f"{len(files_to_attach)} document(s) attached", italic=True)
-            ),
-            
-            horizontal_rule(),
-        ])
-    
-    # Section with references
-    if ref_doc_id:
-        content.extend([
-            heading(2, "🔗 Related Resources"),
-            
-            bullet_list(
-                list_item(paragraph(
-                    text("Reference document: "),
-                    mention_document(ref_doc_id)
-                )),
-                list_item(paragraph(
-                    text("Task link: "),
-                    mention_task(task_id) if task_id else text("N/A")
-                ))
-            ),
-            
-            horizontal_rule(),
-        ])
-    
-    # Summary section
-    content.extend([
-        heading(2, "📊 Summary"),
-        
-        blockquote(
-            paragraph(
-                text("This document demonstrates all supported block types:", bold=True)
-            ),
-            paragraph("• Headings and formatted text"),
-            paragraph("• User mentions and task references"),
-            paragraph("• Image blocks with embedded images"),
-            paragraph("• Files blocks with attachments"),
-            paragraph("• Tables with structured data"),
-            paragraph("• Lists and blockquotes")
-        ),
-        
-        paragraph(
-            text("Last updated by "),
-            mention_user(member_id) if member_id else text("System"),
-            text(" on 2025-10-23", italic=True)
+
+    document_id = client.create_document(
+        CreateDocumentRequest(
+            kind=Kind.Space,
+            kind_id=SPACE_ID,
+            title="Comprehensive Example: Markdown Elements",
+            index=0,
         )
-    ])
-    
-    # Step 5: Update document
+    ).payload.document.id
+    print(f"✓ Created document: {document_id}")
+
+    # Step 4: Build the Markdown
+    print("\nStep 4: Building comprehensive content...")
+
+    user = f"@[Me](user:{member_id})"
+    task = f"@[Task](task:{task_id})" if task_id else "TBD"
+
+    parts = [
+        "# 📋 Project Status Report",
+        "",
+        f"**Report Date: 2025-10-23** | Prepared by: {user}",
+        "",
+        "---",
+        "",
+        "## 👥 Team Assignments",
+        "",
+        f"Current assignee: {user}",
+        "",
+        "| Assignee | Task | Status |",
+        "| --- | --- | --- |",
+        f"| {user} | {task} | In Progress |",
+        "",
+        "---",
+        "",
+    ]
+
+    if image_url:
+        parts += [
+            "## 📸 Visual Assets",
+            "",
+            "Project screenshot:",
+            "",
+            f"![Project Screenshot]({image_url})",
+            "",
+            "---",
+            "",
+        ]
+
+    parts += [
+        "## ✅ Next Steps",
+        "",
+        "- [x] Collect requirements",
+        "- [ ] Ship the first version",
+        "",
+        "## 🔗 Related Resources",
+        "",
+    ]
+    if ref_doc_id:
+        parts.append(f"- Reference document: @[Document](document:{ref_doc_id})")
+    parts.append(f"- Task link: {task}")
+    parts += [
+        "",
+        ":::callout{icon=\"Light\" color=\"blue\"}",
+        "Everything here is plain Markdown.",
+        ":::",
+        "",
+        "## 📊 Summary",
+        "",
+        "> **This document demonstrates the supported elements:**",
+        ">",
+        "> - Headings and formatted text",
+        "> - User mentions and task references",
+        "> - Images, tables and checklists",
+        "> - Callouts and quotes",
+        "",
+        f"Last updated by {user} on *2025-10-23*",
+        "",
+    ]
+
+    # Step 5: Write the document
     try:
-        client.replace_json_document(document_id, content)
+        client.replace_markdown_document(document_id, "\n".join(parts))
         print("\n✅ Comprehensive document created successfully!")
         print(f"\n🔗 View document: https://vaiz.app/document/{document_id}")
-        
-        # Verify all blocks
-        print("\nVerifying blocks...")
-        doc_content = client.get_json_document(document_id)
-        
-        mention_count = count_lexical_nodes(doc_content, "user-mention", "entity-mention")
-        image_block_count = count_lexical_nodes(doc_content, "document-image")
-        files_block_count = count_lexical_nodes(doc_content, "document-files")
-        table_count = count_lexical_nodes(doc_content, "table")
-        
+
+        print("\nVerifying content...")
+        saved = client.get_markdown_document(document_id)
+
+        mention_count = saved.count("](user:") + saved.count("](task:") + saved.count("](document:")
+        table_rows = sum(1 for line in saved.splitlines() if line.startswith("|"))
+        images = saved.count("![")
+        checklist_items = saved.count("- [x]") + saved.count("- [ ]")
+
         print(f"✓ Found {mention_count} mention(s)")
-        print(f"✓ Found {image_block_count} image block(s)")
-        print(f"✓ Found {files_block_count} files block(s)")
-        print(f"✓ Found {table_count} table(s)")
-        
-        total_blocks = mention_count + image_block_count + files_block_count + table_count
-        print(f"\n📦 Total interactive blocks: {total_blocks}")
-        
+        print(f"✓ Found {images} image(s)")
+        print(f"✓ Found {table_rows} table row(s)")
+        print(f"✓ Found {checklist_items} checklist item(s)")
+
     except Exception as e:
         print(f"❌ Error: {e}")
         import traceback
         traceback.print_exc()
-    
+
     print("\n=== Example completed ===")
 
 
 if __name__ == "__main__":
     main()
-
